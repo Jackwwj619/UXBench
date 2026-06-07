@@ -217,14 +217,6 @@ uv run playwright install
 
 ### 2 · Configure
 
-UXAgent reads provider settings from `uxagent.config.yaml`.
-
-Do **not** commit real API keys. Put secrets in a local `.env` file and reference the variable names from the config.
-
-```env
-OPENAI_API_KEY=replace-with-your-real-key
-```
-
 Run sanity checks:
 
 ```bash
