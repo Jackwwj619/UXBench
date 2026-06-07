@@ -1,0 +1,540 @@
+{
+  "plan": {
+    "goal": "Explore and critique the Shopify marketing-to-trial-to-admin funnel end to end, with primary focus on the free-trial onboarding flow and secondary coverage of pricing, resources, help, login, and sales-contact paths across desktop and mobile.",
+    "summary": "Begin on the marketing homepage and validate the main conversion entry points, especially the hero email/signup CTA and repeated trial calls to action. Then drive deeply through the multi-step free-trial form, including forward progress, skip behavior, and completion to the \"Your store is ready!\" state. After the core funnel, cover adjacent decision-support and recovery paths on pricing, help, resources, admin login, and sales pages, and finish by repeating the highest-value journey plus navigation/tap-target checks on mobile.",
+    "assumptions": [
+      "The primary journey is marketing homepage or pricing/resources entry points into free-trial onboarding, ending in a ready-store/admin-like success state.",
+      "free-trial-form.html appears to be a scripted multi-step onboarding flow with intermediate questions, account creation fields, and a final success state even though only limited controls were exposed in prescan.",
+      "admin.html and sales.html likely use client-side success/error states because headings include success messages despite the prescan landing on the initial form views.",
+      "Some top-nav and footer links point to '#' placeholders, so exploration should prioritize real HTML destinations over dead-end links.",
+      "Mobile risk is elevated because multiple nav/footer links were flagged as undersized tap targets in prescan."
+    ],
+    "target_pages": [
+      "index.html",
+      "free-trial-form.html",
+      "free-trial.html",
+      "pricing.html",
+      "help-trial.html",
+      "admin.html",
+      "resources.html",
+      "sales.html"
+    ],
+    "risk_hotspots": [
+      "index.html hero email field + Start free trial button: validate whether email capture is required, optional, or ignored before navigation",
+      "index.html FAQ accordion buttons: confirm expand/collapse behavior and content visibility",
+      "free-trial-form.html multi-step onboarding: risk of hidden validation, skipped states, broken progression, and unclear persistence between steps",
+      "free-trial-form.html Skip all control: important recovery/shortcut path called out in page copy",
+      "free-trial-form.html Create your Shopify account step: validate required fields, inline errors, and transition to 'Your store is ready!'",
+      "admin.html login form: test required-field behavior, store URL formatting, and alternate social login buttons presence/state",
+      "sales.html contact form: prescan reports missing_input_label warnings, so inspect labeling, keyboard focus, and select controls carefully",
+      "pricing.html monthly/yearly toggle: verify that prices and plan messaging actually update",
+      "pricing.html plan CTAs and Contact sales path: ensure self-serve vs enterprise branching is clear",
+      "help-trial.html search input and on-page anchor navigation: validate discoverability and internal navigation behavior",
+      "Top navigation and footer links across marketing pages: many small tap targets suggest mobile usability issues"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Homepage conversion entry and content discovery",
+        "objective": "Validate the main marketing landing page as a starting point into the trial funnel and inspect the most visible conversion/support interactions.",
+        "target_pages": [
+          "index.html",
+          "free-trial.html"
+        ],
+        "key_checks": [
+          "Use the hero email input and Start free trial submit button to see whether submission routes into onboarding and whether blank vs populated input changes behavior",
+          "Compare the top-nav Start free trial link with the hero CTA destination and consistency",
+          "Open at least the visible FAQ accordion items on the homepage and confirm expand/collapse usability",
+          "Check whether footer support links route correctly to help-trial.html and free-trial.html",
+          "Note whether free-trial.html is materially distinct from index.html or effectively duplicate content"
+        ],
+        "exit_criteria": [
+          "Primary homepage CTA path into free-trial-form.html is confirmed via at least one working entry point",
+          "At least two FAQ items are expanded and observed",
+          "Duplicate-or-distinct relationship between index.html and free-trial.html is established"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Deep free-trial onboarding walkthrough",
+        "objective": "Exercise the core onboarding funnel thoroughly, covering guided setup, skip behavior, validation, and completion.",
+        "target_pages": [
+          "free-trial-form.html"
+        ],
+        "key_checks": [
+          "Progress through the 'What are you planning to sell?' step and observe selection requirements before Next",
+          "Advance through 'Where would you like to sell?' and 'Where is your business located?' states, confirming transitions and back/continuation behavior if available",
+          "Use 'Skip all' to test the alternate fast-path and verify where it rejoins the flow",
+          "At the 'Create your Shopify account' step, test empty submission, partially completed submission, and a valid completion path if possible",
+          "Confirm the final 'Your store is ready!' state appears and document any success CTA or destination offered afterward"
+        ],
+        "exit_criteria": [
+          "Both a normal progression path and Skip-all path have been attempted or their availability limits clearly established",
+          "At least one validation behavior is observed on account creation or earlier required steps",
+          "The final success state is reached or a blocker is documented with specific failing step/control"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Decision support and enterprise branching",
+        "objective": "Validate plan comparison and the branch from self-serve pricing into enterprise sales contact.",
+        "target_pages": [
+          "pricing.html",
+          "sales.html"
+        ],
+        "key_checks": [
+          "Toggle Pay monthly vs Pay yearly and verify displayed pricing changes for Basic/Grow/Advanced plans",
+          "Inspect plan card CTAs, especially Start free trial for self-serve plans and Contact sales for Plus",
+          "Open at least one pricing FAQ item and compare messaging against homepage trial/pricing claims",
+          "Follow the Contact sales path into sales.html and complete the form with the available text/select fields",
+          "Test sales form required-field behavior, select menus, and success acknowledgement state"
+        ],
+        "exit_criteria": [
+          "Pricing toggle behavior is confirmed as functional or nonfunctional",
+          "Enterprise branch to sales.html is exercised",
+          "Sales form is submitted successfully or validation failure points are captured"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Help, resources, and recovery journeys",
+        "objective": "Assess whether support and educational pages help users recover from uncertainty and re-enter the trial funnel.",
+        "target_pages": [
+          "help-trial.html",
+          "resources.html"
+        ],
+        "key_checks": [
+          "On help-trial.html, use the on-page table-of-contents links to jump among sections and confirm anchors work",
+          "Try the help search input to determine whether it accepts interaction and whether results/navigation occur",
+          "Follow the 'sign up for a free trial' help link back into the onboarding path",
+          "On resources.html, inspect key resource cards, especially Shopify Help Center, and confirm whether they navigate internally or externally within the local clone",
+          "Use the resources page trial CTA and compare its destination/behavior with homepage and pricing CTAs"
+        ],
+        "exit_criteria": [
+          "At least one support-driven re-entry into the free-trial funnel is confirmed",
+          "Help page anchor navigation is verified",
+          "Resources page CTA behavior is compared with other trial entry points"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Admin login and mobile critical-path verification",
+        "objective": "Probe the login experience and repeat the most important funnel checks under mobile constraints.",
+        "target_pages": [
+          "admin.html",
+          "index.html",
+          "free-trial-form.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "On admin.html, test blank and populated login attempts using store URL, email, and password fields",
+          "Inspect 'Forgot password?' and the Apple/Google/Facebook buttons for visible affordance and behavior",
+          "Repeat on mobile: top-nav access, homepage hero CTA, and at least the first onboarding step on free-trial-form.html",
+          "Repeat on mobile: pricing toggle and one plan CTA",
+          "Pay special attention to previously flagged small tap targets in nav/footer and any overlap, clipping, or hard-to-tap controls"
+        ],
+        "exit_criteria": [
+          "Admin login form behavior is characterized, including whether any success/error state appears",
+          "Critical trial entry and first onboarding interaction are completed on mobile",
+          "At least one concrete mobile tap-target or layout issue is confirmed or ruled out on the key pages"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 8 known HTML pages, with deepest interaction on free-trial-form.html, pricing.html, admin.html, help-trial.html, and sales.html.",
+      "features": "Exercise the main visible controls on each key page: homepage/email CTA and FAQs, onboarding progression and Skip all, pricing monthly/yearly toggle and plan CTAs, help anchors/search, login fields/social buttons, and sales form fields/selects/submit.",
+      "mobile": "Repeat the critical funnel on mobile for index.html -> free-trial-form.html first step, plus pricing toggle/CTA and a quick nav/footer tap-target audit on pages already flagged with small targets."
+    },
+    "notes": [
+      "Do not spend much time on '#' placeholder links unless they unexpectedly open menus or reveal content.",
+      "Because free-trial.html appears very similar to index.html in prescan, treat it as a confirmation page rather than a separate deep dive unless execution shows meaningful differences.",
+      "If scripted states are hidden until interaction, prioritize reaching them over broad clicking on low-value footer links."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Shopify – Start Your Business",
+      "url": "file:///Users/timchef/UXBench/websites/shopify/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Shopify Solutions Pricing Resources Log in Start free trial Your business starts with Shopify Start for free, keep building for £1/month. Plus, earn up to £7,000 in credits as you sell. Start free trial You agree to receive Shopify marketing emails. Allbirds Gymshark Brooklinen Leesa Kylie Cosmetics Crate & Barrel Monos CUSTOMIZABLE THEMES Create a stunning store in seconds Pre-built designs make it fast and easy to kickstart your brand. Total sales £700,000 +£7,000 GET REWARDED Your plan can pay for itself Turn sales into savings with 1% back as subscription credits. MEET SIDEKICK Level up with our AI assistant With millions of AI tokens to use with our built-in assistant, you can grow without limits. Hey Arda, How can I help? Ask Sidekick anything about your store... Shop Pay Klarna Mastercard Visa ALL-IN-ONE Getting stuff done? Done. Shopify handles everything from secure payments to ",
+      "headings": [
+        "Your business starts\nwith Shopify",
+        "Create a stunning store in seconds",
+        "Your plan can pay for itself",
+        "Level up with our AI assistant",
+        "Getting stuff done? Done.",
+        "No risk, all rewards. Try Shopify for £1/month.",
+        "Questions?"
+      ],
+      "counts": {
+        "buttons": 7,
+        "links": 34,
+        "inputs": 2,
+        "forms": 2,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Shopify",
+        "clickable:a:Solutions",
+        "clickable:a:Pricing",
+        "clickable:a:Resources",
+        "clickable:a:Log in",
+        "clickable:a:Start free trial",
+        "typeable:input:Enter your email address",
+        "clickable:button:Start free trial",
+        "clickable:button:What is Shopify and how does it work?",
+        "clickable:button:How much does Shopify cost?",
+        "clickable:button:Can I use my own domain name with Shopify?",
+        "clickable:button:Do I need to be a designer or developer to use Shopify?",
+        "clickable:a:About",
+        "clickable:a:Careers"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "admin.html",
+      "title": "Log in – Shopify",
+      "url": "file:///Users/timchef/UXBench/websites/shopify/admin.html",
+      "load_error": null,
+      "visible_text_excerpt": "Shopify Log in to Shopify Continue to your store Store URL .myshopify.com Email Password Log in Forgot password? Or log in with Apple Google Facebook New to Shopify? Start free trial",
+      "headings": [
+        "Log in to Shopify",
+        "Login successful"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 4,
+        "inputs": 3,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Shopify",
+        "typeable:input:your-store",
+        "typeable:input:you@example.com",
+        "typeable:input:Enter your password",
+        "clickable:button:Log in",
+        "clickable:a:Forgot password?",
+        "clickable:button:Apple",
+        "clickable:button:Google",
+        "clickable:button:Facebook",
+        "clickable:a:Start free trial"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "free-trial-form.html",
+      "title": "Start Your Free Trial – Shopify",
+      "url": "file:///Users/timchef/UXBench/websites/shopify/free-trial-form.html",
+      "load_error": null,
+      "visible_text_excerpt": "Shopify What are you planning to sell? We'll help you get set up based on your business needs. Physical products Digital products Services Dropshipping Subscriptions Something else Next Skip all You can set these up later in your admin",
+      "headings": [
+        "What are you planning to sell?",
+        "Where would you like to sell?",
+        "Where is your business located?",
+        "Create your Shopify account",
+        "Your store is ready!"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 3,
+        "inputs": 3,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Shopify",
+        "clickable:button:Next"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "free-trial.html",
+      "title": "Start Your Free Trial – Shopify",
+      "url": "file:///Users/timchef/UXBench/websites/shopify/free-trial.html",
+      "load_error": null,
+      "visible_text_excerpt": "Shopify Solutions Pricing Resources Log in Start free trial Your business starts with Shopify Start for free, keep building for £1/month. Plus, earn up to £7,000 in credits as you sell. Start free trial You agree to receive Shopify marketing emails. Allbirds Gymshark Brooklinen Leesa Kylie Cosmetics Crate & Barrel Monos CUSTOMIZABLE THEMES Create a stunning store in seconds Pre-built designs make it fast and easy to kickstart your brand. Total sales £700,000 +£7,000 GET REWARDED Your plan can pay for itself Turn sales into savings with 1% back as subscription credits. MEET SIDEKICK Level up with our AI assistant With millions of AI tokens to use with our built-in assistant, you can grow without limits. Hey Arda, How can I help? Ask Sidekick anything about your store... Shop Pay Klarna Mastercard Visa ALL-IN-ONE Getting stuff done? Done. Shopify handles everything from secure payments to ",
+      "headings": [
+        "Your business starts\nwith Shopify",
+        "Create a stunning store in seconds",
+        "Your plan can pay for itself",
+        "Level up with our AI assistant",
+        "Getting stuff done? Done.",
+        "No risk, all rewards. Try Shopify for £1/month.",
+        "Questions?"
+      ],
+      "counts": {
+        "buttons": 7,
+        "links": 34,
+        "inputs": 2,
+        "forms": 2,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Shopify",
+        "clickable:a:Solutions",
+        "clickable:a:Pricing",
+        "clickable:a:Resources",
+        "clickable:a:Log in",
+        "clickable:a:Start free trial",
+        "typeable:input:Enter your email address",
+        "clickable:button:Start free trial",
+        "clickable:button:What is Shopify and how does it work?",
+        "clickable:button:How much does Shopify cost?",
+        "clickable:button:Can I use my own domain name with Shopify?",
+        "clickable:button:Do I need to be a designer or developer to use Shopify?",
+        "clickable:a:About",
+        "clickable:a:Careers"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "help-trial.html",
+      "title": "Trying Shopify with a free trial – Shopify Help Center",
+      "url": "file:///Users/timchef/UXBench/websites/shopify/help-trial.html",
+      "load_error": null,
+      "visible_text_excerpt": "Shopify Help Center ON THIS PAGE Available plans for trial Initiate the free trial Setting up your store Making the most of your trial Choosing a paid plan Trial period length Promotional pricing Deactivating your store Troubleshooting Trying Shopify with a free trial To explore Shopify before committing to an active monthly plan, you can sign up for a free trial. Your free trial begins when you first sign up, not when you start working on your store. Available plans for trial The free trial allows you to test out various Shopify plans, including: Starter Basic Grow Advanced Shopify Retail Initiate the free trial Visit the free trial page, enter your email address, and then click Start free trial. Answer a set of questions tailored to your business needs, or choose Skip All. Specify your business location. Create a Shopify account to start your free trial. Setting up your store during th",
+      "headings": [
+        "Trying Shopify with a free trial",
+        "Available plans for trial",
+        "Initiate the free trial",
+        "Setting up your store during the free trial",
+        "Making the most of your free trial",
+        "Choosing a paid plan",
+        "Charges incurred during your free trial",
+        "Switching between plans during your free trial",
+        "Free trial period length and details",
+        "Monthly plan promotional pricing"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 18,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Shopify Help Center",
+        "typeable:input:Search help articles...",
+        "clickable:a:Available plans for trial",
+        "clickable:a:Initiate the free trial",
+        "clickable:a:Setting up your store",
+        "clickable:a:Making the most of your trial",
+        "clickable:a:Choosing a paid plan",
+        "clickable:a:Trial period length",
+        "clickable:a:Promotional pricing",
+        "clickable:a:Deactivating your store",
+        "clickable:a:Troubleshooting",
+        "clickable:a:sign up for a free trial",
+        "clickable:a:Starter",
+        "clickable:a:Basic",
+        "clickable:a:Grow",
+        "clickable:a:Advanced"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "pricing.html",
+      "title": "Shopify Pricing – Plans for Every Business",
+      "url": "file:///Users/timchef/UXBench/websites/shopify/pricing.html",
+      "load_error": null,
+      "visible_text_excerpt": "Shopify Solutions Pricing Resources Log in Start free trial Plans & pricing Start for free, then enjoy £1/month for 3 months Start free trial You agree to receive Shopify marketing emails. Pay monthly Pay yearly (save 25%) Basic For solo entrepreneurs £25/mo Earn 1% back on sales Start free trial Basic reports Up to 1,000 inventory locations 2 staff accounts Get up to £3,500 in credits Card rates from 2% + 25p Most popular Grow For small teams £65/mo Earn 1% back on sales Start free trial Professional reports Up to 1,000 inventory locations 5 staff accounts Get up to £5,500 in credits Card rates from 1.7% + 25p Advanced For global reach £259/mo Earn 1% back on sales Start free trial Custom report builder Up to 1,000 inventory locations 15 staff accounts Get up to £7,000 in credits Card rates from 1.5% + 25p Plus For complex businesses £2,300/mo on a 3-year term Contact sales Unlimited st",
+      "headings": [
+        "Plans & pricing",
+        "What every plan gets you",
+        "World's best checkout",
+        "In-person selling",
+        "Multiple sales channels",
+        "In-depth analytics",
+        "Commerce apps",
+        "24/7 support",
+        "More options for your business",
+        "Frequently asked questions"
+      ],
+      "counts": {
+        "buttons": 9,
+        "links": 36,
+        "inputs": 2,
+        "forms": 2,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Shopify",
+        "clickable:a:Solutions",
+        "clickable:a:Pricing",
+        "clickable:a:Resources",
+        "clickable:a:Log in",
+        "clickable:a:Start free trial",
+        "typeable:input:Enter your email address",
+        "clickable:button:Start free trial",
+        "clickable:a:Contact sales",
+        "clickable:a:Agentic For selling in AI channels £0 GBP/month Card rates from 2% + 25p GBP online.",
+        "clickable:a:POS Pro Advanced retail features £69 GBP/month Unlimited POS staff, buy online pickup in-store.",
+        "clickable:button:What is Shopify and how does it work?",
+        "clickable:button:How much does Shopify cost?"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "resources.html",
+      "title": "Resources – Shopify",
+      "url": "file:///Users/timchef/UXBench/websites/shopify/resources.html",
+      "load_error": null,
+      "visible_text_excerpt": "Shopify Solutions Pricing Resources Log in Start free trial Resources Guides, tools, and inspiration to help you start and grow your business. Explore resources Everything you need to build, run, and grow your business. Blog Read the latest articles on ecommerce trends, marketing tips, and business strategy. Tools Free business tools including a logo maker, business name generator, and more. Events Join Shopify Unite, meetups, and online workshops to connect with the community. Learn and grow Expert guidance to help you at every stage of your journey. Shopify Help Center Browse step-by-step guides and tutorials on setting up and managing your store. Shopify Academy Free online courses on entrepreneurship, marketing, and ecommerce best practices. Theme Store Browse free and premium themes designed to make your store look professional. App Store Discover 8,000+ apps to extend your store's ",
+      "headings": [
+        "Resources",
+        "Explore resources",
+        "Blog",
+        "Tools",
+        "Events",
+        "Learn and grow",
+        "Ready to start selling?"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 34,
+        "inputs": 1,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Shopify",
+        "clickable:a:Solutions",
+        "clickable:a:Pricing",
+        "clickable:a:Resources",
+        "clickable:a:Log in",
+        "clickable:a:Start free trial",
+        "clickable:a:Shopify Help Center Browse step-by-step guides and tutorials on setting up and managing your store.",
+        "clickable:a:Shopify Academy Free online courses on entrepreneurship, marketing, and ecommerce best practices.",
+        "clickable:a:Theme Store Browse free and premium themes designed to make your store look professional.",
+        "clickable:a:App Store Discover 8,000+ apps to extend your store's functionality.",
+        "typeable:input:Enter your email address",
+        "clickable:button:Start free trial",
+        "clickable:a:About",
+        "clickable:a:Careers",
+        "clickable:a:Investors",
+        "clickable:a:Press and Media"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "sales.html",
+      "title": "Contact Shopify Plus Sales",
+      "url": "file:///Users/timchef/UXBench/websites/shopify/sales.html",
+      "load_error": null,
+      "visible_text_excerpt": "Shopify Pricing Resources Log in Start free trial Contact Shopify Plus Sales Tell us about your business and a member of our sales team will be in touch. Full name Work email Company name Company size Select company size 1-10 employees 11-50 employees 51-200 employees 201-1000 employees 1000+ employees Phone number How can we help? Select a topic Migration from another platform Enterprise features Custom checkout Wholesale / B2B Other Submit Looking for a self-serve plan? View pricing",
+      "headings": [
+        "Contact Shopify Plus Sales",
+        "Thank you!"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 7,
+        "inputs": 6,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Shopify",
+        "clickable:a:Pricing",
+        "clickable:a:Resources",
+        "clickable:a:Log in",
+        "clickable:a:Start free trial",
+        "typeable:input:Your full name",
+        "typeable:input:you@company.com",
+        "typeable:input:Your company name",
+        "selectable:select:Select company size 1-10 employees 11-50 employees 51-200 employees 201-1000 employees 1000+ employees",
+        "typeable:input:+44 000 000 0000",
+        "selectable:select:Select a topic Migration from another platform Enterprise features Custom checkout Wholesale / B2B Other",
+        "clickable:button:Submit",
+        "clickable:a:View pricing"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "missing_input_label",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

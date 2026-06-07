@@ -1,0 +1,341 @@
+{
+  "plan": {
+    "goal": "Autonomously explore and critique the UX of the full moonlight-tickets system, prioritizing the primary checkout/booking flow plus adjacent pages, states, and recovery paths.",
+    "summary": "The run will proceed from the discovery page (index.html) through event selection (event.html), ticket configuration, and the complex checkout process (checkout.html), ending at confirmation. It will specifically validate the 4-axis filtering logic, the dynamic pricing/fee calculations in the sticky order summary, and the attendee form behaviors (copying info, VIP fields). Finally, it will repeat critical path checks on mobile to address known tap-target risks.",
+    "assumptions": [
+      "The 'Continue to checkout' button on event.html transitions directly to checkout.html with cart state preserved.",
+      "Promo codes DOORS5 and TONIGHT10 are valid and trigger immediate fee recalculation.",
+      "The 10-minute reservation countdown on checkout.html is a visual timer that does not actually expire during the test session."
+    ],
+    "target_pages": [
+      "index.html",
+      "event.html",
+      "checkout.html",
+      "confirmation.html"
+    ],
+    "risk_hotspots": [
+      "checkout.html: Fee breakdown accuracy (service + facility + processing + promo)",
+      "checkout.html: Attendee form 'Copy buyer info' functionality for multi-ticket orders",
+      "checkout.html: VIP tier specific fields (Signed poster name) appearing/disappearing",
+      "index.html & event.html: Small tap targets (<44px) identified in prescan layout warnings",
+      "event.html: Sticky order summary synchronization with ticket stepper changes"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Discovery & Filtering",
+        "objective": "Validate the homepage layout, navigation, and the 4-axis filtering system (Date, Genre, Venue, Price).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify visibility of 'Tonight' cards vs 'This week' grid.",
+          "Interact with all 4 filter dropdowns to ensure options load.",
+          "Apply a combined filter (e.g., Genre: Jazz + Venue: Coppergate Hall) and verify results update.",
+          "Check navigation links (Calendar, Venues, Artists) for validity or placeholder behavior."
+        ],
+        "exit_criteria": [
+          "Filters applied and results visibly changed.",
+          "At least one event card clicked to transition to event.html."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Event Detail & Ticket Selection",
+        "objective": "Explore the event page, audio clips, and ticket tier selection logic.",
+        "target_pages": [
+          "event.html"
+        ],
+        "key_checks": [
+          "Play/pause audio clips to check media controls.",
+          "Select 'VIP' tier and verify 'SELLING FAST' badge and price point ($52).",
+          "Use stepper to increase quantity to 2 tickets.",
+          "Verify sticky 'Your Order' summary updates subtotal and fees dynamically.",
+          "Click 'Continue to checkout'."
+        ],
+        "exit_criteria": [
+          "2 VIP tickets selected.",
+          "Order summary reflects correct base price.",
+          "Transitioned to checkout.html."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Checkout Flow & Form Logic",
+        "objective": "Complete the attendee and payment forms, testing edge cases like VIP fields and data copying.",
+        "target_pages": [
+          "checkout.html"
+        ],
+        "key_checks": [
+          "Verify 10-minute countdown timer is visible.",
+          "Fill Buyer Info (First/Last/Email).",
+          "Expand Attendee 2 form; use 'Copy buyer info' and verify fields populate.",
+          "Locate and fill 'Name for signed poster' field (specific to VIP tickets).",
+          "Enter invalid promo code, then valid code (DOORS5) and verify fee reduction in breakdown.",
+          "Select Payment Method and enter dummy card details (checking formatting)."
+        ],
+        "exit_criteria": [
+          "All required fields filled.",
+          "Promo discount applied in fee breakdown.",
+          "Ready to submit order."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Confirmation & Recovery",
+        "objective": "Submit the order and verify the success state, then test cancellation/recovery.",
+        "target_pages": [
+          "confirmation.html",
+          "checkout.html"
+        ],
+        "key_checks": [
+          "Submit order and verify redirect to confirmation.html.",
+          "Validate order details on confirmation page match checkout inputs.",
+          "Return to checkout.html (via back nav or new session).",
+          "Test 'Cancel' button and verify second-confirmation dialog appears."
+        ],
+        "exit_criteria": [
+          "Confirmation page viewed.",
+          "Cancellation flow interrupted or confirmed."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Responsiveness Check",
+        "objective": "Repeat critical path interactions on mobile viewport to assess touch usability.",
+        "target_pages": [
+          "index.html",
+          "event.html",
+          "checkout.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport.",
+          "Re-test filtering on index.html (check for overlap/usability).",
+          "Re-test ticket stepper on event.html (ensure buttons are tappable).",
+          "Re-test checkout form inputs (verify keyboard triggers and layout stacking).",
+          "Specifically target previously identified small tap targets (nav links) to document difficulty."
+        ],
+        "exit_criteria": [
+          "Critical flows completed on mobile viewport.",
+          "Usability issues noted for small tap targets."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 HTML files (index, event, checkout, confirmation).",
+      "features": "Exercise filters, audio players, ticket steppers, promo codes, copy-info logic, and payment form.",
+      "mobile": "Repeat Phase 1, 2, and 3 key interactions on mobile viewport."
+    },
+    "notes": [
+      "Prescan identified multiple 'small_tap_target' warnings on index.html nav items; prioritize documenting these in Phase 5.",
+      "The README mentions a 'Cancel second-confirmation'; ensure this modal/dialog is triggered in Phase 4.",
+      "Fee breakdown includes specific line items (Service $3.50, Facility $2, Processing 3% + $0.30); visually verify these math components in Phase 3."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "MoonlightTickets — Tickets for tonight, not next week",
+      "url": "file:///Users/timchef/UXBench/websites/moonlight-tickets/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MoonlightTickets Tonight This Week Calendar Venues Artists Sell tickets Sign in Tonight in your city INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22 FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18 ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28 JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34 DATE Any date This week This weekend Next 30 days GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall PRICE Any Under $20 $20-40 $40-80 $80+ This week Folk Marisol & the Verses The Foundry · Tue · May 13 from $22 Experimental Pale Cartography Halo Room · Wed · May 14 from $25 Indie rock Coast Static Velvet Pier · Thu · May 15 from $30 Folk Borrowed Owls Coppergate Hall · Fri · May 16 from $24 Electronic Cendrillon (DJ set) Velvet Pier · Fri · May 16 from $35 J",
+      "headings": [
+        "Tonight in your city",
+        "Sea Glass Sextet",
+        "Northern Brushfires",
+        "Halcyon Dial",
+        "Telegraph Bay",
+        "This week"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 22,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:MoonlightTickets",
+        "clickable:a:Tonight",
+        "clickable:a:This Week",
+        "clickable:a:Calendar",
+        "clickable:a:Venues",
+        "clickable:a:Artists",
+        "clickable:a:Sell tickets",
+        "clickable:a:Sign in",
+        "clickable:a:INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22",
+        "clickable:a:FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18",
+        "clickable:a:ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28",
+        "clickable:a:JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34",
+        "selectable:select:DATE Any date This week This weekend Next 30 days",
+        "selectable:select:GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental",
+        "selectable:select:VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall",
+        "selectable:select:PRICE Any Under $20 $20-40 $40-80 $80+"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "index.html",
+      "title": "MoonlightTickets — Tickets for tonight, not next week",
+      "url": "file:///Users/timchef/UXBench/websites/moonlight-tickets/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MoonlightTickets Tonight This Week Calendar Venues Artists Sell tickets Sign in Tonight in your city INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22 FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18 ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28 JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34 DATE Any date This week This weekend Next 30 days GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall PRICE Any Under $20 $20-40 $40-80 $80+ This week Folk Marisol & the Verses The Foundry · Tue · May 13 from $22 Experimental Pale Cartography Halo Room · Wed · May 14 from $25 Indie rock Coast Static Velvet Pier · Thu · May 15 from $30 Folk Borrowed Owls Coppergate Hall · Fri · May 16 from $24 Electronic Cendrillon (DJ set) Velvet Pier · Fri · May 16 from $35 J",
+      "headings": [
+        "Tonight in your city",
+        "Sea Glass Sextet",
+        "Northern Brushfires",
+        "Halcyon Dial",
+        "Telegraph Bay",
+        "This week"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 22,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:MoonlightTickets",
+        "clickable:a:Tonight",
+        "clickable:a:This Week",
+        "clickable:a:Calendar",
+        "clickable:a:Venues",
+        "clickable:a:Artists",
+        "clickable:a:Sell tickets",
+        "clickable:a:Sign in",
+        "clickable:a:INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22",
+        "clickable:a:FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18",
+        "clickable:a:ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28",
+        "clickable:a:JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34",
+        "selectable:select:DATE Any date This week This weekend Next 30 days",
+        "selectable:select:GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental",
+        "selectable:select:VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall",
+        "selectable:select:PRICE Any Under $20 $20-40 $40-80 $80+"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "index.html",
+      "title": "MoonlightTickets — Tickets for tonight, not next week",
+      "url": "file:///Users/timchef/UXBench/websites/moonlight-tickets/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MoonlightTickets Tonight This Week Calendar Venues Artists Sell tickets Sign in Tonight in your city INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22 FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18 ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28 JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34 DATE Any date This week This weekend Next 30 days GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall PRICE Any Under $20 $20-40 $40-80 $80+ This week Folk Marisol & the Verses The Foundry · Tue · May 13 from $22 Experimental Pale Cartography Halo Room · Wed · May 14 from $25 Indie rock Coast Static Velvet Pier · Thu · May 15 from $30 Folk Borrowed Owls Coppergate Hall · Fri · May 16 from $24 Electronic Cendrillon (DJ set) Velvet Pier · Fri · May 16 from $35 J",
+      "headings": [
+        "Tonight in your city",
+        "Sea Glass Sextet",
+        "Northern Brushfires",
+        "Halcyon Dial",
+        "Telegraph Bay",
+        "This week"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 22,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:MoonlightTickets",
+        "clickable:a:Tonight",
+        "clickable:a:This Week",
+        "clickable:a:Calendar",
+        "clickable:a:Venues",
+        "clickable:a:Artists",
+        "clickable:a:Sell tickets",
+        "clickable:a:Sign in",
+        "clickable:a:INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22",
+        "clickable:a:FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18",
+        "clickable:a:ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28",
+        "clickable:a:JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34",
+        "selectable:select:DATE Any date This week This weekend Next 30 days",
+        "selectable:select:GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental",
+        "selectable:select:VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall",
+        "selectable:select:PRICE Any Under $20 $20-40 $40-80 $80+"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "event.html",
+      "title": "Event — MoonlightTickets",
+      "url": "file:///Users/timchef/UXBench/websites/moonlight-tickets/event.html",
+      "load_error": null,
+      "visible_text_excerpt": "MoonlightTickets Sea Glass Sextet Tonight · 9:00 PM · The Foundry The Foundry·Doors 8:00 PM ♡ ↗ ABOUT Sea Glass Sextet formed in 2022 around a love of indie rock and four-track tape loops. Their first EP, \"Northern Brushfires,\" was recorded in a basement in Coppergate over three weekends and a cold November. Tonight's set is the second-to-last on the spring tour — expect new material from the upcoming LP. LISTEN ▶ opener-track-01.mp3 ▶ opener-track-02.mp3 ▶ opener-track-03.mp3 Early Bird $22/ticket Doors open at posted time Standing GA − 0 + 32 left at this price Standard $28/ticket Doors open at posted time Standing GA No add'l fees − 0 + 84 left at this price VIP — Soundcheck + Signed Poster $52/ticket Early entry @ 7:00 PM Soundcheck access Signed poster (limit 1) Standing GA − 0 + 12 left at this price VENUE STAGE general admission — standing All-ages until 11pm · Step-free entry on ",
+      "headings": [
+        "Sea Glass Sextet",
+        "ABOUT",
+        "LISTEN",
+        "VENUE",
+        "YOU MIGHT ALSO LIKE",
+        "YOUR ORDER"
+      ],
+      "counts": {
+        "buttons": 9,
+        "links": 5,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:MoonlightTickets",
+        "clickable:button:♡",
+        "clickable:button:↗",
+        "clickable:button:decrease",
+        "clickable:button:increase",
+        "clickable:a:→",
+        "clickable:a:Northern Brushfires Halo Room · Tonight · 10:00 PM",
+        "clickable:a:Halcyon Dial Velvet Pier · Tonight · 11:00 PM",
+        "clickable:a:Telegraph Bay Coppergate Hall · Tonight · 8:30 PM",
+        "clickable:button:Continue to checkout"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

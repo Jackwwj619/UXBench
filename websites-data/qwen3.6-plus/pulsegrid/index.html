@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PulseGrid — Western Interconnect</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="dark">
+
+<aside class="sidebar">
+  <a href="index.html" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M3 12 H 7 L 9 5 L 12 19 L 14 9 L 16 14 H 21" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span>PulseGrid</span>
+  </a>
+  <nav class="nav-main">
+    <a href="index.html" class="nav-item active"><span>▦</span>Overview</a>
+    <a href="generators.html" class="nav-item"><span>⚡</span>Generators</a>
+    <a href="forecast.html" class="nav-item"><span>📈</span>Forecast</a>
+    <a href="alarms.html" class="nav-item"><span>⚠</span>Alarms <span class="nav-badge">8</span></a>
+    <a href="#" class="nav-item disabled" aria-disabled="true" title="Topology view — coming soon" tabindex="-1"><span>🌐</span>Topology <span class="nav-soon">soon</span></a>
+    <a href="#" class="nav-item disabled" aria-disabled="true" title="Events log — coming soon" tabindex="-1"><span>📜</span>Events <span class="nav-soon">soon</span></a>
+  </nav>
+  <div class="nav-foot">
+    <div class="ops-pill"><span class="dot dot-good"></span>SCADA · OK</div>
+    <div class="ops-pill"><span class="dot dot-good"></span>EMS · sync 2s</div>
+    <div class="ops-foot">
+      <div class="opname">Op Center West</div>
+      <div class="opmeta">Sumi Okafor on shift · 12:04 PT</div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="tb-left">
+      <label class="visually-hidden" for="baSelect">Balancing Authority</label>
+      <select class="tb-select" id="baSelect" aria-label="Balancing Authority">
+        <option>Western Interconnect</option><option>ERCOT</option><option>SPP</option><option>MISO</option>
+      </select>
+      <div class="tb-tabs" role="tablist" aria-label="Operating mode">
+        <button class="tb-tab active" role="tab" aria-selected="true" data-mode="production">Production</button>
+        <button class="tb-tab" role="tab" aria-selected="false" data-mode="replay">Replay</button>
+        <button class="tb-tab" role="tab" aria-selected="false" data-mode="plan">Plan</button>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-clock"><strong id="clock">12:04:18</strong> <span>PT · UTC−7</span></div>
+      <button class="tb-icon" title="Search (⌘K)">⌘K</button>
+      <button class="tb-icon" title="Theme" id="themeToggle">☾</button>
+      <button class="tb-icon notif" title="Alerts">🔔<span class="notif-dot"></span></button>
+      <div class="tb-user"><span class="avatar">SO</span></div>
+    </div>
+  </header>
+
+  <div id="modeBanner" class="mode-banner" hidden role="status" aria-live="polite"></div>
+
+  <!-- KPI ROW -->
+  <section class="kpis">
+    <div class="kpi">
+      <div class="kpi-label">Total demand</div>
+      <div class="kpi-val"><span id="kpiDemand">38,420</span><span class="unit">MW</span></div>
+      <div class="kpi-meta"><span class="up">▲ 1.4%</span> vs. 7-day avg · <span id="kpiDemandTime">at 12:04</span></div>
+      <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none"><polyline id="sparkDemand" fill="none" stroke="#F59E0B" stroke-width="1.6" /></svg>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Generation</div>
+      <div class="kpi-val"><span id="kpiGen">38,610</span><span class="unit">MW</span></div>
+      <div class="kpi-meta"><span class="up">+190 MW</span> reserve over demand</div>
+      <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none"><polyline id="sparkGen" fill="none" stroke="#34D399" stroke-width="1.6" /></svg>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Frequency</div>
+      <div class="kpi-val"><span id="kpiFreq">59.998</span><span class="unit">Hz</span></div>
+      <div class="kpi-meta"><span class="muted">target 60.000 ± 0.05 Hz</span></div>
+      <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none"><polyline id="sparkFreq" fill="none" stroke="#60A5FA" stroke-width="1.6" /></svg>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Renewables share</div>
+      <div class="kpi-val"><span id="kpiRen">42.1</span><span class="unit">%</span></div>
+      <div class="kpi-meta"><span class="up">▲ 6.2%</span> vs. yesterday</div>
+      <svg class="spark" viewBox="0 0 120 32" preserveAspectRatio="none"><polyline id="sparkRen" fill="none" stroke="#A78BFA" stroke-width="1.6" /></svg>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Active alarms</div>
+      <div class="kpi-val"><span id="kpiAlarm">8</span><span class="unit warn-text">2 critical</span></div>
+      <div class="kpi-meta"><span class="muted">3 new in last 30 min</span></div>
+      <div class="alarm-mini">
+        <span class="dot dot-crit"></span> COL-3 over-temp
+      </div>
+    </div>
+  </section>
+
+  <!-- BODY GRID -->
+  <section class="body-grid">
+    <!-- Load curve -->
+    <article class="card big">
+      <header class="card-head">
+        <h3>System load · today</h3>
+        <div class="card-controls">
+          <span class="legend"><span class="lg-dot lg-actual"></span>Actual</span>
+          <span class="legend"><span class="lg-dot lg-forecast"></span>Forecast</span>
+          <span class="legend"><span class="lg-dot lg-net"></span>Net renewables</span>
+          <button class="card-btn">24h</button>
+          <button class="card-btn active">48h</button>
+          <button class="card-btn">7d</button>
+        </div>
+      </header>
+      <div class="chart-wrap">
+        <svg id="loadChart" viewBox="0 0 720 260" preserveAspectRatio="none"></svg>
+      </div>
+    </article>
+
+    <!-- Right: weather -->
+    <article class="card">
+      <header class="card-head">
+        <h3>Weather &amp; load drivers</h3>
+        <span class="muted-sm">refreshed 12:00 PT</span>
+      </header>
+      <div class="weather">
+        <div class="wx">
+          <div class="wx-icon">☀</div>
+          <div>
+            <div class="wx-loc">Phoenix, AZ</div>
+            <div class="wx-temp">112°F</div>
+            <div class="wx-meta">Cooling load · +1,820 MW vs. 5d avg</div>
+          </div>
+        </div>
+        <div class="wx">
+          <div class="wx-icon">⛅</div>
+          <div>
+            <div class="wx-loc">Los Angeles, CA</div>
+            <div class="wx-temp">88°F</div>
+            <div class="wx-meta">+420 MW · marine-layer dissipating</div>
+          </div>
+        </div>
+        <div class="wx">
+          <div class="wx-icon">🌬</div>
+          <div>
+            <div class="wx-loc">Tehachapi Pass</div>
+            <div class="wx-temp">42 mph</div>
+            <div class="wx-meta">Wind: capacity 88% · 2.4 GW available</div>
+          </div>
+        </div>
+        <div class="wx">
+          <div class="wx-icon">☁</div>
+          <div>
+            <div class="wx-loc">Pacific NW</div>
+            <div class="wx-temp">62°F</div>
+            <div class="wx-meta">Hydro spilling · BPA exporting 1,100 MW</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Generator grid -->
+    <article class="card big">
+      <header class="card-head">
+        <h3>Generator status · 24 of 312</h3>
+        <div class="card-controls">
+          <button class="card-btn active">All</button>
+          <button class="card-btn">Online</button>
+          <button class="card-btn">Tripped</button>
+          <button class="card-btn">Maintenance</button>
+          <a href="generators.html" class="link-amber">View all 312 →</a>
+        </div>
+      </header>
+      <div class="gen-grid" id="genGrid"><!-- JS --></div>
+    </article>
+
+    <!-- Alarms panel -->
+    <article class="card">
+      <header class="card-head">
+        <h3>Active alarms</h3>
+        <a href="alarms.html" class="link-amber">All alarms →</a>
+      </header>
+      <ul class="alarm-list" id="alarmList"><!-- JS --></ul>
+    </article>
+
+    <!-- Fuel mix -->
+    <article class="card">
+      <header class="card-head">
+        <h3>Fuel mix · live</h3>
+        <span class="muted-sm">total 38,610 MW</span>
+      </header>
+      <div class="fuel-mix" id="fuelMix"><!-- JS --></div>
+    </article>
+
+    <!-- Interchange -->
+    <article class="card">
+      <header class="card-head">
+        <h3>Interchange · neighbouring BAs</h3>
+        <span class="muted-sm">positive = export</span>
+      </header>
+      <table class="ix-table">
+        <thead><tr><th>Tie line</th><th>Sched</th><th>Actual</th><th>Δ</th></tr></thead>
+        <tbody>
+          <tr><td>BPAT (NW)</td><td>+800</td><td>+812</td><td class="up">+12</td></tr>
+          <tr><td>CISO (CA)</td><td>−1,400</td><td>−1,422</td><td class="down">−22</td></tr>
+          <tr><td>SPP (E)</td><td>+250</td><td>+248</td><td class="muted">−2</td></tr>
+          <tr><td>WAPA-RM (SW)</td><td>+0</td><td>+34</td><td class="up">+34</td></tr>
+          <tr><td>NWMT (NE)</td><td>−180</td><td>−178</td><td class="muted">+2</td></tr>
+          <tr><td>AESO (Alberta)</td><td>+120</td><td>+118</td><td class="muted">−2</td></tr>
+        </tbody>
+      </table>
+    </article>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

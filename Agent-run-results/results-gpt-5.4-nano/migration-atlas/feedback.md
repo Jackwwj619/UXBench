@@ -1,0 +1,41 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full migration-atlas system, prioritizing the primary data visualization flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: True
+
+## Summary
+
+Migration Atlas presents a clear three-part layout (filters, map/player, inspector + aggregate stats) and most state changes (species filtering, month slider, display-layer toggles) update reliably without breaking the visualization. However, the app’s primary “tap a trail/dot/tag to inspect an individual” promise is not evidenced on mobile during the session—map-element tapping was not successfully targeted, and mobile controls (notably the many ~13x13px checkboxes) are likely too small, increasing mis-taps. Additionally, several auxiliary actions (About/Methods/Save view/Cite this view) show little to no user-facing feedback, creating trust and discoverability gaps.
+
+## Issues (5)
+
+### [HIGH] the-core-interaction-promised-in-the — goal completion
+- **Page**: `index.html (mobile viewport): visible instruction + failed tap attempt (agentic-78-click-mobile.png / steps-37-42, steps-43-48).`
+- **Problem**: The core interaction promised in the UI (“Click any trail, dot, or tag in the map to inspect that individual”) could not be validated because map taps were not successfully executed/identified as interactable targets. As a result, there’s no evidence that the map-to-inspector mechanism works in a touch context.
+- **Evidence**: On mobile, the attempted map tap step failed with the tool error “Agent selected action 'click' without a target_id.” The session notes explicitly: “Objective not met… attempted map tap/click did not target an interactable element (tool reported target_id null), and the page state did not change (changed=false).” The visible instruction remains: “Click any trail, dot, or tag in the map to inspect that individual.”
+- **Suggested fix**: Ensure SVG map markers (trails/dots/tags) expose reliable hit targets and that the UI provides immediate feedback (e.g., highlight selected trail/dot, show loading/selection state, and update the Individual panel). Consider enlarging or providing an alternate list/table of individuals for touch users as a fallback.
+
+### [HIGH] most-checkbox-controls-are-extremely-small — mobile usability
+- **Page**: `index.html (mobile viewport): layout_warning_count=14; warnings for ux-4..ux-14 (agentic-77-check-mobile.png and final_observation layout_warnings).`
+- **Problem**: Most checkbox controls are extremely small (~13x13px), far below common mobile tap guidance. This likely increases mis-taps and reduces confidence in the filter controls—especially in a workflow requiring multiple toggles before inspecting the map.
+- **Evidence**: Mobile layout warnings repeatedly flag: “Tap target is 13x13px, below the 44px mobile guidance” for multiple species checkboxes (ux-4..ux-10) and display toggles (ux-12 “Show trail”, ux-13 “Show monthly positions”, ux-14 “Show stop-over polygons”). The screenshot shows the stacked filter panel with many such checkboxes.
+- **Suggested fix**: Increase checkbox hit areas to at least ~44px (or use larger custom toggles), add spacing, and ensure clear visual feedback on tap (e.g., animated check + brief status text). Consider grouping with larger row-level toggles rather than tiny checkboxes.
+
+### [MEDIUM] cite-this-view-and-save-view — feedback
+- **Page**: `index.html: 'Cite this view' and 'Save view' on mobile/desktop (steps 49-54, steps 55-60, steps 61-66; final_observation interactables ux-1 and ux-2).`
+- **Problem**: “Cite this view” and “Save view” provide little to no visible confirmation on mobile (and likely on desktop too), creating uncertainty about whether the action worked.
+- **Evidence**: Multiple steps report: “Clicking the mobile 'Cite this view' button produced no obvious visible outcome… (tool_result: changed=false)” and “Clicking the 'Save view' button produced no detectable visible change.” Earlier, desktop also had “no obvious visible UI change” after “Cite this view.”
+- **Suggested fix**: Add explicit user feedback: open a citation modal with copy-to-clipboard, show a toast/snackbar on success, or trigger a download with confirmation. Also ensure keyboard/screen-reader announcements for success/failure.
+
+### [MEDIUM] several-top-navigation-items-appear-to — navigation
+- **Page**: `index.html: top nav interactions on desktop (steps 7-12 for Studies, steps 13-18 for Methods, steps 19-24 for About; also ux-visited navigation list).`
+- **Problem**: Several top navigation items appear to be dead or non-functional because clicking them results in no visible content change and little/no URL/hash change.
+- **Evidence**: Clicking “Methods” produced “no visible state change… URL hash remained the same.” Clicking “About” similarly produced “no visible content change and no hash/URL change.” “Studies” changed the URL hash to `index.html#` but showed no evidence of panel/section opening (described as likely dead).
+- **Suggested fix**: Implement the missing panels/overlays or remove/disable links. If content is present, ensure the active section is visually indicated (highlight nav item) and that state changes are obvious (open modal/panel, scroll, or update content region).
+
+### [MEDIUM] the-study-year-select-lacks-an — forms
+- **Page**: `index.html (mobile viewport): layout_warning “missing_input_label” for ux-11 (final_observation layout_warnings; agentic-77-check-mobile.png).`
+- **Problem**: The study-year select lacks an accessible label, which can confuse users and fails accessibility requirements.
+- **Evidence**: Mobile interaction warnings include: “missing_input_label… study-year select (ux-11).” Final observation DOM summary shows the select has no label text and layout warning is explicitly present.
+- **Suggested fix**: Add a visible label or aria-label for the select (e.g., “Study year”). Ensure the label is programmatically associated with the control.

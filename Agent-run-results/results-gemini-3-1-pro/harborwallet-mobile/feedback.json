@@ -1,0 +1,293 @@
+{
+  "target": "file:///proj/long-multi/hhua/brandonhuang/websites/harborwallet-mobile/index.html",
+  "site": {
+    "name": "harborwallet-mobile",
+    "site_dir": "/proj/long-multi/hhua/brandonhuang/websites/harborwallet-mobile",
+    "start_page": "index.html",
+    "page_type": "settings/privacy",
+    "html_files": [
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/proj/long-multi/hhua/brandonhuang/websites/harborwallet-mobile/README.md",
+    "summary": "harborwallet-mobile Fictional consumer wallet \"Harbor Wallet\" iOS-style phone fixture. Single-page app simulating a 390 × 844 device frame with notch, status bar, home indicator, and tab bar. UXBench fixture in the Mobile Micro-UI category. Layout - **Phone chassis** — 12 px chrome + radial gradient backdrop. Renders edge-to-edge on actual mobile (≤460 px viewport). - **Status bar** — live ticking time (rounded down to minutes), signal bars, wifi, battery (78%). - **Tab bar** (bottom) — 5 tabs: Home / Send / Receive / Activity / Account. Screens | `data-screen` | Highlights |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full harborwallet-mobile system, prioritizing the primary settings/privacy flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The harborwallet-mobile prototype achieves high feature coverage (97%), successfully simulating a mobile wallet environment with functioning tab navigation and stateful interactions like the keypad. However, the user experience is hindered by several critical functional gaps, most notably a severe blank screen defect on the Activity view and an unresponsive decimal key on the custom keypad. Furthermore, widespread use of undersized touch targets and missing error validation on primary forms significantly degrade the intended mobile usability.",
+  "exploration_plan": {
+    "goal": "Autonomously explore and critique the UX of the harborwallet-mobile system, prioritizing the Account/Settings flow and validating simulated mobile interactions across Home, Transaction, and Activity tabs.",
+    "summary": "The run will start on the Home tab, validating the default dashboard layout and identifying tap target issues. It will then prioritize navigating to the Account tab to explore settings and privacy features. Finally, it will verify the core wallet flows (Send, Receive, Swap, Top up) and the Activity history, ensuring the single-page app state updates correctly.",
+    "assumptions": [
+      "The application is a single-page app (SPA) where all navigation (Home, Activity, Account) happens without full page reloads.",
+      "Privacy and settings configurations are housed within the 'Account' tab.",
+      "The interface simulates a mobile device frame, meaning interactions should mimic mobile touch patterns even on desktop."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets on the Notifications bell (38x38px) and 'See all' link (49x15px).",
+      "State management when switching between the 5 bottom tabs.",
+      "Simulated mobile UI responsiveness when viewed on a true mobile viewport versus desktop."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard & Layout Validation",
+        "objective": "Verify the initial Home screen rendering, asset list, and interact with small tap targets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Check visibility of Total Balance and Assets.",
+          "Interact with the Notifications '3 🔔' button and observe behavior.",
+          "Verify scrollability of the Recent Activity list on the Home screen."
+        ],
+        "exit_criteria": [
+          "Home screen elements are confirmed visible and the notification action is tested."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Account & Privacy Flow",
+        "objective": "Navigate to the Account tab and explore settings/privacy options.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the '◉ Account' bottom tab.",
+          "Scan for and interact with 'Settings', 'Privacy', or profile management controls.",
+          "Validate form inputs or toggles if present within the Account screen."
+        ],
+        "exit_criteria": [
+          "Account tab is successfully loaded and all visible settings/privacy controls are interacted with."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Core Transaction Flows",
+        "objective": "Validate the primary financial actions: Send, Receive, Swap, and Top up.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Test '↑ Send' action (both from main dashboard buttons and bottom tab).",
+          "Test '↓ Receive' action.",
+          "Test '⇄ Swap' and '+ Top up' buttons.",
+          "Check if simulated modal or screen transitions occur for these actions."
+        ],
+        "exit_criteria": [
+          "All transaction entry points have been clicked and resulting UI states recorded."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Activity History Exploration",
+        "objective": "Check the detailed transaction history via the Activity tab and shortcuts.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the 'See all' link next to Recent Activity on the Home tab.",
+          "Click the '📊 Activity' bottom tab.",
+          "Verify if the view changes to a comprehensive list of transactions."
+        ],
+        "exit_criteria": [
+          "Activity view is reached and transaction history layout is evaluated."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Explore all simulated screens (Home, Send, Receive, Activity, Account) within the index.html SPA.",
+      "features": "Exercise all primary dashboard action buttons and bottom navigation tabs.",
+      "mobile": "Ensure the simulated phone chassis renders correctly edge-to-edge when tested under a true mobile viewport."
+    },
+    "notes": [
+      "Since this is a simulated mobile UI (Mobile Micro-UI fixture), pay special attention to how the fixed elements (status bar, bottom tab bar) behave when scrolling or switching tabs."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "View recent transaction history.",
+      "problem": "Navigating to the 'Activity' tab or clicking the 'See all' link results in a completely blank white screen.",
+      "evidence": "Trajectory chunk 1 notes: 'Severe defect: Clicking the Activity tab results in a completely blank main content area, failing to render any transaction history.'",
+      "why_it_matters": "Users hit a dead end and feel trapped, breaking trust in the app and preventing them from monitoring their financial history.",
+      "suggestion": "Implement the Activity view or provide an 'Under Construction' empty state that retains the bottom navigation bar to prevent a jarring blank screen.",
+      "source_hint": "Activity tab / See all link"
+    },
+    {
+      "severity": "high",
+      "ux_area": "forms",
+      "user_goal": "Enter a precise fractional currency amount to send.",
+      "problem": "The decimal point ('.') key on the custom numeric keypad is unresponsive, preventing manual input of cents.",
+      "evidence": "Trajectory chunk 7 records: 'The . button on the Send screen's custom numeric keypad is unresponsive. Clicking it does not append a decimal point to the entered amount.'",
+      "why_it_matters": "Users are unable to send exact amounts (e.g., $10.50), which is a fundamental requirement for a financial wallet.",
+      "suggestion": "Ensure the decimal key is wired to the input state handler, appending a '.' and properly formatting the subsequent cent digits.",
+      "source_hint": "Send money custom keypad '.'"
+    },
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Proceed to the next step of sending money.",
+      "problem": "Clicking 'Continue →' on the Send Money screen without selecting a recipient fails silently without any error validation.",
+      "evidence": "Trajectory chunk 8 notes: 'Clicking the Continue → button on the Send money screen without selecting a recipient fails silently. There is no validation error, visual feedback, or transition.'",
+      "why_it_matters": "Users will assume the app is frozen or broken because they are not given clear guidance on what is missing (a selected recipient).",
+      "suggestion": "Display an inline error message or a toast notification stating 'Please select a recipient' if the user attempts to continue with an incomplete form.",
+      "source_hint": "Continue → button on Send money screen"
+    },
+    {
+      "severity": "high",
+      "ux_area": "trust",
+      "user_goal": "View bank or crypto specific receiving details.",
+      "problem": "The 'Bank' and 'Crypto' segmented control tabs change visual state when tapped, but the QR code and user handle below them do not update to show relevant banking or blockchain information.",
+      "evidence": "Trajectory chunk 4 observes: 'Clicking the Bank segmented control... underlying content (QR code, user handle) fails to change to bank-specific details like routing or account numbers.'",
+      "why_it_matters": "Displaying a fiat handle when a user expects a crypto address can lead to severe confusion and fear of lost funds if someone attempts to scan the unchanged QR code.",
+      "suggestion": "Ensure the content section containing the QR code and text dynamically updates to match the selected segmented control (e.g., displaying a long alphanumeric hash for Crypto).",
+      "source_hint": "Bank and Crypto segmented controls on Receive screen"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap interactive elements comfortably on a mobile device.",
+      "problem": "Numerous primary interactive elements have tap target heights significantly smaller than the recommended 44px for mobile devices.",
+      "evidence": "Final observation layout warnings show targets like the '←' back button (36x36px), 'Bank' tab (101x31px), and 'Send link' (155x35px) falling below mobile accessibility guidelines.",
+      "why_it_matters": "Undersized touch targets increase the likelihood of mis-taps, causing frustration and accidental navigations on physical mobile devices.",
+      "suggestion": "Increase the padding or minimum height of buttons, tabs, and icons to ensure all interactive areas are at least 44x44px.",
+      "source_hint": "Various buttons: ux-32, ux-34, ux-38"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Search for a specific recipient to send money to.",
+      "problem": "Typing into the recipient search bar does not filter the static list of 'Quick contacts' displayed immediately below it.",
+      "evidence": "Trajectory chunk 8 notes: 'Typing in the recipient search input... fails to filter the quick contact list below it or trigger any visible state change.'",
+      "why_it_matters": "It breaks the standard mental model of a search input, leaving users unsure if the app is actually searching or if their intended contact exists.",
+      "suggestion": "Implement dynamic filtering that hides non-matching contacts in the list below as the user types into the search input.",
+      "source_hint": "Search name, @handle, email input"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Share receiving details or access additional actions.",
+      "problem": "Multiple action buttons ('Send link', 'Save image', top-right '⤴', 'QR' scan) provide no visible feedback or simulated action when tapped.",
+      "evidence": "Trajectory chunks 4, 5, and 8 note that these specific buttons produce no visual feedback, toast messages, or modals; they act as dead clicks.",
+      "why_it_matters": "A lack of interaction feedback leaves the user guessing whether the app registered their tap, making the interface feel unresponsive and unfinished.",
+      "suggestion": "Even in a prototype, provide a temporary toast notification (e.g., 'Link ready to share') or a brief visual depression state to acknowledge the user's action.",
+      "source_hint": "⤴, 📨 Send link, 📷 Save image buttons"
+    }
+  ],
+  "coverage": {
+    "status": "near_complete",
+    "confidence": "high",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 97,
+    "action_success_rate_percent": 100,
+    "unchanged_action_percent": 44,
+    "known_pages": [
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 32,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 46,
+      "type_text": 2
+    },
+    "total_actions": 48,
+    "successful_actions": 48,
+    "failed_actions": 0,
+    "unchanged_actions": 21,
+    "observed_feature_count": 39,
+    "exercised_feature_count": 38,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|button|||✓ copied|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "✓ Copied"
+      }
+    ],
+    "gaps": [
+      "44% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/initial-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/initial-responsive-screenshots-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/initial-responsive-screenshots-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/initial-after-responsive-check-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/post-plan-reset-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-01-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-02-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-03-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-04-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-05-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-06-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-07-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-08-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-09-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-10-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-11-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-12-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-13-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-14-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-15-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-16-type_text-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-17-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-18-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-19-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-20-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-21-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-22-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-23-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-24-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-25-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-26-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-27-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-28-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-29-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-30-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-31-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-32-click-desktop.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/mobile-phase-33-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-34-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-35-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-36-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-37-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-38-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-39-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-40-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-41-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-42-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-43-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-44-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-45-type_text-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-46-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-47-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-48-click-mobile.png",
+    "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741/screenshots/agentic-49-click-mobile.png"
+  ],
+  "trace_entries": 48,
+  "run_dir": "/proj/long-multi/hhua/brandonhuang/runs-batch/20260522-184222-all-sites/harborwallet-mobile/20260522-195741",
+  "claude_fix": null
+}

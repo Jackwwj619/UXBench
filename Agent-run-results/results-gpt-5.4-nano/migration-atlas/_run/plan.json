@@ -1,0 +1,167 @@
+{
+  "plan": {
+    "goal": "Evaluate the UX of the Migration Atlas interactive visualization end-to-end, focusing on the main exploration flow (filters → map playback → individual inspection) and validating adjacent UI flows (top nav links, citation/save actions, and any interactive components tied to the map).",
+    "summary": "Run should center on index.html: repeatedly vary filter settings, drive the month slider with play/pause and speed controls, then click map elements to validate individual inspection and aggregate stats updates. After validating the core loop, test top-nav actions (Explore/Studies/Submit a track/Methods/About) plus the Cite this view and Save view controls to confirm whether they open modals/overlays, downloads, or in-page sections. Finally, repeat the most failure-prone checks on a mobile viewport, emphasizing small tap targets and slider/toggle accessibility.",
+    "assumptions": [
+      "All key functionality is on index.html; the prescan only lists index.html as an HTML page, so adjacent “pages” likely occur via in-page sections or modals.",
+      "The map is an inline SVG with click targets for trails/dots/tags that trigger the Individual and Aggregate stats panel updates without navigating away.",
+      "Cite this view and Save view are active controls that produce some UI outcome (modal, toast, copied text, or file/share action) that must be validated.",
+      "The small tap target layout warnings (nav links and species checkboxes) are real on mobile and may cause interaction errors."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "index.html: species filter checkboxes are 13x13px (small tap target) — risk of missed taps and unclear selection state on mobile",
+      "index.html: top nav links (Explore/Studies/Submit a track/Methods/About) have ~33px height; possible non-functional anchors (prescan shows '#' for several) or tiny hit areas on mobile",
+      "index.html: map SVG click targets (trail line, monthly dots, tag/pin) — risk of click not selecting, selecting wrong individual, or not updating right panel",
+      "index.html: month slider range Jan–Dec plus play/pause and speed selector — risk of desync between slider label/current month and displayed tracks",
+      "index.html: display toggles (Show trail / Show monthly positions / Show stop-over polygons) — risk of expensive redraw glitches or inconsistent layering",
+      "index.html: Cite this view / Save view buttons — risk of modal not opening, incorrect copy/export, or missing feedback"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline load + primary exploration loop",
+        "objective": "Confirm the app’s default state loads correctly and that the core loop (slider → map animation → individual/aggregate panels) works without console/network errors.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify initial labels: season heading, current month (May in prescan), and aggregate stats values correspond to the displayed month",
+          "Click a visible trail/dot/tag on the SVG map; confirm the Individual section updates (individual ID/name) and that aggregate stats area refreshes appropriately",
+          "Scrub the month slider from the initial position toward at least two non-adjacent months (e.g., Jan and Jul) and confirm map positions/trails and “Current month” update",
+          "Use Play (▶) to animate through multiple month ticks, observe that slider thumb moves and right-panel/aggregate stats stay consistent; then Pause"
+        ],
+        "exit_criteria": [
+          "No console errors observed during interactions",
+          "Right panel updates after map click and matches the selected individual",
+          "Month slider and play animation remain synchronized with displayed tracks and aggregate stats at least for Jan/Jul (or similar non-adjacent months)"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Filter + display toggles stress (state consistency)",
+        "objective": "Validate that filter and display controls correctly change the dataset/visual layers and that state transitions don’t break map interactivity or right-panel inspection.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Toggle species checkboxes: disable one species, then re-enable; verify the map reduces to fewer tracks and aggregate 'Active individuals' count changes",
+          "Use the species search input (Filter species…) to filter the checkbox list (type partial name like 'whale' or 'albat'); confirm list filters and selected state persists when cleared",
+          "Change the study year select (2024 → 2026 (in progress)) and confirm header/labels and displayed tracks update; then return to 2025 to ensure restoration",
+          "Toggle Display options one at a time: Show trail, Show monthly positions, Show stop-over polygons; confirm each layer appears/disappears and does not break SVG click-to-inspect",
+          "With a restrictive setup (e.g., 1–2 species checked and 1 display mode), click multiple distinct map elements and confirm different individuals can be inspected"
+        ],
+        "exit_criteria": [
+          "Active individuals count and visible tracks respond to species and year changes",
+          "Layer toggles update visuals without disabling map click inspection",
+          "Species search filters the list and does not leave the map in an inconsistent state"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Cite/Save & top navigation behavior",
+        "objective": "Validate auxiliary controls and navigation affordances, including whether they open modals, copy/share content, or route to in-page sections; ensure user feedback exists.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click “Cite this view”; verify resulting UI outcome (modal/dialog/toast) and that it references the current view (month, season/year, selected species/display states) if applicable",
+          "Click “Save view”; confirm whether it downloads, copies a link, or saves locally and that there is confirmation feedback",
+          "Activate top nav links: Explore, Studies, Submit a track, Methods, About; confirm whether they (a) change content in-page, (b) open sections/modals, or (c) are dead links (especially where prescan shows href='#')",
+          "Return to the main visualization (if nav causes scrolling/section changes) and confirm the month slider and map remain usable"
+        ],
+        "exit_criteria": [
+          "Cite and Save actions produce a clear user-facing result and do not error",
+          "Nav interactions do not break the main page; if links are non-functional, record the failure mode consistently"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile viewport critical-path validation",
+        "objective": "Re-run the most failure-prone interactions on mobile: small tap targets, slider/play controls, and map inspection responsiveness.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Attempt to toggle at least two species checkboxes (noting 13x13px tap targets); verify reliably selected/deselected state",
+          "Use the month slider and Play/Pause (▶ and speed selector) and confirm synchronization with current month label",
+          "Tap map elements near trail/dots/tags and confirm individual inspection updates in the right panel (or mobile equivalent) without requiring hover",
+          "Toggle Display layers on mobile and confirm taps register and the SVG redraw occurs"
+        ],
+        "exit_criteria": [
+          "All critical inputs (species toggles, slider/play, map tap selection, display toggles) work at least once per category on mobile",
+          "No trapping overlays or blocked map interactions due to small UI elements"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (only index.html is present in prescan).",
+      "features": "Exercise: species filter list + search, study year select, display toggles (3), month slider + play/pause + speed, SVG map click-to-inspect, Individual panel update, aggregate stats update, Cite this view, Save view, and all top nav links.",
+      "mobile": "Repeat: 2 species toggles, slider scrub + play/pause, 2 map taps for different individuals, and all 3 display toggles on mobile viewport."
+    },
+    "notes": [
+      "No other HTML files were detected beyond index.html; if top nav items route to '#' or rely on scroll-to sections, treat those as in-page flows rather than separate pages.",
+      "Aim to capture evidence/screenshots after each major state change: (1) initial load, (2) after year change, (3) after display toggles, (4) after map click selection, (5) after Cite/Save actions, and (6) mobile equivalents."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Migration Atlas — global animal tracking",
+      "url": "file:///Users/timchef/UXBench/websites/migration-atlas/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Migration Atlas Explore Studies Submit a track Methods About Cite this view Save view Filters SPECIES Western osprey (n=12) Boreal caribou (n=18) Leatherback sea turtle (n=9) Monarch butterfly (n=24, swarm aggregate) Bar-tailed godwit (n=7) Humpback whale (n=11) Wandering albatross (n=4) STUDY YEAR 2024 season 2025 season 2026 season (in progress) DISPLAY Show trail Show monthly positions Show stop-over polygons NOTES All individuals carry solar GPS loggers (model \"PicaTag-12\"). Fixes are taken every 4 hours and downsampled to monthly mean position. Migration Atlas — 2025 season Use the month slider to play through the year. Click any trail or pin to inspect the individual. 3 SPECIES SHOWN 54 INDIVIDUALS May CURRENT MONTH CAR-54 MON-74 MON-88 MON-90 ▶ Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec 0.5× 1× 2× 4× Individual Click a trail, dot, or tag in the map to inspect that individual.",
+      "headings": [
+        "Filters",
+        "SPECIES",
+        "STUDY YEAR",
+        "DISPLAY",
+        "NOTES",
+        "Migration Atlas — 2025 season",
+        "Individual",
+        "Aggregate stats"
+      ],
+      "counts": {
+        "buttons": 3,
+        "links": 5,
+        "inputs": 14,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Explore",
+        "clickable:a:Studies",
+        "clickable:a:Submit a track",
+        "clickable:a:Methods",
+        "clickable:a:About",
+        "clickable:button:Cite this view",
+        "clickable:button:Save view",
+        "typeable:input:Filter species…",
+        "clickable:input:Western osprey (n=12)",
+        "clickable:input:Boreal caribou (n=18)",
+        "clickable:input:Leatherback sea turtle (n=9)",
+        "clickable:input:Monarch butterfly (n=24, swarm aggregate)",
+        "clickable:input:Bar-tailed godwit (n=7)",
+        "clickable:input:Humpback whale (n=11)",
+        "clickable:input:Wandering albatross (n=4)",
+        "selectable:select:2024 season 2025 season 2026 season (in progress)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

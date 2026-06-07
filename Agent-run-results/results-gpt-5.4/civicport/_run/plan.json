@@ -1,0 +1,284 @@
+{
+  "plan": {
+    "goal": "Explore the full CivicPort permit portal with emphasis on the multi-step permit application flow, then validate adjacent tracking and fee-reference paths plus mobile usability of critical entry points and form progress states.",
+    "summary": "Begin from the home page to confirm the three primary entry points and whether the information scent matches each destination. Spend most of the run in apply.html, exercising forward progress, backtracking, conditional steps, dynamic checklist/fee updates, cancel/recovery behavior, and final review/submit states. Finish by validating the simpler adjacent pages (fees and my applications) and repeating the highest-risk navigation and form checks on a mobile viewport, with special attention to the small nav tap targets already flagged in prescan.",
+    "assumptions": [
+      "The core product value is the permit application wizard on apply.html; adjacent pages are secondary but should still be fully visited.",
+      "Conditional step visibility in the application is driven by project type, scope, parcel/historic status, and exterior-work selections as described in the prescan summary.",
+      "The visible 'Cancel this application?' dialog on apply.html may be triggered from the Cancel button and is a key recovery path worth explicit validation.",
+      "Because only file uploads, step tree states, checklist updates, and fee estimation are mentioned in the prescan, the run should validate those behaviors without assuming account login, payment processing, or detailed application drill-down pages exist."
+    ],
+    "target_pages": [
+      "index.html",
+      "apply.html",
+      "fees.html",
+      "my-applications.html"
+    ],
+    "risk_hotspots": [
+      "apply.html: multi-step left step tree with completed/current/locked states and click-back behavior",
+      "apply.html: conditional steps for exterior changes, historic parcel, Addition/Structural, and Roof/Electrical/HVAC paths",
+      "apply.html: sticky 'What you'll need' checklist updating as selections are made",
+      "apply.html: estimated fee breakdown card and expedited review toggle",
+      "apply.html: Cancel button and 'Cancel this application?' dialog recovery/escape behavior",
+      "apply.html: unlabeled or weakly labeled inputs flagged in prescan on the initial address step",
+      "index.html and top navigation across pages: small tap targets for Apply / My applications / Fees / Help, especially on mobile",
+      "index.html: Help link uses href '#' and may be a dead-end or non-functional control",
+      "my-applications.html: expectation mismatch risk because the home card promises status, inspector notes, and next steps but prescan only shows a list table",
+      "fees.html: static fee schedule should align conceptually with fee estimation language used in apply.html"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Entry points and orientation",
+        "objective": "Validate the homepage as the portal hub, confirm each primary CTA leads to the expected destination, and assess clarity of navigation and service-alert context.",
+        "target_pages": [
+          "index.html",
+          "fees.html",
+          "my-applications.html",
+          "apply.html"
+        ],
+        "key_checks": [
+          "Verify the three large action cards map cleanly to Apply, Track an application, and Pay fees destinations.",
+          "Compare card labeling and supporting text against destination page content for expectation-setting accuracy.",
+          "Check top navigation consistency across pages and whether Help does anything meaningful or behaves like a dead link.",
+          "Review service alerts for relevance to application decisions, especially historic-district messaging that may later appear in the form flow."
+        ],
+        "exit_criteria": [
+          "All homepage CTAs and global nav items have been clicked at least once and their outcomes recorded.",
+          "Any mismatch between homepage promises and destination page content has been noted."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Application baseline and first-step usability",
+        "objective": "Establish how the permit wizard starts, how obvious the first required actions are, and whether progress/save controls are understandable and safe.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Inspect initial step layout across left progress tree, center form, and right sticky assistance panel.",
+          "Validate field labeling, placeholders, defaults, and any missing-label issues on property address inputs.",
+          "Exercise Back and Save and continue from the opening step with empty, partial, and completed data where possible.",
+          "Observe auto-save messaging and whether progressing without required data produces clear validation or blocked state.",
+          "Open the Cancel flow and test whether the confirmation dialog offers clear recovery versus destructive exit."
+        ],
+        "exit_criteria": [
+          "The runner has documented how a new application begins, what data appears required on step 1.1, and how Save/Back/Cancel behave.",
+          "At least one validation or blocked-progression scenario and one cancel-recovery scenario have been exercised."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Deep progression through the permit wizard",
+        "objective": "Traverse the main application path while probing dynamic step generation, state persistence, and consistency between selections, checklist, and fee estimate.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Progress through major groups listed in prescan: project info, property & ownership, plans & documents, affidavits, and review & submit.",
+          "Use project-type/scope choices to trigger conditional branches: neighbor step for exterior changes, historic-district step for historic parcel, elevation drawings for Addition/Structural, and energy worksheet for Roof/Electrical/HVAC.",
+          "Confirm completed steps become click-back-able and locked/current/completed indicators update correctly.",
+          "Check whether the 'What you'll need' checklist marks items complete as prerequisite selections or uploads are satisfied.",
+          "Toggle expedited review and verify the estimated fee card updates from its initial '$0' state once project details are selected.",
+          "Test parcel lookup, ownership proof, contractor/license, and file-upload steps to the extent controls are exposed in the UI.",
+          "Reach summary, fees, and submit sections to verify the final review reflects prior choices and conditional requirements."
+        ],
+        "exit_criteria": [
+          "At least two materially different conditional application paths have been explored within the wizard.",
+          "The runner has reached the review/submit area or the deepest accessible end state and confirmed whether prior data persists when navigating backward."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Adjacent task pages and cross-flow coherence",
+        "objective": "Assess whether supporting pages are useful, understandable, and coherent with the main application flow.",
+        "target_pages": [
+          "my-applications.html",
+          "fees.html",
+          "index.html"
+        ],
+        "key_checks": [
+          "Review my-applications list readability, status badge clarity, and whether it supports the 'Track everything from one place' claim.",
+          "Check whether any application rows appear interactive or if the page is only a static summary list.",
+          "Review fee schedule scanability and whether fee categories align with project types encountered in apply.html.",
+          "Compare fee surcharges and expedited review language on fees.html with the fee-estimator copy on apply.html.",
+          "Use navigation between these pages and back to apply/home to confirm orientation is preserved."
+        ],
+        "exit_criteria": [
+          "Both adjacent pages have been fully reviewed and any expectation gaps versus homepage/application language have been captured.",
+          "Cross-page terminology for statuses, fees, and project types has been compared."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile critical-path verification",
+        "objective": "Repeat the most important checks on a mobile viewport, focusing on tapability, layout resilience, and usability of the wizard's multi-column information architecture.",
+        "target_pages": [
+          "index.html",
+          "apply.html",
+          "fees.html",
+          "my-applications.html"
+        ],
+        "key_checks": [
+          "Recheck top navigation and homepage cards on mobile, especially the already-flagged small tap targets.",
+          "Verify whether the three-column apply layout reflows sensibly and whether the step tree, form, and sticky side panel remain understandable on a narrow screen.",
+          "Confirm key controls on apply.html remain reachable on mobile: Save and continue, Back, Cancel, expedited toggle, and any exposed upload/selection controls.",
+          "Spot-check one forward progression path and one backtracking path on mobile.",
+          "Review table/list readability on fees.html and my-applications.html for overflow, clipping, or horizontal scrolling issues."
+        ],
+        "exit_criteria": [
+          "Critical entry points and at least one substantial portion of the apply flow have been re-tested on mobile.",
+          "Any mobile-specific tap-target, stacking, sticky-panel, or readability problems have been captured."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 known HTML pages, with the majority of interaction time concentrated on apply.html and at least one revisit to index.html for cross-flow checks.",
+      "features": "Exercise most visible controls on apply.html including Save and continue, Back, Cancel, expedited toggle, step navigation/backtracking, and representative conditional branches; also click all homepage CTAs and global nav links present on the known pages.",
+      "mobile": "Repeat critical homepage navigation plus a meaningful subset of the apply flow on mobile, and perform lighter readability/tap-target checks on fees.html and my-applications.html."
+    },
+    "notes": [
+      "Do not spend time searching for hidden account, login, payment checkout, or detailed application-detail pages unless they become visible during exploration; none were shown in prescan.",
+      "If the Help link remains a '#' dead-end, record it as a UX issue rather than treating it as a missing page to discover.",
+      "Because exploration depth is exhaustive, prioritize branch coverage within apply.html over repeated inspection of the static list/table pages."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "CivicPort — City of Avalon Bay",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort City of Avalon Bay Apply My applications Fees Help Welcome to CivicPort. Apply for a renovation, building, electrical, or roof permit. Track everything from one place. Apply for a permit Residential, electrical, plumbing, roof. ~25 min. Track an application See status, inspector notes, next steps. Pay fees Open invoices, history, refunds. Service alerts Mon, May 11 — Online plan-check intake is operating normally. Average decision time: 6 business days. Thu, May 7 — Historical-district overlay updated for the Foundry District. New parcels may require additional review. Apr 24 — Counter service at Civic Plaza is by appointment only on Mondays. Avalon Bay Permits Office · 123 Civic Plaza · Mon–Fri 8am–4pm · 555-242-PERM Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Welcome to CivicPort.",
+        "Apply for a permit",
+        "Track an application",
+        "Pay fees",
+        "Service alerts"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 7,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees",
+        "clickable:a:Help",
+        "clickable:a:Apply for a permit Residential, electrical, plumbing, roof. ~25 min.",
+        "clickable:a:Track an application See status, inspector notes, next steps.",
+        "clickable:a:Pay fees Open invoices, history, refunds."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "apply.html",
+      "title": "Apply for a permit — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/apply.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Application AB-2026-PERM-7311 Auto-saved · just now Cancel APPLICATION 1. Project info Property address Project type Project scope Start / end dates 2. Property & ownership Parcel lookup Ownership proof Contractor license 3. Plans & documents Site plan Floor plan 5. Affidavits Lead paint (pre-1978) Environmental 6. Review & submit Summary Fees Submit 1.1 Property address Where is the work happening? You can also start with the parcel number on step 2.1. Street address City State / Zip Back Save and continue WHAT YOU'LL NEED Property address Project type selected Scope described Parcel verified Ownership proof Site plan Floor plan ESTIMATED FEES Pick a project type first Total estimated $0 Expedited review (+50%, decision in 3 days) Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "APPLICATION",
+        "1.1 Property address",
+        "WHAT YOU'LL NEED",
+        "ESTIMATED FEES",
+        "Cancel this application?"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 0,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:button:Cancel",
+        "typeable:input:unlabeled control",
+        "typeable:input:Avalon Bay",
+        "typeable:input:Zip",
+        "clickable:button:Back",
+        "clickable:button:Save and continue",
+        "clickable:input:Expedited review (+50%, decision in 3 days)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "missing_input_label",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "fees.html",
+      "title": "Fees — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/fees.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Apply My applications Fees Permit fee schedule Project type Base fee Per sq ft (over 200) Expedited review Kitchen $320 $1.80 +50% Bathroom $240 $1.60 +50% Addition $680 $2.40 +50% Roof $210 $0.90 +50% Structural $540 $2.10 +50% Electrical $160 — +50% Plumbing $160 — +50% Neighbor mail request: $18 each. Historical-district review: $120 surcharge. Fees are non-refundable once a plan reviewer is assigned. Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Permit fee schedule"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "my-applications.html",
+      "title": "My applications — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/my-applications.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Apply My applications Fees My applications App ID Type Address Submitted Status AB-2026-PERM-7042 Kitchen renovation 148 Coppergate St. Apr 12, 2026 Approved AB-2025-PERM-9981 Roof replacement 148 Coppergate St. Nov 3, 2025 Approved AB-2025-PERM-6601 Bathroom remodel 22 Foundry Lane Aug 19, 2025 Inspector follow-up Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "My applications"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

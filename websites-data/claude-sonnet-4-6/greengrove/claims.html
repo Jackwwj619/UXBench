@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File a claim — GreenGrove</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="home">
+<header class="topbar">
+  <a href="index.html" class="brand"><svg width="26" height="26" viewBox="0 0 32 32"><path d="M8 22 Q8 14 16 14 Q24 14 24 22 L24 26 L8 26 Z" fill="#2A7F5F"/></svg><span>GreenGrove</span></a>
+  <input type="checkbox" id="navToggle" class="nav-toggle" aria-label="Toggle navigation menu">
+  <label for="navToggle" class="nav-toggle-label" aria-hidden="true"><span></span></label>
+  <nav><a href="quote.html">Get a quote</a><a href="claims.html" class="current">Claims</a><a href="faq.html">FAQ</a><a href="index.html#" class="btn-primary">Sign in</a></nav>
+</header>
+<main class="claims-page">
+  <h1>File a claim</h1>
+  <p>Most claims are reimbursed in 3–5 business days. Bring the vet invoice — we do the rest.</p>
+  <ol class="how-claim">
+    <li><strong>Pay the vet</strong> directly — any licensed clinic in the US.</li>
+    <li><strong>Snap the invoice</strong> with your phone, or download a PDF.</li>
+    <li><strong>Submit below</strong> — we'll email a decision within 5 days.</li>
+  </ol>
+  <form class="claim-form" id="claimForm" novalidate>
+    <label>Pet name<input id="cf_pet" required></label>
+    <label>Visit date<input id="cf_date" type="date" required></label>
+    <label>Condition / reason for visit<input id="cf_cond" placeholder="e.g., ear infection" required></label>
+    <label>Total paid (USD)
+      <span class="currency-wrap"><input id="cf_total" type="number" min="0" step="0.01" placeholder="0.00" required aria-describedby="cf_total_help"></span>
+      <span id="cf_total_help" class="field-help">Enter the total you paid the vet, including tax.</span>
+    </label>
+    <label>Vet invoice (PDF or image)
+      <input id="cf_file" type="file" accept="image/*,application/pdf" required aria-describedby="cf_file_help cf_file_error">
+      <span id="cf_file_help" class="field-help">PDF, JPG, or PNG · max 10 MB</span>
+      <span id="cf_file_error" class="field-error" hidden role="alert">Please attach your vet invoice (PDF, JPG, or PNG, max 10 MB).</span>
+    </label>
+    <button class="btn-primary" type="submit">Submit claim</button>
+  </form>
+  <script>
+  (function(){
+    const form = document.getElementById('claimForm');
+    const file = document.getElementById('cf_file');
+    const fileErr = document.getElementById('cf_file_error');
+    function clearFileErr(){ fileErr.hidden = true; file.removeAttribute('aria-invalid'); file.classList.remove('is-invalid'); }
+    file.addEventListener('change', clearFileErr);
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      let firstInvalid = null;
+      form.querySelectorAll('input[required]').forEach(function(inp){
+        const ok = inp.checkValidity() && (inp.type !== 'file' || inp.files.length > 0);
+        inp.classList.toggle('is-invalid', !ok);
+        if(!ok){ inp.setAttribute('aria-invalid','true'); if(!firstInvalid) firstInvalid = inp; }
+        else { inp.removeAttribute('aria-invalid'); }
+      });
+      if(file.files.length === 0){
+        fileErr.hidden = false;
+        file.setAttribute('aria-invalid','true');
+        file.classList.add('is-invalid');
+        if(!firstInvalid) firstInvalid = file;
+      } else {
+        clearFileErr();
+      }
+      if(firstInvalid){ firstInvalid.focus(); firstInvalid.scrollIntoView({block:'center', behavior:'smooth'}); return; }
+      alert('Claim submitted (mock).');
+      form.reset();
+    });
+  })();
+  </script>
+</main>
+<footer class="site-foot"><p>Local demo for UXBench. Fictional product, not a real company.</p></footer>
+</body>
+</html>

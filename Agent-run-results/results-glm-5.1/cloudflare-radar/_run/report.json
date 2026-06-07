@@ -1,0 +1,683 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/cloudflare-radar/index.html",
+  "site": {
+    "name": "cloudflare-radar",
+    "site_dir": "/Users/timchef/UXBench/websites/cloudflare-radar",
+    "start_page": "index.html",
+    "page_type": "dashboard",
+    "html_files": [
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/cloudflare-radar/README.md",
+    "summary": "cloudflare-radar-clone Clone of the Cloudflare Radar global internet insights dashboard (single-page app). Pages | File | Purpose | | --- | --- | | `index.html` | Single-page dashboard: top Cloudflare nav + global time / region filters; main area is a grid of cards — global traffic trends, top browsers, device types, protocol distribution, attack trends, Outage Center, Top domains, Top ASNs, etc.; each card has a chart + tooltip + \"View more\" entry | | `styles.css` | Card grid, chart palette, tooltip, filter bar, dark header | | `script.js` | Chart rendering (SVG / canvas), filter coordination, time-range switching, tab switching, tooltips |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full cloudflare-radar system, prioritizing the primary dashboard flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The Cloudflare Radar dashboard provides functional anchor-based navigation but suffers from significant mobile usability issues, dead interactive elements, and inaccessible filter controls. On mobile, tap targets across the header, navigation drawer, and search inputs fall well below the 44px minimum guidance, making touch interaction difficult. Several dashboard cards and the search feature lack functional feedback, acting as dead links or unimplemented features. Additionally, critical filter checkboxes are rendered outside the viewport and cannot be scrolled to, blocking user task completion. Due to coverage limitations (30%), deeper interactive states for domain rankings, outage alerts, and data explorer queries remain untested.",
+  "exploration_plan": {
+    "goal": "Exhaustively explore and critique the UX of the Cloudflare Radar single-page dashboard, validating navigation, filter coordination, chart interactions, and responsive layout across all major sections.",
+    "summary": "The exploration will proceed through five phases, starting with global controls and navigation, moving through the primary dashboard cards, validating secondary sections, testing search and dialogs, and finally verifying mobile responsiveness. The run will focus on how filter changes propagate across charts, the usability of interactive elements like tooltips and tabs, and the layout's adaptability to different viewports.",
+    "assumptions": [
+      "The application is a single-page app where navigation links scroll to or reveal specific sections rather than loading new HTML pages.",
+      "Interacting with global filters (Location, Date Range) should dynamically update the data and charts across all visible cards.",
+      "Chart tooltips, 'View more' links, and tab switches (e.g., Hourly/Daily/Weekly) are expected to function and provide visual feedback.",
+      "The 6 detected dialogs are triggered by specific buttons like 'Share', 'Export', or 'Search Radar'."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Global filter coordination: Ensuring Location and Date Range changes correctly update all dashboard cards without breaking chart rendering.",
+      "Small tap targets: Multiple navigation and control buttons (e.g., DNS, Routing, API, EN) are below the 44px mobile guidance, posing a high risk for mobile usability.",
+      "Chart interactivity: SVG/Canvas charts must respond to hover (tooltips) and click events without performance lag or errors.",
+      "Dialog states: Opening and closing the 6 detected dialogs without losing page state or trapping focus."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global Controls & Navigation",
+        "objective": "Validate the functionality of the top navigation bar, global filters, and primary view controls.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click each main nav link (Overview, Traffic, Security, Connectivity, Routing, DNS, Reports) and verify it scrolls to or displays the correct section.",
+          "Interact with the Location filter ('Worldwide') and Date Range filter ('Last 24 hours') to confirm they open and apply changes.",
+          "Click the 'Add filter' and 'Reset' buttons to ensure they modify and clear filters appropriately.",
+          "Toggle the theme using the 'Toggle theme' button and verify visual updates."
+        ],
+        "exit_criteria": [
+          "All main navigation links have been clicked and their corresponding sections verified.",
+          "Global filters have been changed and reset successfully.",
+          "Theme toggle functions without layout breakage."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Primary Dashboard Cards & Charts",
+        "objective": "Deeply validate the primary dashboard sections (Traffic, Security, Adoption, Rankings) and their interactive elements.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Interact with the 'Internet traffic' chart: switch between HTTP requests/Bytes/Latency tabs and Hourly/Daily/Weekly views.",
+          "Hover over chart data points to trigger and read tooltips.",
+          "In 'Traffic by type', click 'Inspect' and verify detailed views or state changes.",
+          "In 'Domain popularity', switch between category tabs (All, AI, Social, Video) and click a domain to see selection effects.",
+          "Click 'Details' links on summary cards (HTTP requests, Mitigated attacks, etc.)."
+        ],
+        "exit_criteria": [
+          "Chart tabs and time range switches function and update the chart visually.",
+          "Tooltips display correctly on hover.",
+          "Domain ranking tabs and selections work as expected.",
+          "Summary card links navigate or expand correctly."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Secondary Sections & Left Sidebar",
+        "objective": "Explore the left sidebar navigation and remaining content sections (Outages, BGP, 1.1.1.1, etc.).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the left sidebar 'Filter navigation' input to search for a section (e.g., 'Outages').",
+          "Click secondary sidebar links (Bot traffic, AI crawlers, Layer 3/4 attacks, Attack map, Email security, Quality, Outages, Speed).",
+          "Verify that clicking these links scrolls to or highlights the appropriate card on the dashboard.",
+          "Check the '1.1.1.1 resolver' and 'Quality and outages' sections for specific interactive elements."
+        ],
+        "exit_criteria": [
+          "Sidebar filter input successfully highlights or filters navigation items.",
+          "All secondary sidebar links have been clicked and their targets verified.",
+          "Secondary sections display their expected content and controls."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Dialogs, Search & Edge Cases",
+        "objective": "Test modal dialogs, search functionality, and other overlay states to ensure they open, close, and function correctly.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Search Radar' button and type a query into the search input, verifying suggestions or results.",
+          "Trigger the 'Share' and 'Export' dialogs and verify their content and close mechanisms.",
+          "Click 'API' and 'EN' buttons to check for dialogs or dropdowns.",
+          "Click 'View more' or 'View all' links within cards to see if they trigger navigation or expand content."
+        ],
+        "exit_criteria": [
+          "Search Radar input accepts text and shows feedback.",
+          "Share and Export dialogs open and close cleanly.",
+          "API and EN interactions do not cause errors.",
+          "View more/all links function as expected."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Responsiveness & Touch Targets",
+        "objective": "Validate the dashboard layout and usability on a mobile viewport, paying special attention to the previously identified small tap targets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport and verify the overall layout adapts (e.g., cards stack vertically, sidebar collapses or becomes a menu).",
+          "Re-test the main navigation and global filters on mobile to ensure they are accessible.",
+          "Verify chart interactivity (tooltips, tabs) works with touch events.",
+          "Assess the usability of small tap targets (DNS, Routing, API, EN) and check for overlapping elements."
+        ],
+        "exit_criteria": [
+          "Dashboard renders correctly on mobile viewport without horizontal scroll.",
+          "Navigation and filters are accessible and functional on mobile.",
+          "Charts respond to touch interactions.",
+          "Small tap target usability has been evaluated and documented."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of known HTML pages (index.html)",
+      "features": "Exercise all main navigation links, global filters, chart tabs/tooltips, sidebar links, and dialogs",
+      "mobile": "Repeat critical checks from phases 1-4 on mobile viewport, focusing on layout adaptation and touch target usability"
+    },
+    "notes": [
+      "Given the high number of small tap targets identified in the prescan, pay close attention to mobile usability in Phase 5.",
+      "Since this is a single-page app, ensure that navigation interactions correctly scroll to or reveal the intended sections without full page reloads.",
+      "Monitor for console errors or network errors during filter changes and chart interactions, as these may indicate broken state management."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Navigate the dashboard on a mobile device",
+      "problem": "Almost all interactive elements on the mobile viewport have tap targets smaller than the 44px minimum guidance, making them difficult to activate reliably with touch.",
+      "evidence": "Layout warnings consistently flag small tap targets: 'Open navigation' (38x38px), 'Cloudflare Radar home' (107x28px), 'Search Radar' (38x38px), 'API' (48x38px), 'Toggle theme' (38x38px), and navigation drawer links (263x32px).",
+      "why_it_matters": "Users with motor impairments or those using touch devices on the go will struggle to accurately tap these small targets, leading to frustration and mis-taps.",
+      "suggestion": "Increase the height and padding of all interactive elements to meet the 44x44px minimum touch target size, especially the navigation drawer links and header icons.",
+      "source_hint": "index.html (mobile viewport header and navigation drawer)"
+    },
+    {
+      "severity": "high",
+      "ux_area": "affordance",
+      "user_goal": "Apply data filters to the dashboard",
+      "problem": "Filter checkboxes ('Include Cloudflare network traffic', 'Include public DNS resolver data', 'Show bot-only traffic') are rendered outside the viewport and cannot be scrolled to or interacted with.",
+      "evidence": "Click actions on ux-111, ux-112, and ux-113 failed with 'element is outside of the viewport' despite the browser attempting to scroll them into view. Scroll actions also failed to change the viewport position.",
+      "why_it_matters": "Users are completely blocked from accessing these filter controls, preventing them from customizing the dashboard data to their needs.",
+      "suggestion": "Ensure the filter bar is placed within a scrollable container or is fully visible within the viewport without requiring impossible scrolling. Fix CSS overflow properties that may be hiding these elements.",
+      "source_hint": "index.html (filter bar checkboxes)"
+    },
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Get more details from dashboard cards",
+      "problem": "Clicking prominent dashboard cards like 'Analysis Global outages and network resilience', 'Report Internet trends for the current quarter', and 'Year in Review' provides no visual feedback, navigation, or content expansion.",
+      "evidence": "Clicking these cards only appends '#' to the URL without any visible state change or content expansion, indicating they are dead or unimplemented links.",
+      "why_it_matters": "Users expect clickable cards to reveal more information or navigate to a detailed view. Dead links break trust and leave users confused about how to access deeper insights.",
+      "suggestion": "Implement the expected interaction for these cards (e.g., expand details, navigate to a sub-page) or remove the clickable affordance if the feature is not yet available.",
+      "source_hint": "index.html (ux-107, ux-105, ux-108)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Search for specific data using the Search Radar",
+      "problem": "Typing a query into the Search Radar input provides no autocomplete suggestions, search results, or visual feedback, leaving the user unsure if the search is working.",
+      "evidence": "Typing 'DDoS' into the main search input (ux-117) did not trigger any visible search suggestions, dropdowns, or results.",
+      "why_it_matters": "Without feedback, users have no confirmation that their input is being processed, making the search feature feel broken and unreliable.",
+      "suggestion": "Implement a basic search feedback mechanism, such as displaying 'No results found', showing a loading spinner, or providing autocomplete suggestions as the user types.",
+      "source_hint": "index.html (Search Radar dialog, ux-117)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Quickly navigate to the 'AI crawlers' section",
+      "problem": "The 'AI crawlers' sidebar link uses the same '#traffic-type' anchor as 'Traffic by type' and 'Bot traffic', scrolling to the general section rather than the specific AI crawlers content.",
+      "evidence": "Clicking the 'AI crawlers' sidebar link scrolled the page to the 'Bot traffic' section, which groups the content but lacks precise scroll-to-target specificity.",
+      "why_it_matters": "Users must manually scan the section to find the AI crawlers content, adding friction and failing to deliver on the promise of direct navigation.",
+      "suggestion": "Assign a unique anchor ID (e.g., '#ai-crawlers') to the AI crawlers sub-section and update the sidebar link to point to it for precise scrolling.",
+      "source_hint": "index.html (sidebar link 'AI crawlers')"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Navigate to 'Email security' insights",
+      "problem": "The 'Email security' sidebar link scrolls to the general 'Security and attacks' section rather than a specific Email security sub-section.",
+      "evidence": "Clicking the 'Email security' sidebar link scrolled the page to the 'Security and attacks' heading, leaving the user to search for email-specific data within the broader section.",
+      "why_it_matters": "Similar to the AI crawlers issue, imprecise anchor links force users to hunt for the relevant content, degrading the navigation experience.",
+      "suggestion": "Create a specific anchor for the Email security content within the Security section and link directly to it from the sidebar.",
+      "source_hint": "index.html (sidebar link 'Email security')"
+    },
+    {
+      "severity": "low",
+      "ux_area": "mobile usability",
+      "user_goal": "Use the search input on mobile",
+      "problem": "The search input field ('Domain, IP, ASN, or report') has a height of only 22px, making it a very poor touch target on mobile devices.",
+      "evidence": "The search input (ux-35) was measured at 277x22px on the mobile viewport, well below the 44px height guidance.",
+      "why_it_matters": "Users will struggle to tap into the search field accurately on a mobile device, leading to frustration and missed taps.",
+      "suggestion": "Increase the height and padding of the search input to at least 44px to ensure it is easily tappable on touch screens.",
+      "source_hint": "index.html (search input ux-35)"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 30,
+    "action_success_rate_percent": 95,
+    "unchanged_action_percent": 53,
+    "known_pages": [
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 49,
+      "open_page": 12,
+      "press_key": 4,
+      "screenshot_pair": 3,
+      "scroll": 10,
+      "type_text": 1
+    },
+    "total_actions": 79,
+    "successful_actions": 75,
+    "failed_actions": 4,
+    "unchanged_actions": 42,
+    "observed_feature_count": 122,
+    "exercised_feature_count": 36,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|button|||03:45 utc availability drop regional isp cluster|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "03:45 UTC Availability drop Regional ISP cluster"
+      },
+      {
+        "signature": "index.html|clickable|button|||08:31 utc routing change observed several transit providers|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "08:31 UTC Routing change observed Several transit providers"
+      },
+      {
+        "signature": "index.html|clickable|button|||1 google.com +1|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "1 google.com +1"
+      },
+      {
+        "signature": "index.html|clickable|button|||11:02 utc elevated ddos activity retail and media zones|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "11:02 UTC Elevated DDoS activity Retail and media zones"
+      },
+      {
+        "signature": "index.html|clickable|button|||14:18 utc traffic anomaly south asia mobile networks|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "14:18 UTC Traffic anomaly South Asia mobile networks"
+      },
+      {
+        "signature": "index.html|clickable|button|||2 facebook.com 0|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "2 facebook.com 0"
+      },
+      {
+        "signature": "index.html|clickable|button|||3 youtube.com -1|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "3 youtube.com -1"
+      },
+      {
+        "signature": "index.html|clickable|button|||4 tiktok.com +3|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "4 tiktok.com +3"
+      },
+      {
+        "signature": "index.html|clickable|button|||5 chatgpt.com +5|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "5 chatgpt.com +5"
+      },
+      {
+        "signature": "index.html|clickable|button|||a records 58%|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "A records 58%"
+      },
+      {
+        "signature": "index.html|clickable|button|||aaaa records 24%|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "AAAA records 24%"
+      },
+      {
+        "signature": "index.html|clickable|button|||add filter|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Add filter"
+      },
+      {
+        "signature": "index.html|clickable|button|||ai|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "AI"
+      },
+      {
+        "signature": "index.html|clickable|button|||all|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "All"
+      },
+      {
+        "signature": "index.html|clickable|button|||anomalies|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Anomalies"
+      },
+      {
+        "signature": "index.html|clickable|button|||apac attack cluster|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "APAC attack cluster"
+      },
+      {
+        "signature": "index.html|clickable|button|||api|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "API"
+      },
+      {
+        "signature": "index.html|clickable|button|||apply filters|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Apply filters"
+      },
+      {
+        "signature": "index.html|clickable|button|||archive|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Archive"
+      },
+      {
+        "signature": "index.html|clickable|button|||bots|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "BOTS"
+      },
+      {
+        "signature": "index.html|clickable|button|||brazil connectivity|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Brazil connectivity"
+      },
+      {
+        "signature": "index.html|clickable|button|||bytes|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Bytes"
+      },
+      {
+        "signature": "index.html|clickable|button|||close drawer|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Close drawer"
+      },
+      {
+        "signature": "index.html|clickable|button|||close filters|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Close filters"
+      },
+      {
+        "signature": "index.html|clickable|button|||close search|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Close search"
+      },
+      {
+        "signature": "index.html|clickable|button|||connectivity internet outages traffic anomalies and disruptions|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Connectivity Internet outages Traffic anomalies and disruptions"
+      },
+      {
+        "signature": "index.html|clickable|button|||connectivity|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "CONNECTIVITY"
+      },
+      {
+        "signature": "index.html|clickable|button|||copy link|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Copy link"
+      },
+      {
+        "signature": "index.html|clickable|button|||dataset http requests traffic, bytes, request volume|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Dataset HTTP requests Traffic, bytes, request volume"
+      },
+      {
+        "signature": "index.html|clickable|button|||dataset traffic by type bot, human, mobile, desktop, ipv6|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Dataset Traffic by type Bot, human, mobile, desktop, IPv6"
+      },
+      {
+        "signature": "index.html|clickable|button|||details|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Details"
+      },
+      {
+        "signature": "index.html|clickable|button|||dns 1.1.1.1 resolver query types and dns transport protocols|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "DNS 1.1.1.1 resolver Query types and DNS transport protocols"
+      },
+      {
+        "signature": "index.html|clickable|button|||dns|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "DNS"
+      },
+      {
+        "signature": "index.html|clickable|button|||en|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "EN"
+      },
+      {
+        "signature": "index.html|clickable|button|||europe attack cluster|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Europe attack cluster"
+      },
+      {
+        "signature": "index.html|clickable|button|||explore|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Explore"
+      },
+      {
+        "signature": "index.html|clickable|button|||export data as csv|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Export data as CSV"
+      },
+      {
+        "signature": "index.html|clickable|button|||germany connectivity|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Germany connectivity"
+      },
+      {
+        "signature": "index.html|clickable|button|||http requests|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "HTTP requests"
+      },
+      {
+        "signature": "index.html|clickable|button|||http/3 31%|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "HTTP/3 31%"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 30% of visible interactive feature signatures.",
+      "4 browser action(s) failed and should be retried or analyzed.",
+      "53% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-05-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-20-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-21-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-22-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-23-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-24-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-29-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-30-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-38-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-40-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-41-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-42-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-42-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-46-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-47-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-48-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-48-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-50-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-54-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-54-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-55-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-57-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-60-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-61-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-62-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-67-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-68-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-69-open_page-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-70-open_page-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-75-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-76-press_key-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-77-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-79-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run/screenshots/agentic-80-press_key-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-glm-5.1/cloudflare-radar/_run",
+  "claude_fix": null
+}

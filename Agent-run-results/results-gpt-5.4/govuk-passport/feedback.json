@@ -1,0 +1,69 @@
+{
+  "summary": "The core desktop flow is generally understandable: entering the service, progressing between steps, and recovering from blank required fields usually provide clear page titles, error summaries, and progress context. However, there are several user-facing issues that would undermine confidence and completion, especially on mobile: some required-step validation is inconsistent, many support/related links behave like misleading loops, and numerous interactive elements fall below comfortable touch-target sizing. Coverage was substantial but not complete, so these findings focus on the main form flow and the most clearly evidenced adjacent navigation states.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "mobile-validation-is-inconsistent-across-required",
+      "severity": "high",
+      "area": "goal completion",
+      "page_hint": "index.html mobile flow: #overseas-country, #applicant-type, #previous-passport, #passport-status",
+      "problem": "Mobile validation is inconsistent across required steps: some blank required questions advance to later steps instead of stopping the user with an error, which can let people move through the form with missing eligibility data.",
+      "evidence": "In mobile testing, clicking Continue on blank #overseas-country moved from #overseas-country to #applicant-type, blank #applicant-type advanced to #previous-passport, and blank #previous-passport advanced to #passport-status. By contrast, blank #passport-status did correctly show an error summary and inline validation (steps 67-72).",
+      "suggested_fix": "Make required-field validation behave consistently on every step and every viewport: block progression on missing answers, keep users on the current step, and show the same error-summary + inline guidance pattern each time."
+    },
+    {
+      "id": "many-links-are-labeled-like-real",
+      "severity": "high",
+      "area": "trust",
+      "page_hint": "index.html start/service-start footer, related links, and support links",
+      "problem": "Many links are labeled like real support or informational destinations, but they actually loop back to #start or #service-start with no relevant content, creating a misleading navigation experience.",
+      "evidence": "Observed links including 'Accessibility statement', 'Help', 'Privacy', 'Benefits', 'Departments', 'Citizenship and living in the UK', and 'Births, deaths, marriages and care' either caused no visible change or returned to #start. 'Passport fees' routed to #service-start and showed the generic service intro with no fee-specific information. 'Renew an adult passport' and 'Report a lost or stolen passport' also led to the same generic start flow.",
+      "suggested_fix": "Either provide distinct content/states for these links or relabel/remove them in the prototype so the interface does not promise help, fees, privacy, accessibility, or alternate routes that are not actually available."
+    },
+    {
+      "id": "after-users-type-into-previously-errored",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "index.html: parents details and email steps",
+      "problem": "After users type into previously errored fields, the inline error text and error-summary entries remain visible until they resubmit, so the form gives weak immediate feedback during recovery.",
+      "evidence": "On the parents' details step, after entering 'Parent or guardian 1 full name', the inline error and top error-summary link remained visible. On the email step, after typing both email fields, the error messages 'Enter an email address' and 'Confirm your email address' stayed visible until the next submit (steps 13-24).",
+      "suggested_fix": "Clear field-level error styling and summary items as soon as the individual field becomes valid, or at least replace them with neutral/affirming state changes while the user is correcting the form."
+    },
+    {
+      "id": "branching-and-progress-feedback-are-often",
+      "severity": "medium",
+      "area": "clarity",
+      "page_hint": "index.html: #applying-from, #applicant-type, #previous-passport, #overseas-country",
+      "problem": "Branching and progress feedback are often too generic, so users do not get strong confirmation that choices like child vs adult or inside vs outside UK meaningfully changed their journey.",
+      "evidence": "Selecting 'Outside the UK' and 'A child under 16' produced no immediate copy or layout change before Continue. After continuing, the child path went straight to a generic 'Has the applicant had a UK passport before?' step with no child-specific messaging. Earlier in the flow, the progress panel still showed 'Check eligibility' as Current even after the user had advanced into passport-history questions.",
+      "suggested_fix": "Show stronger branch confirmation after key selections and make progress labels more specific to the current sub-journey, especially for child applications, overseas applications, and passport-history branches."
+    },
+    {
+      "id": "some-system-state-feedback-is-ambiguous",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "index.html: #confirmation and reset flow from 'Clear demo data'",
+      "problem": "Some system-state feedback is ambiguous or contradictory: resetting data has no confirmation, and the completion screen conflicts with the progress sidebar.",
+      "evidence": "Clicking 'Clear demo data' returned the user to #service-start and reset progress, but there was no explicit success message. On the confirmation state, the main content said 'Demo application complete' and 'No application has been submitted', while the sidebar still marked 'Check and pay' as Current rather than completed (steps 31-36 and 55-60).",
+      "suggested_fix": "Add explicit acknowledgement after clearing data, and align the progress sidebar with the page state so completion screens never show an earlier stage as still current."
+    },
+    {
+      "id": "a-large-number-of-interactive-elements",
+      "severity": "medium",
+      "area": "mobile usability",
+      "page_hint": "index.html mobile observations and layout warnings across service-start and form steps",
+      "problem": "A large number of interactive elements are undersized on mobile, including key radios, back links, header links, footer links, and some smaller action links.",
+      "evidence": "Layout warnings repeatedly flagged mobile tap targets below 44px guidance: radio inputs at 40x40, Continue buttons as small as 88x40 or 100x42 on some steps, Back around 49x20/21, feedback 65x17, Help 33x17, Privacy 52x17, Accessibility statement 162x17, Home 43x20, and Service 53x20. The final mobile observation alone reported 15 layout warnings.",
+      "suggested_fix": "Increase tap areas for radios, back/navigation links, feedback links, and footer/support items so interactive height consistently meets mobile touch guidance."
+    },
+    {
+      "id": "some-visible-affordances-appear-actionable-but",
+      "severity": "low",
+      "area": "affordance",
+      "page_hint": "index.html mobile start page and service-start beta feedback area",
+      "problem": "Some visible affordances appear actionable but do not produce meaningful outcome states, such as page-usefulness links and several support items.",
+      "evidence": "On mobile, both 'Is this page useful? Yes' and 'No' linked to #start and produced no URL, text, or visible-state change; the same prompt remained on screen afterward. Earlier, the beta 'feedback' link also did not open a distinct destination and stayed on the current service-start state.",
+      "suggested_fix": "Provide a visible acknowledgement or follow-up state for feedback actions, or remove/suppress these affordances in prototype mode if they are intentionally non-functional."
+    }
+  ]
+}

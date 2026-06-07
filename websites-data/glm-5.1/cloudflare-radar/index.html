@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloudflare Radar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="icon-button mobile-menu" id="mobileMenuButton" aria-label="Open navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <a class="brand" href="#overview" data-route="overview" aria-label="Cloudflare Radar home">
+        <svg class="brand-mark" viewBox="0 0 64 38" aria-hidden="true">
+          <path fill="#f6821f" d="M38.8 35H14.6C6.5 35 0 28.6 0 20.7 0 13.5 5.3 7.4 12.3 6.6A18.3 18.3 0 0 1 25.1 1c6.8 0 12.8 3.8 15.8 9.5 1-.3 2-.4 3.1-.4 6 0 10.8 4.7 10.8 10.5 0 .9-.1 1.8-.3 2.6h.8c4.8 0 8.7 2.6 8.7 5.9 0 3.3-3.9 5.9-8.7 5.9H38.8Z"></path>
+          <path fill="#faae40" d="M29.1 35h26.2c4 0 7.4-1.8 8.3-4.3-1.1-2.7-4.4-4.5-8.3-4.5h-4c.3-.9.4-1.8.4-2.8 0-5.2-4.4-9.5-9.8-9.5-1.8 0-3.4.4-4.9 1.2C34.8 8.8 28.9 4.5 22 4.5c-2.8 0-5.4.7-7.6 2 1.2-.3 2.6-.5 4-.5 8.1 0 15.1 5.2 17.1 12.5 1.1-.4 2.3-.6 3.6-.6 5.4 0 9.8 4.3 9.8 9.5 0 3-1.5 5.7-3.8 7.5h-16Z"></path>
+        </svg>
+        <span class="brand-text">Radar</span>
+      </a>
+      <nav class="primary-nav" aria-label="Primary">
+        <a href="#overview" class="nav-link active" data-route="overview">Overview</a>
+        <a href="#traffic" class="nav-link" data-route="traffic">Traffic</a>
+        <a href="#security" class="nav-link" data-route="security">Security</a>
+        <a href="#connectivity" class="nav-link" data-route="connectivity">Connectivity</a>
+        <a href="#routing" class="nav-link" data-route="routing">Routing</a>
+        <a href="#dns" class="nav-link" data-route="dns">DNS</a>
+        <a href="#reports" class="nav-link" data-route="reports">Reports</a>
+      </nav>
+    </div>
+    <div class="topbar-right">
+      <button class="search-trigger" id="openSearch" aria-label="Search Radar">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"></circle><path d="m13 13 4 4"></path></svg>
+        <span>Search Radar</span>
+        <kbd>/</kbd>
+      </button>
+      <button class="text-button" data-open-modal="apiModal">API</button>
+      <button class="text-button language-button" id="languageButton">EN</button>
+      <button class="icon-button" id="themeToggle" aria-label="Toggle theme">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v2M10 16v2M4.3 4.3l1.4 1.4M14.3 14.3l1.4 1.4M2 10h2M16 10h2M4.3 15.7l1.4-1.4M14.3 5.7l1.4-1.4"></path><circle cx="10" cy="10" r="3.4"></circle></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="scope-card">
+        <div class="scope-label">Global view</div>
+        <button class="scope-select" id="locationButton" aria-expanded="false">
+          <span>
+            <strong id="selectedLocation">Worldwide</strong>
+            <small id="selectedLocationMeta">All locations and networks</small>
+          </span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"></path></svg>
+        </button>
+        <div class="location-menu" id="locationMenu" role="listbox">
+          <button data-location="worldwide" class="active"><span>Worldwide</span><small>Global</small></button>
+          <button data-location="united-states"><span>United States</span><small>US</small></button>
+          <button data-location="germany"><span>Germany</span><small>DE</small></button>
+          <button data-location="japan"><span>Japan</span><small>JP</small></button>
+          <button data-location="brazil"><span>Brazil</span><small>BR</small></button>
+          <button data-location="india"><span>India</span><small>IN</small></button>
+          <button data-location="united-kingdom"><span>United Kingdom</span><small>GB</small></button>
+          <button data-location="australia"><span>Australia</span><small>AU</small></button>
+        </div>
+      </div>
+
+      <div class="sidebar-search">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"></circle><path d="m13 13 4 4"></path></svg>
+        <input id="sideSearch" type="search" placeholder="Filter navigation">
+      </div>
+
+      <nav class="side-nav" aria-label="Radar navigation">
+        <section class="nav-group open">
+          <button class="nav-group-title" data-toggle-group>
+            <span>Overview</span><i></i>
+          </button>
+          <div class="nav-group-links">
+            <a href="#overview" class="side-link active" data-route="overview"><span class="side-icon orange"></span>Global Internet trends</a>
+            <a href="#reports" class="side-link" data-route="reports">Latest reports</a>
+          </div>
+        </section>
+        <section class="nav-group open">
+          <button class="nav-group-title" data-toggle-group>
+            <span>Traffic</span><i></i>
+          </button>
+          <div class="nav-group-links">
+            <a href="#traffic" class="side-link" data-route="traffic"><span class="side-icon blue"></span>HTTP requests</a>
+            <a href="#traffic-type" class="side-link" data-route="traffic">Traffic by type</a>
+            <a href="#domain-rankings" class="side-link" data-route="domains">Domain rankings</a>
+            <a href="#outages" class="side-link" data-route="outages">Internet outages</a>
+          </div>
+        </section>
+        <section class="nav-group open">
+          <button class="nav-group-title" data-toggle-group>
+            <span>Bots</span><i></i>
+          </button>
+          <div class="nav-group-links">
+            <a href="#bot-traffic" class="side-link" data-route="bots"><span class="side-icon violet"></span>Bot traffic</a>
+            <a href="#ai-crawlers" class="side-link" data-route="bots">AI crawlers</a>
+          </div>
+        </section>
+        <section class="nav-group open">
+          <button class="nav-group-title" data-toggle-group>
+            <span>Security</span><i></i>
+          </button>
+          <div class="nav-group-links">
+            <a href="#security" class="side-link" data-route="security"><span class="side-icon red"></span>HTTP DDoS attacks</a>
+            <a href="#security" class="side-link" data-route="security">Layer 3/4 attacks</a>
+            <a href="#security" class="side-link" data-route="security">Attack map</a>
+            <a href="#email-security" class="side-link" data-route="security">Email security</a>
+          </div>
+        </section>
+        <section class="nav-group open">
+          <button class="nav-group-title" data-toggle-group>
+            <span>Connectivity</span><i></i>
+          </button>
+          <div class="nav-group-links">
+            <a href="#connectivity" class="side-link" data-route="connectivity"><span class="side-icon green"></span>Quality</a>
+            <a href="#outages" class="side-link" data-route="outages">Outages</a>
+            <a href="#connectivity" class="side-link" data-route="connectivity">Speed</a>
+            <a href="#connectivity" class="side-link" data-route="connectivity">1.1.1.1 resolver</a>
+          </div>
+        </section>
+        <section class="nav-group">
+          <button class="nav-group-title" data-toggle-group>
+            <span>Routing</span><i></i>
+          </button>
+          <div class="nav-group-links">
+            <a href="#routing" class="side-link" data-route="routing"><span class="side-icon teal"></span>BGP updates</a>
+            <a href="#routing" class="side-link" data-route="routing">AS Rank</a>
+            <a href="#routing" class="side-link" data-route="routing">ROA status</a>
+            <a href="#routing" class="side-link" data-route="routing">Route leaks</a>
+          </div>
+        </section>
+        <section class="nav-group">
+          <button class="nav-group-title" data-toggle-group>
+            <span>DNS</span><i></i>
+          </button>
+          <div class="nav-group-links">
+            <a href="#dns" class="side-link" data-route="dns"><span class="side-icon orange"></span>DNS traffic</a>
+            <a href="#dns" class="side-link" data-route="dns">DNSSEC</a>
+            <a href="#dns" class="side-link" data-route="dns">Top TLDs</a>
+          </div>
+        </section>
+        <section class="nav-group">
+          <button class="nav-group-title" data-toggle-group>
+            <span>Tools</span><i></i>
+          </button>
+          <div class="nav-group-links">
+            <a href="#data-explorer" class="side-link" data-route="data-explorer">Data Explorer</a>
+            <a href="#data-explorer" class="side-link" data-open-modal="urlScannerModal">URL scanner</a>
+            <a href="#connectivity" class="side-link" data-open-drawer="speed">Internet speed test</a>
+            <a href="#data-explorer" class="side-link" data-open-modal="apiModal">API docs</a>
+          </div>
+        </section>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section class="hero" id="overview">
+        <div>
+          <div class="eyebrow">Cloudflare Radar</div>
+          <h1 id="pageTitle">Internet insights for every network</h1>
+          <p id="pageSubtitle">Near real-time traffic, security, routing, DNS, connectivity, and adoption signals observed across Cloudflare's global network.</p>
+        </div>
+        <div class="hero-actions">
+          <button class="outline-button" id="shareButton" aria-label="Share current view as link" title="Copy a shareable link to the current Radar view and filters">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 11.5 13 15M13 5 7 8.5"></path><circle cx="5" cy="10" r="2.2"></circle><circle cx="15" cy="4" r="2.2"></circle><circle cx="15" cy="16" r="2.2"></circle></svg>
+            Share
+          </button>
+          <button class="solid-button" id="exportButton" aria-label="Export data as CSV" title="Download a CSV export of the current view data">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9M6.5 8.5 10 12l3.5-3.5"></path><path d="M4 15.5h12"></path></svg>
+            Export
+          </button>
+        </div>
+      </section>
+
+      <section class="filter-bar" aria-label="Radar filters">
+        <div class="filter-field location-field">
+          <label>Location</label>
+          <button id="toolbarLocation" aria-expanded="false">
+            <span id="toolbarLocationText">Worldwide</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"></path></svg>
+          </button>
+          <div class="location-menu toolbar-location-menu" id="toolbarLocationMenu" role="listbox">
+            <button data-location="worldwide" class="active"><span>Worldwide</span><small>Global</small></button>
+            <button data-location="united-states"><span>United States</span><small>US</small></button>
+            <button data-location="germany"><span>Germany</span><small>DE</small></button>
+            <button data-location="japan"><span>Japan</span><small>JP</small></button>
+            <button data-location="brazil"><span>Brazil</span><small>BR</small></button>
+            <button data-location="india"><span>India</span><small>IN</small></button>
+            <button data-location="united-kingdom"><span>United Kingdom</span><small>GB</small></button>
+            <button data-location="australia"><span>Australia</span><small>AU</small></button>
+          </div>
+        </div>
+        <div class="filter-field lookup-field">
+          <label>Lookup</label>
+          <div class="inline-input">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"></circle><path d="m13 13 4 4"></path></svg>
+            <input id="lookupInput" type="search" placeholder="Domain, IP, ASN, or report">
+          </div>
+        </div>
+        <div class="filter-field">
+          <label>Date range</label>
+          <button id="dateButton">
+            <span id="dateLabel">Last 24 hours</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5"></path></svg>
+          </button>
+          <div class="date-menu" id="dateMenu">
+            <button data-period="24h" class="active">Last 24 hours</button>
+            <button data-period="7d">Last 7 days</button>
+            <button data-period="30d">Last 30 days</button>
+            <button data-period="90d">Last 90 days</button>
+            <div class="date-custom">
+              <span>Custom range</span>
+              <input id="startDate" type="date" value="2026-05-04">
+              <input id="endDate" type="date" value="2026-05-11">
+              <button id="applyCustomDate">Apply</button>
+            </div>
+          </div>
+        </div>
+        <button class="outline-button filter-open" id="openFilters">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M6 10h8M8 15h4"></path></svg>
+          Add filter
+        </button>
+        <button class="ghost-button" id="resetFilters">Reset</button>
+      </section>
+
+      <section class="status-strip">
+        <div><span class="pulse"></span> Data updated <strong id="updatedAt">2 minutes ago</strong></div>
+        <div>Scope <strong id="scopeSummary">Worldwide, all networks</strong></div>
+        <div>Comparison <strong id="compareSummary">Previous period</strong></div>
+      </section>
+
+      <section class="metric-grid" aria-label="Key metrics">
+        <article class="metric-card" data-card-detail="HTTP requests">
+          <div class="metric-top"><span>HTTP requests</span><button class="mini-button" data-open-drawer="traffic">Details</button></div>
+          <strong id="requestsValue">42.8M</strong>
+          <div class="metric-change positive" id="requestsChange">+3.4%</div>
+          <svg class="spark" viewBox="0 0 180 44" aria-hidden="true"><polyline id="requestsSpark" points=""></polyline></svg>
+        </article>
+        <article class="metric-card" data-card-detail="Mitigated attacks">
+          <div class="metric-top"><span>Mitigated attacks</span><button class="mini-button" data-open-drawer="security">Details</button></div>
+          <strong id="attacksValue">8.7M</strong>
+          <div class="metric-change negative" id="attacksChange">+12.1%</div>
+          <svg class="spark red" viewBox="0 0 180 44" aria-hidden="true"><polyline id="attacksSpark" points=""></polyline></svg>
+        </article>
+        <article class="metric-card" data-card-detail="Median latency">
+          <div class="metric-top"><span>Median latency</span><button class="mini-button" data-open-drawer="connectivity">Details</button></div>
+          <strong id="latencyValue">37 ms</strong>
+          <div class="metric-change positive" id="latencyChange">-1.8%</div>
+          <svg class="spark green" viewBox="0 0 180 44" aria-hidden="true"><polyline id="latencySpark" points=""></polyline></svg>
+        </article>
+        <article class="metric-card" data-card-detail="IPv6 traffic">
+          <div class="metric-top"><span>IPv6 traffic</span><button class="mini-button" data-open-drawer="dns">Details</button></div>
+          <strong id="adoptionValue">36.2%</strong>
+          <div class="metric-change positive" id="adoptionChange">+0.9%</div>
+          <svg class="spark violet" viewBox="0 0 180 44" aria-hidden="true"><polyline id="adoptionSpark" points=""></polyline></svg>
+        </article>
+      </section>
+
+      <section class="module-grid">
+        <article class="module module-wide" id="traffic" data-module="traffic">
+          <div class="module-header">
+            <div>
+              <span class="module-kicker">Traffic</span>
+              <h2 id="chartTitle">Internet traffic</h2>
+              <p id="chartDescription">Normalized request volume across the selected region.</p>
+            </div>
+            <div class="module-actions">
+              <button class="tool-button" data-action="copy">Copy link</button>
+              <button class="tool-button" data-action="learn">Learn more</button>
+              <button class="tool-button" data-action="share">Share</button>
+              <button class="icon-tool" data-menu-button aria-haspopup="true" aria-expanded="false" aria-label="More actions for traffic chart"><span></span><span></span><span></span></button>
+              <div class="action-menu" role="menu">
+                <button data-action="data" role="menuitem">View in Data Explorer</button>
+                <button data-action="cite" role="menuitem">Cite chart</button>
+                <button data-action="download" role="menuitem">Download CSV</button>
+                <button data-action="embed" role="menuitem">Embed chart</button>
+              </div>
+            </div>
+          </div>
+          <div class="module-toolbar">
+            <div class="tab-group" role="tablist" aria-label="Traffic metric">
+              <button class="active" data-chart="requests">HTTP requests</button>
+              <button data-chart="bandwidth">Bytes</button>
+              <button data-chart="latency">Latency</button>
+              <button data-chart="attacks">Anomalies</button>
+            </div>
+            <select id="trafficGranularity" aria-label="Granularity">
+              <option>Hourly</option>
+              <option>Daily</option>
+              <option>Weekly</option>
+            </select>
+          </div>
+          <div class="chart-wrap">
+            <svg class="main-chart" viewBox="0 0 820 330" aria-label="Internet traffic trend chart" role="img">
+              <defs>
+                <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#f6821f" stop-opacity="0.28"></stop>
+                  <stop offset="100%" stop-color="#f6821f" stop-opacity="0"></stop>
+                </linearGradient>
+              </defs>
+              <g class="grid-lines">
+                <path d="M64 45H780"></path><path d="M64 113H780"></path><path d="M64 181H780"></path><path d="M64 249H780"></path>
+              </g>
+              <g class="axis-labels">
+                <text x="25" y="49">100</text><text x="35" y="117">75</text><text x="35" y="185">50</text><text x="35" y="253">25</text>
+                <text x="64" y="302">00:00</text><text x="279" y="302">06:00</text><text x="498" y="302">12:00</text><text x="716" y="302">18:00</text>
+              </g>
+              <polygon id="chartArea" class="chart-area" points=""></polygon>
+              <polyline id="mainChartLine" class="chart-line" points=""></polyline>
+              <g id="chartDots" class="chart-dots"></g>
+              <line id="hoverLine" class="hover-line" x1="0" y1="45" x2="0" y2="275"></line>
+            </svg>
+          </div>
+          <div class="chart-footer">
+            <span><strong id="chartPeak">89</strong> peak index</span>
+            <span><strong id="chartLow">38</strong> low index</span>
+            <span><strong id="chartAverage">64</strong> average</span>
+            <button class="link-button" data-open-modal="dataExplorerModal">Open query</button>
+          </div>
+        </article>
+
+        <article class="module" id="traffic-type" data-module="traffic-type">
+          <div class="module-header compact">
+            <div><span class="module-kicker">Traffic</span><h2>Traffic by type</h2><p>Device, IP version, and automation mix.</p></div>
+            <button class="link-button" data-open-drawer="traffic-type">Inspect</button>
+          </div>
+          <div class="stack-list">
+            <div class="stack-row"><span>Desktop</span><div class="stack"><i style="width: 58%"></i></div><strong>58%</strong></div>
+            <div class="stack-row"><span>Mobile</span><div class="stack blue"><i style="width: 42%"></i></div><strong>42%</strong></div>
+            <div class="stack-row"><span>Human</span><div class="stack green"><i style="width: 69%"></i></div><strong>69%</strong></div>
+            <div class="stack-row" id="bot-traffic"><span>Bot</span><div class="stack violet"><i style="width: 31%"></i></div><strong>31%</strong></div>
+            <div class="stack-row" id="ai-crawlers"><span>AI crawlers</span><div class="stack orange"><i style="width: 14%"></i></div><strong>14%</strong></div>
+            <div class="stack-row"><span>IPv6</span><div class="stack orange"><i id="ipv6Bar" style="width: 36%"></i></div><strong id="ipv6Share">36%</strong></div>
+          </div>
+        </article>
+
+        <article class="module" id="protocols" data-module="protocols">
+          <div class="module-header compact">
+            <div><span class="module-kicker">Adoption</span><h2>Protocol usage</h2><p>HTTP, TLS, QUIC, and IP adoption.</p></div>
+            <button class="link-button" data-route="adoption">Explore</button>
+          </div>
+          <div class="protocol-grid">
+            <button class="protocol-card active" data-protocol="HTTP/3"><strong>HTTP/3</strong><span>31%</span></button>
+            <button class="protocol-card" data-protocol="TLS 1.3"><strong>TLS 1.3</strong><span>72%</span></button>
+            <button class="protocol-card" data-protocol="QUIC"><strong>QUIC</strong><span>29%</span></button>
+            <button class="protocol-card" data-protocol="IPv6"><strong>IPv6</strong><span id="protocolIpv6">36%</span></button>
+          </div>
+          <div class="mini-chart">
+            <svg viewBox="0 0 310 110" aria-hidden="true">
+              <polyline id="protocolLine" points=""></polyline>
+            </svg>
+          </div>
+        </article>
+
+        <article class="module module-wide" id="security" data-module="security">
+          <div class="module-header">
+            <div>
+              <span class="module-kicker">Security</span>
+              <h2>Attacks and mitigations</h2>
+              <p>HTTP DDoS attack activity, mitigation techniques, and Layer 3/4 vectors.</p>
+            </div>
+            <div class="module-actions">
+              <button class="tool-button" data-action="copy">Copy link</button>
+              <button class="tool-button" data-action="data">View in Data Explorer</button>
+              <button class="icon-tool" data-menu-button aria-haspopup="true" aria-expanded="false" aria-label="More actions for security chart"><span></span><span></span><span></span></button>
+              <div class="action-menu" role="menu">
+                <button data-action="learn" role="menuitem">Learn more</button>
+                <button data-action="cite" role="menuitem">Cite chart</button>
+                <button data-action="download" role="menuitem">Download CSV</button>
+              </div>
+            </div>
+          </div>
+          <div class="security-layout">
+            <div class="attack-bars">
+              <div class="attack-row"><span>Managed rules</span><div><i style="width: 73%"></i></div><strong>73%</strong></div>
+              <div class="attack-row"><span>HTTP DDoS</span><div><i style="width: 61%"></i></div><strong>61%</strong></div>
+              <div class="attack-row"><span>Bot score</span><div><i style="width: 44%"></i></div><strong>44%</strong></div>
+              <div class="attack-row"><span>Rate limiting</span><div><i style="width: 37%"></i></div><strong>37%</strong></div>
+              <div class="attack-row" id="email-security"><span>Email security</span><div><i style="width: 28%"></i></div><strong>28%</strong></div>
+            </div>
+            <div class="attack-map">
+              <button class="attack-dot hot" style="left: 72%; top: 42%" data-open-drawer="attack-apac" aria-label="APAC attack cluster" title="View APAC attack details"></button>
+              <button class="attack-dot" style="left: 50%; top: 35%" data-open-drawer="attack-eu" aria-label="Europe attack cluster" title="View Europe attack details"></button>
+              <button class="attack-dot" style="left: 27%; top: 45%" data-open-drawer="attack-na" aria-label="North America attack cluster" title="View North America attack details"></button>
+              <svg viewBox="0 0 420 230" aria-hidden="true">
+                <path class="land" d="M70 78c40-25 82-24 126 2 31 19 64 21 99 6 32-14 63-11 94 10 34 23 35 50 4 80-41 40-91 45-151 16-26-12-53-13-80-2-46 19-86 10-120-29-24-27-15-55 28-83Z"></path>
+                <path class="land secondary" d="M275 42c35-13 67-7 96 19 22 20 26 43 11 69-29 13-57 8-85-14-19-15-41-25-66-30-7-16 8-31 44-44Z"></path>
+              </svg>
+            </div>
+          </div>
+        </article>
+
+        <article class="module" id="domain-rankings" data-module="domains">
+          <div class="module-header compact">
+            <div><span class="module-kicker">Rankings</span><h2>Domain popularity</h2><p>Most popular domains by category.</p></div>
+            <button class="link-button" data-open-modal="rankingModal">View all</button>
+          </div>
+          <div class="rank-controls">
+            <button class="active" data-ranking-filter="all">All</button>
+            <button data-ranking-filter="ai">AI</button>
+            <button data-ranking-filter="social">Social</button>
+            <button data-ranking-filter="video">Video</button>
+          </div>
+          <div class="domain-list" id="domainList"></div>
+          <div class="domain-detail" id="domainDetail">
+            <span>Selected domain</span>
+            <strong>google.com</strong>
+            <p>Rank has been stable in the selected period.</p>
+            <button class="link-button" data-open-drawer="domain">Open details</button>
+          </div>
+        </article>
+
+        <article class="module" id="dns" data-module="dns">
+          <div class="module-header compact">
+            <div><span class="module-kicker">DNS</span><h2>1.1.1.1 resolver</h2><p>Query type and transport protocol mix.</p></div>
+            <button class="link-button" data-route="dns">Explore</button>
+          </div>
+          <div class="donut-row">
+            <div class="donut" style="--a: 58; --b: 24; --c: 18"><span>A</span></div>
+            <div class="legend-list">
+              <button data-dns="A"><i class="orange-dot"></i>A records <strong>58%</strong></button>
+              <button data-dns="AAAA"><i class="blue-dot"></i>AAAA records <strong>24%</strong></button>
+              <button data-dns="HTTPS"><i class="green-dot"></i>HTTPS records <strong>18%</strong></button>
+            </div>
+          </div>
+          <div class="transport-list">
+            <div><span>DoH</span><b>52%</b></div>
+            <div><span>UDP</span><b>34%</b></div>
+            <div><span>DoT</span><b>14%</b></div>
+          </div>
+        </article>
+
+        <article class="module module-wide" id="connectivity" data-module="connectivity">
+          <div class="module-header">
+            <div><span class="module-kicker">Connectivity</span><h2>Quality and outages</h2><p>Observed traffic disruptions, latency, and network quality by location.</p></div>
+            <div class="module-actions">
+              <button class="tool-button" data-open-drawer="outage-feed">Outage feed</button>
+              <button class="tool-button" data-open-drawer="speed">Run speed test</button>
+            </div>
+          </div>
+          <div class="connectivity-grid">
+            <div class="world-map" aria-label="World traffic map">
+              <svg viewBox="0 0 620 320" role="img">
+                <path class="land" d="M95 110c34-29 69-36 106-19 19 9 39 9 60 2 27-9 55-1 76 20 17 17 38 24 63 20 39-6 75 2 109 24 17 11 19 28 4 42-28 26-65 34-111 25-22-4-44-1-65 10-33 18-67 22-102 12-21-6-43-7-66-2-43 10-80-1-111-31-24-24-22-54 37-103Z"></path>
+                <path class="land secondary" d="M424 76c34-16 70-12 108 12 24 15 34 38 24 68-7 22-24 34-51 36-32 2-53-9-64-32-9-19-23-34-42-45-15-9-7-25 25-39Z"></path>
+                <path class="land secondary" d="M277 232c23-7 51-4 84 8 32 12 49 31 51 58-38 10-77 8-116-6-22-8-34-22-36-41-.8-9 5-15 17-19Z"></path>
+              </svg>
+              <button class="map-dot active" data-location="united-states" style="left: 24%; top: 42%" aria-label="United States connectivity" title="View United States data"><span>United States</span></button>
+              <button class="map-dot" data-location="brazil" style="left: 38%; top: 67%" aria-label="Brazil connectivity" title="View Brazil data"><span>Brazil</span></button>
+              <button class="map-dot" data-location="germany" style="left: 51%; top: 39%" aria-label="Germany connectivity" title="View Germany data"><span>Germany</span></button>
+              <button class="map-dot" data-location="india" style="left: 66%; top: 54%" aria-label="India connectivity" title="View India data"><span>India</span></button>
+              <button class="map-dot" data-location="japan" style="left: 79%; top: 46%" aria-label="Japan connectivity" title="View Japan data"><span>Japan</span></button>
+            </div>
+            <div class="outage-list" id="outages">
+              <button data-open-drawer="outage-1"><time>14:18 UTC</time><strong>Traffic anomaly</strong><span>South Asia mobile networks</span></button>
+              <button data-open-drawer="outage-2"><time>11:02 UTC</time><strong>Elevated DDoS activity</strong><span>Retail and media zones</span></button>
+              <button data-open-drawer="outage-3"><time>08:31 UTC</time><strong>Routing change observed</strong><span>Several transit providers</span></button>
+              <button data-open-drawer="outage-4"><time>03:45 UTC</time><strong>Availability drop</strong><span>Regional ISP cluster</span></button>
+            </div>
+          </div>
+        </article>
+
+        <article class="module" id="routing" data-module="routing">
+          <div class="module-header compact">
+            <div><span class="module-kicker">Routing</span><h2>BGP and AS Rank</h2><p>Network visibility, announcements, withdrawals.</p></div>
+            <button class="link-button" data-open-drawer="routing">Details</button>
+          </div>
+          <div class="as-table">
+            <div><span>AS15169</span><strong>Google</strong><b>Rank 1</b></div>
+            <div><span>AS32934</span><strong>Meta</strong><b>Rank 2</b></div>
+            <div><span>AS13335</span><strong>Cloudflare</strong><b>Rank 3</b></div>
+            <div><span>AS16509</span><strong>Amazon</strong><b>Rank 4</b></div>
+          </div>
+        </article>
+
+        <article class="module" id="data-explorer" data-module="data-explorer">
+          <div class="module-header compact">
+            <div><span class="module-kicker">Tools</span><h2>Data Explorer</h2><p>Build a query against Radar datasets.</p></div>
+            <button class="link-button" data-open-modal="dataExplorerModal">Open</button>
+          </div>
+          <form class="query-builder" id="queryBuilder">
+            <label>Dataset<select id="datasetSelect"><option>HTTP requests</option><option>DDoS attacks</option><option>DNS queries</option><option>BGP announcements</option></select></label>
+            <label>Dimension<select id="dimensionSelect"><option>Location</option><option>ASN</option><option>Protocol</option><option>Bot class</option></select></label>
+            <label>Format<select id="formatSelect"><option>Chart</option><option>Table</option><option>CSV</option><option>API URL</option></select></label>
+            <button class="solid-button" type="submit">Run query</button>
+          </form>
+          <pre class="api-preview" id="apiPreview">GET /api/v1/radar/http/summary?dateRange=24h&location=worldwide</pre>
+        </article>
+
+        <article class="module module-wide" id="reports" data-module="reports">
+          <div class="module-header">
+            <div><span class="module-kicker">Reports</span><h2>Latest reports and analysis</h2><p>Research briefs, quarterly trends, outage reports, and threat research.</p></div>
+            <button class="link-button" data-route="reports">Archive</button>
+          </div>
+          <div class="report-grid">
+            <button type="button" class="report-card" data-open-drawer="report-quarterly"><span>Report</span><strong>Internet trends for the current quarter</strong><small>Traffic, security, adoption</small></button>
+            <button type="button" class="report-card" data-open-drawer="report-ai-bots"><span>Brief</span><strong>AI bot traffic and crawler behavior</strong><small>Automated traffic insights</small></button>
+            <button type="button" class="report-card" data-open-drawer="report-outages"><span>Analysis</span><strong>Global outages and network resilience</strong><small>Routing and availability</small></button>
+            <button type="button" class="report-card" data-open-drawer="report-year-in-review"><span>Year in Review</span><strong>Internet services and ranking movement</strong><small>Domains, categories, traffic</small></button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div class="search-modal" id="searchModal" aria-hidden="true">
+    <div class="search-panel" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+      <div class="search-input-row">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"></circle><path d="m13 13 4 4"></path></svg>
+        <input id="searchInput" type="search" placeholder="Search datasets, domains, ASNs, reports, tools" autocomplete="off">
+        <button id="closeSearch" aria-label="Close search">&times;</button>
+      </div>
+      <h2 id="searchTitle">Search Radar</h2>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <aside class="drawer" id="detailDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div><span id="drawerKicker">Radar details</span><h2 id="drawerTitle">Details</h2></div>
+      <button id="closeDrawer" aria-label="Close drawer">&times;</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+
+  <div class="modal-layer" id="modalLayer" aria-hidden="true">
+    <section class="modal" id="dataExplorerModal" role="dialog" aria-modal="true" aria-labelledby="dataExplorerTitle">
+      <button class="modal-close" data-close-modal aria-label="Close">&times;</button>
+      <span class="module-kicker">Tools</span>
+      <h2 id="dataExplorerTitle">Data Explorer</h2>
+      <p>Compose a Radar query and preview chart, table, CSV, or API output.</p>
+      <div class="modal-grid">
+        <label>Dataset<select id="modalDataset"><option>HTTP requests</option><option>DDoS attacks</option><option>DNS query types</option><option>BGP announcements</option></select></label>
+        <label>Location<select id="modalLocation"><option>Worldwide</option><option>United States</option><option>Japan</option><option>Germany</option></select></label>
+        <label>Date range<select id="modalDateRange"><option>Last 24 hours</option><option>Last 7 days</option><option>Last 30 days</option></select></label>
+        <label>Output<select id="modalOutput"><option>Chart</option><option>Table</option><option>CSV</option><option>API URL</option></select></label>
+      </div>
+      <pre class="api-preview" id="modalApiPreview">GET /api/v1/radar/http/timeseries?name=HTTP_REQUESTS&dateRange=24h</pre>
+      <div class="query-results" id="queryResults"></div>
+      <button class="solid-button" data-action="download">Run query</button>
+    </section>
+
+    <section class="modal" id="apiModal" role="dialog" aria-modal="true" aria-labelledby="apiTitle">
+      <button class="modal-close" data-close-modal aria-label="Close">&times;</button>
+      <span class="module-kicker">Developer</span>
+      <h2 id="apiTitle">Radar API</h2>
+      <p>Mock API documentation panel for agent tests: endpoints, authentication, examples, and response previews.</p>
+      <div class="endpoint-list">
+        <button><code>GET /api/v1/radar/http/summary</code><span>HTTP request summary</span></button>
+        <button><code>GET /api/v1/radar/attacks/layer7/timeseries</code><span>Attack time series</span></button>
+        <button><code>GET /api/v1/radar/entities/ranking/top</code><span>Domain rankings</span></button>
+      </div>
+    </section>
+
+    <section class="modal" id="rankingModal" role="dialog" aria-modal="true" aria-labelledby="rankingTitle">
+      <button class="modal-close" data-close-modal aria-label="Close">&times;</button>
+      <span class="module-kicker">Rankings</span>
+      <h2 id="rankingTitle">All domain rankings</h2>
+      <div class="ranking-table" id="rankingTable"></div>
+    </section>
+
+    <section class="modal" id="citationModal" role="dialog" aria-modal="true" aria-labelledby="citationTitle">
+      <button class="modal-close" data-close-modal aria-label="Close">&times;</button>
+      <span class="module-kicker">Citation</span>
+      <h2 id="citationTitle">Cite this chart</h2>
+      <p id="citationText">Cloudflare Radar, Internet traffic, selected range.</p>
+      <button class="solid-button" id="copyCitation">Copy citation</button>
+    </section>
+
+    <section class="modal" id="urlScannerModal" role="dialog" aria-modal="true" aria-labelledby="scannerTitle">
+      <button class="modal-close" data-close-modal aria-label="Close">&times;</button>
+      <span class="module-kicker">Tools</span>
+      <h2 id="scannerTitle">URL scanner</h2>
+      <p>Enter a URL to simulate a Radar security scan.</p>
+      <div class="inline-input scanner-input">
+        <input id="scannerInput" type="url" placeholder="https://example.com">
+        <button class="solid-button" id="runScanner">Scan</button>
+      </div>
+      <div class="scan-result" id="scanResult">No scan run yet.</div>
+    </section>
+  </div>
+
+  <aside class="filter-drawer" id="filterDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div><span>Filters</span><h2>Refine Radar data</h2></div>
+      <button id="closeFilters" aria-label="Close filters">&times;</button>
+    </div>
+    <div class="filter-options">
+      <label><input type="checkbox" checked> Include Cloudflare network traffic</label>
+      <label><input type="checkbox" checked> Include public DNS resolver data</label>
+      <label><input type="checkbox"> Show bot-only traffic</label>
+      <label><input type="checkbox"> Exclude automated crawlers</label>
+      <label><input type="checkbox"> Compare with previous year</label>
+    </div>
+    <button class="solid-button" id="applyFilters">Apply filters</button>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Copied link</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

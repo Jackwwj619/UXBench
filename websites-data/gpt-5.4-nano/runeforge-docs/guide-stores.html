@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stores — Runeforge</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="light">
+<header class="topnav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 32 32" width="22" height="22"><path d="M16 4 L 28 12 L 28 24 L 16 30 L 4 24 L 4 12 Z" fill="none" stroke="#7C3AED" stroke-width="2"/><path d="M16 10 L 22 14 L 22 20 L 16 22 L 10 20 L 10 14 Z" fill="#F59E0B" opacity="0.7"/></svg></span>
+      <span class="brand-name">Runeforge</span><span class="brand-version">v3.4</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="active">Docs</a><a href="api-reference.html">API</a><a href="examples.html">Examples</a><a href="#">Blog</a><a href="#">Community</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="search-trigger" id="searchTrigger"><span>Search docs</span><kbd>⌘K</kbd></button>
+      <select class="version-select"><option>v3.4 (latest)</option><option>v3.3</option><option>v3.2</option><option>v2 (legacy)</option></select>
+      <button class="icon-btn" id="themeToggle">☾</button>
+      <a href="#" class="icon-btn">★ 18.4k</a>
+    </div>
+  </div>
+</header>
+
+<div class="docs-layout">
+  <aside class="docs-toc">
+    <div class="toc-section">
+      <h4>Getting started</h4>
+      <a href="index.html" class="toc-item">Introduction</a>
+      <a href="guide-quickstart.html" class="toc-item">Quickstart (5 min)</a>
+      <a href="#" class="toc-item">Why Runeforge?</a>
+      <a href="#" class="toc-item">Installation</a>
+      <a href="#" class="toc-item">Migration from Redux</a>
+    </div>
+    <div class="toc-section">
+      <h4>Core concepts</h4>
+      <a href="guide-stores.html" class="toc-item active">Stores</a>
+      <a href="guide-actions.html" class="toc-item">Actions &amp; selectors</a>
+      <a href="#" class="toc-item">Subscriptions</a>
+      <a href="#" class="toc-item">Composition &amp; slicing</a>
+      <a href="#" class="toc-item">Async &amp; effects</a>
+      <a href="#" class="toc-item">Persistence</a>
+      <a href="#" class="toc-item">Devtools</a>
+    </div>
+    <div class="toc-section">
+      <h4>Reference</h4>
+      <a href="api-reference.html" class="toc-item">API reference</a><a href="#" class="toc-item">Type definitions</a><a href="#" class="toc-item">Errors</a><a href="#" class="toc-item">Changelog</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="breadcrumbs"><a href="index.html">Docs</a> <span>›</span> <a href="index.html">Core concepts</a> <span>›</span> <span>Stores</span></nav>
+
+    <span class="page-eyebrow">Core concept</span>
+    <h1 id="stores">Stores.</h1>
+
+    <p class="lede">A <em>store</em> is the unit of state in Runeforge. It owns a single piece of state, exposes actions to update it, and notifies subscribers when it changes. Stores are framework-agnostic — they have no knowledge of React, Solid, or any UI library.</p>
+
+    <h2 id="creating">Creating a store</h2>
+    <p>Use <code>forge()</code> to create one. The shape of the object you pass <em>is</em> the API of the store.</p>
+
+    <pre class="code-block"><span class="k">import</span> { forge } <span class="k">from</span> <span class="s">"runeforge"</span>;
+
+<span class="k">const</span> session = <span class="n">forge</span>({
+  state: { user: <span class="k">null</span> <span class="k">as</span> User | <span class="k">null</span>, expiresAt: <span class="num">0</span> },
+  actions: {
+    <span class="n">login</span>:  (s, user: User, ttl: number) =&gt; ({ user, expiresAt: Date.now() + ttl }),
+    <span class="n">logout</span>: ()                            =&gt; ({ user: <span class="k">null</span>, expiresAt: <span class="num">0</span> }),
+  },
+});</pre>
+
+    <p>The returned store is a plain object with these methods, plus your actions as methods:</p>
+
+    <table class="ref-table">
+      <thead><tr><th>Member</th><th>Signature</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>get</code></td><td><code>() =&gt; State</code></td><td>Returns the current state (a frozen snapshot).</td></tr>
+        <tr><td><code>set</code></td><td><code>(next: Partial&lt;State&gt;) =&gt; void</code></td><td>Imperative state update. Prefer actions in most cases.</td></tr>
+        <tr><td><code>subscribe</code></td><td><code>(listener) =&gt; unsubscribe</code></td><td>Calls listener on every committed state change.</td></tr>
+        <tr><td><code>select</code></td><td><code>(selector) =&gt; SelectedView</code></td><td>Returns a derived view that's its own subscribable store.</td></tr>
+        <tr><td><code>reset</code></td><td><code>() =&gt; void</code></td><td>Returns to the initial state. Useful in tests.</td></tr>
+        <tr><td><code>name</code></td><td><code>string</code></td><td>Auto-derived debug name, or passed via the options bag.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="get-and-subscribe">Reading and subscribing</h2>
+    <p>The simplest store is read with <code>get()</code> and observed with <code>subscribe()</code>:</p>
+
+    <pre class="code-block"><span class="k">const</span> current = session.<span class="n">get</span>(); <span class="c">// { user: null, expiresAt: 0 }</span>
+
+<span class="k">const</span> off = session.<span class="n">subscribe</span>((next, prev) =&gt; {
+  console.log(<span class="s">"changed:"</span>, prev, <span class="s">"→"</span>, next);
+});
+<span class="c">// later</span>
+<span class="n">off</span>();</pre>
+
+    <div class="callout callout-warning">
+      <strong>State is immutable.</strong> Each commit replaces the previous state with a new frozen object. Don't try to mutate <code>s.user.name = "x"</code> — return a new object instead. Runeforge will warn in dev if it detects an in-place mutation.
+    </div>
+
+    <h2 id="composing">Composing stores</h2>
+    <p>Apps usually have several stores. They compose by importing each other and using <code>derive()</code>:</p>
+
+    <pre class="code-block"><span class="k">import</span> { derive } <span class="k">from</span> <span class="s">"runeforge"</span>;
+<span class="k">import</span> { session } <span class="k">from</span> <span class="s">"./session"</span>;
+<span class="k">import</span> { feed }    <span class="k">from</span> <span class="s">"./feed"</span>;
+
+<span class="k">export const</span> homepage = <span class="n">derive</span>(
+  [session, feed],
+  (s, f) =&gt; ({
+    greeting: s.user ? <span class="s">`Welcome back, ${s.user.name}`</span> : <span class="s">"Welcome"</span>,
+    items:    s.user ? f.items : f.items.<span class="n">slice</span>(<span class="num">0</span>, <span class="num">5</span>),
+  })
+);</pre>
+
+    <p><code>derive</code> only recomputes when one of its inputs changes — and only emits a notification when its <em>output</em> changes (by structural equality). It's the right tool for "computed views" or "memoized selectors".</p>
+
+    <h2 id="slicing">Slicing a store</h2>
+    <p>For very large stores, <code>store.select()</code> returns a slice that behaves like its own store:</p>
+
+    <pre class="code-block"><span class="k">const</span> currentUser = session.<span class="n">select</span>((s) =&gt; s.user);
+
+currentUser.<span class="n">subscribe</span>((u) =&gt; render(u));
+<span class="c">// fires only when `s.user` changes — not on `expiresAt` changes</span></pre>
+
+    <h2 id="ssr">Server-side rendering &amp; serialization</h2>
+    <p>Every store can be serialized with <code>store.toJSON()</code> and rehydrated with <code>store.fromJSON()</code>. The intended flow on the server is: create stores, prime them with fetched data, render once, ship the dehydrated state along with the HTML.</p>
+
+    <pre class="code-block"><span class="c">// server</span>
+session.<span class="n">login</span>(user, <span class="num">3600_000</span>);
+<span class="k">const</span> html  = <span class="n">renderToString</span>(&lt;App /&gt;);
+<span class="k">const</span> state = { session: session.<span class="n">toJSON</span>(), feed: feed.<span class="n">toJSON</span>() };
+
+<span class="c">// client</span>
+session.<span class="n">fromJSON</span>(state.session);
+feed.<span class="n">fromJSON</span>(state.feed);
+<span class="n">hydrate</span>(&lt;App /&gt;);</pre>
+
+    <h2 id="testing">Testing stores</h2>
+    <p>Stores are easy to unit-test because they have no framework. Just call actions and assert against <code>store.get()</code>:</p>
+
+    <pre class="code-block"><span class="k">import</span> { session } <span class="k">from</span> <span class="s">"./session"</span>;
+
+<span class="n">beforeEach</span>(() =&gt; session.<span class="n">reset</span>());
+
+<span class="n">test</span>(<span class="s">"login sets the user and expiry"</span>, () =&gt; {
+  session.<span class="n">login</span>({ id: <span class="num">1</span>, name: <span class="s">"Milena"</span> }, <span class="num">60_000</span>);
+  <span class="k">const</span> s = session.<span class="n">get</span>();
+  <span class="n">expect</span>(s.user?.name).<span class="n">toBe</span>(<span class="s">"Milena"</span>);
+  <span class="n">expect</span>(s.expiresAt).<span class="n">toBeGreaterThan</span>(Date.now());
+});</pre>
+
+    <nav class="page-pager">
+      <a class="pager-prev" href="guide-quickstart.html"><span class="pager-label">Previous</span><strong>← Quickstart</strong></a>
+      <a class="pager-next" href="guide-actions.html"><span class="pager-label">Next</span><strong>Actions &amp; selectors →</strong></a>
+    </nav>
+  </main>
+
+  <aside class="page-toc">
+    <div class="ptoc-label">On this page</div>
+    <a href="#stores" class="ptoc-link active">Stores</a>
+    <a href="#creating" class="ptoc-link ptoc-sub">Creating a store</a>
+    <a href="#get-and-subscribe" class="ptoc-link ptoc-sub">Reading and subscribing</a>
+    <a href="#composing" class="ptoc-link ptoc-sub">Composing stores</a>
+    <a href="#slicing" class="ptoc-link ptoc-sub">Slicing a store</a>
+    <a href="#ssr" class="ptoc-link ptoc-sub">SSR &amp; serialization</a>
+    <a href="#testing" class="ptoc-link ptoc-sub">Testing stores</a>
+  </aside>
+</div>
+
+<dialog id="searchDialog" class="search-dialog">
+  <input type="text" id="searchInput" placeholder="Search docs, API, examples…" />
+  <div class="search-hint">↑ ↓ to navigate · ↵ to open · esc to dismiss</div>
+  <ul class="search-results" id="searchResults"></ul>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>

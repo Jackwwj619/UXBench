@@ -1,0 +1,42 @@
+{
+  "summary": "The Harbor Wallet mobile app demonstrates functional numeric input and clear visual hierarchy in the 'Send' flow, but suffers from critical validation gaps and accessibility issues. Users can enter amounts vastly exceeding their balance without immediate error feedback, and key interactive elements (quick-select chips, header icons) fall below standard mobile tap-target guidelines, increasing the risk of mis-taps.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "the-application-allows-users-to-enter",
+      "severity": "high",
+      "area": "error recovery",
+      "page_hint": "index.html: Send money screen, Amount display vs Available balance",
+      "problem": "The application allows users to enter transaction amounts significantly higher than their available balance ($203M vs $5,820) without providing any immediate visual error, warning, or disabled state on the 'Continue' button.",
+      "evidence": "In the final observation, the display shows '$ 203,456,789' while 'Available $5,820.16' is visible above. The 'Continue →' button remains visually active (dark blue), implying the action is possible, which leads to user confusion upon submission failure.",
+      "suggested_fix": "Implement real-time validation that disables the 'Continue' button and displays an inline error message (e.g., 'Insufficient funds') when the entered amount exceeds the available balance."
+    },
+    {
+      "id": "the-quick-select-amount-chips-20",
+      "severity": "medium",
+      "area": "mobile usability",
+      "page_hint": "index.html: .quick-amount-chips (ux-14 to ux-17)",
+      "problem": "The quick-select amount chips ($20, $50, $100, Max) have a height of only 25px, which is significantly below the recommended 44px minimum for mobile touch targets.",
+      "evidence": "Layout warnings in the DOM summary identify targets ux-14 through ux-17 with heights of 25px. This small vertical hit area increases the likelihood of missed taps or accidental adjacent selections on touch devices.",
+      "suggested_fix": "Increase the height of the quick-select chips to at least 44px, or add invisible padding around the buttons to expand the clickable area without altering the visual design."
+    },
+    {
+      "id": "header-navigation-controls-back-arrow-and",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "index.html: Header controls (ux-12, ux-13)",
+      "problem": "Header navigation controls (Back arrow and QR button) have tap targets smaller than the 44px guideline (36x36px and 45x30px respectively).",
+      "evidence": "Layout warnings flag ux-12 (Back) and ux-13 (QR) as small tap targets. The QR button is particularly narrow vertically (30px).",
+      "suggested_fix": "Expand the touch bounds of the header icons to 44x44px while keeping the icon visual size consistent."
+    },
+    {
+      "id": "the-continue-button-appears-enabled-even",
+      "severity": "low",
+      "area": "clarity",
+      "page_hint": "index.html: Recipient list and Continue button state",
+      "problem": "The 'Continue' button appears enabled even when no specific recipient avatar is highlighted, relying on implicit text search or default states.",
+      "evidence": "Session memory notes that clicking 'Continue' without explicit avatar selection resulted in no state change or error, yet the button remained visually active. The UI does not clearly distinguish between 'search typed' and 'recipient selected'.",
+      "suggested_fix": "Visually highlight the selected recipient avatar or clearly indicate in the search bar that a valid recipient has been chosen before enabling the primary action."
+    }
+  ]
+}

@@ -1,0 +1,603 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/govuk-passport/index.html",
+  "site": {
+    "name": "govuk-passport",
+    "site_dir": "/Users/timchef/UXBench/websites/govuk-passport",
+    "start_page": "index.html",
+    "page_type": "form/onboarding",
+    "html_files": [
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/govuk-passport/README.md",
+    "summary": "govuk-passport-clone Clone of a GOV.UK-style passport apply / renew multi-step form (one file, multiple steps). Pages | File | Purpose | | --- | --- | | `index.html` | Single-page multi-step form with section switching: start page (eligibility, fees, required materials) → application type (new / renew / replace) → personal info → address → previous passport info → photo upload → review → stop before payment; step indicator on the left / top; each step has fields, hint text, inline errors, and an error summary; bottom \"Save and continue\" / \"Cancel\" | | `styles.css` | GOV.UK Design System style (black-yellow theme, Transport-like font stack, yellow focus outline, red errors) | | `script.js` | Step forward / back, field validation, error-summary focus, state persistence (localStorage) |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full govuk-passport system, prioritizing the primary form/onboarding flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The multi-step GOV.UK-style passport form generally progresses reliably on both desktop and mobile via URL hash changes and an “Application progress” sidebar. However, several UX/quality issues appear around validation recovery (especially photo upload) where errors persist even after user interaction, and some in-page recovery links jump to the wrong content/section. On mobile, multiple primary controls and navigation elements are flagged as small tap targets, increasing the chance of mis-taps and interaction failures.",
+  "exploration_plan": {
+    "goal": "Critique and validate the end-to-end UX of the govuk-passport local demo’s multi-step passport apply/renew flow, including validation, error recovery, state persistence, and responsive/mobile behavior.",
+    "summary": "Start at index.html, handle cookie banner and enter the service via “Start now”. Progress through every visible step of the single-page form (eligibility/fees → application type → personal info → address → previous passport info → photo upload → review), intentionally triggering validation and using back/forward to assess state persistence and error-summary behavior. Repeat the critical path checks on mobile viewport to confirm layout/interaction fidelity.",
+    "assumptions": [
+      "The entire multi-step experience is implemented within index.html via section switching (anchors like #service-start).",
+      "script.js handles step navigation, field validation, error-summary focus, and state persistence in localStorage.",
+      "There are no additional HTML pages beyond index.html in this prototype (services.css/js are included globally)."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Cookie banner controls (Accept analytics / Reject analytics / View cookies): ensure it doesn’t block navigation and persists choice.",
+      "Step navigation + state persistence (localStorage) across back/forward and refresh within the single page.",
+      "Error summary + focus behavior when validation fails (ensure keyboard focus moves to the summary and correct field is indicated).",
+      "Photo upload step: interaction correctness for file input, preview/required validation, and error handling.",
+      "Review step: confirm it accurately reflects previous step inputs and that edits go to the right step/fields.",
+      "Mobile: small tap targets observed in top navigation and cookie buttons; re-check critical controls in the form for touch accessibility."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing page & entry controls",
+        "objective": "Validate the demo landing experience and ensure users can reliably start the multi-step form regardless of cookie choice.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "On desktop: load index.html and verify the content matches “Apply for or renew a passport - GOV.UK local demo” with the “Start now ›” control visible.",
+          "Accept analytics cookies and then click “Start now ›”; confirm the service section becomes active (no blocking modal persists).",
+          "Repeat with Reject analytics cookies; verify the start flow still works.",
+          "Click “View cookies” and ensure it’s dismissible/doesn’t trap focus; then start the service.",
+          "Check that top nav links (Home/Service/Demo result) don’t break the active step state (they use anchor navigation)."
+        ],
+        "exit_criteria": [
+          "Start the service successfully at least once after Accept and once after Reject cookies.",
+          "Cookie modal/view state does not interfere with step content or navigation.",
+          "No console/network errors are present during entry."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Happy-path traversal through all steps",
+        "objective": "Complete the full multi-step form flow (to the point where the prototype stops before payment) and verify correct step progression and UI consistency.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Navigate through steps in order: start/eligibility & fees → application type (new/renew/replace) → personal info → address → previous passport info → photo upload → review → stop before payment.",
+          "Verify the step indicator (left/top) updates correctly on each transition.",
+          "Use “Save and continue” at each step (and “Cancel” at least once to confirm cancel behavior).",
+          "On each step: verify inline help text/hints are readable and that the correct input widgets are shown for the chosen application type."
+        ],
+        "exit_criteria": [
+          "Every visible step’s main controls can be completed without blocking validation failures (using non-real test data).",
+          "No unexpected UI regressions occur between steps (fields don’t disappear incorrectly).",
+          "The user reaches the review/stop-before-payment stage."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Validation & error recovery",
+        "objective": "Deliberately trigger validation failures and confirm error summary, inline errors, and recovery (back/forward) behave as intended.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "At multiple steps, attempt “Save and continue” with missing/invalid values to trigger inline errors.",
+          "Confirm error summary appears (if implemented) and keyboard focus moves to it (error-summary focus behavior).",
+          "From the error summary, confirm navigation to the correct failing field/section.",
+          "Trigger an error, then use browser back (or in-app back) and forward to ensure state is preserved and errors update appropriately.",
+          "Confirm that correcting a field clears both inline error and error summary on re-submit."
+        ],
+        "exit_criteria": [
+          "Validation failures are reproducible on at least 3 different steps.",
+          "Focus behavior is correct: error summary receives focus and highlights actionable content.",
+          "Correcting inputs resolves errors without requiring full refresh."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "State persistence (localStorage) & refresh resilience",
+        "objective": "Verify that script.js persistence works and that the service resumes appropriately after refresh or partial completion.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "During the flow, partially fill fields on a mid-form step (e.g., personal info) but do not proceed; refresh the page and verify what persists.",
+          "Proceed to a later step (e.g., address), refresh, and confirm the active step and entered data remain consistent.",
+          "Complete photo upload step with a test image selection (non-sensitive) and refresh; verify preview/required state is handled (or fails gracefully with a clear message if persistence is not possible).",
+          "After reaching review, refresh and confirm the review reflects the latest stored values."
+        ],
+        "exit_criteria": [
+          "At least 2 refresh scenarios show expected persistence (active step + inputs).",
+          "Photo upload persistence behavior is understood: either retained appropriately or produces a clear recovery path without broken UI.",
+          "No stale/contradictory review data is shown after refresh."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Responsive/mobile verification of critical interactions",
+        "objective": "Repeat the most failure-prone interactions on mobile viewport to check touch target size, layout integrity, and keyboard focus behavior.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Mobile viewport: enter the service from “Start now ›” (confirm cookie banner doesn’t block).",
+          "On at least one step, trigger a validation error and confirm the error summary and scroll/focus work on small screens.",
+          "Verify step navigation control (left/top indicator) is usable without mis-taps.",
+          "Re-check photo upload and review controls (buttons/inputs) for touch accessibility."
+        ],
+        "exit_criteria": [
+          "Critical path (entry → at least one validated error recovery → review/stop-before-payment) succeeds on mobile.",
+          "No overlapping/hidden elements prevent completing required actions.",
+          "Touch interactions do not cause accidental taps on small controls."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (index.html only).",
+      "features": "Exercise most visible controls per key page/step: cookie banner buttons, Start/Cancel, Save and continue/back, application-type choice, required form inputs, error summary navigation, photo upload, and review/stop-before-payment state.",
+      "mobile": "Repeat critical checks (entry, one validation-error recovery, photo upload, review/stop state) on mobile viewport."
+    },
+    "notes": [
+      "The site is a single-page multi-step prototype; focus exploration on step transitions and state/validation behaviors rather than expecting navigation to additional HTML pages.",
+      "Observed small tap target warnings exist mainly in the top nav and cookie buttons; ensure the in-form controls meet minimum usability expectations on mobile during phase-5."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Provide a demo photo or choose the correct photo method and move forward.",
+      "problem": "When the user is blocked by photo-step validation, the UI error state persists even after selecting an option or attempting to interact with the file upload control; the error appears stale and does not clear.",
+      "evidence": "On the photo step, after showing “There is a problem” with bullet “Select how you want to provide a photo,” the user selected the “Upload a digital photo” option, but “the page still shows an error banner… 'Error: Select how you want to provide a photo'” (steps-37-42). On the upload branch, multiple attempts to trigger file selection (“Choose a demo photo file”, clicking the file input, and pressing Enter) produced no visible change; the page continued to show “Error: Choose a demo photo file” and “Nothing is uploaded” (steps-43-54, steps-49-54). Clicking Continue on the photo upload step did not clear the error or advance (steps-55-60).",
+      "why_it_matters": "Users can’t recover from a mandatory step, leading to frustration, abandonment, and distrust in the form’s responsiveness—especially in a high-stakes government workflow.",
+      "suggestion": "Ensure validation state is re-evaluated immediately after user actions (radio selection, file picker open/selection, checkbox toggles). Add clear, immediate feedback when the file selection registers (e.g., filename/preview, “file added” confirmation) and only keep the error banner until the requirement is satisfied. If a recovery link is clicked, also scroll/focus to the exact control that is missing/invalid.",
+      "source_hint": "index.html photo-option / photo-upload: steps-37-42, steps-43-54, steps-55-60"
+    },
+    {
+      "severity": "high",
+      "ux_area": "clarity",
+      "user_goal": "Use the error summary to quickly jump to the invalid field and correct it.",
+      "problem": "The error summary link attempts to jump to the expiry date input, but after navigation the viewport shows the start content instead of the targeted “Expiry date” inputs—implying the anchor/scroll target is wrong or focus handling is broken.",
+      "evidence": "On the old passport expiry step, clicking the error-summary link labeled “Enter the old passport expiry date” changed the URL fragment to `#old_passport_expiry-input` (steps-19-24). However, after that click and the subsequent scroll, the visible content appears to be the “Before you start / Start now ›” landing area, and the “Expiry date” Day/Month/Year inputs were not surfaced; the page still showed only start/home/support links (steps-19-24).",
+      "why_it_matters": "If users can’t reach the field that the error summary points to, error recovery becomes much slower and more error-prone, defeating the purpose of GOV.UK-style error summaries.",
+      "suggestion": "Verify that `#old_passport_expiry-input` maps to the actual expiry fieldset and that the targeted element becomes visible in the viewport. Also move focus to the first relevant input (Day/Month/Year) and ensure the step section doesn’t collapse into an unrelated screen when the hash changes.",
+      "source_hint": "index.html old passport expiry step error summary link: steps-19-24"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Accurately select options and progress on mobile.",
+      "problem": "Multiple interactive elements are below recommended mobile tap target sizes, increasing mis-taps and causing “click” actions to fail or feel unreliable.",
+      "evidence": "Throughout the form, tooling flags small tap targets on mobile/headers (e.g., “Back” 49x20px, radio inputs at 40x40px, “Continue” 88x40px flagged as below 44px guidance in the warnings). In the recent mobile trace, a “click” on a radio caused no visible change with a persisted hash (`#applicant-type`) after tapping “An adult” (agentic-77-click). There was also a click timeout failure when attempting to press “Continue” on “Who is the passport for?” (steps-73-78 failure: Locator.click timeout).",
+      "why_it_matters": "Small targets and unreliable interactions reduce task success rate on mobile, especially in a multi-step form where users must complete many selections before progressing.",
+      "suggestion": "Increase tap target size to meet/ exceed 44x44px where possible (especially primary CTAs and navigation links). Add generous padding around radio controls and ensure adequate spacing to avoid mis-taps. Consider thicker hit areas for the “Back” and header/service links on mobile layouts.",
+      "source_hint": "mobile viewport warnings + recent trace: agentic-77-click, steps-73-78; layout warning counts across recent chunks"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Understand whether my selection/error state has been updated after correcting inputs.",
+      "problem": "In some steps, the visual selection may not reliably clear the validation error state, suggesting stale validation/UI synchronization issues that users perceive as the form ignoring their input.",
+      "evidence": "On the “Who is the passport for?” step, the error summary and inline error persisted even after the user selected “An adult” (steps-07-12): screenshot/observations indicate the radio looks selected, yet “There is a problem” remained with “Error: Select who the passport is for,” and progression attempts still produced the error. Similarly, on the photo method selection step, selecting “Upload a digital photo” did not clear the error banner for missing photo method (steps-37-42).",
+      "why_it_matters": "Users lose confidence when the UI appears to accept input (radio filled) but errors remain, leading them to re-tap repeatedly or assume the site is broken.",
+      "suggestion": "Re-run validation on change for the specific fieldset and remove/clear both the error summary bullet and inline error immediately when the requirement is satisfied. Add subtle success feedback (error highlight removal, aria-live announcement, or focus shift to the next logical control).",
+      "source_hint": "index.html applicant-type error persistence: steps-07-12; photo method error persistence: steps-37-42"
+    },
+    {
+      "severity": "low",
+      "ux_area": "navigation",
+      "user_goal": "Use informational links without disrupting my in-progress application.",
+      "problem": "On mobile, clicking the “Accessibility statement” link interrupts the current multi-step context and resets the flow to the start instead of preserving/restoring state.",
+      "evidence": "From the mobile “previous-passport” step, clicking “Accessibility statement” changed the URL hash from `#previous-passport` to `#start`, and the visible content became the top-level “Apply for or renew a passport” start page rather than returning to the previous step (steps-67-72).",
+      "why_it_matters": "Users may feel penalized for seeking accessibility information mid-flow; losing their place increases cognitive load and time-to-completion.",
+      "suggestion": "Open informational content in a way that preserves state (e.g., modal, separate page with a clear “Back to your application” returning to the same hash/step). Ensure the Back button returns to the exact prior step reliably.",
+      "source_hint": "index.html mobile informational link: steps-67-72"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 42,
+    "action_success_rate_percent": 97,
+    "unchanged_action_percent": 32,
+    "known_pages": [
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "check": 6,
+      "click": 61,
+      "open_page": 1,
+      "press_key": 1,
+      "scroll": 2,
+      "select_option": 1,
+      "type_text": 6,
+      "wait": 1
+    },
+    "total_actions": 79,
+    "successful_actions": 77,
+    "failed_actions": 2,
+    "unchanged_actions": 25,
+    "observed_feature_count": 57,
+    "exercised_feature_count": 24,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|a|||apply for a passport|#service-start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Apply for a passport"
+      },
+      {
+        "signature": "index.html|clickable|a|||births, deaths, marriages and care|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Births, deaths, marriages and care"
+      },
+      {
+        "signature": "index.html|clickable|a|||change your cookie settings|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Change your cookie settings"
+      },
+      {
+        "signature": "index.html|clickable|a|||citizenship and living in the uk|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Citizenship and living in the UK"
+      },
+      {
+        "signature": "index.html|clickable|a|||confirm your email address|#email_confirm-input",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Confirm your email address"
+      },
+      {
+        "signature": "index.html|clickable|a|||demo result|#confirmation",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Demo result"
+      },
+      {
+        "signature": "index.html|clickable|a|||departments|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Departments"
+      },
+      {
+        "signature": "index.html|clickable|a|||feedback|#service-start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "feedback"
+      },
+      {
+        "signature": "index.html|clickable|a|||gov.uk local demo home|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "GOV.UK local demo home"
+      },
+      {
+        "signature": "index.html|clickable|a|||guidance and regulation|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Guidance and regulation"
+      },
+      {
+        "signature": "index.html|clickable|a|||help|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Help"
+      },
+      {
+        "signature": "index.html|clickable|a|||home|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Home"
+      },
+      {
+        "signature": "index.html|clickable|a|||news|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "News"
+      },
+      {
+        "signature": "index.html|clickable|a|||no|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "No"
+      },
+      {
+        "signature": "index.html|clickable|a|||passport fees|#service-start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Passport fees"
+      },
+      {
+        "signature": "index.html|clickable|a|||passports, travel and living abroad|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Passports, travel and living abroad"
+      },
+      {
+        "signature": "index.html|clickable|a|||privacy|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Privacy"
+      },
+      {
+        "signature": "index.html|clickable|a|||renew an adult passport|#service-start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Renew an adult passport"
+      },
+      {
+        "signature": "index.html|clickable|a|||report a lost or stolen passport|#service-start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Report a lost or stolen passport"
+      },
+      {
+        "signature": "index.html|clickable|a|||select how you want to provide a photo|#photo_option-input",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Select how you want to provide a photo"
+      },
+      {
+        "signature": "index.html|clickable|a|||select the issuing authority|#issuing_authority-input",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Select the issuing authority"
+      },
+      {
+        "signature": "index.html|clickable|a|||select where you are applying from|#applying_from-input",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Select where you are applying from"
+      },
+      {
+        "signature": "index.html|clickable|a|||select whether the applicant has had a uk passport before|#previous_passport-input",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Select whether the applicant has had a UK passport before"
+      },
+      {
+        "signature": "index.html|clickable|a|||select who the passport is for|#applicant_type-input",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Select who the passport is for"
+      },
+      {
+        "signature": "index.html|clickable|a|||service|#service-start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Service"
+      },
+      {
+        "signature": "index.html|clickable|a|||yes|#start",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Yes"
+      },
+      {
+        "signature": "index.html|clickable|input||radio|a child under 16|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "A child under 16"
+      },
+      {
+        "signature": "index.html|clickable|input||radio|it has been stolen|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "It has been stolen"
+      },
+      {
+        "signature": "index.html|clickable|input||radio|it is damaged|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "It is damaged"
+      },
+      {
+        "signature": "index.html|clickable|input||radio|it is lost|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "It is lost"
+      },
+      {
+        "signature": "index.html|clickable|input||radio|no or not sure|",
+        "page": "index.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "No or not sure"
+      },
+      {
+        "signature": "index.html|clickable|input||radio|outside the uk|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Outside the UK"
+      },
+      {
+        "signature": "index.html|clickable|input||radio|use a photo code|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Use a photo code"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 42% of visible interactive feature signatures.",
+      "2 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-05-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-15-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-17-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-18-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-19-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-22-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-23-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-26-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-32-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-34-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-36-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-42-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-51-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-54-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-56-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-59-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-62-wait-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-63-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-nano/govuk-passport/_run",
+  "claude_fix": null
+}

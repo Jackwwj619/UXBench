@@ -1,0 +1,369 @@
+{
+  "plan": {
+    "goal": "Explore the full MoonlightTickets booking journey end-to-end, starting from discovery on index.html through event selection, ticket configuration, checkout, cancellation/recovery, and confirmation, with added attention to pricing logic, ticket-dependent form behavior, and mobile usability.",
+    "summary": "The run should follow the real primary funnel: discover an event on index.html, open event.html, configure ticket quantities across tiers, continue into checkout.html, complete payment and promo interactions, and verify the resulting confirmation.html state. Adjacent exploration should cover discovery filters, related-event branching from the event page, cart collapse/expand, cancel flow with second confirmation, and ticket-type-specific attendee form behavior. Because this is a ticketing checkout site, deeper validation should focus on fee calculations, countdown and reservation messaging, quantity steppers, promo application, and mobile tap-target/compression risks already hinted at in the prescan.",
+    "assumptions": [
+      "The primary conversion path is index.html -> event.html -> checkout.html -> confirmation.html.",
+      "event.html content may vary by query parameter, but the same page template is reused for multiple events.",
+      "checkout.html likely changes attendee form structure based on selected ticket count and whether VIP tickets are included.",
+      "Top-nav items with href '#' are likely non-navigating placeholders and should be checked for behavior but not treated as distinct pages.",
+      "The site is a static demo with local file URLs, so validation should emphasize visible UX behavior over backend persistence."
+    ],
+    "target_pages": [
+      "index.html",
+      "event.html",
+      "checkout.html",
+      "confirmation.html"
+    ],
+    "risk_hotspots": [
+      "index.html filters (DATE / GENRE / VENUE / PRICE) may not clearly affect both the 'Tonight' cards and 'This week' grid",
+      "index.html small top-nav tap targets on mobile",
+      "event.html quantity steppers across Early Bird / Standard / VIP, especially boundary states and order summary sync",
+      "event.html VIP 'SELLING FAST' badge and low-inventory messaging clarity",
+      "event.html sticky order summary behavior during scroll and after quantity changes",
+      "event.html favorite and share icon buttons due to tiny tap targets and ambiguous feedback",
+      "event.html related-event links as a branch away from the current selection",
+      "checkout.html 10-minute reservation countdown, especially red pulse state under 1 minute if observable",
+      "checkout.html collapsible cart visibility and editability during form completion",
+      "checkout.html accordion attendee forms generated per ticket, especially multi-ticket usability",
+      "checkout.html VIP-only field 'Name for signed poster' appearing only when VIP is in cart",
+      "checkout.html 'Copy buyer info' on non-first ticket and whether it duplicates correctly",
+      "checkout.html e-delivery toggle clarity and state persistence",
+      "checkout.html payment-method switching and card-number formatting",
+      "checkout.html promo codes DOORS5 and TONIGHT10, including discount application and recalculated fee breakdown",
+      "checkout.html fee math: subtotal + $3.50 service x n + $2 facility x n + 3% + $0.30 processing + promo discount",
+      "checkout.html cancel flow second confirmation and safe recovery back to checkout",
+      "confirmation.html presence and coherence of final booked-state messaging after purchase"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Discovery and filter behavior",
+        "objective": "Validate that the homepage supports event discovery clearly and that visible filters and listing links behave predictably.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Review the default state of the 'Tonight' hero cards and the 'This week' event grid.",
+          "Exercise each visible filter at least once: DATE, GENRE, VENUE, PRICE.",
+          "Check whether filter changes visibly alter listings and whether combinations produce sensible narrowing.",
+          "Open at least two event links from different sections ('Tonight' and 'This week') to confirm navigation into event.html.",
+          "Probe top navigation items with href '#' to confirm whether they scroll, do nothing, or create confusing dead interactions.",
+          "On mobile viewport, verify whether header links and filter controls remain tappable and readable."
+        ],
+        "exit_criteria": [
+          "Observed whether filters meaningfully change listing content or state.",
+          "Confirmed navigation from homepage cards into event detail.",
+          "Captured evidence on homepage mobile usability, especially small tap targets and filter layout."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Event detail and ticket selection",
+        "objective": "Validate the event-detail template, ticket-tier interactions, and the handoff into checkout.",
+        "target_pages": [
+          "event.html"
+        ],
+        "key_checks": [
+          "Inspect event metadata, bio, audio clip controls, venue/GA sketch, accessibility notes, and related events for scanability and hierarchy.",
+          "Test favorite and share buttons for visible feedback and usability.",
+          "Use quantity steppers on Early Bird, Standard, and VIP to confirm increment/decrement behavior, zero state, and inventory messaging.",
+          "Include at least one run with mixed ticket types and one run with VIP selected to trigger ticket-dependent checkout behavior.",
+          "Verify that the sticky order summary updates immediately with ticket quantities and pricing preview.",
+          "Check whether 'Continue to checkout' is disabled or enabled appropriately before and after selecting tickets.",
+          "Open at least one related-event link to confirm branching works, then return to the main path."
+        ],
+        "exit_criteria": [
+          "Confirmed order summary sync with ticket selections.",
+          "Observed at least one VIP-inclusive basket and one non-zero basket.",
+          "Successfully transitioned from event detail into checkout."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Checkout form, fees, and promos",
+        "objective": "Exercise the core purchase flow in checkout, with emphasis on attendee forms, payment UX, and pricing correctness.",
+        "target_pages": [
+          "checkout.html"
+        ],
+        "key_checks": [
+          "Inspect reservation countdown visibility and urgency messaging.",
+          "Expand and collapse the cart to confirm the cart remains understandable and editable.",
+          "Verify one attendee accordion exists per ticket in the basket.",
+          "Fill attendee fields for at least two tickets and test 'Copy buyer info' on a non-first ticket if present.",
+          "Confirm VIP-only field 'Name for signed poster' appears only for VIP attendees.",
+          "Toggle e-delivery and observe whether label/state is understandable.",
+          "Switch across the three payment methods and verify any visible state changes.",
+          "Enter card details to validate card-number formatting behavior.",
+          "Apply promo code DOORS5 and separately TONIGHT10, confirming discount feedback and recalculated totals.",
+          "Cross-check visible fee breakdown against expected structure: subtotal + service fee per ticket + facility fee per ticket + percentage + fixed processing - promo discount.",
+          "Attempt form submission with incomplete required fields at least once to observe validation quality, then complete the form successfully."
+        ],
+        "exit_criteria": [
+          "Observed attendee-form behavior for multi-ticket checkout.",
+          "Validated at least one promo application path and fee recalculation.",
+          "Reached a state where checkout can be successfully submitted."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Cancellation, recovery, and completion",
+        "objective": "Validate non-happy-path controls around abandoning or completing checkout, and verify the final confirmation state.",
+        "target_pages": [
+          "checkout.html",
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Trigger the cancel action and inspect the second-confirmation step for clarity and reversibility.",
+          "Choose the safe recovery option to ensure users can back out of cancellation without losing progress unexpectedly.",
+          "Then complete the booking path and land on confirmation.html.",
+          "Verify confirmation content reflects a completed purchase coherently and does not leave residual countdown or checkout-state confusion.",
+          "Use browser back/navigation behavior once after confirmation to see whether the flow becomes confusing or stale."
+        ],
+        "exit_criteria": [
+          "Confirmed both cancel-warning behavior and successful recovery.",
+          "Reached confirmation.html through the intended purchase path.",
+          "Captured whether post-purchase messaging clearly concludes the journey."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile regression on critical path",
+        "objective": "Repeat the most important conversion steps on mobile to catch touch, layout, and sticky-panel issues.",
+        "target_pages": [
+          "index.html",
+          "event.html",
+          "checkout.html",
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Repeat homepage event selection and at least one filter interaction on mobile.",
+          "On event.html mobile, test quantity steppers, favorite/share buttons, and the visibility/placement of the order summary.",
+          "On checkout.html mobile, verify countdown readability, accordion usability, form field spacing, payment-method switching, promo entry, and submit/cancel controls.",
+          "Confirm that small tap target concerns seen in prescan are materially impactful on mobile navigation or icon/button use.",
+          "Complete or revisit confirmation.html on mobile to ensure final-state readability without clipped content."
+        ],
+        "exit_criteria": [
+          "Critical booking path has been exercised on mobile from discovery through checkout or confirmation.",
+          "Documented concrete mobile-specific issues rather than only desktop findings."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 known HTML pages, with repeated passes on event.html and checkout.html for both happy-path and alternate states.",
+      "features": "Exercise most visible controls on key pages: all 4 homepage filters, multiple event links, ticket steppers for all 3 tiers, favorite/share, related events, cart collapse, attendee accordions, copy-buyer-info, e-delivery toggle, all 3 payment methods, card formatting, both promo codes, cancel confirmation, and final confirmation state.",
+      "mobile": "Repeat the full critical path and the highest-risk interactions on a mobile viewport, prioritizing top-nav taps, filters, icon buttons, steppers, sticky summary behavior, accordion forms, payment controls, and submit/cancel actions."
+    },
+    "notes": [
+      "Prioritize evidence-rich flows over opening every event variant; multiple event links should be sampled mainly to confirm template consistency and navigation.",
+      "Use a mixed-ticket basket if possible so checkout exposes more attendee states in one run.",
+      "If countdown cannot realistically be observed below one minute, note the limitation rather than waiting excessively."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "MoonlightTickets — Tickets for tonight, not next week",
+      "url": "file:///Users/timchef/UXBench/websites/moonlight-tickets/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MoonlightTickets Tonight This Week Calendar Venues Artists Sell tickets Sign in Tonight in your city INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22 FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18 ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28 JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34 DATE Any date This week This weekend Next 30 days GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall PRICE Any Under $20 $20-40 $40-80 $80+ This week Folk Marisol & the Verses The Foundry · Tue · May 13 from $22 Experimental Pale Cartography Halo Room · Wed · May 14 from $25 Indie rock Coast Static Velvet Pier · Thu · May 15 from $30 Folk Borrowed Owls Coppergate Hall · Fri · May 16 from $24 Electronic Cendrillon (DJ set) Velvet Pier · Fri · May 16 from $35 J",
+      "headings": [
+        "Tonight in your city",
+        "Sea Glass Sextet",
+        "Northern Brushfires",
+        "Halcyon Dial",
+        "Telegraph Bay",
+        "This week"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 22,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:MoonlightTickets",
+        "clickable:a:Tonight",
+        "clickable:a:This Week",
+        "clickable:a:Calendar",
+        "clickable:a:Venues",
+        "clickable:a:Artists",
+        "clickable:a:Sell tickets",
+        "clickable:a:Sign in",
+        "clickable:a:INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22",
+        "clickable:a:FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18",
+        "clickable:a:ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28",
+        "clickable:a:JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34",
+        "selectable:select:DATE Any date This week This weekend Next 30 days",
+        "selectable:select:GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental",
+        "selectable:select:VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall",
+        "selectable:select:PRICE Any Under $20 $20-40 $40-80 $80+"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "index.html",
+      "title": "MoonlightTickets — Tickets for tonight, not next week",
+      "url": "file:///Users/timchef/UXBench/websites/moonlight-tickets/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MoonlightTickets Tonight This Week Calendar Venues Artists Sell tickets Sign in Tonight in your city INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22 FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18 ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28 JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34 DATE Any date This week This weekend Next 30 days GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall PRICE Any Under $20 $20-40 $40-80 $80+ This week Folk Marisol & the Verses The Foundry · Tue · May 13 from $22 Experimental Pale Cartography Halo Room · Wed · May 14 from $25 Indie rock Coast Static Velvet Pier · Thu · May 15 from $30 Folk Borrowed Owls Coppergate Hall · Fri · May 16 from $24 Electronic Cendrillon (DJ set) Velvet Pier · Fri · May 16 from $35 J",
+      "headings": [
+        "Tonight in your city",
+        "Sea Glass Sextet",
+        "Northern Brushfires",
+        "Halcyon Dial",
+        "Telegraph Bay",
+        "This week"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 22,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:MoonlightTickets",
+        "clickable:a:Tonight",
+        "clickable:a:This Week",
+        "clickable:a:Calendar",
+        "clickable:a:Venues",
+        "clickable:a:Artists",
+        "clickable:a:Sell tickets",
+        "clickable:a:Sign in",
+        "clickable:a:INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22",
+        "clickable:a:FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18",
+        "clickable:a:ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28",
+        "clickable:a:JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34",
+        "selectable:select:DATE Any date This week This weekend Next 30 days",
+        "selectable:select:GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental",
+        "selectable:select:VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall",
+        "selectable:select:PRICE Any Under $20 $20-40 $40-80 $80+"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "index.html",
+      "title": "MoonlightTickets — Tickets for tonight, not next week",
+      "url": "file:///Users/timchef/UXBench/websites/moonlight-tickets/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MoonlightTickets Tonight This Week Calendar Venues Artists Sell tickets Sign in Tonight in your city INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22 FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18 ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28 JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34 DATE Any date This week This weekend Next 30 days GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall PRICE Any Under $20 $20-40 $40-80 $80+ This week Folk Marisol & the Verses The Foundry · Tue · May 13 from $22 Experimental Pale Cartography Halo Room · Wed · May 14 from $25 Indie rock Coast Static Velvet Pier · Thu · May 15 from $30 Folk Borrowed Owls Coppergate Hall · Fri · May 16 from $24 Electronic Cendrillon (DJ set) Velvet Pier · Fri · May 16 from $35 J",
+      "headings": [
+        "Tonight in your city",
+        "Sea Glass Sextet",
+        "Northern Brushfires",
+        "Halcyon Dial",
+        "Telegraph Bay",
+        "This week"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 22,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:MoonlightTickets",
+        "clickable:a:Tonight",
+        "clickable:a:This Week",
+        "clickable:a:Calendar",
+        "clickable:a:Venues",
+        "clickable:a:Artists",
+        "clickable:a:Sell tickets",
+        "clickable:a:Sign in",
+        "clickable:a:INDIE ROCK Sea Glass Sextet The Foundry · Tonight · 9:00 PM from $22",
+        "clickable:a:FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18",
+        "clickable:a:ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28",
+        "clickable:a:JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34",
+        "selectable:select:DATE Any date This week This weekend Next 30 days",
+        "selectable:select:GENRE All Indie rock Folk Electronic Jazz Hip-hop Experimental",
+        "selectable:select:VENUE All The Foundry Halo Room Velvet Pier Coppergate Hall",
+        "selectable:select:PRICE Any Under $20 $20-40 $40-80 $80+"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "event.html",
+      "title": "Event — MoonlightTickets",
+      "url": "file:///Users/timchef/UXBench/websites/moonlight-tickets/event.html",
+      "load_error": null,
+      "visible_text_excerpt": "MoonlightTickets Sea Glass Sextet Tonight · 9:00 PM · The Foundry The Foundry·Doors 8:00 PM ♡ ↗ ABOUT Sea Glass Sextet formed in 2022 around a love of indie rock and four-track tape loops. Their first EP, \"Northern Brushfires,\" was recorded in a basement in Coppergate over three weekends and a cold November. Tonight's set is the second-to-last on the spring tour — expect new material from the upcoming LP. LISTEN ▶ opener-track-01.mp3 ▶ opener-track-02.mp3 ▶ opener-track-03.mp3 Early Bird $22/ticket Doors open at posted time Standing GA − 0 + 32 left at this price Standard $28/ticket Doors open at posted time Standing GA No add'l fees − 0 + 84 left at this price VIP — Soundcheck + Signed Poster $52/ticket Early entry @ 7:00 PM Soundcheck access Signed poster (limit 1) Standing GA − 0 + 12 left at this price VENUE STAGE general admission — standing All-ages until 11pm · Step-free entry on ",
+      "headings": [
+        "Sea Glass Sextet",
+        "ABOUT",
+        "LISTEN",
+        "VENUE",
+        "YOU MIGHT ALSO LIKE",
+        "YOUR ORDER"
+      ],
+      "counts": {
+        "buttons": 9,
+        "links": 5,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:MoonlightTickets",
+        "clickable:button:♡",
+        "clickable:button:↗",
+        "clickable:button:decrease",
+        "clickable:button:increase",
+        "clickable:a:→",
+        "clickable:a:Northern Brushfires Halo Room · Tonight · 10:00 PM",
+        "clickable:a:Halcyon Dial Velvet Pier · Tonight · 11:00 PM",
+        "clickable:a:Telegraph Bay Coppergate Hall · Tonight · 8:30 PM",
+        "clickable:button:Continue to checkout"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

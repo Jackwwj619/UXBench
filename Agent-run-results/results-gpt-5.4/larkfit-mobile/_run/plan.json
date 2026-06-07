@@ -1,0 +1,180 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the single-page Lark mobile fixture, validating the primary bottom-tab navigation flow and the visible workout/activity/profile sections, while checking state changes, detail views, and mobile-specific usability risks.",
+    "summary": "The run should treat index.html as a multi-screen mobile app contained within one HTML page, with the bottom tab bar as the primary navigation model. Start by mapping the default Today screen and confirming how the visible controls reveal adjacent sections such as Workouts, Activity, and You, then probe deeper into workout cards, the add button, and any drill-in states suggested by the headings. Because this is a mobile fixture with only one known HTML file, emphasis should be on in-page transitions, hidden states, and interaction fidelity across desktop and true mobile viewport sizes.",
+    "assumptions": [
+      "Only index.html is known, so major flows are likely implemented as in-page screens or panels rather than separate HTML routes.",
+      "The bottom tab bar buttons (Today, Workouts, Activity, You) represent the primary app navigation.",
+      "The repeated workout-related headings and play buttons suggest drill-in or expanded workout details are available within the same page.",
+      "The plus button likely opens an add/create/quick action state, but its exact function should be discovered rather than assumed."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "index.html bottom tab bar navigation may swap in-page screens without strong active-state or context cues",
+      "index.html plus (+) button has a small 38x38 tap target and likely opens an important creation/quick-action flow",
+      "index.html workout play buttons (▶) are small 36x36 tap targets and appear central to the primary action flow",
+      "index.html Today-to-Workouts transition via either tab bar or 'All workouts →' may create duplicate or inconsistent navigation paths",
+      "index.html workout detail region suggested by headings like 'Easy 5K · recovery', 'Plan', and 'You'll need' may have hidden state complexity",
+      "index.html Activity section with '30-day intensity' and Recent content may include charts or horizontally constrained content that need mobile validation",
+      "index.html You section with Connected and Preferences may expose settings-like toggles or account actions that need recovery/back-path checks"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Map default Today screen and visible information hierarchy",
+        "objective": "Establish the baseline behavior and content structure of the default screen before changing state.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm Today is the default active tab and identify the visual active-state treatment in the bottom navigation",
+          "Inspect the dashboard summary area including rings, key metrics, today's plan cards, and streak card for readability and hierarchy",
+          "Check whether the visible 'All workouts →' affordance is interactive despite being presented as text in the prescan",
+          "Scroll the page to verify the extent of Today content and whether sections below the fold remain contextually connected",
+          "Record any immediately visible usability issues such as cramped tap targets, clipped text, or weak section separation"
+        ],
+        "exit_criteria": [
+          "A clear baseline map of the Today screen content and controls has been captured",
+          "The active/default navigation state is confirmed",
+          "Any visible scroll depth and primary Today actions are identified"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Exercise primary navigation across tabs",
+        "objective": "Validate the main app flow by traversing each bottom-tab destination and confirming distinct content/state changes.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Tap Today, Workouts, Activity, and You tabs in sequence and verify each produces a meaningful screen or section change",
+          "Check whether tab switches preserve scroll position unexpectedly or correctly reset to the top of the selected screen",
+          "Verify active-tab styling updates consistently and only one tab appears selected at a time",
+          "Confirm returning to Today from another tab is reliable and does not lose key content or break layout",
+          "Note whether any tab content appears duplicated, truncated, or mislabeled relative to headings seen in the prescan"
+        ],
+        "exit_criteria": [
+          "All four bottom-tab destinations have been visited",
+          "Distinct content/state for Workouts, Activity, and You has been confirmed or the lack of distinction documented",
+          "Round-trip navigation between tabs works without dead ends"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Probe workout list, detail, and action flows",
+        "objective": "Deeply validate the most action-oriented flow around workouts from discovery to detail or start states.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the visible workout cards on Today and any Workouts tab content to open workout-related states",
+          "Test the play (▶) buttons on at least the visible 'Easy 5K — recovery pace' and 'Hip-mobility flow' cards",
+          "Open any workout detail view suggested by headings such as 'Easy 5K · recovery', 'Plan', and 'You'll need'",
+          "Compare entry paths into workout content via card tap, play button, and 'All workouts →' if interactive",
+          "Verify whether workout details provide a clear way back to the originating list or screen",
+          "Check for inconsistent CTA meaning if the same icon/button opens different outcomes across workout cards"
+        ],
+        "exit_criteria": [
+          "At least one workout drill-in path has been exercised from list to deeper state",
+          "Play-button behavior and card-tap behavior are understood and documented",
+          "A recovery path back to list or Today has been confirmed"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Inspect secondary sections and settings-like surfaces",
+        "objective": "Validate adjacent flows that support the main experience, especially Activity and You content.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "On Activity, inspect the '30-day intensity' and 'Recent' areas for chart legibility, scrolling behavior, and content density",
+          "On You, inspect 'Connected' and 'Preferences' areas for obvious controls, toggles, or list items and test a representative sample",
+          "Use the plus (+) button from at least one stable screen to discover whether it opens a modal, drawer, composer, or no-op state",
+          "If the plus flow opens an overlay or sheet, verify dismissal via close control, backdrop tap, or back path",
+          "Check whether state from secondary sections leaks across tabs or causes stale content when returning"
+        ],
+        "exit_criteria": [
+          "Activity and You sections have each been explored beyond first view",
+          "The plus-button behavior has been identified and exercised",
+          "Any secondary overlay or settings-like state has a confirmed exit path"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile-specific validation and resilience pass",
+        "objective": "Repeat critical interactions on mobile viewport and validate touch ergonomics, responsive behavior, and recovery from edge states.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Repeat the primary tab-navigation flow on a mobile viewport at or below the documented mobile threshold",
+          "Retest the plus button and workout play buttons on mobile because prescan already flagged undersized tap targets",
+          "Verify the phone-frame/chrome presentation does not interfere with content, scrolling, or fixed bottom navigation",
+          "Check whether the layout changes to edge-to-edge behavior on mobile as described in the site summary",
+          "Confirm no text clipping, overlap, or inaccessible controls appear around the notch area, status bar, bottom tab bar, or home-indicator region"
+        ],
+        "exit_criteria": [
+          "Critical navigation and workout actions have been replayed on mobile viewport",
+          "Responsive differences between desktop fixture view and mobile view are documented",
+          "Tap-target and safe-area issues have been specifically checked on the known risky controls"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Fully cover the single known HTML page (index.html), including all reachable in-page screens, tabs, overlays, and drill-in states.",
+      "features": "Exercise nearly all visible high-value controls: all four bottom tabs, visible workout cards and play buttons, the plus button, any 'All workouts →' affordance, and representative controls within Activity and You.",
+      "mobile": "Repeat all critical navigation and workout/action flows on a true mobile viewport, with special attention to the small-tap-target controls and safe-area behavior."
+    },
+    "notes": [
+      "Do not assume separate routes exist; prefer state mapping within index.html.",
+      "Because the fixture appears app-like and single-page, exploration should prioritize transition quality, back paths, and consistency of active states over URL changes.",
+      "Use the headings already seen in prescan as anchors to detect hidden screens or expanded sections."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Lark — mobile fixture",
+      "url": "file:///Users/timchef/UXBench/websites/larkfit-mobile/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "8:13 Wednesday, May 13 Morning, Sumi + MOVE 820/600 cal EXERCISE 34/30 min STAND 9/12 hrs 👟 8,432 steps 🚴 5.2 mi distance ❤ 62 bpm resting 😴 7h 14m slept TODAY'S PLAN All workouts → 🏃 Easy 5K — recovery pace 28 min · zone 2 · scheduled 5:30 pm ▶ 🧘 Hip-mobility flow 12 min · low-intensity · post-run ▶ 14 days Move-goal streak · personal best 22 🔥 S M T W T F S ⌂ Today ▶ Workouts 📊 Activity ◉ You",
+      "headings": [
+        "TODAY'S PLAN",
+        "Workouts",
+        "Easy 5K · recovery",
+        "Easy 5K — recovery pace",
+        "Plan",
+        "You'll need",
+        "Activity",
+        "30-day intensity",
+        "Recent",
+        "You"
+      ],
+      "counts": {
+        "buttons": 21,
+        "links": 0,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:+",
+        "clickable:button:▶",
+        "clickable:button:⌂ Today",
+        "clickable:button:▶ Workouts",
+        "clickable:button:📊 Activity",
+        "clickable:button:◉ You"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

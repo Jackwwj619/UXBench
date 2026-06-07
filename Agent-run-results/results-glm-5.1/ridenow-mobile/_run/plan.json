@@ -1,0 +1,157 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the full RideNow mobile rideshare flow, including booking, ride states, adjacent tabs, and mobile responsiveness.",
+    "summary": "The exploration will start by traversing the primary ride booking flow from destination input to receipt, validating all intermediate states (ride selection, trip, rating). It will then shift to adjacent flows via the bottom tab bar (Activity, Payment, Account) and auxiliary controls (menu, notifications, saved places). Finally, it will repeat critical path checks under a mobile viewport to assess responsive behavior and tap target issues flagged in the prescan.",
+    "assumptions": [
+      "The app uses a single-page architecture (index.html) with JavaScript-driven screen transitions managed by data-screen attributes.",
+      "The 'Where to?' input and quick-link buttons trigger the 'Choose your ride' screen, leading to a simulated ride flow.",
+      "The 'Activity' tab routes to the receipt screen as indicated in the site summary.",
+      "Small tap targets flagged in the prescan (e.g., ☰, 🔔, →) will remain problematic on actual mobile viewports."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets (42x42px and 32x28px) for menu, notifications, and recent place arrows on mobile viewports",
+      "Transition logic between 'Trip complete', 'Rate your driver', and 'Receipt' screens to ensure no dead-ends",
+      "Input interaction for 'Where to?' within the constrained 390x844 phone frame on desktop viewport",
+      "State recovery if the user tries to navigate away (e.g., via bottom tabs) during an active ride flow"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Primary Ride Booking Flow",
+        "objective": "Validate the core checkout/booking flow from destination entry to ride completion and receipt.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Type into 'Where to?' input and verify navigation to 'Choose your ride' screen",
+          "Select a ride option and confirm transition to 'Trip complete' state",
+          "Complete the 'Rate your driver' step and verify arrival at 'Receipt' screen",
+          "Click quick-link buttons (⌂ Home, 💼 Work, ✈ PDX Airport) to ensure they also trigger the ride flow correctly"
+        ],
+        "exit_criteria": [
+          "Full end-to-end ride flow completed via search input",
+          "Full end-to-end ride flow completed via quick-link button",
+          "Receipt screen successfully reached and validated"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Adjacent Tab Navigation",
+        "objective": "Explore secondary screens accessed via the bottom tab bar and validate their content and interactions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Navigate to '📋 Activity' tab and verify it shows the receipt/trip history",
+          "Navigate to '💳 Payment' tab and validate payment method displays and controls",
+          "Navigate to '◉ Account' tab and check profile/settings information",
+          "Return to '🏁 Ride' tab and confirm the home screen state is properly restored"
+        ],
+        "exit_criteria": [
+          "All 4 bottom tab views have been visited",
+          "Content and interactables within Activity, Payment, and Account screens exercised"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Auxiliary Controls & Edge Cases",
+        "objective": "Test secondary interactions on the home screen and interrupt flows to check for state recovery.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click '☰' menu button and validate any side-menu or overlay",
+          "Click '🔔' notifications button and validate dropdown/modal",
+          "Click '→' arrows on recent places to check detailed views or ride triggers",
+          "Click '+ Add place' and test saved places limit/failure state",
+          "Interrupt a ride flow by clicking a different tab, then return to see if state persists or resets safely"
+        ],
+        "exit_criteria": [
+          "Menu and notification controls exercised",
+          "Saved places interaction tested",
+          "Flow interruption recovery observed"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Viewport Validation",
+        "objective": "Re-run critical checks on a mobile viewport to verify responsive layout and tap target usability.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport and verify edge-to-edge layout and frame behavior",
+          "Re-validate the primary booking flow on mobile to ensure no layout overlap or hidden controls",
+          "Verify tap target sizes for ☰, 🔔, and → buttons on mobile and confirm if they remain difficult to hit",
+          "Check bottom tab bar spacing and hit areas on mobile"
+        ],
+        "exit_criteria": [
+          "Primary flow completed on mobile viewport",
+          "Tab navigation verified on mobile viewport",
+          "Tap target and layout warnings assessed on mobile"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Cover all data-screen states within index.html",
+      "features": "Interact with all 42 buttons, the search input, and all bottom tab views",
+      "mobile": "Execute primary ride flow and tab navigation on mobile viewport to validate responsive layout and tap targets"
+    },
+    "notes": [
+      "Prescan flagged 5 small tap targets; pay close attention to these during Phase 4 mobile checks.",
+      "Headings suggest a multi-step ride flow; ensure the execution loop looks for 'Choose your ride', 'Trip complete', 'Rate your driver', and 'Receipt' screens sequentially."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "RideNow — mobile fixture",
+      "url": "file:///Users/timchef/UXBench/websites/ridenow-mobile/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "8:45 ☰ 🔍 🔔 ⌂ Home 💼 Work ✈ PDX Airport RECENT PLACES 📍 Bella Suora 1142 NW Marshall · Pearl District · 2.4 mi → 📍 Powell's Books 1005 W Burnside · Downtown · 2.8 mi → 📍 Mt. Tabor Park SE 60th & Salmon · 4.6 mi → SAVED ⌂ Home 3617 NE Going St 💼 Halcyon Studio 2200 NW Pettygrove + Add place Up to 8 saved 🏁 Ride 📋 Activity 💳 Payment ◉ Account",
+      "headings": [
+        "RECENT PLACES",
+        "SAVED",
+        "Choose your ride",
+        "Trip complete",
+        "Rate your driver",
+        "Receipt"
+      ],
+      "counts": {
+        "buttons": 42,
+        "links": 0,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:☰",
+        "typeable:input:Where to?",
+        "clickable:button:🔔",
+        "clickable:button:⌂ Home",
+        "clickable:button:💼 Work",
+        "clickable:button:✈ PDX Airport",
+        "clickable:button:→",
+        "clickable:button:⌂ Home 3617 NE Going St",
+        "clickable:button:💼 Halcyon Studio 2200 NW Pettygrove",
+        "clickable:button:+ Add place Up to 8 saved",
+        "clickable:button:🏁 Ride",
+        "clickable:button:📋 Activity",
+        "clickable:button:💳 Payment",
+        "clickable:button:◉ Account"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "plan": {
+    "goal": "Evaluate the UX, accessibility, and interactive behavior of the GitHub 404 error page clone, focusing on recovery paths (search/navigation) and visual feedback mechanisms.",
+    "summary": "The exploration will focus on the single-page application structure of `index.html`. It will validate the functionality of the search input and scope buttons, test the Octocat parallax/hover effects described in the JS file, and audit the navigation links. A significant portion of the run will address the prescan-identified mobile tap target issues by verifying layout responsiveness.",
+    "assumptions": [
+      "Navigation links (Search, Support, Status) use placeholder '#' hrefs and will not lead to external pages.",
+      "The 'fake search suggestions' mentioned in app.js may require specific input triggers or may be subtle UI updates.",
+      "The site is a static clone, so form submissions will likely result in no-op actions or console logs rather than server responses."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "ux-1 (GitHub Logo): Identified as having an empty accessible label and small tap target.",
+      "ux-6 to ux-9 (Search/Scope Buttons): High density of small tap targets (<44px) in the central action area.",
+      "Octocat Illustration: Potential performance or distraction issues if the parallax effect is too aggressive or breaks on resize.",
+      "Search Input: Lack of visible form submission feedback if the backend is mocked."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Core Layout & Visuals",
+        "objective": "Validate the initial render, dark mode styling, and the presence/clarity of the error message.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify H1 '404' and subtext 'This is not the web page you are looking for' are visible and legible.",
+          "Check contrast ratios of text against the dark background.",
+          "Confirm the Octocat illustration loads correctly without layout shift."
+        ],
+        "exit_criteria": [
+          "Error state is clearly communicated visually.",
+          "No immediate console errors on load."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Recovery Flow: Search & Scoping",
+        "objective": "Test the primary user action: searching for content from the error page.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Focus the 'Search GitHub' input (ux-5) and verify focus ring visibility.",
+          "Type a query and observe any 'fake search suggestions' triggered by app.js.",
+          "Click the 'Search' button (ux-6) and verify behavior (e.g., console log or mock redirect).",
+          "Toggle scope buttons ('Code', 'Repositories', 'People') to check for active state styling changes."
+        ],
+        "exit_criteria": [
+          "Input accepts text.",
+          "Scope buttons provide visual feedback when clicked/hovered.",
+          "Search action triggers a predictable response (even if mocked)."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Interactive Elements & Micro-interactions",
+        "objective": "Validate the JavaScript-driven effects and secondary navigation.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over the Octocat illustration to trigger/observe the parallax or hover effect.",
+          "Click top nav links (Search, Support, Status) to confirm they are clickable (even if dead links).",
+          "Click footer links ('contact support', 'GitHub Status').",
+          "Inspect the GitHub Logo (ux-1) for accessibility labels (aria-label) since prescan flagged it as empty."
+        ],
+        "exit_criteria": [
+          "Illustration responds to mouse movement.",
+          "All links have cursor pointer states.",
+          "Accessibility tree inspection reveals if ux-1 has an implicit or explicit label."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Touch Targets",
+        "objective": "Address the high volume of 'small_tap_target' warnings from the prescan.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE or Pixel 5).",
+          "Verify if the top nav collapses into a hamburger menu or remains horizontal.",
+          "Attempt to tap the 'Search', 'Support', and 'Status' links to check for overlap or mis-clicks.",
+          "Verify the search input and buttons stack or resize appropriately for narrow screens.",
+          "Check if the Octocat illustration scales down or obscures text on mobile."
+        ],
+        "exit_criteria": [
+          "Layout does not break horizontally.",
+          "Critical actions (Search) remain usable despite small target sizes noted in prescan.",
+          "Text remains readable without zooming."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of known HTML files (index.html)",
+      "features": "Exercise all 11 interactables identified in prescan, specifically the search bar and scope toggles.",
+      "mobile": "Full pass on mobile viewport to validate touch target usability vs. desktop hover states."
+    },
+    "notes": [
+      "Since this is a clone, expect 'dead' links. Focus on the *affordance* of the links rather than their destination.",
+      "Pay close attention to the 'app.js' behavior; if the parallax effect causes motion sickness or lag, note it as a UX defect.",
+      "The prescan flagged 'ux-1' (Logo) as having an empty label. Verify if screen readers announce it as 'Link' or 'Image'."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Page not found · GitHub",
+      "url": "file:///Users/timchef/UXBench/websites/github-404/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Search Support Status 404 \"This is not the web page you are looking for\" Search Code Repositories People If you think something is broken, contact support. Check GitHub Status for known issues.",
+      "headings": [
+        "404"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 6,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:#",
+        "clickable:a:Search",
+        "clickable:a:Support",
+        "clickable:a:Status",
+        "typeable:input:Search GitHub",
+        "clickable:button:Search",
+        "clickable:button:Code",
+        "clickable:button:Repositories",
+        "clickable:button:People",
+        "clickable:a:contact support",
+        "clickable:a:GitHub Status"
+      ],
+      "layout_warning_kinds": [
+        "empty_interactive_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

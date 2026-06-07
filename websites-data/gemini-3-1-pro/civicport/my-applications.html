@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My applications — CivicPort</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="portal-home">
+<header class="civic-bar">
+  <a href="index.html" class="brand brand-link" aria-label="CivicPort home">
+    <svg width="32" height="32" viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#14517A"/><path d="M10 22 L18 10 L26 22 Z" fill="#C5A572"/></svg>
+    <strong>CivicPort</strong>
+  </a>
+  <nav><a href="index.html">Home</a><a href="apply.html">Apply</a><a href="my-applications.html" class="current">My applications</a><a href="fees.html">Fees</a></nav>
+</header>
+<main class="portal">
+<div id="successBanner" class="success-banner" role="status" hidden>
+  <div class="success-icon" aria-hidden="true">✓</div>
+  <div class="success-body">
+    <strong id="successTitle">Application submitted.</strong>
+    <span id="successDetail">A plan reviewer will contact you within 1 business day. A receipt was emailed.</span>
+  </div>
+  <button type="button" class="success-close" aria-label="Dismiss success message" onclick="document.getElementById('successBanner').hidden = true">×</button>
+</div>
+<h1>My applications</h1>
+<table class="apps-tbl">
+<thead><tr><th>App ID</th><th>Type</th><th>Address</th><th>Submitted</th><th>Status</th></tr></thead>
+<tbody id="appsTbody">
+<tr><td>AB-2026-PERM-7042</td><td>Kitchen renovation</td><td>148 Coppergate St.</td><td>Apr 12, 2026</td><td><span class="badge ok">Approved</span></td></tr>
+<tr><td>AB-2025-PERM-9981</td><td>Roof replacement</td><td>148 Coppergate St.</td><td>Nov 3, 2025</td><td><span class="badge ok">Approved</span></td></tr>
+<tr><td>AB-2025-PERM-6601</td><td>Bathroom remodel</td><td>22 Foundry Lane</td><td>Aug 19, 2025</td><td><span class="badge warn">Inspector follow-up</span></td></tr>
+</tbody></table>
+</main>
+<footer class="civic-foot"><p class="disclaimer">Local demo for UXBench. Fictional product, not a real company.</p></footer>
+<script>
+(function(){
+  try {
+    var raw = sessionStorage.getItem("civicport-just-submitted");
+    if(!raw) return;
+    var s = JSON.parse(raw);
+    sessionStorage.removeItem("civicport-just-submitted");
+    var banner = document.getElementById("successBanner");
+    var title = document.getElementById("successTitle");
+    var detail = document.getElementById("successDetail");
+    title.textContent = "Application " + s.id + " submitted successfully.";
+    detail.textContent = "A plan reviewer will contact you within 1 business day. A receipt was emailed.";
+    banner.hidden = false;
+    var d = new Date(s.submittedAt || Date.now());
+    var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    var dateStr = months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+    var tr = document.createElement("tr");
+    tr.className = "row-just-submitted";
+    tr.innerHTML = "<td>" + s.id + "</td><td>" + s.type + "</td><td>" + s.address + "</td><td>" + dateStr + "</td><td><span class=\"badge pending\">Pending review</span></td>";
+    var tbody = document.getElementById("appsTbody");
+    tbody.insertBefore(tr, tbody.firstChild);
+  } catch(e){}
+})();
+</script>
+</body>
+</html>

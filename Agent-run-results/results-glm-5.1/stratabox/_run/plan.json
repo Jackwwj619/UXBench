@@ -1,0 +1,191 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the Stratabox single-page marketing site, focusing on the primary pricing flow, interactive builder, SDK tabs, and integrations search, across both desktop and mobile viewports.",
+    "summary": "The run will proceed by systematically validating the primary conversion flows and interactive components of the Stratabox site. It will start with navigation and the hero section, move to the interactive block builder and SDK code tabs, then test the integrations search and pricing section. Finally, it will repeat critical checks on a mobile viewport to assess responsiveness and tap target usability.",
+    "assumptions": [
+      "The site is a single-page application with all content located in index.html and navigation handled via anchor links.",
+      "Interactive elements like the block builder, SDK tabs, and integrations search are fully functional client-side using script.js.",
+      "CTA buttons like 'Start free' and 'Book a demo' do not redirect to external pages but may trigger visual feedback or modals.",
+      "The debounced auto-save status in the builder will trigger automatically after interacting with the builder inputs."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Block builder drag-and-drop: HTML5 drag-and-drop can be flaky or have poor visual feedback, especially on mobile.",
+      "Small tap targets: Multiple nav links and builder buttons are flagged as too small for mobile (<44px height/width), risking usability issues.",
+      "Integrations search filter: Live filtering must gracefully handle edge cases (e.g., no results, rapid typing) and accurately update the visible count.",
+      "Debounced auto-save: The transition from 'saved' to 'saving' to 'saved' state needs to be clearly communicated without being jarring."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Navigation & Hero Validation",
+        "objective": "Validate the sticky navigation, anchor link scrolling, and hero section micro-animations and CTAs.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click each nav link (Product, Builder, SDKs, Integrations, Customers, Pricing) and verify smooth scroll to correct section.",
+          "Observe hero split panel for at least 7 seconds to confirm the block-swap micro-animation occurs every 3.5s.",
+          "Click 'Start free' and 'Book a demo' CTAs in the hero and nav to check for expected behavior (e.g., modal, toast, or no-op)."
+        ],
+        "exit_criteria": [
+          "All nav links successfully scroll to their respective sections.",
+          "Hero block-swap animation is confirmed to be functioning.",
+          "CTA behaviors are identified and documented."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Interactive Block Builder",
+        "objective": "Deeply validate the live block builder interactions, including adding, deleting, reordering, and editing blocks.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Add a new block using '+ Paragraph', '+ Heading', '+ Image', and '+ Callout' buttons.",
+          "Type into the newly added block inputs and verify the live preview updates accordingly.",
+          "Attempt to reorder blocks via drag-and-drop and verify the preview updates to match the new order.",
+          "Delete an added block and confirm it is removed from both the editor and the live preview.",
+          "Trigger the debounced auto-save by typing, pausing, and observing the status indicator change from 'saved' to 'saving' and back."
+        ],
+        "exit_criteria": [
+          "All block addition, deletion, and reordering actions function correctly.",
+          "Live preview accurately reflects editor state.",
+          "Debounced auto-save status is visually confirmed."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "SDK Tabs & Integrations Search",
+        "objective": "Validate the SDK code tab switcher, copy functionality, and the integrations search filter.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click each SDK tab (JS, Python, Ruby, curl) and verify the code snippet updates with syntax highlighting.",
+          "Click the copy button and verify a toast notification appears and clipboard is updated.",
+          "Type a valid query into the integrations search and verify the grid filters correctly and the visible count updates.",
+          "Type an invalid query into the integrations search and verify a 'no results' state is handled gracefully.",
+          "Clear the search input and verify all 24 integrations reappear."
+        ],
+        "exit_criteria": [
+          "SDK tabs switch and display correct code snippets.",
+          "Copy-to-clipboard functions with visual feedback.",
+          "Integrations search filters accurately and updates the count."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Stats, Customers & Pricing Teaser",
+        "objective": "Validate the intersection-observer count-up animation, customer quotes, and the pricing teaser section.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Scroll to the 4-stat row and verify the count-up animation triggers upon entering the viewport.",
+          "Scroll away and back to verify if the animation re-triggers or stays completed (expected: stays completed).",
+          "Review the 3 customer quotes for layout and readability.",
+          "Click 'See full plans →' in the pricing teaser and verify the expected behavior.",
+          "Interact with the footer links to ensure they are styled correctly and provide feedback."
+        ],
+        "exit_criteria": [
+          "Stat count-up animation is confirmed to trigger on scroll.",
+          "Pricing teaser CTA is tested.",
+          "Footer links are verified."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Viewport Checks",
+        "objective": "Re-evaluate critical flows and layout shifts on a mobile viewport, specifically addressing small tap target warnings.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport and verify the responsive layout (stacked columns, hamburger menu if applicable).",
+          "Re-test the block builder drag-and-drop on mobile to check for touch-specific UX issues.",
+          "Attempt to tap the small nav links and builder buttons to assess the severity of the small tap target warnings.",
+          "Verify the hero split panel and live preview adapt correctly to the smaller screen.",
+          "Test the integrations search and SDK tabs on mobile for usability."
+        ],
+        "exit_criteria": [
+          "Mobile layout is confirmed to be responsive and not broken.",
+          "Touch interactions on the builder are validated.",
+          "Small tap target impact is assessed based on actual interaction attempts."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages (100% - index.html)",
+      "features": "exercise all visible controls per key section: nav links, hero CTAs, builder add/delete/reorder/type, SDK tabs/copy, integrations search, pricing CTA",
+      "mobile": "repeat critical checks on mobile viewport, focusing on builder drag-and-drop, tap targets, and responsive layout"
+    },
+    "notes": [
+      "Pay close attention to the debounced auto-save timing in the builder; it may require waiting a few seconds after typing to observe the status change.",
+      "The prescan flagged multiple small tap targets; during the mobile phase, explicitly note if these lead to mis-taps or frustration.",
+      "Since this is a single-page site, ensure scroll position is correctly managed when clicking nav links, especially on mobile where the layout shifts."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Stratabox — the structured content platform",
+      "url": "file:///Users/timchef/UXBench/websites/stratabox/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Stratabox Product Builder SDKs Integrations Customers Pricing Sign in Start free v8 · Stratabox Studio Structured content for every surface. A headless content platform where editors author with composable blocks, developers query a typed GraphQL+REST API, and your team ships content to web, mobile, kiosks, and email — from a single source of truth. Start free → Book a demo ✔ 50 GB asset CDN free ✔ SOC 2 Type II ✔ EU + US regions studio.stratabox.dev / articles / coastal-bloom EDITOR ● saved H1 Coastal Bloom Returns ¶ After a two-year hiatus the festival returns to the Pier 22 boardwalk… ▣ hero-coast-2026.jpg · 4096×2304 ★ Callout · Tickets on sale May 22 ¶ Organizers expect twelve thousand visitors over the weekend… ▦ Gallery · 8 images LIVE PREVIEW web · mobile · email Coastal Bloom Returns After a two-year hiatus the festival returns to the Pier 22 boardwalk… hero-coast-2026.jpg ★ Tic",
+      "headings": [
+        "Structured content\nfor every surface.",
+        "Coastal Bloom Returns",
+        "Built around composable blocks.",
+        "Composable schema",
+        "Real-time collaboration",
+        "Edge content API",
+        "Drag, drop, ship.",
+        "A field guide to coastal birds",
+        "One schema. Every SDK.",
+        "Plays well with your stack."
+      ],
+      "counts": {
+        "buttons": 15,
+        "links": 29,
+        "inputs": 11,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Stratabox",
+        "clickable:a:Product",
+        "clickable:a:Builder",
+        "clickable:a:SDKs",
+        "clickable:a:Integrations",
+        "clickable:a:Customers",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Start free",
+        "clickable:a:Start free →",
+        "clickable:a:Book a demo",
+        "clickable:button:+ Paragraph",
+        "clickable:button:+ Heading",
+        "clickable:button:+ Image",
+        "clickable:button:+ Callout",
+        "clickable:button:+ Quote"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

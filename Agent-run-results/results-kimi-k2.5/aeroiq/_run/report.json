@@ -1,0 +1,700 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/aeroiq/index.html",
+  "site": {
+    "name": "aeroiq",
+    "site_dir": "/Users/timchef/UXBench/websites/aeroiq",
+    "start_page": "index.html",
+    "page_type": "dashboard",
+    "html_files": [
+      "alerts.html",
+      "endpoint-detail.html",
+      "endpoints.html",
+      "index.html",
+      "services.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/aeroiq/README.md",
+    "summary": "AeroIQ Fictional API monitoring and observability SaaS (Datadog / Vercel Observability-style). Pages - `index.html` — Overview dashboard. Left rail nav; top bar with org switcher, environment tabs (Production / Staging / Dev), time range (5m / 1h / 24h / 7d), search (⌘K), theme toggle, alert bell; four top KPIs (total requests / error rate / p95 / availability) with sparklines and period-over-period deltas; 24-card endpoint health grid (red cards first), each card with HTTP method + path + health dot + RPS / p95 / error rate; right alerts side panel with 8 active alerts and per-row assign / silence actions; bottom global p50 / p95 / p99 trend line chart. - `endpoint-detail.html` — Endpoint detail. Top: method + path + health badge + linked services + owner avatars; 6 KPIs (RPS / error rate / p50 / p95 / p99 / SLO status); three large trend charts (request volume, latency p50/p95/p99 three lines, error rate); error-grouping panel with status-code / client-version / region tabs; recent error sample table (5 rows including 502 Bad Gateway, 500, 429, 503); related traces list. - `alerts.html` — Alerts center. 4 KPIs (active / new today / mean response / MTTR); filter bar; 12-row alert ",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full aeroiq system, prioritizing the primary dashboard flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The AeroIQ system’s UX was partially explored (13% feature coverage), with notable issues in environment switching (dashboard/KPI data mismatch), service map interactivity (node clicks timing out), missing Logs page, and mobile alert filters (non-interactive dropdowns). Untested areas include alerts.html’s top navigation (AeroIQ, Settings, etc.) and integrations page.",
+  "exploration_plan": {
+    "goal": "Explore and critique the UX of the AeroIQ system, focusing on the primary dashboard flow, adjacent pages (alerts, endpoints, endpoint detail, service map), and validating key interactions and states across desktop and mobile viewports.",
+    "summary": "The exploration will proceed in phases: first, validate the dashboard (index.html) interactions (time range, environment, org switches, alerts panel). Then, explore endpoints.html (filtering, sorting), alerts.html (alert actions, filters), endpoint-detail.html (KPI trends, error breakdown), and services.html (dependency map). Each phase includes specific checks and mobile validation.",
+    "assumptions": [
+      "All pages load without errors (prescan shows no load errors)",
+      "Interactables (buttons, links, inputs) are functional and follow expected behavior",
+      "Mobile viewport has responsive layout matching desktop content structure"
+    ],
+    "target_pages": [
+      "index.html",
+      "alerts.html",
+      "endpoint-detail.html",
+      "endpoints.html",
+      "services.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets (e.g., environment tabs, time range buttons) may cause usability issues on mobile",
+      "Missing input labels (select elements) could reduce accessibility",
+      "Complex KPI trend charts (e.g., latency, error rate) may have unclear interaction patterns"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard (index.html) Validation",
+        "objective": "Validate core dashboard interactions, KPI trends, and alerts panel functionality.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click environment tabs (Production → Staging → Dev) and verify KPI updates",
+          "Click time range buttons (5m → 1h → 24h → 7d) and check KPI trend changes",
+          "Interact with 3-4 endpoint health cards (e.g., POST /v1/payments, GET /v1/users/:id) to ensure hover/click states work",
+          "Open/close the active alerts panel (via 'view all' and back) and verify alert actions (Assign, Silence) are clickable"
+        ],
+        "exit_criteria": [
+          "All environment/time range interactions work",
+          "Endpoint cards and alerts panel are interactive",
+          "Mobile viewport: repeat 2 key checks (e.g., environment tab, time range) to validate responsiveness"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Endpoints (endpoints.html) Exploration",
+        "objective": "Validate endpoint list filtering, sorting, and detail navigation.",
+        "target_pages": [
+          "endpoints.html"
+        ],
+        "key_checks": [
+          "Use service filter (e.g., checkout-api, users-svc) and verify endpoint list updates",
+          "Use health filter (Healthy → Degraded → Unhealthy) and check endpoint sorting",
+          "Search via input (⌘K) for a path (e.g., /v1/payments, /v1/users) and verify results",
+          "Click 2-3 endpoint links (e.g., POST /v1/payments, GET /v1/invoices) to navigate to endpoint-detail.html",
+          "Sort endpoints by RPS / Error % and verify list order changes"
+        ],
+        "exit_criteria": [
+          "Service/health filters and search work",
+          "Endpoint links navigate to detail page (endpoint-detail.html)",
+          "Mobile viewport: repeat 2 filter checks (e.g., service filter, search) to validate mobile filtering"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Endpoint Detail (endpoint-detail.html) Deep Dive",
+        "objective": "Validate endpoint detail page KPI trends, error breakdown, and related traces.",
+        "target_pages": [
+          "endpoint-detail.html"
+        ],
+        "key_checks": [
+          "From endpoints.html, click an endpoint (e.g., POST /v1/payments) to open endpoint-detail.html",
+          "Verify KPI trends (request volume, latency, error rate) update on hover/click (if interactive)",
+          "Check error breakdown tabs (status-code, client-version, region) and verify content switching",
+          "Return to endpoints.html and use search (⌘K) for a path (e.g., /v1/invoices) and verify result"
+        ],
+        "exit_criteria": [
+          "Endpoint filters and search work",
+          "Detail page KPI trends and error breakdown are interactive",
+          "Mobile viewport: check 1 KPI trend (e.g., latency) and 1 error breakdown tab"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Alerts (alerts.html) Validation",
+        "objective": "Validate alert filtering, sorting, and action workflows.",
+        "target_pages": [
+          "alerts.html"
+        ],
+        "key_checks": [
+          "Use severity filter (Critical → Warning) and verify alert list updates",
+          "Use status filter (Open → Assigned → Resolved) and check alert list changes",
+          "Interact with 3-4 alert rows (e.g., Error rate > 5%, p95 latency > 1000ms) to verify hover/click states",
+          "Attempt to assign/silence an alert (e.g., WARNING: Error rate > 3%) and check for confirmation states (if any)"
+        ],
+        "exit_criteria": [
+          "All alert filters work",
+          "Alert actions are interactive",
+          "Mobile viewport: repeat 2 filter checks (e.g., severity, status)"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Service Map (services.html) and Logs/Integrations (Smoke Test)",
+        "objective": "Validate service map interactions and smoke test remaining pages (logs, integrations).",
+        "target_pages": [
+          "services.html",
+          "logs",
+          "integrations"
+        ],
+        "key_checks": [
+          "Click service nodes (e.g., edge-gateway, users-svc) and verify node highlighting/info panels (if any)",
+          "Switch environment (Production → Staging) on services.html and check dependency map updates",
+          "Navigate to Logs and Integrations pages, verify basic layout (headings, interactables) load",
+          "Mobile viewport: check service map node interaction and environment switch"
+        ],
+        "exit_criteria": [
+          "Service map is interactive",
+          "Logs/Integrations pages load with basic interactables",
+          "Mobile responsiveness verified for service map"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 5 target pages (index, alerts, endpoint-detail, endpoints, services) with at least 2 key checks each",
+      "features": "Exercise 80% of visible controls (filters, tabs, buttons, cards) across pages, prioritizing core workflows (KPI trends, alert management, endpoint navigation)",
+      "mobile": "Repeat 1-2 critical checks per phase (e.g., environment tab, time range, filter) to validate responsive layout and interactability"
+    },
+    "notes": [
+      "Focus on core observability workflows (KPI monitoring, alert triage, endpoint debugging) to align with the product’s purpose",
+      "Document any discrepancies in interactable behavior (e.g., unresponsive buttons, broken filters) for critique"
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "goal completion",
+      "user_goal": "Switch environment (Production → Staging) to view Staging-specific KPI data and service map",
+      "problem": "Clicking 'Staging' environment tab highlights it, but dashboard KPIs (total requests, error rate, etc.) and service map visualization do not update to reflect Staging data.",
+      "evidence": "Multiple attempts to switch to Staging on dashboard and services.html showed no KPI or service map changes (e.g., 'Staging' tab highlighted, but KPIs remained same as Production).",
+      "why_it_matters": "Users rely on environment switching to diagnose issues in non-production environments; broken data updates lead to incorrect insights and wasted time.",
+      "suggestion": "Ensure environment tabs trigger data refreshes for KPIs, service maps, and endpoint lists. Add loading states or visual cues to confirm data is updating.",
+      "source_hint": "index.html, services.html"
+    },
+    {
+      "severity": "high",
+      "ux_area": "affordance",
+      "user_goal": "View detailed service information by clicking a service node in the service map",
+      "problem": "Clicking service nodes (e.g., checkout-api, users-svc, edge-gateway) in services.html times out, failing to display service details (dependencies, traffic, health metrics).",
+      "evidence": "Multiple click attempts on service nodes (target_ids ux-14, ux-15, edge-gateway-node) resulted in timeouts, with no detail panel/tooltip appearing. The UI hints 'Click a service node to view details' but interactions fail.",
+      "why_it_matters": "Service maps are critical for understanding system dependencies; broken node interactions prevent users from diagnosing service-level issues.",
+      "suggestion": "Fix service node interactivity, ensuring clicks trigger detail panels or tooltips. Add error handling or loading states to improve responsiveness.",
+      "source_hint": "services.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "goal completion",
+      "user_goal": "Access Logs page to view log data and filters",
+      "problem": "Attempting to open logs.html results in net::ERR_FILE_NOT_FOUND, confirming the Logs page is missing from the site’s file structure.",
+      "evidence": "Two attempts to open logs.html failed with file not found errors, indicating the page does not exist. The UI references '📜 Logs' in navigation, creating a broken link.",
+      "why_it_matters": "Logs are essential for debugging; a missing page with no fallback (e.g., placeholder) creates confusion and breaks the observability workflow.",
+      "suggestion": "Add the Logs page with basic interactables (filters, search, log table) or remove the 'Logs' navigation link if unimplemented. Provide a placeholder with a 'Coming Soon' message if development is pending.",
+      "source_hint": "services.html, alerts.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "Filter alerts by severity/status on mobile (alerts.html)",
+      "problem": "Mobile 'All severities' and 'All status' dropdowns in alerts.html do not open or filter alerts (e.g., clicking 'All severities' shows no options; selecting 'Open' does not update the alert list).",
+      "evidence": "Multiple click/select actions on mobile alerts.html dropdowns (target_ids ux-12, ux-15) showed no visual change (dropdowns not opening, alert list unchanged).",
+      "why_it_matters": "Mobile users need to filter alerts to prioritize issues; non-functional dropdowns reduce productivity and make alert triage difficult.",
+      "suggestion": "Fix mobile dropdown interactivity (e.g., ensure they expand to show options, update alert lists on selection). Add visual feedback (e.g., dropdown arrow rotation, list updates) to confirm interaction success.",
+      "source_hint": "alerts.html (mobile)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Access the Logs page via navigation",
+      "problem": "The 'Logs' navigation link (e.g., in alerts.html, endpoint-detail.html) leads to a non-existent page (logs.html), resulting in a file not found error.",
+      "evidence": "Attempts to open logs.html via navigation or direct URL resulted in net::ERR_FILE_NOT_FOUND, confirming the page is missing from the site’s structure.",
+      "why_it_matters": "Broken navigation links erode user trust and disrupt workflows. Users expect consistent access to core features like logs for debugging.",
+      "suggestion": "Remove the 'Logs' navigation link if the page is unimplemented, or add a placeholder page with a clear 'Coming Soon' message. Ensure all navigation links point to valid pages.",
+      "source_hint": "alerts.html, endpoint-detail.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Filter endpoints by health status (e.g., 'Degraded')",
+      "problem": "Health filter dropdown in endpoints.html failed to update the endpoint list to show 'Degraded' endpoints (multiple attempts selected 'Healthy' instead, or no change occurred).",
+      "evidence": "Attempts to select 'Degraded' from the health filter resulted in the list updating to 'Healthy' endpoints (e.g., green health dots) or no change, indicating action execution or dropdown logic issues.",
+      "why_it_matters": "Filtering by health status is critical for prioritizing issues; broken filters prevent users from quickly identifying degraded endpoints.",
+      "suggestion": "Fix health filter dropdown logic to ensure 'Degraded' (and other statuses) correctly filter the endpoint list. Add visual confirmation (e.g., selected status highlighted, list updates) to validate filter changes.",
+      "source_hint": "endpoints.html"
+    },
+    {
+      "severity": "low",
+      "ux_area": "accessibility",
+      "user_goal": "Interact with mobile UI elements",
+      "problem": "Mobile view has small tap targets (e.g., service nodes, dropdowns, navigation links) below 44px guidance, and missing input labels (e.g., environment select, severity filter).",
+      "evidence": "Layout warnings in mobile viewports (e.g., alerts.html) showed tap targets like '👤' (34x34px) and dropdowns with missing labels, violating accessibility standards.",
+      "why_it_matters": "Small tap targets and missing labels reduce usability for users with motor disabilities or screen readers, creating accessibility barriers.",
+      "suggestion": "Increase tap target sizes to at least 44x44px, and add labels/aria-labels to form fields (e.g., environment select, severity filter) for screen readers.",
+      "source_hint": "alerts.html (mobile), services.html (mobile)"
+    },
+    {
+      "severity": "low",
+      "ux_area": "clarity",
+      "user_goal": "Filter alerts by severity/status on mobile",
+      "problem": "Mobile alert filter dropdowns (All severities, All status) provide no visual feedback (e.g., dropdown expansion, option visibility) when clicked, making interactions feel unresponsive.",
+      "evidence": "Clicking 'All severities' and 'All status' dropdowns in alerts.html (mobile) showed no visible change (e.g., dropdown opening, option list), creating confusion about interaction success.",
+      "why_it_matters": "Lack of visual feedback makes users unsure if their action was registered, leading to repeated clicks and frustration.",
+      "suggestion": "Add visual feedback (e.g., dropdown arrow rotation, background highlight, option list expansion) when dropdowns are clicked to confirm interaction.",
+      "source_hint": "alerts.html (mobile)"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "confidence": "low",
+    "page_coverage_percent": 120,
+    "feature_coverage_percent": 13,
+    "action_success_rate_percent": 51,
+    "unchanged_action_percent": 28,
+    "known_pages": [
+      "alerts.html",
+      "endpoint-detail.html",
+      "endpoints.html",
+      "index.html",
+      "services.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "endpoints.html",
+      "endpoint-detail.html",
+      "alerts.html",
+      "services.html",
+      "chromewebdata"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 62,
+      "go_back": 4,
+      "open_page": 7,
+      "select_option": 6
+    },
+    "total_actions": 79,
+    "successful_actions": 40,
+    "failed_actions": 39,
+    "unchanged_actions": 22,
+    "observed_feature_count": 90,
+    "exercised_feature_count": 12,
+    "unexplored_features": [
+      {
+        "signature": "alerts.html|clickable|a|||aeroiq|index.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "AeroIQ"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||⚙️ settings|#",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||🌐 service map|services.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🌐 Service Map"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||📊 dashboard|index.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📊 Dashboard"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||📜 logs|#",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Logs"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||🔌 integrations|#",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔌 Integrations"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||🔗 endpoints|endpoints.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔗 Endpoints"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||🚨 alerts 8|alerts.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🚨 Alerts 8"
+      },
+      {
+        "signature": "alerts.html|clickable|button|||👤|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "alerts.html|selectable|select|||acme cloud org|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "Acme Cloud Org"
+      },
+      {
+        "signature": "alerts.html|selectable|select|||all assignees|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "All assignees"
+      },
+      {
+        "signature": "alerts.html|typeable|input|||search…|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Search…"
+      },
+      {
+        "signature": "alerts.html|typeable|input|||⌘k search…|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "⌘K Search…"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||aeroiq|index.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "AeroIQ"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||⚙️ settings|#",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||🌐 service map|services.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🌐 Service Map"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||📊 dashboard|index.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📊 Dashboard"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||📜 logs|#",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Logs"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||🔌 integrations|#",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔌 Integrations"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||🔗 endpoints|endpoints.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔗 Endpoints"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||🚨 alerts 8|alerts.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🚨 Alerts 8"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||1h|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "1h"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||24h|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "24h"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||5m|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "5m"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||7d|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "7d"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||by region|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "By region"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||by status code|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "By status code"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||dev|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Dev"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||production|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Production"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||staging|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Staging"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||🌓|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "🌓"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||👤|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||🔔 8|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "🔔 8"
+      },
+      {
+        "signature": "endpoint-detail.html|selectable|select|||acme cloud org|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "Acme Cloud Org"
+      },
+      {
+        "signature": "endpoint-detail.html|typeable|input|||⌘k search…|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "⌘K Search…"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||aeroiq|index.html",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "AeroIQ"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||⚙️ settings|#",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||🌐 service map|services.html",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🌐 Service Map"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||📜 logs|#",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Logs"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||🔌 integrations|#",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔌 Integrations"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 13% of visible interactive feature signatures.",
+      "39 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-02-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-03-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-04-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-05-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-08-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-10-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-11-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-17-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-18-go_back-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-28-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-29-go_back-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-39-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-40-go_back-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-61-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-62-go_back-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-76-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-79-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-kimi-k2.5/aeroiq/_run",
+  "claude_fix": null
+}

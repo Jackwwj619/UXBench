@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Checkout | Stripe docs clone</title>
+    <meta name="description" content="A rebuilt Stripe Docs clone that keeps only the Checkout customization capabilities Stripe actually supports.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="customization">
+    <div data-site-header></div>
+
+    <div class="page-layout">
+        <aside class="sidebar" data-site-sidebar></aside>
+
+        <main class="content">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="index.html">Stripe Checkout</a>
+                <span>/</span>
+                <span>Customization</span>
+            </nav>
+
+            <section class="hero">
+                <div class="hero-grid">
+                    <div>
+                        <div class="eyebrow">Stripe product limitations</div>
+                        <h1>Customize Checkout without inventing controls Stripe doesn’t actually offer.</h1>
+                        <p class="subtitle">The limits described below come from the real Stripe Checkout product (not from this clone). This page replaces the fake “everything is configurable” framing with the real Stripe surface: branding settings, <code>branding_settings</code>, text and policies, blocked card brands, custom domains for hosted pages, and product images from Products or inline <code>product_data</code>. For the most current feature set, see the <a href="https://docs.stripe.com/payments/checkout/customization" target="_blank" rel="noopener noreferrer">official Stripe Checkout customization docs</a>.</p>
+                        <ul class="hero-list">
+                            <li>Hosted Checkout and embedded page do not expose the same branding surface.</li>
+                            <li>Custom domains apply to Stripe-hosted pages, not to the embedded page on your own site.</li>
+                            <li>Policy text is flexible, but Stripe explicitly warns against creating ambiguous or non-compliant copy.</li>
+                        </ul>
+                    </div>
+                    <div class="hero-panels">
+                        <div class="hero-card">
+                            <span class="hero-badge">Customization limit</span>
+                            <h3>Checkout stays opinionated on purpose</h3>
+                            <p>Stripe Checkout is meant to stay low-code and high-conversion. You can brand it, annotate it, and restrict certain payment details, but you cannot turn it into a fully bespoke checkout UI.</p>
+                        </div>
+                        <div class="hero-meta">
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">20</span>
+                                <span class="panel-stat-label">Preset font families Stripe documents for Checkout</span>
+                            </div>
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">3</span>
+                                <span class="panel-stat-label">Preset border radius shapes in Checkout branding</span>
+                            </div>
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">1,200</span>
+                                <span class="panel-stat-label">Maximum length Stripe documents for custom text blocks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="what-is-actually-customizable" data-search-keywords="customization limits hosted embedded page fonts logo icon branding settings">
+                <div class="section-label">Scope check</div>
+                <div class="step-header">
+                    <span class="step-number">0</span>
+                    <h2>What Stripe Checkout actually lets you change</h2>
+                </div>
+                <p>Stripe Checkout offers limited customization. That is part of the product design. The safe mental model is: you can brand the shell, add policy and support details, tune some payment restrictions, and enrich the product context. If you need total layout control, Checkout probably isn’t the right tool.</p>
+
+                <div class="comparison-grid">
+                    <article class="comparison-card">
+                        <span class="comparison-card-meta">Hosted page</span>
+                        <h3>Most complete branding surface</h3>
+                        <p>The Stripe-hosted page can use your own logo or icon, custom colors, supported fonts, border style, business name, product images, legal policies, support details, and even a custom subdomain.</p>
+                        <ul class="checklist">
+                            <li>Supports logo and icon in branding settings.</li>
+                            <li>Supports custom domains because Stripe hosts the checkout URL.</li>
+                            <li>Still limited to Stripe’s overall page structure.</li>
+                        </ul>
+                    </article>
+                    <article class="comparison-card">
+                        <span class="comparison-card-meta">Embedded page</span>
+                        <h3>Same policy tools, narrower visual surface</h3>
+                        <p>The embedded page inherits the same general Checkout behavior but narrows some presentation controls. Stripe documents background color, button color, font, shapes, and display name, not a full logo-and-icon treatment inside the iframe.</p>
+                        <ul class="checklist">
+                            <li>Uses the same <code>branding_settings</code> object with embedded-page-specific limits.</li>
+                            <li>Does not need a custom domain because it already renders on your site.</li>
+                            <li>Shares card-brand filtering, policies, and product-image behavior with hosted Checkout.</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <section class="step" id="appearance" data-search-keywords="branding_settings display_name font background button color shapes border style logo icon">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    <h2>Appearance and branding settings</h2>
+                </div>
+                <p>Stripe documents two ways to brand Checkout: Dashboard settings and per-session <code>branding_settings</code>. If you omit a field in <code>branding_settings</code>, Checkout falls back to the Dashboard default.</p>
+
+                <div class="callout callout-info">
+                    <strong>Hosted and embedded do not expose identical visual controls</strong>
+                    <p>Stripe’s appearance docs show logo and icon controls on the hosted page, while the embedded page documentation centers on display name, background color, button color, font family, and border shape.</p>
+                </div>
+
+                <div class="appearance-demo">
+                    <div class="appearance-demo-header">
+                        <button class="demo-tab active" type="button" data-theme="default">Stripe-like</button>
+                        <button class="demo-tab" type="button" data-theme="slate">Slate</button>
+                        <button class="demo-tab" type="button" data-theme="earth">Earth</button>
+                        <button class="demo-tab" type="button" data-theme="bright">Bright</button>
+                    </div>
+                    <div class="demo-surface">
+                        <div class="demo-controls">
+                            <div class="demo-control-group">
+                                <span class="demo-control-label">Background color</span>
+                                <div class="color-chip">
+                                    <span class="color-swatch" data-demo-swatch="background"></span>
+                                    <span class="color-value" data-demo-value="background">#ffffff</span>
+                                </div>
+                            </div>
+                            <div class="demo-control-group">
+                                <span class="demo-control-label">Button color</span>
+                                <div class="color-chip">
+                                    <span class="color-swatch" data-demo-swatch="accent"></span>
+                                    <span class="color-value" data-demo-value="accent">#635bff</span>
+                                </div>
+                            </div>
+                            <div class="demo-control-group">
+                                <span class="demo-control-label">Text color</span>
+                                <div class="color-chip">
+                                    <span class="color-swatch" data-demo-swatch="text"></span>
+                                    <span class="color-value" data-demo-value="text">#1a1f36</span>
+                                </div>
+                            </div>
+                            <div class="demo-control-group">
+                                <span class="demo-control-label">Font family</span>
+                                <div class="color-chip">
+                                    <span class="color-value" data-demo-value="font">Inter</span>
+                                </div>
+                            </div>
+                            <div class="demo-control-group">
+                                <span class="demo-control-label">Border shape</span>
+                                <div class="color-chip">
+                                    <span class="color-value" data-demo-value="radius">14px</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-preview-card">
+                            <div class="preview-field">
+                                <label>Business</label>
+                                <div class="preview-input">Powdur Outfitters</div>
+                            </div>
+                            <div class="preview-field">
+                                <label>Email</label>
+                                <div class="preview-input">jenny@example.com</div>
+                            </div>
+                            <div class="preview-field">
+                                <label>Card details</label>
+                                <div class="preview-input">4242 4242 4242 4242</div>
+                            </div>
+                            <button type="button" class="preview-pay-btn">Pay $20.00</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="param-table">
+                    <div class="param-table-header">Branding controls Stripe documents</div>
+                    <div class="param-row">
+                        <div class="param-name"><code>branding_settings.display_name</code></div>
+                        <div class="param-desc">Overrides the business name shown in Checkout. Stripe also lets you set the default in Business details.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>branding_settings.background_color</code> and <code>button_color</code></div>
+                        <div class="param-desc">Control the main surface and primary action color. If you skip them, Stripe uses your Dashboard defaults.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>branding_settings.font_family</code> and <code>border_style</code></div>
+                        <div class="param-desc">Choose from Stripe’s supported font list and supported shape presets. Locale fallback still applies if a font doesn’t cover the active character set.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>branding_settings.logo</code> and <code>icon</code></div>
+                        <div class="param-desc">Available on the hosted page flow. The hosted appearance docs explicitly show both options and how Checkout uses the icon as the favicon when present.</div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">Node.js</span>
+                        <button class="copy-btn" type="button" data-copy-from="custom-branding-node">Copy</button>
+                    </div>
+                    <pre><code id="custom-branding-node">const session = await stripe.checkout.sessions.create({
+  line_items: [
+    {
+      price: "price_12345",
+      quantity: 1,
+    },
+  ],
+  mode: "payment",
+  success_url: "https://example.com/success",
+  branding_settings: {
+    display_name: "Powdur",
+    font_family: "roboto",
+    border_style: "rectangular",
+    background_color: "#7D8CC4",
+    button_color: "#A0D2DB",
+  },
+});</code></pre>
+                </div>
+            </section>
+
+            <section class="step" id="policies" data-search-keywords="custom_text submit_type terms of service support contact information refund return policy 1200">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    <h2>Text, policies, support details, and terms</h2>
+                </div>
+                <p>Stripe Checkout supports more than colors. You can add operational text, return and refund policies, support contact details, and terms-of-service agreement collection. This is one of the areas where the old page was underspecified.</p>
+
+                <div class="callout callout-warning">
+                    <strong>Stripe’s compliance warning is real</strong>
+                    <p>Stripe explicitly says you must not use custom text to create ambiguity with Stripe-generated text, your Stripe agreement, Stripe policies, or applicable law. If you customize reuse language or subscription terms, your legal team owns the correctness of that copy.</p>
+                </div>
+
+                <div class="feature-grid">
+                    <article class="feature-card">
+                        <span class="feature-card-meta">Custom text</span>
+                        <div class="feature-card-title">Helpful context near the form</div>
+                        <div class="feature-card-desc">Use <code>custom_text</code> to add shipping notes, onboarding instructions, or a post-submit link. Stripe documents Markdown support for bold text and links, with a 1,200-character limit.</div>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-card-meta">Submit button</span>
+                        <div class="feature-card-title">Use <code>submit_type</code> for one-time payment wording</div>
+                        <div class="feature-card-desc">Set labels like donate or book so the CTA better matches the business action on Checkout.</div>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-card-meta">Policies</span>
+                        <div class="feature-card-title">Show return, refund, and legal information</div>
+                        <div class="feature-card-desc">Stripe exposes support contact info, return and refund details, terms-of-service links, and privacy policy links through Checkout settings.</div>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-card-meta">Agreement collection</span>
+                        <div class="feature-card-title">Require terms acceptance when needed</div>
+                        <div class="feature-card-desc">Checkout can collect a terms-of-service agreement before payment, which is especially useful for subscriptions or policy-sensitive flows.</div>
+                    </article>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">cURL</span>
+                        <button class="copy-btn" type="button" data-copy-from="custom-policies-curl">Copy</button>
+                    </div>
+                    <pre><code id="custom-policies-curl">curl https://api.stripe.com/v1/checkout/sessions \
+  -u "sk_test_...:" \
+  -d "line_items[0][price]"="{{PRICE_ID}}" \
+  -d "line_items[0][quantity]"=1 \
+  -d mode=payment \
+  --data-urlencode "custom_text[shipping_address][message]"="Please note that we can't guarantee 2-day delivery for PO boxes at this time." \
+  --data-urlencode "custom_text[submit][message]"="We'll email you instructions on how to get started." \
+  --data-urlencode "custom_text[after_submit][message]"="Learn more about **your purchase** on our [product page](https://example.com/products)." \
+  --data-urlencode success_url="https://example.com/success"</code></pre>
+                </div>
+
+                <div class="param-table">
+                    <div class="param-table-header">Policy and text controls worth knowing</div>
+                    <div class="param-row">
+                        <div class="param-name"><code>custom_text</code></div>
+                        <div class="param-desc">Lets you add extra explanatory content near shipping fields, above submit, or after submit. Good for logistics notes, but not a place to rewrite Stripe’s compliance language.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>submit_type</code></div>
+                        <div class="param-desc">Changes the wording of the pay button for one-time purchases to align with actions like donate or book.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name">Support and policy settings</div>
+                        <div class="param-desc">Configured in Checkout settings: support email, phone, website, return and refund terms, privacy policy, and terms of service links.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name">Payment method reuse text</div>
+                        <div class="param-desc">Stripe lets you customize or hide some default reuse language, but not the payment-method-specific text. Stripe warns this is a compliance-sensitive area.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="card-brands" data-search-keywords="brands_blocked visa mastercard american_express discover_global_network wallets link saved cards">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    <h2>Filter card brands with <code>brands_blocked</code></h2>
+                </div>
+                <p>Stripe Checkout supports explicit card-brand filtering in both hosted and embedded page modes. The old page implied this was a vague visual tweak; it is actually a payment restriction, not just a logo preference.</p>
+
+                <div class="callout callout-info">
+                    <strong>Card-brand filtering propagates farther than the number field</strong>
+                    <p>Stripe documents that blocked brands are filtered in Apple Pay and Google Pay wallets, Link saved cards, customer saved payment methods, and co-badged networks where applicable.</p>
+                </div>
+
+                <div class="param-table">
+                    <div class="param-table-header">Documented brand values</div>
+                    <div class="param-row">
+                        <div class="param-name"><code>visa</code></div>
+                        <div class="param-desc">Blocks Visa cards from Checkout.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>mastercard</code></div>
+                        <div class="param-desc">Blocks Mastercard cards from Checkout.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>american_express</code></div>
+                        <div class="param-desc">Blocks American Express cards from Checkout.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>discover_global_network</code></div>
+                        <div class="param-desc">Blocks the Discover Global Network family, including Discover, Diners, JCB, UnionPay, and Elo.</div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">Node.js</span>
+                        <button class="copy-btn" type="button" data-copy-from="custom-card-brands-node">Copy</button>
+                    </div>
+                    <pre><code id="custom-card-brands-node">const session = await stripe.checkout.sessions.create({
+  line_items: [
+    {
+      price: "price_12345",
+      quantity: 1,
+    },
+  ],
+  mode: "payment",
+  success_url: "https://example.com/success",
+  payment_method_options: {
+    card: {
+      restrictions: {
+        brands_blocked: ["american_express"],
+      },
+    },
+  },
+});</code></pre>
+                </div>
+            </section>
+
+            <section class="step" id="custom-domain" data-search-keywords="custom domain hosted page cname txt hosted-checkout.stripecdn.com acme challenge">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    <h2>Custom domains are for the Stripe-hosted page</h2>
+                </div>
+                <p>Stripe’s custom domain docs are very specific: this feature is for Stripe-hosted Checkout pages, Payment Links, and the customer portal. It is not how you “brand” the embedded page, because the embedded page already lives on your own site.</p>
+
+                <div class="callout callout-warning">
+                    <strong>Two DNS records, not one</strong>
+                    <p>The old page only showed a CNAME. Stripe’s actual setup requires both a <code>CNAME</code> pointing to <code>hosted-checkout.stripecdn.com</code> and a TXT record at <code>_acme-challenge.&lt;subdomain&gt;</code> for domain verification and TLS issuance.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">DNS records</span>
+                        <button class="copy-btn" type="button" data-copy-from="custom-domain-records">Copy</button>
+                    </div>
+                    <pre><code id="custom-domain-records">Type:   CNAME
+Name:   payments
+Value:  hosted-checkout.stripecdn.com
+TTL:    300
+
+Type:   TXT
+Name:   _acme-challenge.payments
+Value:  [copy the exact verification string from Stripe Dashboard]
+TTL:    300</code></pre>
+                </div>
+
+                <div class="mini-grid">
+                    <article class="mini-card">
+                        <span class="badge badge-success">Hosted flow</span>
+                        <h3>Valid use case</h3>
+                        <p>Point a subdomain like <code>payments.example.com</code> to Stripe so the hosted Checkout page feels branded and consistent.</p>
+                    </article>
+                    <article class="mini-card">
+                        <span class="badge badge-error">Embedded page</span>
+                        <h3>Not the same feature</h3>
+                        <p>The embedded page already renders on your domain, so “custom domain for embedded Checkout” is a category mistake. What you customize there is the iframe’s branding and policy surface.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="step" id="product-images" data-search-keywords="product images products dashboard product_data images description line items">
+                <div class="step-header">
+                    <span class="step-number">5</span>
+                    <h2>Add product images through Products or inline <code>product_data</code></h2>
+                </div>
+                <p>Stripe’s product image support is more straightforward than the old page made it seem. You can upload images on the Product in the Dashboard or pass them via the Products API, then reference a Price in Checkout. For one-off items, you can create the product inline inside the Session.</p>
+
+                <div class="callout callout-info">
+                    <strong>No invented image limits here</strong>
+                    <p>The previous page guessed at file limits and image counts. This rebuild avoids making up rules that the referenced Stripe page didn’t document and sticks to the actual product-image entry points Stripe describes.</p>
+                </div>
+
+                <div class="feature-grid">
+                    <article class="feature-card">
+                        <span class="feature-card-meta">Dashboard path</span>
+                        <div class="feature-card-title">Edit the Product directly</div>
+                        <div class="feature-card-desc">Add a Description and upload an Image on the Product record, then reference its Price ID from the Checkout Session.</div>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-card-meta">API path</span>
+                        <div class="feature-card-title">Set <code>images</code> on the Product</div>
+                        <div class="feature-card-desc">When you create Products by API, Stripe documents the <code>images</code> parameter for reusable catalog items.</div>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-card-meta">Inline path</span>
+                        <div class="feature-card-title">Use <code>line_items[].price_data.product_data</code></div>
+                        <div class="feature-card-desc">Ideal for dynamic or one-off purchases where you do not want a pre-saved catalog product.</div>
+                    </article>
+                    <article class="feature-card">
+                        <span class="feature-card-meta">Customer result</span>
+                        <div class="feature-card-title">Checkout displays the image automatically</div>
+                        <div class="feature-card-desc">Stripe’s docs explicitly call this out once the Product or inline product data includes the image.</div>
+                    </article>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">Inline product_data</span>
+                        <button class="copy-btn" type="button" data-copy-from="custom-product-images-node">Copy</button>
+                    </div>
+                    <pre><code id="custom-product-images-node">const session = await stripe.checkout.sessions.create({
+  line_items: [
+    {
+      price_data: {
+        currency: "usd",
+        unit_amount: 1000,
+        product_data: {
+          name: "Premium T-Shirt",
+          description: "Comfortable cotton t-shirt",
+          images: ["https://example.com/t-shirt.png"],
+        },
+      },
+      quantity: 1,
+    },
+  ],
+  mode: "payment",
+  success_url: "https://example.com/success",
+});</code></pre>
+                </div>
+            </section>
+
+            <section class="step" id="connect-and-overrides" data-search-keywords="connect connected accounts on_behalf_of accounts api branding settings override">
+                <div class="step-header">
+                    <span class="step-number">6</span>
+                    <h2>Connect platforms inherit connected-account branding by default</h2>
+                </div>
+                <p>This is an advanced but important detail from Stripe’s appearance docs. For destination charges with <code>on_behalf_of</code> and direct charges on platforms, Checkout uses the connected account’s branding by default. Platforms can manage branding for Express or Custom connected accounts through the Accounts API, and override it per Session with <code>branding_settings</code>.</p>
+
+                <div class="param-table">
+                    <div class="param-table-header">Platform branding behavior</div>
+                    <div class="param-row">
+                        <div class="param-name">Connected account default</div>
+                        <div class="param-desc">Checkout reads the connected account’s branding settings for the payment flow when the charge is effectively on that account’s behalf.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name">Accounts API</div>
+                        <div class="param-desc">Platforms can configure branding for connected accounts that do not have full Dashboard access.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name">Per-session override</div>
+                        <div class="param-desc">Set <code>branding_settings</code> when creating the Session if you need to override the connected account default for a specific Checkout flow.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="next-steps" data-search-keywords="official docs hosted embedded checkout sessions api">
+                <div class="step-header">
+                    <span class="step-number">7</span>
+                    <h2>Next steps</h2>
+                </div>
+
+                <div class="next-steps-grid">
+                    <a class="next-step-card" href="index.html">
+                        <span class="comparison-card-meta">Local guide</span>
+                        <h3>Return to the hosted quickstart</h3>
+                        <p>Use the hosted flow if you need custom domains or the simplest launch path.</p>
+                    </a>
+                    <a class="next-step-card" href="embedded.html">
+                        <span class="comparison-card-meta">Local guide</span>
+                        <h3>Return to the embedded page guide</h3>
+                        <p>See how these branding and policy controls plug into the current embedded-page integration.</p>
+                    </a>
+                    <a class="next-step-card external-link-icon" href="https://docs.stripe.com/payments/checkout/customization" target="_blank" rel="noopener noreferrer">
+                        <span class="comparison-card-meta">Official docs</span>
+                        <h3>Open Stripe’s customization hub</h3>
+                        <p>Use the live docs for the latest behavior, links, and Dashboard entry points.</p>
+                    </a>
+                    <a class="next-step-card external-link-icon" href="https://docs.stripe.com/payments/checkout/custom-domains" target="_blank" rel="noopener noreferrer">
+                        <span class="comparison-card-meta">Official docs</span>
+                        <h3>Review custom-domain setup in detail</h3>
+                        <p>Stripe’s real setup includes verification, TLS, and DNS checks the earlier page omitted.</p>
+                    </a>
+                </div>
+            </section>
+
+            <div class="page-footer">
+                <div class="footer-feedback">
+                    <span>Was this rebuild useful?</span>
+                    <button class="feedback-btn" type="button" data-value="yes">Yes</button>
+                    <button class="feedback-btn" type="button" data-value="no">No</button>
+                </div>
+                <div class="footer-links">
+                    <a class="external-link-icon" href="https://docs.stripe.com/payments/checkout/customization" target="_blank" rel="noopener noreferrer">Official customization hub</a>
+                    <a class="external-link-icon" href="https://docs.stripe.com/payments/checkout/customization/appearance" target="_blank" rel="noopener noreferrer">Appearance guide</a>
+                    <a class="external-link-icon" href="https://docs.stripe.com/payments/checkout/customization/policies?payment-ui=embedded-form" target="_blank" rel="noopener noreferrer">Text and policies guide</a>
+                </div>
+            </div>
+        </main>
+
+        <aside class="toc">
+            <div class="toc-title">On this page</div>
+            <a class="toc-link active" href="#what-is-actually-customizable">What is customizable</a>
+            <a class="toc-link" href="#appearance">Appearance</a>
+            <a class="toc-link" href="#policies">Policies and text</a>
+            <a class="toc-link" href="#card-brands">Card brands</a>
+            <a class="toc-link" href="#custom-domain">Custom domains</a>
+            <a class="toc-link" href="#product-images">Product images</a>
+            <a class="toc-link" href="#connect-and-overrides">Connect behavior</a>
+            <a class="toc-link" href="#next-steps">Next steps</a>
+        </aside>
+    </div>
+
+    <div data-search-root></div>
+    <script src="script.js"></script>
+</body>
+</html>

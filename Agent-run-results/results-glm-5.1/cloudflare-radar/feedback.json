@@ -1,0 +1,69 @@
+{
+  "summary": "The Cloudflare Radar dashboard provides functional anchor-based navigation but suffers from significant mobile usability issues, dead interactive elements, and inaccessible filter controls. On mobile, tap targets across the header, navigation drawer, and search inputs fall well below the 44px minimum guidance, making touch interaction difficult. Several dashboard cards and the search feature lack functional feedback, acting as dead links or unimplemented features. Additionally, critical filter checkboxes are rendered outside the viewport and cannot be scrolled to, blocking user task completion. Due to coverage limitations (30%), deeper interactive states for domain rankings, outage alerts, and data explorer queries remain untested.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "almost-all-interactive-elements-on-the",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "index.html (mobile viewport header and navigation drawer)",
+      "problem": "Almost all interactive elements on the mobile viewport have tap targets smaller than the 44px minimum guidance, making them difficult to activate reliably with touch.",
+      "evidence": "Layout warnings consistently flag small tap targets: 'Open navigation' (38x38px), 'Cloudflare Radar home' (107x28px), 'Search Radar' (38x38px), 'API' (48x38px), 'Toggle theme' (38x38px), and navigation drawer links (263x32px).",
+      "suggested_fix": "Increase the height and padding of all interactive elements to meet the 44x44px minimum touch target size, especially the navigation drawer links and header icons."
+    },
+    {
+      "id": "filter-checkboxes-include-cloudflare-network-traffic",
+      "severity": "high",
+      "area": "affordance",
+      "page_hint": "index.html (filter bar checkboxes)",
+      "problem": "Filter checkboxes ('Include Cloudflare network traffic', 'Include public DNS resolver data', 'Show bot-only traffic') are rendered outside the viewport and cannot be scrolled to or interacted with.",
+      "evidence": "Click actions on ux-111, ux-112, and ux-113 failed with 'element is outside of the viewport' despite the browser attempting to scroll them into view. Scroll actions also failed to change the viewport position.",
+      "suggested_fix": "Ensure the filter bar is placed within a scrollable container or is fully visible within the viewport without requiring impossible scrolling. Fix CSS overflow properties that may be hiding these elements."
+    },
+    {
+      "id": "clicking-prominent-dashboard-cards-like-analysis",
+      "severity": "high",
+      "area": "feedback",
+      "page_hint": "index.html (ux-107, ux-105, ux-108)",
+      "problem": "Clicking prominent dashboard cards like 'Analysis Global outages and network resilience', 'Report Internet trends for the current quarter', and 'Year in Review' provides no visual feedback, navigation, or content expansion.",
+      "evidence": "Clicking these cards only appends '#' to the URL without any visible state change or content expansion, indicating they are dead or unimplemented links.",
+      "suggested_fix": "Implement the expected interaction for these cards (e.g., expand details, navigate to a sub-page) or remove the clickable affordance if the feature is not yet available."
+    },
+    {
+      "id": "typing-a-query-into-the-search",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "index.html (Search Radar dialog, ux-117)",
+      "problem": "Typing a query into the Search Radar input provides no autocomplete suggestions, search results, or visual feedback, leaving the user unsure if the search is working.",
+      "evidence": "Typing 'DDoS' into the main search input (ux-117) did not trigger any visible search suggestions, dropdowns, or results.",
+      "suggested_fix": "Implement a basic search feedback mechanism, such as displaying 'No results found', showing a loading spinner, or providing autocomplete suggestions as the user types."
+    },
+    {
+      "id": "the-ai-crawlers-sidebar-link-uses",
+      "severity": "medium",
+      "area": "navigation",
+      "page_hint": "index.html (sidebar link 'AI crawlers')",
+      "problem": "The 'AI crawlers' sidebar link uses the same '#traffic-type' anchor as 'Traffic by type' and 'Bot traffic', scrolling to the general section rather than the specific AI crawlers content.",
+      "evidence": "Clicking the 'AI crawlers' sidebar link scrolled the page to the 'Bot traffic' section, which groups the content but lacks precise scroll-to-target specificity.",
+      "suggested_fix": "Assign a unique anchor ID (e.g., '#ai-crawlers') to the AI crawlers sub-section and update the sidebar link to point to it for precise scrolling."
+    },
+    {
+      "id": "the-email-security-sidebar-link-scrolls",
+      "severity": "medium",
+      "area": "navigation",
+      "page_hint": "index.html (sidebar link 'Email security')",
+      "problem": "The 'Email security' sidebar link scrolls to the general 'Security and attacks' section rather than a specific Email security sub-section.",
+      "evidence": "Clicking the 'Email security' sidebar link scrolled the page to the 'Security and attacks' heading, leaving the user to search for email-specific data within the broader section.",
+      "suggested_fix": "Create a specific anchor for the Email security content within the Security section and link directly to it from the sidebar."
+    },
+    {
+      "id": "the-search-input-field-domain-ip",
+      "severity": "low",
+      "area": "mobile usability",
+      "page_hint": "index.html (search input ux-35)",
+      "problem": "The search input field ('Domain, IP, ASN, or report') has a height of only 22px, making it a very poor touch target on mobile devices.",
+      "evidence": "The search input (ux-35) was measured at 277x22px on the mobile viewport, well below the 44px height guidance.",
+      "suggested_fix": "Increase the height and padding of the search input to at least 44px to ensure it is easily tappable on touch screens."
+    }
+  ]
+}

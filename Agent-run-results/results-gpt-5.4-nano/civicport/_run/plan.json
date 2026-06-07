@@ -1,0 +1,286 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the CivicPort onboarding/application UX end-to-end, including adjacent flows (track and fees), key states (autsaved, cancellation, navigation), conditional form rendering, and mobile usability.",
+    "summary": "Start from index.html and navigate through Apply, Track (My applications), and Fees, validating global navigation and layout issues noted in the prescan. Then focus on apply.html to exercise the multi-step form: backward navigation, parcel/ownership gating, file upload sections, neighbor signature/affidavits, conditional step visibility, sticky “What you’ll need”, and the expedited fee toggle plus final review/submit and cancellation dialog. Repeat critical checks on mobile viewport for tap targets and any responsive layout shifts.",
+    "assumptions": [
+      "All functionality is client-side demo behavior (no real backend); flows can be validated via UI state changes visible on the pages.",
+      "apply.html is the primary onboarding form with multiple steps, including conditional step rendering based on project type/scope and parcel/historic district selection.",
+      "Navigation links (top header) exist on all pages and route to apply.html, my-applications.html, and fees.html."
+    ],
+    "target_pages": [
+      "index.html",
+      "apply.html",
+      "my-applications.html",
+      "fees.html"
+    ],
+    "risk_hotspots": [
+      "index.html header links (Apply / My applications / Fees / Help) have small tap target warnings (34x22, 94x22, 27x22, 28x22) → validate mobile tapability and focus states",
+      "apply.html step navigation: completed steps indicated with ✓ and may be click-back-able; validate cannot skip locked steps and that state persists when moving back",
+      "apply.html “Save and continue” and “Auto-saved” behavior (prescan shows auto-saved “just now”): validate saving on step transitions and after field entry",
+      "apply.html modal/dialog for “Cancel APPLICATION” (dialog present): validate wording, consequences, and ability to back out safely",
+      "apply.html inputs missing accessible labels (prescan shows missing_input_label): validate usability with keyboard/screen-reader-like interaction",
+      "apply.html conditional visibility: exterior changes → neighbor step; historic parcel → historic-district step; Addition/Structural → elevation drawings; Roof/Electrical/HVAC → energy worksheet; validate these branches are reachable and sticky materials checklist updates correctly",
+      "apply.html sticky checklist “WHAT YOU’LL NEED” updates with ✓ as you progress: validate synchronization with the current step and conditional steps",
+      "apply.html “Pick a project type first” and estimated fee card: validate expedited review (+50%) toggle interaction and total estimated fee behavior",
+      "apply.html file uploads section(s): validate that upload controls are usable, show progress/required status, and don’t block navigation",
+      "my-applications.html status badges: validate presence of statuses like “Approved” and “Inspector follow-up” and that clicking items (if any) behaves appropriately",
+      "fees.html: verify expedited toggle effect is consistent with fee schedule explanations (non-refundable once a plan reviewer is assigned)"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global navigation & landing page validation",
+        "objective": "Validate that the entry points (Apply / Track / Pay / Help) route correctly and that mobile touch targets and focus states are usable.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the three large icon-action buttons: Apply for a permit → apply.html, Track an application → my-applications.html, Pay fees → fees.html; confirm landing on correct page and expected headings",
+          "Use the header links (Apply / My applications / Fees / Help) to confirm correct routing",
+          "On index.html, interact with “Help” link (#) to verify whether it opens/collapses content or anchors to a section (avoid dead-end)",
+          "Validate service alerts are readable and do not overlap controls; confirm no console/network errors on navigation",
+          "Mobile viewport check: confirm tap targets for header links are still interactable despite small size warnings; verify visual focus/hover states"
+        ],
+        "exit_criteria": [
+          "All three main actions and header links successfully navigate to the expected pages without UI errors",
+          "Help behavior is confirmed (either opens content or anchors appropriately)",
+          "Mobile check confirms header actions are tappable and route correctly"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Apply flow core mechanics (step navigation, save, cancel)",
+        "objective": "Exercise the multi-step form’s navigation model (backward steps, locked steps), autosave, and the cancellation dialog safely.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Verify step-tree structure is present (6 groups with sub-steps) and that the current step highlights appropriately",
+          "On initial load, confirm “Auto-saved” timestamp text appears (“just now”) and remains consistent as you enter text",
+          "Complete step 1.1 minimally: fill Street address, City/State/Zip fields; verify Save and continue enables progression and does not reset entered data",
+          "Use Back (button present) to ensure you return to the previous step with fields intact",
+          "Attempt to click back to already-completed steps (✓) and validate it works; attempt to access locked/conditional steps to confirm locking behavior is enforced",
+          "Open the “Cancel APPLICATION” dialog and validate: presence of confirm/cancel choices, that canceling does not lose work unexpectedly, and that closing the dialog returns you to the correct step",
+          "Mobile viewport check: ensure Cancel and primary actions (Save and continue / Back) remain tappable and visible in sticky layout"
+        ],
+        "exit_criteria": [
+          "Autosave and Save-and-continue behavior validated across at least one step transition",
+          "Completed-step back navigation confirmed and locked-step access behavior verified",
+          "Cancel dialog tested for safe recovery paths",
+          "Critical actions remain usable on mobile viewport"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Conditional form branching + sticky “What you’ll need” checklist",
+        "objective": "Trigger each notable conditional visibility branch described in the prescan and verify the sticky materials checklist and fee card update accordingly.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Trigger address/parcel verification path: use parcel number start option (step 2.1 hint shown) or street address to reach “Parcel verified” state; confirm that subsequent sections unlock only after parcel verification",
+          "Ownership proof + contractor license sections: validate their completion markers and that their completion impacts materials checklist ✓ status",
+          "Conditional branch: select a scope that implies exterior changes and confirm neighbor signature block becomes visible; verify it appears/disappears and the sticky checklist updates with ✓",
+          "Conditional branch: choose a scenario that marks the parcel as historic-district; confirm historic-district step appears and any fee surcharge logic is reflected in the estimated fees card (historic review surcharge mentioned in prescan)",
+          "Conditional branch: for Addition/Structural, confirm elevation drawings appear as required documents",
+          "Conditional branch: for Roof/Electrical/HVAC, confirm energy worksheet appears",
+          "Validate sticky checklist updates as you progress through these conditional steps (checkbox ✓ alignment with completed sub-steps)"
+        ],
+        "exit_criteria": [
+          "All prescan-described conditional branches are reached at least once (neighbor/exterior, historic-district, elevation drawings, energy worksheet)",
+          "Sticky “What you’ll need” checklist accurately reflects each branch’s required materials status",
+          "Locked/unlocked behavior remains consistent with conditional visibility on navigation"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Materials/docs, affidavits, final review, and submit",
+        "objective": "Validate the document upload + affidavit workflow and that the final review/submit step correctly summarizes what was provided.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Exercise at least one file upload control in the plans & documents section (site plan and/or floor plan; other docs as available) and ensure the UI reflects selection (no blocking)",
+          "Validate affidavits sections visibility and requiredness: e.g., Lead paint (pre-1978) and Environmental; confirm how selecting project/address affects which affidavits show up",
+          "Progress to “Review & submit” step and verify Summary section includes the collected details and indicates completion status for conditional items",
+          "Confirm the estimated fee card at Review matches the selected project type and expedited toggle state",
+          "Submit attempt: validate required fields/documents are enforced; if submission is blocked, identify which items are missing; if submission succeeds (demo), confirm confirmation state and next-screen behavior",
+          "Mobile viewport check: verify that upload controls, long forms, and sticky checklist do not obstruct the final submit button"
+        ],
+        "exit_criteria": [
+          "File upload + affidavit workflow validated through review step",
+          "Submission gating works (required items enforced) and review summary matches inputs",
+          "Final submit path behaves correctly on mobile"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Adjacent flows: Track (my applications) and Fees",
+        "objective": "Validate status list UX, global navigation back to onboarding, and fee-information comprehension elements.",
+        "target_pages": [
+          "my-applications.html",
+          "fees.html"
+        ],
+        "key_checks": [
+          "On my-applications.html, validate the list displays 3 applications with App ID, Type, Address, Submitted date, and Status badges",
+          "Try clicking any status badge/app row if interactive (even if not indicated): confirm it either navigates to a detail view or provides appropriate non-action feedback",
+          "Use header navigation to return to Apply and verify that routing does not break",
+          "On fees.html, validate the permit fee schedule is readable and corresponds to project types listed on apply.html (e.g., Kitchen/Bathroom/Addition/Roof/Structural/Electrical/Plumbing)",
+          "Mobile viewport check: validate fees table layout is readable without horizontal scrolling trapping key info"
+        ],
+        "exit_criteria": [
+          "Track and Fees pages display expected content with correct structure on desktop and mobile",
+          "Any clickable elements on my-applications are handled gracefully",
+          "Project type fee rows match the onboarding project types for consistency"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages: index.html, apply.html, my-applications.html, fees.html; also return across pages via header actions at least once each",
+      "features": "For apply.html: exercise step navigation (back/cancel), parcel/address verification gating, at least one branch each for neighbor/historic/elevation drawings/energy worksheet, at least one file upload, review summary, and submit gating; validate sticky checklist updates and expedited fee toggle",
+      "mobile": "Repeat critical checks on mobile viewport: header tap targets on index.html, primary actions (Back/Save/Submit/Cancel) on apply.html, and readability/interactivity on fees.html and my-applications.html"
+    },
+    "notes": [
+      "Prescan indicates missing input labels on apply.html; during exploration, prioritize keyboard focus order and whether field labels can be inferred from surrounding text to assess accessibility usability.",
+      "Because the prescan shows only a subset of controls in interactables, expect additional buttons/inputs to appear after step transitions; allow exploration to adapt when new step-tree sub-steps become visible."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "CivicPort — City of Avalon Bay",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort City of Avalon Bay Apply My applications Fees Help Welcome to CivicPort. Apply for a renovation, building, electrical, or roof permit. Track everything from one place. Apply for a permit Residential, electrical, plumbing, roof. ~25 min. Track an application See status, inspector notes, next steps. Pay fees Open invoices, history, refunds. Service alerts Mon, May 11 — Online plan-check intake is operating normally. Average decision time: 6 business days. Thu, May 7 — Historical-district overlay updated for the Foundry District. New parcels may require additional review. Apr 24 — Counter service at Civic Plaza is by appointment only on Mondays. Avalon Bay Permits Office · 123 Civic Plaza · Mon–Fri 8am–4pm · 555-242-PERM Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Welcome to CivicPort.",
+        "Apply for a permit",
+        "Track an application",
+        "Pay fees",
+        "Service alerts"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 7,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees",
+        "clickable:a:Help",
+        "clickable:a:Apply for a permit Residential, electrical, plumbing, roof. ~25 min.",
+        "clickable:a:Track an application See status, inspector notes, next steps.",
+        "clickable:a:Pay fees Open invoices, history, refunds."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "apply.html",
+      "title": "Apply for a permit — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/apply.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Application AB-2026-PERM-7311 Auto-saved · just now Cancel APPLICATION 1. Project info Property address Project type Project scope Start / end dates 2. Property & ownership Parcel lookup Ownership proof Contractor license 3. Plans & documents Site plan Floor plan 5. Affidavits Lead paint (pre-1978) Environmental 6. Review & submit Summary Fees Submit 1.1 Property address Where is the work happening? You can also start with the parcel number on step 2.1. Street address City State / Zip Back Save and continue WHAT YOU'LL NEED Property address Project type selected Scope described Parcel verified Ownership proof Site plan Floor plan ESTIMATED FEES Pick a project type first Total estimated $0 Expedited review (+50%, decision in 3 days) Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "APPLICATION",
+        "1.1 Property address",
+        "WHAT YOU'LL NEED",
+        "ESTIMATED FEES",
+        "Cancel this application?"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 0,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:button:Cancel",
+        "typeable:input:unlabeled control",
+        "typeable:input:Avalon Bay",
+        "typeable:input:Zip",
+        "clickable:button:Back",
+        "clickable:button:Save and continue",
+        "clickable:input:Expedited review (+50%, decision in 3 days)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "missing_input_label",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "fees.html",
+      "title": "Fees — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/fees.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Apply My applications Fees Permit fee schedule Project type Base fee Per sq ft (over 200) Expedited review Kitchen $320 $1.80 +50% Bathroom $240 $1.60 +50% Addition $680 $2.40 +50% Roof $210 $0.90 +50% Structural $540 $2.10 +50% Electrical $160 — +50% Plumbing $160 — +50% Neighbor mail request: $18 each. Historical-district review: $120 surcharge. Fees are non-refundable once a plan reviewer is assigned. Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Permit fee schedule"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "my-applications.html",
+      "title": "My applications — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/my-applications.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Apply My applications Fees My applications App ID Type Address Submitted Status AB-2026-PERM-7042 Kitchen renovation 148 Coppergate St. Apr 12, 2026 Approved AB-2025-PERM-9981 Roof replacement 148 Coppergate St. Nov 3, 2025 Approved AB-2025-PERM-6601 Bathroom remodel 22 Foundry Lane Aug 19, 2025 Inspector follow-up Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "My applications"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

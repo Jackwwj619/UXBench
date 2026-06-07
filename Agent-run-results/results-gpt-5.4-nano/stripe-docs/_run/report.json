@@ -1,0 +1,684 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/stripe-docs/index.html",
+  "site": {
+    "name": "stripe-docs",
+    "site_dir": "/Users/timchef/UXBench/websites/stripe-docs",
+    "start_page": "index.html",
+    "page_type": "docs/tutorial",
+    "html_files": [
+      "customization.html",
+      "embedded.html",
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/stripe-docs/README.md",
+    "summary": "stripe-docs-clone Clone of the Stripe Docs Hosted Checkout Quickstart tutorial area. Pages | File | Purpose | | --- | --- | | `index.html` | Quickstart home: three-column layout — left product / section navigation tree, central step-by-step tutorial (each step: explanation + multi-language switchable code block + copy button + Test / Live markers), right-side on-this-page outline (scroll-spy highlighting); top Stripe docs nav (Docs / API reference / Search / environment switch) | | `embedded.html` | Embedded checkout variant: iframe / element integration steps for embedding into a site | | `customization.html` | Branding and customization: colors, logo, domain, email, etc. |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full stripe-docs system, prioritizing the primary docs/tutorial flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The docs/tutorial flow is visually clear (three-column docs layout, language tabs with “Showing Python/Ruby” pills, and consistent step structure), but key interaction states are unreliable—especially modals/drawers and global search—on both desktop and mobile. Multiple attempts to dismiss overlays (Search, “Was this rebuild useful?”, Navigate drawer) show little/no observable state change and frequent pointer-event interception or timeouts. On mobile, many important controls (Copy, Close, language toggles, small cards) are near/below recommended tap-target sizes, compounding the issues.",
+  "exploration_plan": {
+    "goal": "Critique and validate the UX quality of the stripe-docs clone, focusing on the primary Hosted quickstart tutorial flow and verifying the adjacent Embedded and Customization pages (including search, navigation, code-copy interactions, and scroll/outline behavior) on both desktop and mobile viewports.",
+    "summary": "Run through the end-to-end tutorial reading experience on index.html (left nav + central steps + right on-this-page outline), exercising key interactions like the top search and code-block copy buttons. Then repeat the same critical checks on embedded.html and customization.html, with extra validation for any page-specific controls (e.g., embedded integration step sequence; branding/custom domain framing). Finally, sanity-check that cross-page navigation (Hosted/Embedded/Customization) preserves state and that external links/markers behave as expected without errors.",
+    "assumptions": [
+      "The prescan interactables indicate there is an on-page tutorial structure with multi-language code blocks and 'Copy' buttons on each page.",
+      "There is a top global search triggered by a button labeled 'Open search (press /)'.",
+      "Each page contains both a left navigation tree and a right-side 'on this page' outline that likely uses scroll-spy highlighting.",
+      "Dialogs appear at least once per page (prescan reports 1 dialog per page), so there will be at least one modal/confirm flow worth validating."
+    ],
+    "target_pages": [
+      "index.html",
+      "embedded.html",
+      "customization.html"
+    ],
+    "risk_hotspots": [
+      "Top global search control ('Open search (press /)')—ensure keyboard hint works, search results/close behavior is correct, and no focus trap occurs.",
+      "Right-side on-this-page outline / scroll-spy highlighting on index.html—validate correct section mapping when scrolling and on mobile layout changes.",
+      "Code-block interactions: multiple 'Copy' buttons reported as small tap targets—validate that copy works reliably, provides feedback, and remains accessible on mobile.",
+      "Language switching for tutorial code blocks (implied by 'multi-language switchable code block')—validate state consistency and that copy copies the currently selected language.",
+      "Cross-page navigation in the top bar (Hosted/Embedded/Customization)—validate that switching pages doesn’t break local styling/layout and doesn’t leave the scroll-spy/outlines in a broken state.",
+      "Embedded page integration step sequence—validate that the described flow is discoverable and the return/resume step is clearly separated (where applicable).",
+      "Customization page framing—validate that the page does not imply unsupported configuration controls and that any dialogs explaining 'reality-checked' claims function correctly."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global navigation + Search foundations (desktop first)",
+        "objective": "Verify the top navigation system and search entry/exit behavior, including keyboard affordances and focus handling.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Open search (press /)' and confirm the search UI opens with expected placeholder (e.g., Search…) and can be dismissed.",
+          "Test keyboard path if available: press '/' to open search, then Escape/close to dismiss (observe no focus trap).",
+          "Click 'Hosted', 'Embedded', 'Customization' in the top bar and ensure navigation leads to the correct local HTML pages (no 404/error state).",
+          "Verify top CTA-like links ('Branding', 'Open source') open in the intended way (new tab vs same tab) without breaking the local layout on return."
+        ],
+        "exit_criteria": [
+          "Search opens and closes cleanly at least once with no console/network errors observed.",
+          "Page switching between Hosted/Embedded/Customization succeeds without UI corruption."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Primary tutorial flow: Hosted quickstart UX audit (index.html)",
+        "objective": "Validate the end-to-end reading and interaction experience for the Hosted quickstart tutorial including navigation, scroll-spy, and code interactions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the left navigation tree to jump between 'Install the server SDK', 'Create a Checkout Session', 'Post to your Session endpoint', 'Show a success page…', and webhook-related steps; confirm scroll position and section alignment.",
+          "Scroll through the main tutorial and confirm the right-side on-this-page outline highlights the correct current section (no off-by-one or stuck highlight).",
+          "For at least two tutorial code blocks: switch the language selector (e.g., 'Node') and verify content changes.",
+          "Click each 'Copy' button for the selected language and confirm feedback is shown (e.g., copied indicator) and copied content matches the currently displayed code.",
+          "Interact with the page’s dialog (reported by prescan) once—confirm proper open/close behavior, correct labeling, and return focus to the trigger."
+        ],
+        "exit_criteria": [
+          "At least 3 step jumps via left nav land on the correct content sections.",
+          "Scroll-spy highlights update consistently while scrolling.",
+          "Copy works for at least 2 different language states without mismatch.",
+          "The reported dialog works and can be dismissed without breaking layout."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Adjacent flow: Embedded checkout quickstart (embedded.html)",
+        "objective": "Repeat the core tutorial UX validations on the Embedded page, emphasizing the step clarity and any embedded-specific interactions.",
+        "target_pages": [
+          "embedded.html"
+        ],
+        "key_checks": [
+          "Jump through the main embedded quickstart steps (mount embedded page with Stripe.js; return_page that can resume/finish flow) using the left nav if present.",
+          "Validate right-side on-this-page outline behavior during scroll (correct section highlighting).",
+          "Exercise at least 2 embedded tutorial code blocks: language switch (if present) and Copy for the active language.",
+          "Trigger and dismiss the page’s dialog once (reported by prescan) to ensure consistent modal behavior across pages."
+        ],
+        "exit_criteria": [
+          "Embedded page left-nav jumping and scroll-spy highlighting both function without incorrect mapping.",
+          "Copy button(s) succeed and correspond to the active code language.",
+          "Dialog opens and closes cleanly."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Adjacent flow: Customization/branding surface UX (customization.html)",
+        "objective": "Validate the customization page’s UX clarity—especially the 'reality-checked' constraints—and ensure interactions and dialogs are consistent.",
+        "target_pages": [
+          "customization.html"
+        ],
+        "key_checks": [
+          "Scroll through sections: 'What Stripe Checkout actually lets you change', 'Most complete branding surface', and 'Custom domains are for the Stripe-hosted page'; confirm the 'on-this-page' outline stays accurate.",
+          "Exercise at least 2 code blocks (if present) for language switching and Copy behavior.",
+          "Interact with any customization-specific control(s) implied by text/sections (e.g., branding settings framing) and ensure no dead-end CTA patterns.",
+          "Trigger and dismiss the reported dialog once; verify it doesn’t obscure critical content permanently."
+        ],
+        "exit_criteria": [
+          "On-this-page outline remains correct through major section boundaries.",
+          "Copy works for at least 2 code blocks/language states on this page.",
+          "Dialog behavior matches earlier phases."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile verification pass (critical checks only)",
+        "objective": "Re-run the highest-risk mobile interactions and layout behaviors on all three pages.",
+        "target_pages": [
+          "index.html",
+          "embedded.html",
+          "customization.html"
+        ],
+        "key_checks": [
+          "On mobile viewport, verify top navigation and search still function (open search, close it).",
+          "Test at least one Copy button per page (tap-target risk) and confirm feedback is visible and not clipped.",
+          "Check scroll-spy/on-this-page outline behavior on mobile (if it collapses or changes placement, validate it still indicates current section or provides an alternate mechanism).",
+          "Use left navigation tree on mobile (if available) to jump sections and confirm correct landing."
+        ],
+        "exit_criteria": [
+          "No critical tap-target failures for Copy on any page (at least 1 successful copy per page).",
+          "Search opens/closes correctly on mobile for each page (or persists across navigation without breaking).",
+          "Mobile outline/navigation does not become unusable."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages: index.html, embedded.html, customization.html (100% page-load coverage).",
+      "features": "Exercise the top navigation, global search, left nav section jumping, right on-this-page outline/scroll-spy, multi-language code blocks (where present), and copy buttons (multiple instances).",
+      "mobile": "Repeat the most interaction-heavy checks (search + copy + scroll-spy/outline + left nav jumping) on mobile for each of the three pages."
+    },
+    "notes": [
+      "Keep an eye on console/network errors throughout; prescan shows none, so any new errors during copy/search/modal interactions should be treated as regression.",
+      "Because prescan reports multiple 'small_tap_target' warnings (including Copy buttons), prioritize tap accuracy and feedback visibility on mobile."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Dismiss the search overlay and continue using the page",
+      "problem": "Closing the search modal often fails to visibly dismiss/unblock the UI, leaving users stuck with an overlay that may still intercept clicks.",
+      "evidence": "Multiple failed click attempts for search controls: “Open search (press /)” timed out with pointer-event interception by a close-search/backdrop element (data-close-search on ux-32). Clicking “Close search” (ux-37) repeatedly reported no visible/URL change and often timed out or the overlay state wasn’t verifiably removed (e.g., embedded.html close click changed=false; mobile search close also timed out).",
+      "why_it_matters": "Search is a core navigation mechanism in docs; inability to reliably dismiss the modal breaks task completion and forces users to reload or abandon the page.",
+      "suggestion": "Ensure modal close reliably removes the backdrop and restores pointer events; add a strong visual transition (fade + overlay removed) and a deterministic post-close focus return to the trigger. Provide a persistent status message or toast (“Search closed”) for confirmation.",
+      "source_hint": "index.html mobile search; embedded.html search close/backdrop interception logs (data-close-search ux-32/ux-36/ux-37) and failures in session_memory notable_failures and recent_trajectory steps agentic-77/78/79/80."
+    },
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Answer the ‘Was this rebuild useful?’ prompt and have it dismiss",
+      "problem": "The feedback dialog does not reliably dismiss or confirm the user’s selection; clicks on “Yes/No” produced no observable change.",
+      "evidence": "On embedded.html and customization.html, selecting “Yes”/“No” shows “changed: false” and the prompt remains (tool feedback indicates no obvious URL/visible-text change; screenshots still show “Was this rebuild useful?” with “Yes/No”).",
+      "why_it_matters": "A non-dismissible prompt interrupts reading and creates uncertainty about whether the user’s input was recorded.",
+      "suggestion": "After selecting an option, immediately dismiss the dialog and show explicit acknowledgement (e.g., “Thanks for the feedback”). If asynchronous, show a loading state and then close.",
+      "source_hint": "embedded.html feedback dialog interactions in recent trajectory steps 31-36 and customization.html dialog in steps 19-24."
+    },
+    {
+      "severity": "high",
+      "ux_area": "navigation",
+      "user_goal": "Use the mobile drawer navigation to move to embedded.html",
+      "problem": "Mobile navigation drawer dismissal/navigation is unreliable: tapping drawer links doesn’t navigate and tapping Close doesn’t visibly dismiss/unblock the drawer.",
+      "evidence": "In mobile viewport on index.html, tapping the drawer link “LOCAL GUIDE Move to embedded Checkout” (ux-23) timed out and URL stayed on index.html. Tapping “Close navigation” (ux-4) resulted in no obvious URL/visible-text change (changed=false), and subsequent navigation attempts like “Embedded payment form” (ux-6) also timed out or appeared obstructed.",
+      "why_it_matters": "Docs users often rely on drawer navigation on mobile; failure here blocks the core information architecture and forces users to retry.",
+      "suggestion": "Make drawer close deterministic and verify pointer-event restoration. Add an overlay/backdrop removal animation and ensure the drawer’s clickable region doesn’t overlap with page content once closed.",
+      "source_hint": "/index.html mobile screenshot agentic-77-click-mobile.png and failures agentic-77-click, agentic-78-click, agentic-79-click."
+    },
+    {
+      "severity": "medium",
+      "ux_area": "affordance",
+      "user_goal": "Copy code snippets and get clear confirmation",
+      "problem": "Copy actions intermittently fail or provide ambiguous confirmation due to overlay/backdrop interference; mobile tap-target sizing likely contributes to missed interactions.",
+      "evidence": "On embedded.html, clicking “Copy” timed out (ux-21; search-backdrop element intercepted pointer events in the log). While one later run indicates a “Code copied to clipboard” toast appears, earlier copy attempts were blocked (changed=false / timeout). Tool also flags multiple Copy buttons as small tap targets (~65x44px and below mobile guidance).",
+      "why_it_matters": "Code copying is a high-frequency task in tutorials; unreliable copying erodes trust and slows implementation.",
+      "suggestion": "Increase tap target size and padding for Copy buttons on mobile; ensure Copy isn’t affected by lingering modals/backdrops. Provide consistent, prominent confirmation (toast + accessible aria-live region) tied to the currently visible language.",
+      "source_hint": "embedded.html Copy failures in session_memory notable_failures and steps-43-48/25-30; interactables bbox ux-17/ux-18 etc ~65x44."
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap small controls confidently on mobile",
+      "problem": "Several interactive targets are near/below recommended mobile tap sizes, increasing mis-taps and perceived brokenness.",
+      "evidence": "Mobile layout warnings show multiple small targets: “Stripe docs clone home” 62x28px, “Stripe Checkout” 106x23px, Copy button ~65x44px, and “Yes/No” buttons in the feedback dialog (55x44 and 50x44).",
+      "why_it_matters": "When overlays/drawers are also unreliable, small targets amplify frustration—users feel the UI is unresponsive even when actions are technically possible.",
+      "suggestion": "Raise tap-target minimums (both width and height) for header/nav items, Copy, and dialog buttons; add spacing between tap areas and increase hit slop.",
+      "source_hint": "coverage.gaps layout_warning_count and layout_warnings list (small_tap_target entries) plus mobile screenshots with Navigate/Close/Search controls."
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "Understand whether language switching actually changed the displayed code",
+      "problem": "Language toggles visually appear to switch (e.g., “Showing Ruby/Python”), but automated tool feedback often reports no detectable change, suggesting subtle or non-atomic updates that may be hard to perceive for users.",
+      "evidence": "Tool logs: clicking “Ruby”/“Python” resulted in changed=false or no obvious URL/text change, even though screenshots indicate the chip/pill (“Showing Python” / “Showing Ruby”) and terminal content. This indicates state changes may be subtle (code content swaps) without clear transition/confirmation beyond the small pill.",
+      "why_it_matters": "In tutorial code workflows, users need unambiguous confirmation the active snippet matches their selection—especially before copying.",
+      "suggestion": "Add stronger visual transition (fade/slide), highlight the code block header more prominently, and ensure Copy button label/confirmation is tied to the active language.",
+      "source_hint": "embedded.html language toggle attempts in steps-37-42 and screenshot/objectives stating “Showing Python/Ruby” pill presence."
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 19,
+    "action_success_rate_percent": 89,
+    "unchanged_action_percent": 77,
+    "known_pages": [
+      "customization.html",
+      "embedded.html",
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "embedded.html",
+      "customization.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 60,
+      "open_page": 2,
+      "press_key": 4,
+      "reload": 2,
+      "screenshot_pair": 4,
+      "scroll": 2,
+      "type_text": 5
+    },
+    "total_actions": 79,
+    "successful_actions": 70,
+    "failed_actions": 9,
+    "unchanged_actions": 61,
+    "observed_feature_count": 144,
+    "exercised_feature_count": 28,
+    "unexplored_features": [
+      {
+        "signature": "customization.html|clickable|a|||appearance guide|https://docs.stripe.com/payments/checkout/customization/appearance",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Appearance guide"
+      },
+      {
+        "signature": "customization.html|clickable|a|||branding settings manage checkout branding in the dashboard.|https://dashboard.stripe.com/settings/branding/checkout",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Branding settings Manage Checkout branding in the Dashboard."
+      },
+      {
+        "signature": "customization.html|clickable|a|||branding|https://dashboard.stripe.com/settings/branding/checkout",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Branding"
+      },
+      {
+        "signature": "customization.html|clickable|a|||checkout overview compare hosted and embedded checkout flows.|https://docs.stripe.com/payments/checkout",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Checkout overview Compare hosted and embedded Checkout flows."
+      },
+      {
+        "signature": "customization.html|clickable|a|||customization|customization.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Customization"
+      },
+      {
+        "signature": "customization.html|clickable|a|||customize checkout|customization.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Customize Checkout"
+      },
+      {
+        "signature": "customization.html|clickable|a|||embedded|embedded.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Embedded"
+      },
+      {
+        "signature": "customization.html|clickable|a|||hosted quickstart|index.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Hosted quickstart"
+      },
+      {
+        "signature": "customization.html|clickable|a|||hosted|index.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Hosted"
+      },
+      {
+        "signature": "customization.html|clickable|a|||local customize checkout customization.html|customization.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "LOCAL Customize Checkout customization.html"
+      },
+      {
+        "signature": "customization.html|clickable|a|||local embedded payment form embedded.html|embedded.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "LOCAL Embedded payment form embedded.html"
+      },
+      {
+        "signature": "customization.html|clickable|a|||local guide return to the embedded page guide see how these branding and policy |embedded.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "LOCAL GUIDE Return to the embedded page guide See how these branding and policy controls plug into the current embedded-page integration."
+      },
+      {
+        "signature": "customization.html|clickable|a|||local guide return to the hosted quickstart use the hosted flow if you need cust|index.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "LOCAL GUIDE Return to the hosted quickstart Use the hosted flow if you need custom domains or the simplest launch path."
+      },
+      {
+        "signature": "customization.html|clickable|a|||local hosted quickstart index.html|index.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "LOCAL Hosted quickstart index.html"
+      },
+      {
+        "signature": "customization.html|clickable|a|||official checkout customization source https://docs.stripe.com/payments/checkout|https://docs.stripe.com/payments/checkout/customization",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "OFFICIAL Checkout customization source https://docs.stripe.com/payments/checkout/customization"
+      },
+      {
+        "signature": "customization.html|clickable|a|||official checkout testing guide https://docs.stripe.com/testing|https://docs.stripe.com/testing",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "OFFICIAL Checkout testing guide https://docs.stripe.com/testing"
+      },
+      {
+        "signature": "customization.html|clickable|a|||official customization hub|https://docs.stripe.com/payments/checkout/customization",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Official customization hub"
+      },
+      {
+        "signature": "customization.html|clickable|a|||official docs open stripe’s customization hub use the live docs for the latest b|https://docs.stripe.com/payments/checkout/customization",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "OFFICIAL DOCS Open Stripe’s customization hub Use the live docs for the latest behavior, links, and Dashboard entry points."
+      },
+      {
+        "signature": "customization.html|clickable|a|||official docs review custom-domain setup in detail stripe’s real setup includes |https://docs.stripe.com/payments/checkout/custom-domains",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "OFFICIAL DOCS Review custom-domain setup in detail Stripe’s real setup includes verification, TLS, and DNS checks the earlier page omitted."
+      },
+      {
+        "signature": "customization.html|clickable|a|||official docs|https://docs.stripe.com/payments/checkout",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Official docs"
+      },
+      {
+        "signature": "customization.html|clickable|a|||official embedded quickstart source https://docs.stripe.com/payments/accept-a-pa|https://docs.stripe.com/payments/accept-a-payment?payment-ui=checkout&ui=embedded-page",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "OFFICIAL Embedded quickstart source https://docs.stripe.com/payments/accept-a-payment?payment-ui=checkout&ui=embedded-page"
+      },
+      {
+        "signature": "customization.html|clickable|a|||official hosted quickstart source https://docs.stripe.com/payments/accept-a-paym|https://docs.stripe.com/payments/accept-a-payment?payment-ui=checkout&ui=stripe-hosted",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "OFFICIAL Hosted quickstart source https://docs.stripe.com/payments/accept-a-payment?payment-ui=checkout&ui=stripe-hosted"
+      },
+      {
+        "signature": "customization.html|clickable|a|||official stripe checkout overview https://docs.stripe.com/payments/checkout|https://docs.stripe.com/payments/checkout",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "OFFICIAL Stripe Checkout overview https://docs.stripe.com/payments/checkout"
+      },
+      {
+        "signature": "customization.html|clickable|a|||official webhook quickstart https://docs.stripe.com/webhooks/quickstart|https://docs.stripe.com/webhooks/quickstart",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "OFFICIAL Webhook quickstart https://docs.stripe.com/webhooks/quickstart"
+      },
+      {
+        "signature": "customization.html|clickable|a|||open source|https://docs.stripe.com/payments/checkout/customization",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Open source"
+      },
+      {
+        "signature": "customization.html|clickable|a|||section text, policies, support details, and terms jump to text, policies, suppo|customization.html#policies",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "SECTION Text, policies, support details, and terms Jump to Text, policies, support details, and terms"
+      },
+      {
+        "signature": "customization.html|clickable|a|||section what stripe checkout actually lets you change jump to what stripe checko|customization.html#what-is-actually-customizable",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "SECTION What Stripe Checkout actually lets you change Jump to What Stripe Checkout actually lets you change"
+      },
+      {
+        "signature": "customization.html|clickable|a|||stripe checkout|index.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Stripe Checkout"
+      },
+      {
+        "signature": "customization.html|clickable|a|||stripe docs clone home|index.html",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Stripe docs clone home"
+      },
+      {
+        "signature": "customization.html|clickable|a|||testing cards use stripe's current test numbers and flows.|https://docs.stripe.com/testing",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Testing cards Use Stripe's current test numbers and flows."
+      },
+      {
+        "signature": "customization.html|clickable|a|||text and policies guide|https://docs.stripe.com/payments/checkout/customization/policies?payment-ui=embedded-form",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Text and policies guide"
+      },
+      {
+        "signature": "customization.html|clickable|a|||webhook quickstart handle post-payment events reliably.|https://docs.stripe.com/webhooks/quickstart",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Webhook quickstart Handle post-payment events reliably."
+      },
+      {
+        "signature": "customization.html|clickable|button||button|bright|",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Bright"
+      },
+      {
+        "signature": "customization.html|clickable|button||button|close search|",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Close search"
+      },
+      {
+        "signature": "customization.html|clickable|button||button|copy|",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Copy"
+      },
+      {
+        "signature": "customization.html|clickable|button||button|earth|",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Earth"
+      },
+      {
+        "signature": "customization.html|clickable|button||button|pay $20.00|",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Pay $20.00"
+      },
+      {
+        "signature": "customization.html|clickable|button||button|slate|",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Slate"
+      },
+      {
+        "signature": "customization.html|clickable|button||button|stripe-like|",
+        "page": "customization.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Stripe-like"
+      },
+      {
+        "signature": "embedded.html|clickable|a|||branding settings manage checkout branding in the dashboard.|https://dashboard.stripe.com/settings/branding/checkout",
+        "page": "embedded.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Branding settings Manage Checkout branding in the Dashboard."
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 19% of visible interactive feature signatures.",
+      "9 browser action(s) failed and should be retried or analyzed.",
+      "77% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-03-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-08-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-08-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-15-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-23-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-23-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-25-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-27-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-27-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-38-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-40-reload-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-47-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-47-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-50-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-51-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-52-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-54-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-56-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-59-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-60-reload-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-62-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-70-press_key-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-72-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run/screenshots/agentic-80-scroll-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-nano/stripe-docs/_run",
+  "claude_fix": null
+}

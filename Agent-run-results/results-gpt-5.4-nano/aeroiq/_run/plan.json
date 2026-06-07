@@ -1,0 +1,407 @@
+{
+  "plan": {
+    "goal": "Critique and validate the end-to-end UX of AeroIQ’s core observability workflows—starting from the dashboard, drilling into endpoints, managing alerts, and understanding service dependencies—across desktop and mobile.",
+    "summary": "Run begins on the dashboard to validate global controls (org/environment, time range, theme, search) and the primary triage flow from endpoint health → endpoint detail. Then validate the adjacent alerts flow (filtering, assign/silence recovery actions) and the endpoints list flow (search/filter/sort and drill-in). Finish by checking the service map flow (service node navigation) and perform mobile repeats of the most critical interactions.",
+    "assumptions": [
+      "The site navigation uses the left-rail links to switch between at least: index.html (Dashboard), endpoints.html, alerts.html, services.html.",
+      "endpoint-detail.html is reachable from either the endpoint health cards on index.html or from a row/card in endpoints.html.",
+      "The dashboard alert side panel is interactive, including Assign and Silence controls for individual alert rows.",
+      "Search via the top bar (⌘K / Search endpoints, services…) is available and should be validated for scope and behavior."
+    ],
+    "target_pages": [
+      "index.html",
+      "endpoints.html",
+      "endpoint-detail.html",
+      "alerts.html",
+      "services.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets in top/left navigation on desktop may become unusable on mobile (Dashboard/Endpoints/Alerts/Service Map/Logs/Integrations/Settings; also Environment buttons and time-range buttons).",
+      "Top-bar controls: org/environment switcher select (ux-9) missing label/ARIA; time range buttons; global search (⌘K input) behavior and discoverability.",
+      "Dashboard alert panel actions: Assign (ux-22) and Silence (ux-23) must open/confirm properly without losing alert context.",
+      "Endpoint drill-in: ensure clicking an endpoint card/row preserves selected environment + time range and lands on the correct endpoint in endpoint-detail.html.",
+      "endpoint-detail error-grouping tabs (By status code / client version / region) and recent error samples table—ensure tab switching updates the displayed content.",
+      "Endpoint/alerts filter controls on alerts.html: multiple selects/inputs (severity/rules/assignees/status) risk of confusing defaults or broken filtering."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard triage & global controls",
+        "objective": "Validate that users can set the right context (org, environment, time range, theme) and start triage from endpoint health and the alerts panel.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch org using the org select (Acme Cloud Org ↔ Acme Internal) and confirm KPIs + endpoint health grid update.",
+          "Toggle environment using Production / Staging / Dev buttons and confirm updates propagate to endpoint health cards and alerts count/content.",
+          "Change time range (5m → 1h → 24h → 7d) and confirm sparklines/deltas + endpoint KPIs and alert panel are consistent with the chosen range.",
+          "Toggle theme using 🌓 and confirm charts/cards remain readable and layout doesn’t break.",
+          "Use ⌘K search input to search for an endpoint/service/path term; validate results appear and navigation from search behaves as expected (even if it routes to endpoints.html).",
+          "Use the alert side panel: click Assign and then Silence for at least one visible alert row; validate the expected state changes (e.g., assigned-to, silenced indicator or row state) and that the dialog/confirmation (if any) closes cleanly."
+        ],
+        "exit_criteria": [
+          "All four dashboard context controls (org, environment, time range, theme) are confirmed to update visible data.",
+          "At least one successful search interaction is completed, showing the system responds meaningfully.",
+          "Assign and Silence actions on an alert row result in observable UI/state change without errors."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Endpoint drill-down accuracy",
+        "objective": "Validate that endpoint health cards lead to correct endpoint detail with preserved context and that key detail sections are navigable.",
+        "target_pages": [
+          "endpoint-detail.html"
+        ],
+        "key_checks": [
+          "From index.html, click an unhealthy endpoint health card (e.g., the card showing highest error rate/latency) and verify you land on endpoint-detail.html for the same method+path/service (e.g., POST /v1/payments checkout-api).",
+          "On endpoint-detail.html, verify the owner/services shown match the selected endpoint and that 6 KPIs are populated.",
+          "Switch the time range again on the endpoint detail page (if the top controls persist) and verify trend charts and KPIs update accordingly.",
+          "Interact with the error-grouping tabs: By status code → By client version → By region, confirming the breakdown content updates.",
+          "Review the recent error samples table and confirm rows are readable (incl. status codes like 502/500/429/503) and the displayed messages correspond to the endpoint context.",
+          "If a related traces list exists, click one item (if interactive) and validate the UI reaction (e.g., details expand or navigation)."
+        ],
+        "exit_criteria": [
+          "At least one endpoint card successfully opens the correct endpoint detail page with consistent identifiers (method/path/service).",
+          "Error breakdown tabs update the chart/table content without navigation loss.",
+          "Charts/tables remain usable after time range changes."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Alerts center workflows & recovery actions",
+        "objective": "Validate alerts center filtering usability and confirm assign/silence actions work in the full alerts list context.",
+        "target_pages": [
+          "alerts.html"
+        ],
+        "key_checks": [
+          "Use filter bar controls on alerts.html: change severity (Critical/Warning/Info), rule, assignee, and status (Open/Assigned/Resolved) and verify the alert rows update.",
+          "Use the Alerts center search input to search for a rule or endpoint/path string and confirm it narrows results.",
+          "Open/perform Assign on an alert row and verify assignment changes in the table.",
+          "Open/perform Silence on another alert row and verify silenced state/visibility updates.",
+          "Validate that the navigation back to Dashboard/Endpoints via left rail keeps the correct environment/time context."
+        ],
+        "exit_criteria": [
+          "At least two distinct filters (e.g., severity + status) demonstrably change the set of visible alerts.",
+          "Assign and Silence actions succeed from alerts.html with visible outcome in-row or via confirmation.",
+          "Navigation preserves context (org/env/time range)."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Endpoints list search/filter & drill-in",
+        "objective": "Validate the endpoints list as an alternative navigation/recovery entry point and ensure list search routes to correct detail.",
+        "target_pages": [
+          "endpoints.html",
+          "endpoint-detail.html"
+        ],
+        "key_checks": [
+          "Use endpoints.html search (⌘K or “Search method or path…”) to filter by method/path; confirm matching rows update.",
+          "Use filter controls for service scope (“All services” multi/single select) and health tag (Healthy/Degraded/Unhealthy) and verify row health indicators update.",
+          "Click a filtered endpoint row and confirm endpoint-detail.html opens for the same endpoint and retains the current environment + time range.",
+          "Verify the “SLO last deploy / Owner” and health label columns are readable and consistent after filtering."
+        ],
+        "exit_criteria": [
+          "Search and at least one filter (service or health tag) visibly change the endpoints list.",
+          "Drill-in from endpoints.html leads to the correct endpoint detail page consistently."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Service map dependencies navigation",
+        "objective": "Validate the service map as a context tool and confirm service node navigation leads to appropriate details (if available).",
+        "target_pages": [
+          "services.html"
+        ],
+        "key_checks": [
+          "Switch environment on services.html (Production ↔ Staging) and confirm the dependency graph/edges update (edge density/which services appear).",
+          "Click a service node (e.g., checkout-api, users-svc) and validate expected UI response (node details panel, navigation, or highlighting).",
+          "Verify top bar context controls (org/time/theme) still influence displayed content if applicable."
+        ],
+        "exit_criteria": [
+          "Environment switching produces clear graph changes.",
+          "At least one service node click results in an observable and understandable UI change."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile critical-path validation",
+        "objective": "Repeat the most failure-prone/critical interactions on mobile viewport: navigation, triage, drill-down, and alerts actions.",
+        "target_pages": [
+          "index.html",
+          "endpoint-detail.html",
+          "alerts.html"
+        ],
+        "key_checks": [
+          "On mobile, use left-rail navigation or equivalent to open Alerts and Endpoints; confirm tap targets are usable despite prescan small-tap warnings.",
+          "On dashboard, interact with ⌘K search and time range/environment toggles; confirm controls are not clipped.",
+          "Perform drill-down from dashboard to endpoint-detail.html and validate charts/tabs are accessible (error breakdown tabs).",
+          "On alerts.html (mobile), apply at least one filter and attempt Assign/Silence; confirm dialogs are usable and not off-screen."
+        ],
+        "exit_criteria": [
+          "No critical interactions (nav, drill-in, assign/silence) are blocked by layout/tap-target issues on mobile.",
+          "Filters/search and key UI components remain readable and functional."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages provided in the prescan (index.html, endpoints.html, endpoint-detail.html, alerts.html, services.html).",
+      "features": "Exercise most visible controls per key page: org/env/time/theme/search on dashboard; drill-in from endpoint health cards; error breakdown tabs and recent error samples on endpoint detail; filter/search + Assign/Silence actions on alerts; search + service/health filters + drill-in on endpoints; environment switching and node click on service map.",
+      "mobile": "Repeat dashboard→endpoint-detail drill-in, alerts filter + Assign/Silence, and service navigation on a mobile viewport."
+    },
+    "notes": [
+      "Keep a small set of representative endpoints/alerts selected from the prescan (e.g., checkout-api POST /v1/payments; integrations-svc POST /v1/webhooks/stripe; billing-svc GET /v1/invoices) to ensure consistency when validating context preservation across pages.",
+      "Prioritize validation of prescan warning types: missing label/ARIA on select inputs and small tap target sizes for navigation and time range controls."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "AeroIQ — Know before your users do.",
+      "url": "file:///Users/timchef/UXBench/websites/aeroiq/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "AeroIQ 📊 Dashboard 🔗 Endpoints 🚨 Alerts 8 🌐 Service Map 📜 Logs 🔌 Integrations ⚙️ Settings Acme Cloud Org Acme Internal Production Staging Dev 5m 1h 24h 7d 🌓 🔔 8 👤 Total Requests · 1h 2.84M ▲ +6.2% vs prev Error Rate 1.84% ▲ +0.4pp p95 Latency 214 ms ▼ −12 ms Availability 99.96% ▲ +0.02pp Endpoint health Sorted by health · 24 endpoints POST checkout-api /v1/payments RPS 412 P95 540ms ERRORS 6.4% POST integrations-svc /v1/webhooks/stripe RPS 88 P95 1320ms ERRORS 9.1% GET billing-svc /v1/invoices RPS 245 P95 680ms ERRORS 5.8% PATCH billing-svc /v1/subscriptions/:id RPS 96 P95 380ms ERRORS 2.4% POST asset-svc /v1/files/upload RPS 64 P95 920ms ERRORS 3.1% GET users-svc /v1/orgs/:id/members RPS 188 P95 240ms ERRORS 1.8% POST users-svc /v1/auth/login RPS 522 P95 310ms ERRORS 2.1% GET users-svc /v1/users/:id RPS 1840 P95 88ms ERRORS 0.4% POST users-svc /v1/users RPS 142 P95 165ms ERRORS 0.6% PAT",
+      "headings": [
+        "Endpoint health",
+        "Global latency (p50 / p95 / p99) · 1h",
+        "Active Alerts 8"
+      ],
+      "counts": {
+        "buttons": 28,
+        "links": 9,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:AeroIQ",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🔗 Endpoints",
+        "clickable:a:🚨 Alerts 8",
+        "clickable:a:🌐 Service Map",
+        "clickable:a:📜 Logs",
+        "clickable:a:🔌 Integrations",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Acme Cloud Org Acme Internal",
+        "clickable:button:Production",
+        "clickable:button:Staging",
+        "clickable:button:Dev",
+        "clickable:button:5m",
+        "clickable:button:1h",
+        "clickable:button:24h",
+        "clickable:button:7d"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "alerts.html",
+      "title": "Alerts — AeroIQ",
+      "url": "file:///Users/timchef/UXBench/websites/aeroiq/alerts.html",
+      "load_error": null,
+      "visible_text_excerpt": "AeroIQ 📊 Dashboard 🔗 Endpoints 🚨 Alerts 8 🌐 Service Map 📜 Logs 🔌 Integrations ⚙️ Settings Acme Cloud Org 👤 Alerts Active and recent alerts across your fleet of endpoints Active 8 +3 vs prev 24h New today 22 −14% week avg Avg response time 3m 22s −42s MTTR (24h) 14m 08s −2m All severities Critical Warning Info All rules All assignees All status Open Assigned Resolved Time Rule Endpoint Severity Status Owner 2 min ago Error rate > 5% Error rate at 6.4% over last 5 min POST /v1/payments CRITICAL OPEN Daniel Okafor 8 min ago p95 latency > 1000ms p95 at 1320ms for 8 min POST /v1/webhooks/stripe CRITICAL ASSIGNED Maya Pereira 8 min ago Error rate > 5% 9.1% errors, mostly 502 Bad Gateway POST /v1/webhooks/stripe CRITICAL OPEN Arjun Bhatia 14 min ago Error rate > 3% Sustained 5.8% errors GET /v1/invoices WARNING OPEN Hua Lin 32 min ago SLO burn rate 6x 24h SLO burn rate at 6.2x POST /v1/files/up",
+      "headings": [
+        "Alerts"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 8,
+        "inputs": 7,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:AeroIQ",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🔗 Endpoints",
+        "clickable:a:🚨 Alerts 8",
+        "clickable:a:🌐 Service Map",
+        "clickable:a:📜 Logs",
+        "clickable:a:🔌 Integrations",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Acme Cloud Org",
+        "typeable:input:⌘K Search…",
+        "clickable:button:👤",
+        "selectable:select:All severities Critical Warning Info",
+        "selectable:select:All rules",
+        "selectable:select:All assignees",
+        "selectable:select:All status Open Assigned Resolved",
+        "typeable:input:Search…"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "missing_input_label"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "endpoint-detail.html",
+      "title": "Endpoint detail — AeroIQ",
+      "url": "file:///Users/timchef/UXBench/websites/aeroiq/endpoint-detail.html",
+      "load_error": null,
+      "visible_text_excerpt": "AeroIQ 📊 Dashboard 🔗 Endpoints 🚨 Alerts 8 🌐 Service Map 📜 Logs 🔌 Integrations ⚙️ Settings Acme Cloud Org Production Staging Dev 5m 1h 24h 7d 🌓 🔔 8 👤 POST /v1/payments Unhealthy Service · checkout-api Owner DO Daniel Okafor RPS 412 Error Rate 6.40% p50 189ms p95 540ms p99 864ms SLO 99.9% Breached Request volume 0 147 294 441 588 1h ago 45m 30m 15m now Latency p50 / p95 / p99 0ms 270ms 539ms 809ms 1078ms 1h ago 45m 30m 15m now p50 p95 p99 Error rate 0% 3% 5% 8% 11% 1h ago 45m 30m 15m now Error breakdown By status code By client version By region 500 42.0% 502 28.0% 503 16.0% 429 10.0% 400 4.0% Recent error samples Time Status Client Request ID Message 13:42:18.231 502 sdk-py 2.4 req_8Hk2nF9MqXzL upstream connect timeout (Stripe webhook) 13:41:55.812 500 sdk-node 1.9 req_3Yp9wT2nKqM5 Internal: payment processor returned malformed response 13:41:12.401 429 sdk-go 0.4 req_7Aa1bF8MqRxX Rate li",
+      "headings": [
+        "/v1/payments",
+        "Request volume",
+        "Latency p50 / p95 / p99",
+        "Error rate",
+        "Error breakdown",
+        "Recent error samples",
+        "Related traces"
+      ],
+      "counts": {
+        "buttons": 15,
+        "links": 8,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:AeroIQ",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🔗 Endpoints",
+        "clickable:a:🚨 Alerts 8",
+        "clickable:a:🌐 Service Map",
+        "clickable:a:📜 Logs",
+        "clickable:a:🔌 Integrations",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Acme Cloud Org",
+        "clickable:button:Production",
+        "clickable:button:Staging",
+        "clickable:button:Dev",
+        "clickable:button:5m",
+        "clickable:button:1h",
+        "clickable:button:24h",
+        "clickable:button:7d"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "endpoints.html",
+      "title": "Endpoints — AeroIQ",
+      "url": "file:///Users/timchef/UXBench/websites/aeroiq/endpoints.html",
+      "load_error": null,
+      "visible_text_excerpt": "AeroIQ 📊 Dashboard 🔗 Endpoints 🚨 Alerts 8 🌐 Service Map 📜 Logs 🔌 Integrations ⚙️ Settings Acme Cloud Org 👤 Endpoints 32 monitored endpoints across all environments All services checkout-api integrations-svc billing-svc asset-svc users-svc notification-gateway audit-log-ingest catalog-svc order-svc All health Healthy Degraded Unhealthy tag: any Method Path Service Health RPS p95 Err % SLO Last deploy Owner POST /v1/payments checkout-api 412 540ms 6.4% ⚠ breach 7h ago DO Daniel POST /v1/webhooks/stripe integrations-svc 88 1320ms 9.1% ⚠ breach 1h ago AB Arjun GET /v1/invoices billing-svc 245 680ms 5.8% ⚠ breach 8h ago SV Sofia PATCH /v1/subscriptions/:id billing-svc 96 380ms 2.4% ⚠ breach 1h ago SV Sofia POST /v1/files/upload asset-svc 64 920ms 3.1% ⚠ breach 3h ago MP Maya GET /v1/orgs/:id/members users-svc 188 240ms 1.8% 99.5% 2h ago HL Hua POST /v1/auth/login users-svc 522 310ms 2.1% ⚠ br",
+      "headings": [
+        "Endpoints"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 8,
+        "inputs": 6,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:AeroIQ",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🔗 Endpoints",
+        "clickable:a:🚨 Alerts 8",
+        "clickable:a:🌐 Service Map",
+        "clickable:a:📜 Logs",
+        "clickable:a:🔌 Integrations",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Acme Cloud Org",
+        "typeable:input:⌘K Search…",
+        "clickable:button:👤",
+        "selectable:select:All services checkout-api integrations-svc billing-svc asset-svc users-svc notification-gateway audit-log-ingest catalog-svc order-svc",
+        "selectable:select:All health Healthy Degraded Unhealthy",
+        "selectable:select:tag: any",
+        "typeable:input:Search method or path…"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "missing_input_label"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "services.html",
+      "title": "Service map — AeroIQ",
+      "url": "file:///Users/timchef/UXBench/websites/aeroiq/services.html",
+      "load_error": null,
+      "visible_text_excerpt": "AeroIQ 📊 Dashboard 🔗 Endpoints 🚨 Alerts 8 🌐 Service Map 📜 Logs 🔌 Integrations ⚙️ Settings Acme Cloud Org 👤 Service map Dependencies between services. Edge width is proportional to traffic volume. Production Staging edge-gateway users-svc checkout-api billing-svc audit-log-ingest order-svc integrations-svc notification-gateway asset-svc catalog-svc Click a service node to view details. © 2026 AeroIQ · Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Service map"
+      ],
+      "counts": {
+        "buttons": 3,
+        "links": 8,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:AeroIQ",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🔗 Endpoints",
+        "clickable:a:🚨 Alerts 8",
+        "clickable:a:🌐 Service Map",
+        "clickable:a:📜 Logs",
+        "clickable:a:🔌 Integrations",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Acme Cloud Org",
+        "typeable:input:⌘K Search…",
+        "clickable:button:👤",
+        "clickable:button:Production",
+        "clickable:button:Staging"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

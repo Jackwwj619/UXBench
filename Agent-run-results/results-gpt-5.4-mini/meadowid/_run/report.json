@@ -1,0 +1,714 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/meadowid/index.html",
+  "site": {
+    "name": "meadowid",
+    "site_dir": "/Users/timchef/UXBench/websites/meadowid",
+    "start_page": "index.html",
+    "page_type": "settings/privacy",
+    "html_files": [
+      "connected-apps.html",
+      "data-export.html",
+      "devices.html",
+      "freeze.html",
+      "index.html",
+      "passkeys.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/meadowid/README.md",
+    "summary": "MeadowID — identity dashboard (local demo) Fictional unified-identity dashboard. Local fixture for UXBench. Open `index.html` directly. Pages `index.html` — Overview Sidebar nav plus a four-tile stat row (Connected apps, Active sessions, Passkeys, Trust score), an \"issues\" alert list (unfamiliar session, weak factor, stale app), a recent sign-in ledger, and a recovery-readiness checklist. `connected-apps.html` — Connected apps Filterable / searchable list of every app that holds a token on the user's behalf. Each card shows scope chips (sensitive ones highlighted) and a Revoke button that requires confirmation. `devices.html` — Active sessions",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full meadowid system, prioritizing the primary settings/privacy flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "MeadowID’s core security and privacy flows are generally understandable: users can reach active sessions, connected apps, passkeys, data export, and freeze controls, and destructive actions are usually guarded with confirmation. The biggest UX weaknesses are mobile touch friction, several unlabeled controls, and weak interaction feedback on some high-impact actions. Coverage is substantial but not complete, so a few untested areas remain, especially some dashboard links and connected-app/export edge cases.",
+  "exploration_plan": {
+    "goal": "Exhaustively validate MeadowID’s primary identity-security settings flow and adjacent recovery paths across all known pages, with emphasis on risk actions, confirmation states, and mobile usability.",
+    "summary": "Start from the overview dashboard, then follow the strongest security-related prompts into sessions, passkeys, connected apps, export, and freeze flows. Treat the dashboard alerts and recovery readiness widgets as navigation cues to deeper pages, and validate that destructive or high-impact actions require appropriate confirmation. Repeat the critical paths in a mobile viewport to check whether the many small tap targets and compact sidebar links remain usable.",
+    "assumptions": [
+      "The app is a local demo with no real backend side effects, but UI state changes and confirmation steps should still be exercised.",
+      "All meaningful user journeys are reachable from the six known HTML pages plus the sidebar and in-page links/buttons already observed.",
+      "Profile and Billing links shown in the sidebar are placeholders (#) and should not be treated as functional pages unless the browser reveals otherwise."
+    ],
+    "target_pages": [
+      "index.html",
+      "connected-apps.html",
+      "devices.html",
+      "passkeys.html",
+      "data-export.html",
+      "freeze.html"
+    ],
+    "risk_hotspots": [
+      "index.html: 'Run security check' button and alert actions ('Dismiss all', 'Review', 'Add passkey', 'Open', 'Configure', 'verify now')",
+      "devices.html: 'End all other sessions' and the unfamiliar Reykjavík session row/pin interactions",
+      "connected-apps.html: search/filter/sort controls and per-app 'Revoke' confirmation, especially on sensitive scopes",
+      "passkeys.html: 'Remove', 'Re-pair', 'Reveal & download', and recovery email/passkey state management",
+      "data-export.html: multi-step export wizard, checkboxes/options, and final request/continue path",
+      "freeze.html: freeze switch and the permanently sensitive 'Request deletion' adjacent flow",
+      "Mobile viewport: all sidebar nav items and compact action buttons flagged with small tap target warnings"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard triage and navigation map",
+        "objective": "Validate the overview page as the control center and use its alerts/cards to reach the adjacent security pages.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Inspect the four summary tiles and confirm the dashboard conveys a coherent security posture (connected apps, sessions, passkeys, trust score, recovery email state).",
+          "Exercise the primary action 'Run security check' and observe whether it changes state, opens a result, or remains a no-op in the demo.",
+          "Follow each prominent dashboard CTA at least once: Review, Add passkey, Open, See all, Configure, verify now, and Dismiss all if it is active.",
+          "Confirm the sidebar navigation routes cleanly to every known page."
+        ],
+        "exit_criteria": [
+          "All dashboard CTAs have been tested or determined to be inert/placeholders.",
+          "The run has a confirmed route to each of the five adjacent security pages."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Active sessions review",
+        "objective": "Validate the session-management page, its current-session indicator, and the remediation action for unfamiliar devices.",
+        "target_pages": [
+          "devices.html"
+        ],
+        "key_checks": [
+          "Open the Active sessions page and inspect the list structure, labels, and the selected current device state.",
+          "Test the 'End all other sessions' control and verify whether a confirmation or state change occurs.",
+          "Inspect the unfamiliar Reykjavík session and any row/pin affordances to ensure the warning is actionable and understandable.",
+          "Check whether clicking rows reveals detail such as factor, app, start time, or location."
+        ],
+        "exit_criteria": [
+          "The current-session state and at least one unfamiliar-session remediation path have been validated.",
+          "Any destructive action has been confirmed to require the appropriate safeguard or is noted as missing."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Connected apps token management",
+        "objective": "Validate search, category/sort controls, app cards, and token revocation behavior for connected integrations.",
+        "target_pages": [
+          "connected-apps.html"
+        ],
+        "key_checks": [
+          "Exercise the search field with at least one query and confirm results/filtering behavior.",
+          "Change category and sort controls to verify the list updates and the labels remain understandable.",
+          "Open several app cards and inspect scope chips, especially sensitive scopes and any highlighted permissions.",
+          "Use a Revoke action on at least one app and verify confirmation, cancellation, and post-action state if available."
+        ],
+        "exit_criteria": [
+          "Search, filter, sort, and revoke flows have each been exercised at least once.",
+          "At least one sensitive-scope app card has been inspected in detail."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Passkeys, backup factors, and recovery setup",
+        "objective": "Validate authentication-strengthening and account-recovery management, including removal and reveal actions.",
+        "target_pages": [
+          "passkeys.html"
+        ],
+        "key_checks": [
+          "Inspect the list of active passkeys and confirm the active/inactive semantics are clear.",
+          "Test 'Add a passkey' and observe the expected setup entry point or placeholder behavior.",
+          "Exercise 'Remove' on at least one passkey and verify any warning, confirmation, or irreversible language.",
+          "Test 'Re-pair' for the TOTP backup factor and 'Reveal & download' for backup codes.",
+          "Validate recovery email interaction via the visible input and 'Send verification' control, plus the trusted contact field if editable."
+        ],
+        "exit_criteria": [
+          "At least one passkey action, one backup-factor action, and one recovery-action path have been checked.",
+          "The risk of being locked out by removing factors is clearly represented or flagged if not."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Export data wizard and consent boundaries",
+        "objective": "Validate the export flow as a multi-step process with category selection, format/filter options, scheduling, and review.",
+        "target_pages": [
+          "data-export.html"
+        ],
+        "key_checks": [
+          "Walk through the multi-step wizard headings in order and confirm the current step is clear.",
+          "Toggle a representative subset of export categories, including high-volume and sensitive categories such as sign-in history, security audit log, and billing/receipts.",
+          "Inspect the format/filter and schedule controls for clarity and default safety.",
+          "Test Back, Save as draft, and Continue to confirm progression and recovery from mistakes."
+        ],
+        "exit_criteria": [
+          "The wizard’s step structure and at least one end-to-end progression path are covered.",
+          "Sensitive category selection and export size implications have been observed."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Freeze and account-level escalation",
+        "objective": "Validate the strongest account control, its explanatory copy, and adjacent irreversible actions.",
+        "target_pages": [
+          "freeze.html"
+        ],
+        "key_checks": [
+          "Review the freeze explanation for clarity around what is paused, blocked, or preserved.",
+          "Inspect the freeze switch behavior and any confirm/cancel pattern if present.",
+          "Follow the adjacent 'Request deletion' link or entry point and note whether it is clearly distinguished from freeze.",
+          "Check that the user is warned about unfreezing requirements and third-party side effects."
+        ],
+        "exit_criteria": [
+          "The freeze flow has been inspected for user clarity and safety.",
+          "Any irreversible or high-risk adjacent path has been identified and separated from reversible freeze state."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages: index, connected-apps, devices, passkeys, data-export, freeze",
+      "features": "exercise most visible controls on each page, including at least one control per major action group and one destructive/high-risk action where available",
+      "mobile": "repeat critical checks on mobile viewport, prioritizing sidebar navigation, dashboard CTAs, revoke/end-session/freeze actions, and any controls flagged with small tap target warnings"
+    },
+    "notes": [
+      "Known UX risk: many sidebar and action controls are already flagged as small tap targets; mobile validation should explicitly check whether this impacts discoverability and precision.",
+      "Avoid spending steps on placeholder links such as Profile and Billing unless the page unexpectedly resolves to real content.",
+      "If a control opens a modal or confirmation, prefer testing both confirm and cancel paths when safe within the step budget."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Understand whether a security or recovery action actually took effect",
+      "problem": "Some prominent actions appear to do nothing or give no immediate confirmation, which makes them feel unreliable even when they may be wired up.",
+      "evidence": "The dashboard’s \"Run security check\" click produced no visible state change or text update. On the freeze page, clicking the freeze switch also produced no visible state change, confirmation, or URL change, and \"Request deletion\" only changed the hash without revealing any dialog or state change.",
+      "why_it_matters": "For security-critical controls, users need unmistakable feedback that a request was accepted; otherwise they may repeat the action, lose trust, or assume the protection flow is broken.",
+      "suggestion": "Show an immediate state change or inline confirmation for each high-impact action, and if the action is not implemented, disable it or explain what will happen before users click.",
+      "source_hint": "index.html / freeze.html"
+    },
+    {
+      "severity": "high",
+      "ux_area": "forms",
+      "user_goal": "Complete the export flow confidently on mobile",
+      "problem": "The export wizard contains unlabeled or hard-to-identify inputs, making a multi-step sensitive form harder to complete and verify.",
+      "evidence": "The session memory reports unlabeled form fields on connected-apps.html, passkeys.html, and data-export.html. In the export flow, the mobile review step shows the delivery email, but earlier the email field was still missing a visible label/aria-label.",
+      "why_it_matters": "Users exporting private data need to know exactly what each field controls, especially when they are making irreversible or privacy-sensitive choices.",
+      "suggestion": "Add visible labels to all form fields and ensure every control has an accessible name; avoid relying on placeholder-only or implicit labeling in any sensitive flow.",
+      "source_hint": "data-export.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap navigation and action controls comfortably on a phone",
+      "problem": "Multiple primary nav links and action buttons fall below mobile tap-target guidance, increasing mis-taps in security settings.",
+      "evidence": "Layout warnings repeatedly flagged sidebar links at 40–41px tall on index.html, devices.html, connected-apps.html, data-export.html, and freeze.html. The connected-apps revoke buttons were also reported at 80x41px, and the export modal buttons were 134x41px and 77x41px.",
+      "why_it_matters": "Small targets are especially risky on privacy and recovery screens because users may trigger the wrong action or struggle to dismiss dialogs reliably.",
+      "suggestion": "Increase the height/padding of sidebar links, revoke buttons, and modal actions to at least 44px on touch layouts, and add spacing so adjacent controls are easier to hit.",
+      "source_hint": "global nav / connected-apps.html / data-export.html / freeze.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "forms",
+      "user_goal": "Choose export categories and options on mobile without hunting for tiny controls",
+      "problem": "The export wizard’s checkboxes and radio buttons are very small touch targets, which makes a long sensitive form harder to use on mobile.",
+      "evidence": "The export checklist used checkbox targets around 13x36px, and the schedule radios were described as very small touch targets (13x13px) on mobile. The observations also note that the controls are usable but not comfortable.",
+      "why_it_matters": "Users may need to make careful selections in a privacy-sensitive export, and tiny controls increase the chance of selecting the wrong data or feeling unsure whether the tap registered.",
+      "suggestion": "Enlarge the clickable area for checkboxes/radios, allow the full row/label to toggle the control, and provide a larger visual hit area on mobile.",
+      "source_hint": "data-export.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Know that sorting and filtering on connected apps changed the list as intended",
+      "problem": "Some list controls change state without clear confirmation, so users may not know whether the action took effect.",
+      "evidence": "Typing \"Aurora\" into search narrowed the connected-apps list immediately, but the filter/sort selects were described as unlabeled and the sort control accepted \"Name A→Z\" without a visibly changed list order or explicit feedback. The notes repeatedly say the change was only visible through the resulting list, not through any status text.",
+      "why_it_matters": "In a token-management area, ambiguous filter/sort feedback can make users uncertain whether they are looking at the right subset of apps before revoking access.",
+      "suggestion": "Show a visible active-filter/sort state, and add a clear result count or “sorted by…” chip so changes are obvious after interaction.",
+      "source_hint": "connected-apps.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "trust",
+      "user_goal": "Safely revoke app access or request an export without accidental commitment",
+      "problem": "Destructive or irreversible actions are sometimes framed as simple buttons or links without enough perceived protection or consequence emphasis in the trigger itself.",
+      "evidence": "On connected-apps, Revoke is a direct per-app action that opens confirmation, which is good, but the freeze page’s \"Request deletion\" is visually just a simple link. The export request similarly becomes a confirmation modal only after tapping the final CTA, and the dialog buttons are small on mobile.",
+      "why_it_matters": "When the action affects identity, tokens, or account lifecycle, users need to feel protected before they commit, not only after they click.",
+      "suggestion": "Visually differentiate destructive actions with stronger affordance, such as a clearly styled danger button and explicit pre-click context about what will happen next.",
+      "source_hint": "connected-apps.html / freeze.html / data-export.html"
+    },
+    {
+      "severity": "low",
+      "ux_area": "clarity",
+      "user_goal": "Understand how much data is included in an export",
+      "problem": "The export review step preserves selections well, but the resulting summary can be a little opaque about scope and format changes after navigation.",
+      "evidence": "On mobile, the review step shows categories, format, frequency, and delivery address, but the modal after Request export says it will prepare a CSV archive of 2 categories even though the review step showed JSON. Earlier notes also said the selected-risk feedback for a sensitive category was not immediate or clear.",
+      "why_it_matters": "Users exporting private data need a stable, trustworthy summary of exactly what will be delivered; mismatched or delayed clarity can erode confidence.",
+      "suggestion": "Keep the final review summary and confirmation dialog wording perfectly aligned, and surface a clearer recap of selected categories and file format before the final click.",
+      "source_hint": "data-export.html"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 39,
+    "action_success_rate_percent": 97,
+    "unchanged_action_percent": 33,
+    "known_pages": [
+      "connected-apps.html",
+      "data-export.html",
+      "devices.html",
+      "freeze.html",
+      "index.html",
+      "passkeys.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "devices.html",
+      "connected-apps.html",
+      "passkeys.html",
+      "data-export.html",
+      "freeze.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 48,
+      "open_page": 21,
+      "screenshot_pair": 3,
+      "scroll": 1,
+      "select_option": 4,
+      "type_text": 2
+    },
+    "total_actions": 79,
+    "successful_actions": 77,
+    "failed_actions": 2,
+    "unchanged_actions": 26,
+    "observed_feature_count": 84,
+    "exercised_feature_count": 33,
+    "unexplored_features": [
+      {
+        "signature": "connected-apps.html|clickable|a|||↓ export your data|data-export.html",
+        "page": "connected-apps.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "↓ Export your data"
+      },
+      {
+        "signature": "connected-apps.html|clickable|a|||⇄ connected apps|connected-apps.html",
+        "page": "connected-apps.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⇄ Connected apps"
+      },
+      {
+        "signature": "connected-apps.html|clickable|a|||◐ overview|index.html",
+        "page": "connected-apps.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "◐ Overview"
+      },
+      {
+        "signature": "connected-apps.html|clickable|a|||❄ freeze account|freeze.html",
+        "page": "connected-apps.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "❄ Freeze account"
+      },
+      {
+        "signature": "connected-apps.html|clickable|button|||revoke access|",
+        "page": "connected-apps.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Revoke access"
+      },
+      {
+        "signature": "data-export.html|clickable|a|||↓ export your data|data-export.html",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "↓ Export your data"
+      },
+      {
+        "signature": "data-export.html|clickable|a|||⇄ connected apps|connected-apps.html",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⇄ Connected apps"
+      },
+      {
+        "signature": "data-export.html|clickable|a|||⌘ passkeys & 2fa|passkeys.html",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⌘ Passkeys & 2FA"
+      },
+      {
+        "signature": "data-export.html|clickable|a|||◐ overview|index.html",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "◐ Overview"
+      },
+      {
+        "signature": "data-export.html|clickable|input||checkbox|account profile name, email, recovery contacts. ~4 kb|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Account profile Name, email, recovery contacts. ~4 KB"
+      },
+      {
+        "signature": "data-export.html|clickable|input||checkbox|billing & receipts receipts, invoices, payment-method labels. ~84 kb|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Billing & receipts Receipts, invoices, payment-method labels. ~84 KB"
+      },
+      {
+        "signature": "data-export.html|clickable|input||checkbox|connected apps & tokens 10 apps · ~12 kb|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Connected apps & tokens 10 apps · ~12 KB"
+      },
+      {
+        "signature": "data-export.html|clickable|input||checkbox|data held on your behalf by connected apps where the app supports it. some apps |",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Data held on your behalf by connected apps Where the app supports it. Some apps may take up to 7 days. ~unknown"
+      },
+      {
+        "signature": "data-export.html|clickable|input||checkbox|passkey & 2fa metadata public keys only — private keys never leave devices. ~6 k|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Passkey & 2FA metadata Public keys only — private keys never leave devices. ~6 KB"
+      },
+      {
+        "signature": "data-export.html|clickable|input||checkbox|sign-in history last 18 months · ~280 kb|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Sign-in history Last 18 months · ~280 KB"
+      },
+      {
+        "signature": "data-export.html|clickable|input||radio|html (browsable)|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "HTML (browsable)"
+      },
+      {
+        "signature": "data-export.html|clickable|input||radio|json|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "JSON"
+      },
+      {
+        "signature": "data-export.html|clickable|input||radio|just this once|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Just this once"
+      },
+      {
+        "signature": "data-export.html|typeable|input||email|jamal@thirdpond.dev|",
+        "page": "data-export.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "jamal@thirdpond.dev"
+      },
+      {
+        "signature": "devices.html|clickable|a|||⌘ passkeys & 2fa|passkeys.html",
+        "page": "devices.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⌘ Passkeys & 2FA"
+      },
+      {
+        "signature": "devices.html|clickable|a|||▢ active sessions|devices.html",
+        "page": "devices.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "▢ Active sessions"
+      },
+      {
+        "signature": "devices.html|clickable|a|||◐ overview|index.html",
+        "page": "devices.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "◐ Overview"
+      },
+      {
+        "signature": "devices.html|clickable|a|||❄ freeze account|freeze.html",
+        "page": "devices.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "❄ Freeze account"
+      },
+      {
+        "signature": "devices.html|clickable|button|||end all others|",
+        "page": "devices.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "End all others"
+      },
+      {
+        "signature": "freeze.html|clickable|a|||↓ export your data|data-export.html",
+        "page": "freeze.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "↓ Export your data"
+      },
+      {
+        "signature": "freeze.html|clickable|a|||⇄ connected apps|connected-apps.html",
+        "page": "freeze.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⇄ Connected apps"
+      },
+      {
+        "signature": "freeze.html|clickable|a|||⌘ passkeys & 2fa|passkeys.html",
+        "page": "freeze.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⌘ Passkeys & 2FA"
+      },
+      {
+        "signature": "freeze.html|clickable|a|||▢ active sessions|devices.html",
+        "page": "freeze.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "▢ Active sessions"
+      },
+      {
+        "signature": "freeze.html|clickable|a|||❄ freeze account|freeze.html",
+        "page": "freeze.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "❄ Freeze account"
+      },
+      {
+        "signature": "index.html|clickable|a|||configure|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Configure"
+      },
+      {
+        "signature": "index.html|clickable|a|||dismiss all|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Dismiss all"
+      },
+      {
+        "signature": "index.html|clickable|a|||open|connected-apps.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Open"
+      },
+      {
+        "signature": "index.html|clickable|a|||see all|devices.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "See all"
+      },
+      {
+        "signature": "index.html|clickable|a|||verify now|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "verify now"
+      },
+      {
+        "signature": "index.html|clickable|a|||↓ export your data|data-export.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "↓ Export your data"
+      },
+      {
+        "signature": "index.html|clickable|a|||⌘ passkeys & 2fa|passkeys.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⌘ Passkeys & 2FA"
+      },
+      {
+        "signature": "index.html|clickable|a|||▢ active sessions|devices.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "▢ Active sessions"
+      },
+      {
+        "signature": "index.html|clickable|a|||◐ overview|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "◐ Overview"
+      },
+      {
+        "signature": "index.html|clickable|a|||⚙ billing|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙ Billing"
+      },
+      {
+        "signature": "index.html|clickable|a|||⚙ profile|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙ Profile"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 39% of visible interactive feature signatures.",
+      "2 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-04-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-05-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-09-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-12-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-13-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-14-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-15-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-18-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-20-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-24-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-27-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-27-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-28-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-28-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-30-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-33-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-34-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-35-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-36-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-38-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-41-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-43-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-44-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-47-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-49-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-50-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-52-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-55-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-56-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-59-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-60-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-62-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-62-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-71-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-mini/meadowid/_run",
+  "claude_fix": null
+}

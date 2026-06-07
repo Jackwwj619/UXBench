@@ -1,0 +1,691 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/fred-unrate/index.html",
+  "site": {
+    "name": "fred-unrate",
+    "site_dir": "/Users/timchef/UXBench/websites/fred-unrate",
+    "start_page": "index.html",
+    "page_type": "data visualization",
+    "html_files": [
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "data.js",
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/fred-unrate/README.md",
+    "summary": "fred-unrate-clone Clone of the FRED Unemployment Rate (UNRATE) series detail page. Pages | File | Purpose | | --- | --- | | `index.html` | UNRATE series page: top FRED nav + series title / subtitle; main chart (line + recession-period shading + hover tooltip); time-range toggles above the chart (5Y / 10Y / Max) + frequency (Monthly / Quarterly / Annual) + unit toggle; metadata block on the right / below (Source, Release, Units, Frequency, Last updated, Notes); Download / API / Embed / Citation actions; related-series recommendations | | `data.js` | Historical UNRATE monthly time series (mock) | | `styles.css` | FRED palette (blue-gray), chart, metadata table, button groups |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full fred-unrate system, prioritizing the primary data visualization flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The UNRATE page’s core chart and data-table flow are present, but the experience is weakened by several dead-end links and a crowded mobile chrome that is hard to tap comfortably. The biggest issues are weak or absent feedback for source/metadata links, placeholder-style navigation that only changes the URL hash, and a mobile edit-graph overlay that appears difficult to dismiss reliably. I also did not observe usable hover inspection feedback on the chart, so the primary data-visualization interaction remains unverified and potentially fragile.",
+  "exploration_plan": {
+    "goal": "Validate the primary UNRATE series-detail experience end to end: chart exploration, time-range controls, metadata accuracy, download-related actions, and responsive/mobile usability on the single-page FRED clone.",
+    "summary": "Start with the main series page and verify the core data-visualization flow: chart rendering, hover/inspection behavior, and the time-range/date controls. Then exercise adjacent controls around the chart and metadata block, including tab switches, edit/download actions, and related informational links, while watching for any broken state changes or regressions. Finish with a mobile viewport pass focused on tap target quality, layout stability, and whether the key chart/control interactions remain usable at smaller widths.",
+    "assumptions": [
+      "The site consists of a single HTML page (index.html) with all primary functionality embedded there.",
+      "The chart is driven by local mock data in data.js and should be inspectable without external network dependencies.",
+      "Controls such as time-range toggles, date inputs, chart/table tabs, and download-related buttons are intended to be interactive even if some links are placeholders.",
+      "Adjacent flows are limited to in-page states and any navigation triggered by visible FRED-style links/buttons; there are no separate documented content pages in the prescan."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Chart interaction area: line chart with recession shading and hover tooltip, especially around dense historical sections and the latest data point.",
+      "Time-range and date controls: 1Y/5Y/10Y/Max plus From/To inputs, where date validation or state syncing could fail.",
+      "Chart vs. data table tab switch: potential for rendering/state bugs when toggling between visualization and tabular views.",
+      "Download / Edit Graph controls: higher-risk actions that may expose broken dialogs, export options, or inconsistent state.",
+      "Mobile tap targets in the top nav and maintenance banner close button: prescan flagged several controls below 44px guidance.",
+      "Metadata and citation-style links under the series info block, which may be incomplete or nonfunctional in the clone."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline page and chart rendering",
+        "objective": "Confirm the UNRATE page loads correctly and the core series presentation is visually and semantically intact before interacting.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify the title, breadcrumb trail, series name, observations summary, and metadata blocks are visible and coherent.",
+          "Confirm the chart renders with recession shading and the expected date span from 1948-01-01 to 2026-04-01.",
+          "Check that the chart legend/title, axis labels, and latest observation summary align with the page text.",
+          "Dismiss or account for the maintenance notice so it does not block primary controls."
+        ],
+        "exit_criteria": [
+          "Primary series page is fully loaded with no console or network errors.",
+          "Chart and summary metadata are visible and consistent with the prescan.",
+          "Any blocking overlay has been dismissed or proven non-blocking."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Chart interaction and range controls",
+        "objective": "Validate the main analytical workflow: hovering the chart, switching ranges, and adjusting the displayed date window.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover multiple chart positions, including near recent data and historical peaks, to verify tooltip behavior and readable values.",
+          "Click each visible time-range toggle (1Y, 5Y, 10Y, Max) and confirm the chart updates appropriately.",
+          "Change the From and To inputs to a narrower range and verify the chart and/or summary respond without error.",
+          "Check that the units and frequency labels remain stable when the date window changes."
+        ],
+        "exit_criteria": [
+          "All visible range toggles have been exercised at least once.",
+          "Date inputs have been changed with a successful update or clear validation response.",
+          "Tooltip/hover behavior has been observed at least in two distinct chart regions."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "View modes and export/edit actions",
+        "objective": "Probe the adjacent controls around the chart for state changes and potential broken behaviors.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch from Chart to View as data table and confirm content changes or table state appears.",
+          "Return to Chart and verify the chart state is restored correctly.",
+          "Open Edit Graph and inspect whether any editing controls/panels appear as expected.",
+          "Activate Download and look for export options, menu behavior, or blocked interactions.",
+          "If visible in the chart area, check whether fullscreen/share-style actions are present and behave consistently."
+        ],
+        "exit_criteria": [
+          "Chart/table toggle has been exercised in both directions.",
+          "Edit/Download actions have been opened or attempted at least once.",
+          "No broken rendering or persistent UI corruption appears after toggling views."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Metadata, references, and related content",
+        "objective": "Validate the informational side of the series page and ensure links or reference content do not break navigation.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Inspect the Notes section for completeness and readability.",
+          "Interact with the source/release-related links or labels, including the source attribution and next release date link.",
+          "Check any related-series or suggestion areas visible on the page for presence and basic link behavior.",
+          "Verify that breadcrumb/navigation links are readable and do not produce obvious dead ends within the clone."
+        ],
+        "exit_criteria": [
+          "Notes and metadata sections have been reviewed.",
+          "At least one source or release-related link has been attempted.",
+          "Any related-content areas visible in the page have been checked for basic functionality."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile responsiveness and tap-target validation",
+        "objective": "Repeat the most important flow on a mobile viewport, with emphasis on layout, chart usability, and flagged touch targets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Re-open the page in mobile viewport and verify the main title, chart, and key controls remain accessible.",
+          "Check that the chart does not become unusable or clipped at small widths.",
+          "Test the most important controls again on mobile: range toggles, Chart/data table switch, and the maintenance notice close button.",
+          "Review tap target sizing and spacing for the top nav, maintenance banner, and primary chart controls."
+        ],
+        "exit_criteria": [
+          "Primary chart flow has been repeated on mobile successfully.",
+          "Flagged small tap targets have been evaluated in context.",
+          "No severe mobile layout breakage prevents completing the primary interaction path."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages (single-page site: index.html) and confirm both desktop and mobile states",
+      "features": "exercise most visible controls on the series page, prioritizing chart hover, range toggles, date inputs, chart/table switch, edit/download actions, and key metadata links",
+      "mobile": "repeat the primary chart-and-controls workflow on a mobile viewport and explicitly assess the low-confidence tap targets flagged in prescan"
+    },
+    "notes": [
+      "Because the prescan shows only one HTML page, coverage should focus on states and interactions rather than navigation breadth.",
+      "The prescan flagged several small tap targets; treat those as a validation priority on mobile even if they are not functional bugs on desktop.",
+      "If the maintenance banner interferes with interaction, record whether it is dismissible and whether dismissal persists during the run."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Close the mobile Edit Graph panel and return to the main chart after adding a comparison line",
+      "problem": "The mobile overlay does not reliably dismiss, leaving the page stuck in the add-series state and blocking normal chart interaction.",
+      "evidence": "In the recent trajectory, clicking the mobile 'Close Edit Graph' control produced no visible change: URL, visible text, and screenshot state all remained the same, and the reflection says the overlay may not be dismissing from this state. Earlier, the open drawer also intercepted pointer events, blocking clicks on footer links like Legal and Privacy Notice & Policy.",
+      "why_it_matters": "If users cannot reliably close the editor, they lose access to the main chart and may feel trapped in a modal workflow.",
+      "suggestion": "Make the close control visibly and consistently dismiss the drawer, add an obvious fallback close action, and ensure the underlying chart regains focus and pointer access immediately after closing.",
+      "source_hint": "index.html / Edit Graph drawer / Close Edit Graph"
+    },
+    {
+      "severity": "high",
+      "ux_area": "goal completion",
+      "user_goal": "Use the chart as an interactive data visualization and inspect values on hover",
+      "problem": "I could not observe any usable hover feedback on the main chart, so point inspection remains unconfirmed and may be inaccessible.",
+      "evidence": "Across multiple steps, hover attempts on the chart did not produce a tooltip, crosshair, or value readout. The session memory notes 'Hover on the main chart failed to target the visualization element,' and no readable hover feedback was observed in the chart view.",
+      "why_it_matters": "Without hover/inspection feedback, users cannot quickly read exact values or validate trends, which is a core task on a series detail page.",
+      "suggestion": "Ensure the plot area has a clear hover/cursor affordance and that tooltips appear reliably on both desktop and mobile pointer interactions, with an accessible fallback for touch.",
+      "source_hint": "index.html / main chart"
+    },
+    {
+      "severity": "high",
+      "ux_area": "trust",
+      "user_goal": "Navigate to source, policy, or metadata pages from the series detail page",
+      "problem": "Several prominent metadata and footer links behave like placeholders, changing nothing meaningful or only appending a hash, which undermines trust in the page’s references.",
+      "evidence": "Clicking 'U.S. Bureau of Labor Statistics' on mobile produced no URL/hash change and no visible feedback. 'Legal' changed the URL only from `index.html` to `index.html#` with no visible page change. The session also records similar hash-only or no-op behavior for 'Next Release Date: Jun 5, 2026' and the series recommendation links.",
+      "why_it_matters": "Users expect source and policy links to confirm provenance or take them to real destinations; dead-end behavior makes the page feel unfinished or unreliable.",
+      "suggestion": "Replace placeholder hashes with real destinations or disable nonfunctional links with clear labeling so users can tell which items are informational versus navigational.",
+      "source_hint": "index.html / U.S. Bureau of Labor Statistics / Legal / Next Release Date"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Use related-series and metadata links to explore adjacent content",
+      "problem": "Related-content links appear clickable but do not take users anywhere useful, creating weak navigation scent.",
+      "evidence": "Clicking 'All Employees, Total Nonfarm' and 'Real Gross Domestic Product' changed the URL only to a hash fragment (`index.html#`) or produced no meaningful page change. The observations explicitly describe these as placeholder-like or dead-end affordances.",
+      "why_it_matters": "Recommendation blocks should help users continue exploration; if they look interactive but go nowhere, users waste time and may stop trusting related-content modules.",
+      "suggestion": "Either route these links to real series pages or visually distinguish them as non-navigational suggestions with explanatory labels.",
+      "source_hint": "index.html / Related Data and Content section"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "forms",
+      "user_goal": "Use the date range controls to narrow the time window",
+      "problem": "The date range inputs are present, but the page shows no evidence of clear apply/confirmation feedback for range changes, and related actions were not meaningfully validated.",
+      "evidence": "The page exposes From/To inputs and range toggles, but the trajectory includes an 'Apply Formula' control that was not visible/clickable, and many actions around chart/state changes produced no visible response. The session also notes the chart/time-range area is functional in layout but its inspection behavior and state-change feedback remain unverified.",
+      "why_it_matters": "If users cannot tell when a range selection has been applied, they may assume their input did nothing or misread the resulting chart state.",
+      "suggestion": "Provide explicit confirmation when a date range is applied and show an obvious loading/updated-state indication for the chart.",
+      "source_hint": "index.html / From / To inputs / time-range controls"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap header and navigation controls comfortably on a phone",
+      "problem": "Many mobile tap targets are below the recommended 44px guidance, making the header and breadcrumbs feel cramped and error-prone.",
+      "evidence": "Layout warnings flag multiple small targets on mobile: Search (38x38), apps/account icons (38x38), Home/Categories/breadcrumb items around 22px high, the close notice button at 36x36, and several nav items under 44px. The session summary also explicitly notes touch-target warnings for the top nav.",
+      "why_it_matters": "Small targets increase mis-taps and make it harder to reach key navigation, especially in a dense top-of-page header.",
+      "suggestion": "Increase hit areas and spacing for header icons, breadcrumb links, and small utility actions so they meet mobile touch standards without requiring precision taps.",
+      "source_hint": "index.html / top header / breadcrumbs"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Understand whether top-nav actions worked when tapped",
+      "problem": "Some compact header controls do give feedback, but the feedback style is inconsistent across actions, which makes the page feel uneven to use.",
+      "evidence": "NEWS and RELEASE CALENDAR both triggered explicit in-page toasts ('News opened', 'Release calendar opened'), while FRED API produced only a vague indication and several other clicked items showed no meaningful destination change. The inconsistencies are recorded in multiple trajectory chunks.",
+      "why_it_matters": "Inconsistent feedback makes it harder to predict whether a control will navigate, open a menu, or do nothing, reducing confidence in the interface.",
+      "suggestion": "Standardize action feedback patterns: show a toast or clear state change for action buttons, and use unmistakable navigation transitions for links that leave the page.",
+      "source_hint": "index.html / top navigation / NEWS / RELEASE CALENDAR / FRED API"
+    },
+    {
+      "severity": "low",
+      "ux_area": "visual hierarchy",
+      "user_goal": "Quickly orient on the series page and focus on the chart",
+      "problem": "The page is visually crowded on mobile, with a tall header stack above the chart that competes for attention.",
+      "evidence": "The mobile observation shows stacked breadcrumb navigation, series title, observation summary, metadata blocks, range controls, and buttons before the chart. The session repeatedly notes a persistent maintenance banner earlier in the flow and dense header/body transitions.",
+      "why_it_matters": "Heavy top-of-page density pushes the chart down and makes it harder for users to get to the main analytical content quickly.",
+      "suggestion": "Tighten the vertical spacing and reduce header clutter on small screens so the chart becomes the dominant element sooner.",
+      "source_hint": "index.html / mobile layout"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 24,
+    "action_success_rate_percent": 89,
+    "unchanged_action_percent": 61,
+    "known_pages": [
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 48,
+      "hover": 3,
+      "open_page": 22,
+      "press_key": 1,
+      "reload": 1,
+      "scroll": 3,
+      "type_text": 1
+    },
+    "total_actions": 79,
+    "successful_actions": 70,
+    "failed_actions": 9,
+    "unchanged_actions": 48,
+    "observed_feature_count": 102,
+    "exercised_feature_count": 24,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|a|menuitem||explore our apps|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Explore Our Apps"
+      },
+      {
+        "signature": "index.html|clickable|a|menuitem||geofred|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "GeoFRED"
+      },
+      {
+        "signature": "index.html|clickable|a|||16 years +|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "16 Years +"
+      },
+      {
+        "signature": "index.html|clickable|a|||bureau of labor statistics|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Bureau of Labor Statistics"
+      },
+      {
+        "signature": "index.html|clickable|a|||categories|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Categories"
+      },
+      {
+        "signature": "index.html|clickable|a|||civilian|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Civilian"
+      },
+      {
+        "signature": "index.html|clickable|a|||consumer price index for all urban consumers: all items in u.s. city average|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average"
+      },
+      {
+        "signature": "index.html|clickable|a|||current population survey (household survey)|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Current Population Survey (Household Survey)"
+      },
+      {
+        "signature": "index.html|clickable|a|||current population survey|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Current Population Survey"
+      },
+      {
+        "signature": "index.html|clickable|a|||employment situation|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Employment Situation"
+      },
+      {
+        "signature": "index.html|clickable|a|||facebook|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Facebook"
+      },
+      {
+        "signature": "index.html|clickable|a|||fred help|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "FRED Help"
+      },
+      {
+        "signature": "index.html|clickable|a|||fred home|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "FRED home"
+      },
+      {
+        "signature": "index.html|clickable|a|||gross domestic product|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Gross Domestic Product"
+      },
+      {
+        "signature": "index.html|clickable|a|||headline figure|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Headline Figure"
+      },
+      {
+        "signature": "index.html|clickable|a|||home|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Home"
+      },
+      {
+        "signature": "index.html|clickable|a|||labor underutilization|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Labor Underutilization"
+      },
+      {
+        "signature": "index.html|clickable|a|||labor|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Labor"
+      },
+      {
+        "signature": "index.html|clickable|a|||linkedin|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "LinkedIn"
+      },
+      {
+        "signature": "index.html|clickable|a|||measuring labor market tightness with fred|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Measuring labor market tightness with FRED"
+      },
+      {
+        "signature": "index.html|clickable|a|||monthly, not seasonally adjusted|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Monthly, Not Seasonally Adjusted"
+      },
+      {
+        "signature": "index.html|clickable|a|||monthly|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Monthly"
+      },
+      {
+        "signature": "index.html|clickable|a|||more series from employment situation|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "More Series from Employment Situation"
+      },
+      {
+        "signature": "index.html|clickable|a|||nation|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Nation"
+      },
+      {
+        "signature": "index.html|clickable|a|||population, employment, & labor markets|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Population, Employment, & Labor Markets"
+      },
+      {
+        "signature": "index.html|clickable|a|||public domain: citation requested|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Public Domain: Citation Requested"
+      },
+      {
+        "signature": "index.html|clickable|a|||questions or comments|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Questions or Comments"
+      },
+      {
+        "signature": "index.html|clickable|a|||rate|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Rate"
+      },
+      {
+        "signature": "index.html|clickable|a|||seasonally adjusted|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Seasonally Adjusted"
+      },
+      {
+        "signature": "index.html|clickable|a|||see more...|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "See More..."
+      },
+      {
+        "signature": "index.html|clickable|a|||shaded areas indicate u.s. recessions.|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Shaded areas indicate U.S. recessions."
+      },
+      {
+        "signature": "index.html|clickable|a|||skip to main content|#maincontent",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Skip to main content"
+      },
+      {
+        "signature": "index.html|clickable|a|||table a-10. selected unemployment indicators, seasonally adjusted: monthly, unem|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Table A-10. Selected unemployment indicators, Seasonally adjusted: Monthly, Unemployment Rates"
+      },
+      {
+        "signature": "index.html|clickable|a|||table a-15. alternative measures of labor underutilization: monthly, seasonally |#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Table A-15. Alternative measures of labor underutilization: Monthly, Seasonally Adjusted"
+      },
+      {
+        "signature": "index.html|clickable|a|||the unusual shape of the beveridge curve|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "The unusual shape of the Beveridge curve"
+      },
+      {
+        "signature": "index.html|clickable|a|||unemployment rate|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Unemployment Rate"
+      },
+      {
+        "signature": "index.html|clickable|a|||unemployment|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Unemployment"
+      },
+      {
+        "signature": "index.html|clickable|a|||united states of america|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "United States of America"
+      },
+      {
+        "signature": "index.html|clickable|a|||x|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "X"
+      },
+      {
+        "signature": "index.html|clickable|a|||youtube|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "YouTube"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 24% of visible interactive feature signatures.",
+      "9 browser action(s) failed and should be retried or analyzed.",
+      "61% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-02-hover-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-03-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-08-hover-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-09-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-10-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-12-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-14-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-16-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-17-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-19-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-20-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-22-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-24-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-26-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-30-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-32-hover-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-33-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-35-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-39-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-40-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-45-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-46-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-48-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-50-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-52-reload-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-54-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-55-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-59-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-60-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-61-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-62-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-70-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-mini/fred-unrate/_run",
+  "claude_fix": null
+}

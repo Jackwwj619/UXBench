@@ -1,0 +1,180 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the GOV.UK passport multi-step form, covering the primary application flow, error handling, state persistence, and responsive layout.",
+    "summary": "The run will start by handling the cookie banner and navigating the landing page, then proceed through the primary multi-step form flow (application type, personal info, address, previous passport, photo upload, review). It will deliberately trigger inline validation errors and the error summary on various steps to assess error recovery. Finally, it will validate localStorage persistence, backward navigation, and mobile responsiveness for critical steps.",
+    "assumptions": [
+      "The site is a single-page application where steps are shown/hidden via JavaScript based on the summary provided.",
+      "The 'Demo result' link in the header jumps directly to the confirmation step, which can be used to verify the end state.",
+      "Form validation will trigger if 'Save and continue' is clicked with empty or invalid fields, revealing error states.",
+      "The 'Cancel' link on form steps should provide a distinct recovery path or exit state."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets on breadcrumb and footer links identified in prescan, especially problematic on mobile viewports.",
+      "Error summary focus management: ensuring the error summary receives focus and correctly links to invalid fields.",
+      "State persistence: potential loss of entered data or unexpected behavior when using the browser back button vs. the 'Back' link.",
+      "Photo upload step: handling of invalid file types or missing files in a single-page prototype."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing Page & Cookie Consent",
+        "objective": "Validate the initial landing page layout, content, and cookie consent interaction.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify cookie banner is visible and Accept/Reject buttons work",
+          "Check that 'Start now' button is prominently displayed and clickable",
+          "Validate breadcrumb and footer links are present (noting small tap targets)",
+          "Ensure the disclaimer about being a local demo is visible"
+        ],
+        "exit_criteria": [
+          "Cookie consent choice has been made and banner dismissed",
+          "Landing page structure and primary call-to-action validated"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Primary Form Flow - Happy Path",
+        "objective": "Complete the entire multi-step form using valid inputs to reach the review and confirmation pages.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Navigate through application type selection (new/renew/replace)",
+          "Fill out personal info and address fields with valid data",
+          "Complete previous passport info step",
+          "Handle photo upload step with a valid file",
+          "Verify review page displays all entered data correctly",
+          "Reach the 'stop before payment' or confirmation page via the happy path"
+        ],
+        "exit_criteria": [
+          "Successfully reached the final review/confirmation step with all valid data entered"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Validation & Error Recovery",
+        "objective": "Test form validation, error summary behavior, and inline error messaging by submitting steps with missing or invalid data.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Submit a step with all fields empty to trigger the error summary",
+          "Verify error summary links focus the correct invalid fields",
+          "Check for red error styling and hint text on invalid fields",
+          "Test partial errors (e.g., missing email but name filled)",
+          "Validate recovery: correct the errors and successfully proceed"
+        ],
+        "exit_criteria": [
+          "Error summary and inline errors observed on at least two different steps",
+          "Successful recovery and progression after fixing errors"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Navigation & State Persistence",
+        "objective": "Validate backward navigation, 'Cancel' links, and localStorage state persistence.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the 'Back' link to return to a previous step and verify data is retained",
+          "Click 'Cancel' on a step and verify the expected exit behavior",
+          "Refresh the browser mid-flow to check if localStorage repopulates the fields",
+          "Use the header 'Service' link to see if it resets or preserves state"
+        ],
+        "exit_criteria": [
+          "Backward navigation retains data without loss",
+          "Cancel and refresh behaviors validated"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Responsiveness & Accessibility",
+        "objective": "Re-evaluate critical flows and layout warnings on a mobile viewport to ensure usability.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport and verify the step indicator adapts (left to top)",
+          "Re-validate small tap targets (breadcrumbs, footer links) on mobile",
+          "Check form input usability, focus states (yellow outline), and keyboard navigation on mobile",
+          "Trigger an error state on mobile to ensure error summary is visible and scrollable"
+        ],
+        "exit_criteria": [
+          "Mobile layout verified on start page, a mid-form step, and an error state",
+          "Tap target and accessibility issues documented for mobile"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Cover all virtual steps within the single-page application (Start, Type, Personal, Address, Passport, Photo, Review, Confirmation)",
+      "features": "Exercise all form inputs, validation triggers, navigation links (Back, Cancel, Header), and cookie consent",
+      "mobile": "Repeat the start page, a data entry step, and an error state on mobile viewport"
+    },
+    "notes": [
+      "Since this is a single-page app with multiple steps, coverage depends on interacting with all hidden sections revealed by script.js.",
+      "Pay close attention to the GOV.UK Design System specifics: yellow focus outlines, red error text, and Transport-like font stack."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Apply for or renew a passport - GOV.UK local demo",
+      "url": "file:///Users/timchef/UXBench/websites/govuk-passport/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "GOV.UK Home Service Demo result Local demo only. This is not an official GOV.UK or HM Passport Office service. Do not enter real passport, payment or personal information. Cookies on GOV.UK We use some essential cookies to make this website work. We'd also like to use analytics cookies so we can understand how you use the service and make improvements. Accept analytics cookies Reject analytics cookies View cookies Home Citizenship and living in the UK Passports, travel and living abroad Passports Apply for or renew a passport Apply online for a UK passport. You can also renew, replace, change details on, or apply for a child passport. This local version recreates the public GOV.UK page and a complete interactive form flow for demonstration and design review. You must use the official GOV.UK service for a real passport application. This page is an offline prototype. Start now › Before you",
+      "headings": [
+        "Cookies on GOV.UK",
+        "Apply for or renew a passport",
+        "Before you start",
+        "Related content",
+        "Services and information",
+        "Government activity",
+        "Support links"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 24,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:GOV.UK local demo home",
+        "clickable:a:Home",
+        "clickable:a:Service",
+        "clickable:a:Demo result",
+        "clickable:button:Accept analytics cookies",
+        "clickable:button:Reject analytics cookies",
+        "clickable:a:View cookies",
+        "clickable:a:Citizenship and living in the UK",
+        "clickable:a:Passports, travel and living abroad",
+        "clickable:a:Start now ›",
+        "clickable:a:Renew an adult passport",
+        "clickable:a:Apply for a child passport",
+        "clickable:a:Report a lost or stolen passport",
+        "clickable:a:Passport fees",
+        "clickable:a:Yes"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

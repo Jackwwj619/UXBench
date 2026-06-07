@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Actions &amp; selectors — Runeforge</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="light">
+<header class="topnav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 32 32" width="22" height="22"><path d="M16 4 L 28 12 L 28 24 L 16 30 L 4 24 L 4 12 Z" fill="none" stroke="#7C3AED" stroke-width="2"/><path d="M16 10 L 22 14 L 22 20 L 16 22 L 10 20 L 10 14 Z" fill="#F59E0B" opacity="0.7"/></svg></span>
+      <span class="brand-name">Runeforge</span><span class="brand-version">v3.4</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" class="active">Docs</a><a href="api-reference.html">API</a><a href="examples.html">Examples</a><a href="#" data-soon aria-disabled="true" title="Blog — coming soon">Blog</a><a href="#" data-soon aria-disabled="true" title="Community — coming soon">Community</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="search-trigger" id="searchTrigger" aria-label="Search documentation" aria-haspopup="dialog"><span>Search docs</span><kbd>⌘K</kbd></button>
+      <label class="visually-hidden" for="versionSelect">Documentation version</label>
+      <select id="versionSelect" class="version-select" aria-label="Documentation version" title="Documentation version"><option value="v3.4">v3.4 (latest)</option><option value="v3.3" disabled>v3.3 (archived)</option><option value="v3.2" disabled>v3.2 (archived)</option><option value="v2" disabled>v2 (legacy)</option></select>
+      <button class="icon-btn" id="themeToggle" title="Toggle light / dark theme" aria-label="Toggle light / dark theme">☾</button>
+      <a href="#" class="icon-btn" title="GitHub stars — coming soon" aria-label="GitHub repository (coming soon)" data-soon aria-disabled="true">★ 18.4k</a>
+    </div>
+  </div>
+</header>
+
+<div class="docs-layout">
+  <aside class="docs-toc">
+    <div class="toc-section">
+      <h4>Getting started</h4>
+      <a href="index.html" class="toc-item">Introduction</a>
+      <a href="guide-quickstart.html" class="toc-item">Quickstart (5 min)</a>
+      <a href="#" class="toc-item" data-soon aria-disabled="true" title="Coming soon">Why Runeforge?</a>
+      <a href="#" class="toc-item" data-soon aria-disabled="true" title="Coming soon">Installation</a>
+      <a href="#" class="toc-item" data-soon aria-disabled="true" title="Coming soon">Migration from Redux</a>
+    </div>
+    <div class="toc-section">
+      <h4>Core concepts</h4>
+      <a href="guide-stores.html" class="toc-item">Stores</a>
+      <a href="guide-actions.html" class="toc-item active">Actions &amp; selectors</a>
+      <a href="#" class="toc-item" data-soon aria-disabled="true" title="Coming soon">Subscriptions</a>
+      <a href="#" class="toc-item" data-soon aria-disabled="true" title="Coming soon">Composition &amp; slicing</a>
+      <a href="#" class="toc-item" data-soon aria-disabled="true" title="Coming soon">Async &amp; effects</a>
+      <a href="#" class="toc-item" data-soon aria-disabled="true" title="Coming soon">Persistence</a>
+      <a href="#" class="toc-item" data-soon aria-disabled="true" title="Coming soon">Devtools</a>
+    </div>
+    <div class="toc-section">
+      <h4>Reference</h4>
+      <a href="api-reference.html" class="toc-item">API reference</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="breadcrumbs"><a href="index.html">Docs</a> <span>›</span> <a href="index.html">Core concepts</a> <span>›</span> <span>Actions &amp; selectors</span></nav>
+
+    <span class="page-eyebrow">Core concept</span>
+    <h1 id="actions-selectors">Actions &amp; selectors.</h1>
+
+    <p class="lede">Actions describe how state changes. Selectors describe how state is read. Together they give you a one-way data flow without the ceremony of Redux.</p>
+
+    <h2 id="actions">Actions</h2>
+    <p>An action is a function on a store. It receives the current state and any arguments you pass, and returns the next state — or a partial of it.</p>
+
+    <pre class="code-block"><span class="k">const</span> cart = <span class="n">forge</span>({
+  state: { items: [] <span class="k">as</span> Item[], coupon: <span class="k">null</span> <span class="k">as</span> string | <span class="k">null</span> },
+  actions: {
+    <span class="n">add</span>:    (s, item: Item)         =&gt; ({ items: [...s.items, item] }),
+    <span class="n">remove</span>: (s, id: number)         =&gt; ({ items: s.items.filter(i =&gt; i.id !== id) }),
+    <span class="n">apply</span>:  (s, code: string)       =&gt; ({ coupon: code }),
+    <span class="n">clear</span>:  ()                       =&gt; ({ items: [], coupon: <span class="k">null</span> }),
+  },
+});
+
+<span class="c">// call them like methods</span>
+cart.<span class="n">add</span>({ id: <span class="num">1</span>, name: <span class="s">"Espresso"</span>, price: <span class="num">3.50</span> });
+cart.<span class="n">apply</span>(<span class="s">"BLOOM10"</span>);</pre>
+
+    <h3 id="action-rules">Rules of thumb</h3>
+    <ul>
+      <li><strong>Return, don't mutate.</strong> Always return a new object. Spread, map, filter — but never assign in place.</li>
+      <li><strong>Return a partial.</strong> The partial is shallow-merged with current state, so you only return what changed.</li>
+      <li><strong>Stay synchronous if possible.</strong> Keep async work in <em>effects</em> (see the <a href="#" data-soon aria-disabled="true" title="Async &amp; effects guide — coming soon">Async &amp; effects</a> guide). It makes actions trivially testable.</li>
+      <li><strong>Name actions for what they do, not how they do it.</strong> <code>checkout()</code> is better than <code>setCheckoutState(true)</code>.</li>
+    </ul>
+
+    <h2 id="selectors">Selectors</h2>
+    <p>A selector is a pure function from state to a derived value. Components — and any subscriber, really — use selectors so they only re-render when the value they care about changes.</p>
+
+    <pre class="code-block"><span class="k">const</span> totalPrice = (s: ReturnType&lt;<span class="k">typeof</span> cart.<span class="n">get</span>&gt;) =&gt;
+  s.items.<span class="n">reduce</span>((sum, i) =&gt; sum + i.price, <span class="num">0</span>);
+
+cart.<span class="n">subscribe</span>((s) =&gt; render(<span class="n">totalPrice</span>(s))); <span class="c">// fires every change</span>
+cart.<span class="n">select</span>(totalPrice).<span class="n">subscribe</span>(render);          <span class="c">// fires only when total actually changes</span></pre>
+
+    <h3 id="composing-selectors">Composing selectors</h3>
+    <p>Selectors compose like any other pure functions. For more involved derivations across multiple stores, prefer <code>derive()</code> — it caches and only recomputes when its inputs change.</p>
+
+    <pre class="code-block"><span class="k">import</span> { derive } <span class="k">from</span> <span class="s">"runeforge"</span>;
+<span class="k">import</span> { cart, coupons } <span class="k">from</span> <span class="s">"./stores"</span>;
+
+<span class="k">export const</span> grandTotal = <span class="n">derive</span>([cart, coupons], (c, cs) =&gt; {
+  <span class="k">const</span> sub = c.items.<span class="n">reduce</span>((s, i) =&gt; s + i.price, <span class="num">0</span>);
+  <span class="k">const</span> off = c.coupon ? cs.<span class="n">discountFor</span>(c.coupon) : <span class="num">0</span>;
+  <span class="k">return</span> { sub, discount: off, total: Math.max(<span class="num">0</span>, sub - off) };
+});</pre>
+
+    <h2 id="action-creators">Reusable action creators</h2>
+    <p>For common patterns, Runeforge ships builder helpers like <code>asyncSlice()</code>, <code>listSlice()</code>, and <code>formSlice()</code>. They generate action sets so you don't write the same CRUD by hand.</p>
+
+    <pre class="code-block"><span class="k">import</span> { forge, listSlice } <span class="k">from</span> <span class="s">"runeforge"</span>;
+
+<span class="k">type</span> Todo = { id: number; text: string; done: boolean };
+
+<span class="k">export const</span> todos = <span class="n">forge</span>({
+  state:   listSlice&lt;Todo&gt;().state,
+  actions: listSlice&lt;Todo&gt;().actions(<span class="s">"id"</span>),
+});
+
+<span class="c">// generated: add, remove, replace, update, clear, byId, has, count</span>
+todos.<span class="n">add</span>({ id: <span class="num">1</span>, text: <span class="s">"Write docs"</span>, done: <span class="k">false</span> });
+todos.<span class="n">update</span>(<span class="num">1</span>, (t) =&gt; ({ done: <span class="k">true</span> }));</pre>
+
+    <h2 id="middleware">Action middleware</h2>
+    <p>Middleware wraps actions. Use it for logging, time-travel, persistence, and analytics. Middleware are pure functions that run before and after every commit.</p>
+
+    <pre class="code-block"><span class="k">import</span> { use } <span class="k">from</span> <span class="s">"runeforge"</span>;
+
+<span class="n">use</span>((next) =&gt; (action, args) =&gt; {
+  <span class="k">const</span> t0 = performance.<span class="n">now</span>();
+  <span class="k">const</span> r  = <span class="n">next</span>(action, args);
+  console.log(<span class="s">`${action.store}.${action.name}`</span>, <span class="s">`${(performance.now() - t0).toFixed(1)}ms`</span>);
+  <span class="k">return</span> r;
+});</pre>
+
+    <p>The order is the order you call <code>use()</code> in. Devtools, persistence, and time-travel are all middleware — and you can write your own with the same signature.</p>
+
+    <nav class="page-pager">
+      <a class="pager-prev" href="guide-stores.html"><span class="pager-label">Previous</span><strong>← Stores</strong></a>
+      <a class="pager-next" href="api-reference.html"><span class="pager-label">Next</span><strong>API reference →</strong></a>
+    </nav>
+  </main>
+
+  <aside class="page-toc">
+    <div class="ptoc-label">On this page</div>
+    <a href="#actions-selectors" class="ptoc-link active">Actions &amp; selectors</a>
+    <a href="#actions" class="ptoc-link ptoc-sub">Actions</a>
+    <a href="#action-rules" class="ptoc-link ptoc-sub2">Rules of thumb</a>
+    <a href="#selectors" class="ptoc-link ptoc-sub">Selectors</a>
+    <a href="#composing-selectors" class="ptoc-link ptoc-sub2">Composing selectors</a>
+    <a href="#action-creators" class="ptoc-link ptoc-sub">Reusable action creators</a>
+    <a href="#middleware" class="ptoc-link ptoc-sub">Action middleware</a>
+  </aside>
+</div>
+
+<dialog id="searchDialog" class="search-dialog" aria-label="Search documentation">
+  <div class="search-dialog-head">
+    <input type="text" id="searchInput" placeholder="Search docs, API, examples…" aria-label="Search documentation" />
+    <button type="button" class="search-close" aria-label="Close search">Close</button>
+  </div>
+  <div class="search-hint">↑ ↓ to navigate · ↵ to open · esc to dismiss</div>
+  <ul class="search-results" id="searchResults"></ul>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>

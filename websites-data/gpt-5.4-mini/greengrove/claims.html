@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File a claim — GreenGrove</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="home">
+<header class="topbar">
+  <a href="index.html" class="brand"><svg width="26" height="26" viewBox="0 0 32 32"><path d="M8 22 Q8 14 16 14 Q24 14 24 22 L24 26 L8 26 Z" fill="#2A7F5F"/></svg><span>GreenGrove</span></a>
+  <nav><a href="quote.html">Get a quote</a><a href="claims.html" class="current">Claims</a><a href="faq.html">FAQ</a></nav>
+</header>
+<main class="claims-page">
+  <h1>File a claim</h1>
+  <p>Reimbursed in 3–5 business days. Just bring the vet invoice.</p>
+  <ol class="how-claim">
+    <li><strong>1. Pay the vet</strong>Any licensed US clinic.</li>
+    <li><strong>2. Snap the invoice</strong>Phone photo or PDF.</li>
+    <li><strong>3. Submit below</strong>Decision in ≤5 days.</li>
+  </ol>
+  <form class="claim-form" id="claimForm" novalidate>
+    <div class="form-summary" id="formSummary" role="alert" aria-live="polite"></div>
+    <div class="form-success" id="formSuccess" role="status" aria-live="polite"></div>
+    <div>
+      <label for="petName">Pet name<input id="petName" name="petName" required></label>
+      <div class="field-error" data-for="petName">Please enter your pet's name.</div>
+    </div>
+    <div>
+      <label for="visitDate">Visit date<input id="visitDate" name="visitDate" type="date" required></label>
+      <div class="field-error" data-for="visitDate">Please choose the date of the visit.</div>
+    </div>
+    <div>
+      <label for="reason">Condition / reason for visit<input id="reason" name="reason" placeholder="e.g., ear infection" required></label>
+      <div class="field-error" data-for="reason">Please describe the reason for the visit.</div>
+    </div>
+    <div>
+      <label for="amount">Total paid (USD)<input id="amount" name="amount" type="number" min="0" step="0.01" required></label>
+      <div class="field-error" data-for="amount">Please enter the amount you paid.</div>
+    </div>
+    <div>
+      <label for="invoice">Vet invoice (PDF or image)<input id="invoice" name="invoice" type="file" accept="image/*,application/pdf" required></label>
+      <div class="field-error" data-for="invoice">Please attach the vet invoice (PDF or image).</div>
+    </div>
+    <button class="btn-primary" type="submit">Submit claim</button>
+  </form>
+</main>
+<script>
+(function(){
+  var form = document.getElementById('claimForm');
+  if(!form) return;
+  var summary = document.getElementById('formSummary');
+  var success = document.getElementById('formSuccess');
+  var fields = form.querySelectorAll('input[required]');
+  function labelFor(input){
+    var lbl = input.closest('label');
+    if(!lbl) return input.name || 'this field';
+    return (lbl.childNodes[0] && lbl.childNodes[0].textContent || '').trim() || input.name;
+  }
+  function clearErrors(){
+    summary.classList.remove('show'); summary.textContent = '';
+    fields.forEach(function(f){
+      f.classList.remove('invalid');
+      f.removeAttribute('aria-invalid');
+      var err = form.querySelector('.field-error[data-for="'+f.id+'"]');
+      if(err) err.classList.remove('show');
+    });
+  }
+  fields.forEach(function(f){
+    f.addEventListener('input', function(){
+      if(f.value){
+        f.classList.remove('invalid');
+        f.removeAttribute('aria-invalid');
+        var err = form.querySelector('.field-error[data-for="'+f.id+'"]');
+        if(err) err.classList.remove('show');
+      }
+    });
+  });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    success.classList.remove('show');
+    var missing = [];
+    clearErrors();
+    fields.forEach(function(f){
+      var ok = f.value && (f.type !== 'number' || +f.value >= 0);
+      if(!ok){
+        f.classList.add('invalid');
+        f.setAttribute('aria-invalid','true');
+        var err = form.querySelector('.field-error[data-for="'+f.id+'"]');
+        if(err) err.classList.add('show');
+        missing.push(labelFor(f));
+      }
+    });
+    if(missing.length){
+      summary.textContent = 'Please complete '+missing.length+(missing.length===1?' missing field':' missing fields')+' before submitting.';
+      summary.classList.add('show');
+      var first = form.querySelector('.invalid');
+      if(first){ first.focus({preventScroll:false}); }
+      return;
+    }
+    success.textContent = 'Claim submitted! We\'ll email a decision within 5 business days.';
+    success.classList.add('show');
+    form.reset();
+    success.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+})();
+</script>
+<footer class="site-foot"><p>Local demo for UXBench. Fictional product, not a real company.</p></footer>
+</body>
+</html>

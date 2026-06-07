@@ -1,0 +1,563 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/civicport/index.html",
+  "site": {
+    "name": "civicport",
+    "site_dir": "/Users/timchef/UXBench/websites/civicport",
+    "start_page": "index.html",
+    "page_type": "form/onboarding",
+    "html_files": [
+      "apply.html",
+      "fees.html",
+      "index.html",
+      "my-applications.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/civicport/README.md",
+    "summary": "civicport-clone Fictional municipal online permit portal \"CivicPort · City of Avalon Bay\". Pages | File | Purpose | | --- | --- | | `index.html` | Portal home: three large icon-action buttons (Apply / Track / Pay); service-announcement list | | `apply.html` | Three-column layout: left step tree (6 groups + sub-steps, sub-steps show completed ✓ / current highlight / conditionally locked, completed steps are click-back-able); center current-step form (dynamically rendered: address, project type, scope, dates, parcel lookup, ownership, contractor, various file uploads, neighbor signature block, various affidavits, final review and submit); right sticky \"What materials you'll need\" dynamic checklist (updates ✓ as you progress / select) + estimated fee breakdown card (with expedited toggle); conditional visibility (exterior changes → neighbor step; historic parcel → historic-district step; Addition/Structural → elevation drawings; Roof/Electrical/HVAC → energy worksheet) | | `my-applications.html` | List of 3 past applications (status badges) |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full civicport system, prioritizing the primary form/onboarding flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "CivicPort’s multi-step apply flow provides strong scaffolding via the left step tree, sticky “WHAT YOU’LL NEED” checklist, and a contextual fees card that responds to selections (e.g., Roof/Expedited review). However, multiple critical controls appear difficult to use—especially on mobile—due to very small tap targets and some missing/unclear form labeling, and key upload interactions could not be reliably activated in the observed tests. Autosave feedback (“Auto-saved · just now”) appears consistent, but progression/validation feedback is sometimes unclear (e.g., Save & continue not obviously advancing despite state changes).",
+  "exploration_plan": {
+    "goal": "Exhaustively explore and critique the CivicPort onboarding/application UX end-to-end, including adjacent flows (track and fees), key states (autsaved, cancellation, navigation), conditional form rendering, and mobile usability.",
+    "summary": "Start from index.html and navigate through Apply, Track (My applications), and Fees, validating global navigation and layout issues noted in the prescan. Then focus on apply.html to exercise the multi-step form: backward navigation, parcel/ownership gating, file upload sections, neighbor signature/affidavits, conditional step visibility, sticky “What you’ll need”, and the expedited fee toggle plus final review/submit and cancellation dialog. Repeat critical checks on mobile viewport for tap targets and any responsive layout shifts.",
+    "assumptions": [
+      "All functionality is client-side demo behavior (no real backend); flows can be validated via UI state changes visible on the pages.",
+      "apply.html is the primary onboarding form with multiple steps, including conditional step rendering based on project type/scope and parcel/historic district selection.",
+      "Navigation links (top header) exist on all pages and route to apply.html, my-applications.html, and fees.html."
+    ],
+    "target_pages": [
+      "index.html",
+      "apply.html",
+      "my-applications.html",
+      "fees.html"
+    ],
+    "risk_hotspots": [
+      "index.html header links (Apply / My applications / Fees / Help) have small tap target warnings (34x22, 94x22, 27x22, 28x22) → validate mobile tapability and focus states",
+      "apply.html step navigation: completed steps indicated with ✓ and may be click-back-able; validate cannot skip locked steps and that state persists when moving back",
+      "apply.html “Save and continue” and “Auto-saved” behavior (prescan shows auto-saved “just now”): validate saving on step transitions and after field entry",
+      "apply.html modal/dialog for “Cancel APPLICATION” (dialog present): validate wording, consequences, and ability to back out safely",
+      "apply.html inputs missing accessible labels (prescan shows missing_input_label): validate usability with keyboard/screen-reader-like interaction",
+      "apply.html conditional visibility: exterior changes → neighbor step; historic parcel → historic-district step; Addition/Structural → elevation drawings; Roof/Electrical/HVAC → energy worksheet; validate these branches are reachable and sticky materials checklist updates correctly",
+      "apply.html sticky checklist “WHAT YOU’LL NEED” updates with ✓ as you progress: validate synchronization with the current step and conditional steps",
+      "apply.html “Pick a project type first” and estimated fee card: validate expedited review (+50%) toggle interaction and total estimated fee behavior",
+      "apply.html file uploads section(s): validate that upload controls are usable, show progress/required status, and don’t block navigation",
+      "my-applications.html status badges: validate presence of statuses like “Approved” and “Inspector follow-up” and that clicking items (if any) behaves appropriately",
+      "fees.html: verify expedited toggle effect is consistent with fee schedule explanations (non-refundable once a plan reviewer is assigned)"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global navigation & landing page validation",
+        "objective": "Validate that the entry points (Apply / Track / Pay / Help) route correctly and that mobile touch targets and focus states are usable.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the three large icon-action buttons: Apply for a permit → apply.html, Track an application → my-applications.html, Pay fees → fees.html; confirm landing on correct page and expected headings",
+          "Use the header links (Apply / My applications / Fees / Help) to confirm correct routing",
+          "On index.html, interact with “Help” link (#) to verify whether it opens/collapses content or anchors to a section (avoid dead-end)",
+          "Validate service alerts are readable and do not overlap controls; confirm no console/network errors on navigation",
+          "Mobile viewport check: confirm tap targets for header links are still interactable despite small size warnings; verify visual focus/hover states"
+        ],
+        "exit_criteria": [
+          "All three main actions and header links successfully navigate to the expected pages without UI errors",
+          "Help behavior is confirmed (either opens content or anchors appropriately)",
+          "Mobile check confirms header actions are tappable and route correctly"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Apply flow core mechanics (step navigation, save, cancel)",
+        "objective": "Exercise the multi-step form’s navigation model (backward steps, locked steps), autosave, and the cancellation dialog safely.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Verify step-tree structure is present (6 groups with sub-steps) and that the current step highlights appropriately",
+          "On initial load, confirm “Auto-saved” timestamp text appears (“just now”) and remains consistent as you enter text",
+          "Complete step 1.1 minimally: fill Street address, City/State/Zip fields; verify Save and continue enables progression and does not reset entered data",
+          "Use Back (button present) to ensure you return to the previous step with fields intact",
+          "Attempt to click back to already-completed steps (✓) and validate it works; attempt to access locked/conditional steps to confirm locking behavior is enforced",
+          "Open the “Cancel APPLICATION” dialog and validate: presence of confirm/cancel choices, that canceling does not lose work unexpectedly, and that closing the dialog returns you to the correct step",
+          "Mobile viewport check: ensure Cancel and primary actions (Save and continue / Back) remain tappable and visible in sticky layout"
+        ],
+        "exit_criteria": [
+          "Autosave and Save-and-continue behavior validated across at least one step transition",
+          "Completed-step back navigation confirmed and locked-step access behavior verified",
+          "Cancel dialog tested for safe recovery paths",
+          "Critical actions remain usable on mobile viewport"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Conditional form branching + sticky “What you’ll need” checklist",
+        "objective": "Trigger each notable conditional visibility branch described in the prescan and verify the sticky materials checklist and fee card update accordingly.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Trigger address/parcel verification path: use parcel number start option (step 2.1 hint shown) or street address to reach “Parcel verified” state; confirm that subsequent sections unlock only after parcel verification",
+          "Ownership proof + contractor license sections: validate their completion markers and that their completion impacts materials checklist ✓ status",
+          "Conditional branch: select a scope that implies exterior changes and confirm neighbor signature block becomes visible; verify it appears/disappears and the sticky checklist updates with ✓",
+          "Conditional branch: choose a scenario that marks the parcel as historic-district; confirm historic-district step appears and any fee surcharge logic is reflected in the estimated fees card (historic review surcharge mentioned in prescan)",
+          "Conditional branch: for Addition/Structural, confirm elevation drawings appear as required documents",
+          "Conditional branch: for Roof/Electrical/HVAC, confirm energy worksheet appears",
+          "Validate sticky checklist updates as you progress through these conditional steps (checkbox ✓ alignment with completed sub-steps)"
+        ],
+        "exit_criteria": [
+          "All prescan-described conditional branches are reached at least once (neighbor/exterior, historic-district, elevation drawings, energy worksheet)",
+          "Sticky “What you’ll need” checklist accurately reflects each branch’s required materials status",
+          "Locked/unlocked behavior remains consistent with conditional visibility on navigation"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Materials/docs, affidavits, final review, and submit",
+        "objective": "Validate the document upload + affidavit workflow and that the final review/submit step correctly summarizes what was provided.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Exercise at least one file upload control in the plans & documents section (site plan and/or floor plan; other docs as available) and ensure the UI reflects selection (no blocking)",
+          "Validate affidavits sections visibility and requiredness: e.g., Lead paint (pre-1978) and Environmental; confirm how selecting project/address affects which affidavits show up",
+          "Progress to “Review & submit” step and verify Summary section includes the collected details and indicates completion status for conditional items",
+          "Confirm the estimated fee card at Review matches the selected project type and expedited toggle state",
+          "Submit attempt: validate required fields/documents are enforced; if submission is blocked, identify which items are missing; if submission succeeds (demo), confirm confirmation state and next-screen behavior",
+          "Mobile viewport check: verify that upload controls, long forms, and sticky checklist do not obstruct the final submit button"
+        ],
+        "exit_criteria": [
+          "File upload + affidavit workflow validated through review step",
+          "Submission gating works (required items enforced) and review summary matches inputs",
+          "Final submit path behaves correctly on mobile"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Adjacent flows: Track (my applications) and Fees",
+        "objective": "Validate status list UX, global navigation back to onboarding, and fee-information comprehension elements.",
+        "target_pages": [
+          "my-applications.html",
+          "fees.html"
+        ],
+        "key_checks": [
+          "On my-applications.html, validate the list displays 3 applications with App ID, Type, Address, Submitted date, and Status badges",
+          "Try clicking any status badge/app row if interactive (even if not indicated): confirm it either navigates to a detail view or provides appropriate non-action feedback",
+          "Use header navigation to return to Apply and verify that routing does not break",
+          "On fees.html, validate the permit fee schedule is readable and corresponds to project types listed on apply.html (e.g., Kitchen/Bathroom/Addition/Roof/Structural/Electrical/Plumbing)",
+          "Mobile viewport check: validate fees table layout is readable without horizontal scrolling trapping key info"
+        ],
+        "exit_criteria": [
+          "Track and Fees pages display expected content with correct structure on desktop and mobile",
+          "Any clickable elements on my-applications are handled gracefully",
+          "Project type fee rows match the onboarding project types for consistency"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages: index.html, apply.html, my-applications.html, fees.html; also return across pages via header actions at least once each",
+      "features": "For apply.html: exercise step navigation (back/cancel), parcel/address verification gating, at least one branch each for neighbor/historic/elevation drawings/energy worksheet, at least one file upload, review summary, and submit gating; validate sticky checklist updates and expedited fee toggle",
+      "mobile": "Repeat critical checks on mobile viewport: header tap targets on index.html, primary actions (Back/Save/Submit/Cancel) on apply.html, and readability/interactivity on fees.html and my-applications.html"
+    },
+    "notes": [
+      "Prescan indicates missing input labels on apply.html; during exploration, prioritize keyboard focus order and whether field labels can be inferred from surrounding text to assess accessibility usability.",
+      "Because the prescan shows only a subset of controls in interactables, expect additional buttons/inputs to appear after step transitions; allow exploration to adapt when new step-tree sub-steps become visible."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "affordance",
+      "user_goal": "Upload required documents to complete the permit application",
+      "problem": "The document upload controls (e.g., Ownership proof / Site plan / Floor plan) were not reliably interactable; attempts to click the upload affordances timed out because the targeted upload element was not visible/activatable.",
+      "evidence": "Multiple failed click attempts on apply.html upload controls: “Click failed for ux-13 … element is not visible … Timeout 4000ms exceeded.” The state stayed on steps like “2.2 Ownership proof” and “3.1 Site plan,” with the sticky checklist showing the corresponding item still unchecked (e.g., “Ownership proof” remains empty).",
+      "why_it_matters": "Document uploads are gating for application completion; if the UI affordance isn’t reliably reachable/visible (or opens a modal that the automation can’t access), users may believe the system is broken and abandon the flow.",
+      "suggestion": "Ensure the upload button is fully visible and consistently interactable (no hidden/overlapping layers). Provide clear feedback when upload UI opens (e.g., highlight the upload region, show selected filename, and show an inline success state that the checklist updates immediately).",
+      "source_hint": "apply.html|2.2 Ownership proof upload (data-uxagent-id ux-13), apply.html|3.1 Site plan upload, apply.html|3.2 Floor plan upload; failures show in logs with “ux-13” timeouts."
+    },
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Complete the form quickly on a phone without mis-taps",
+      "problem": "Multiple primary controls and key toggles are below recommended mobile touch target sizes, increasing mis-tap risk—especially during the cancel/continue and expedited options interactions.",
+      "evidence": "Observed layout warnings on mobile: “Cancel (56x17px) below 44px guidance,” “Expedited review checkbox (13x13px) below 44px guidance,” “Save and continue (150x42px) below 44px guidance,” and “Back (71x42px) below 44px guidance.” The visible screenshot shows “Cancel” in the header and small checkbox next to “Expedited review (+50%).”",
+      "why_it_matters": "On mobile, small tap targets commonly cause accidental actions (e.g., cancelling, navigating back) or inability to toggle options reliably, which is particularly harmful in a long, multi-step permit application.",
+      "suggestion": "Increase tap target sizes (minimum 44x44px) for Cancel/Back/Save and the expedited checkbox. Consider enlarging the checkbox hit area by wrapping it in a full-width row/button and adding generous padding around it.",
+      "source_hint": "apply.html mobile screenshots (e.g., agentic-78-click-mobile.png, agentic-80-check-mobile.png); layout_warning_count and small-tap-target warnings list ux-1 (Cancel), ux-2 (Back), ux-3 (Save and continue), ux-4 (Expedited review checkbox)."
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Understand whether expedited review was successfully selected",
+      "problem": "The expedited review checkbox interaction provides unclear observable change on mobile; automated checks report no visible toggle update even though the fee card appears to already reflect the expedited state.",
+      "evidence": "On mobile, the checkbox is extremely small (13x13px) and the automated check result shows: “Checked state changed from True to True,” with no captured visible toggle change. The fees card shows “Expedited review (+50%) $105” and “Total estimated $315,” consistent with the option being selected already.",
+      "why_it_matters": "When users cannot clearly see whether a toggle actually changed, they may proceed with the wrong pricing/timeline option and have to rework later steps.",
+      "suggestion": "Make the expedited selection change visibly unambiguous: animate the checkbox, update the fee card with a short “Updated” cue, and enlarge the hit area. Also ensure the state change is detectable (not just internally) with clear visual feedback.",
+      "source_hint": "apply.html|mobile expedited review checkbox (ux-4) in agentic-80-check-mobile.png and the check result “True to True.”"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "forms",
+      "user_goal": "Fill required fields with confidence and avoid input mistakes",
+      "problem": "Several form fields appear to lack explicit labels/ARIA/placeholder, reducing clarity and increasing the chance of incorrect data entry (including date inputs).",
+      "evidence": "Layout/accessibility warnings indicate “input missing label/aria/placeholder for at least two fields,” including date inputs: ux-19 is a type=\"date\" input, and failures show issues filling it (malformed value / not editable). On the date step, placeholders show “yyyy/mm/dd,” but labels/ARIA appear missing per warnings.",
+      "why_it_matters": "For permit applications, incorrect or missing data can lead to delays, errors at review time, or user frustration during a long multi-step process.",
+      "suggestion": "Ensure every input (especially date pickers and textareas) has an explicit label and ARIA association. Add inline helper text for required formatting and validation rules, and show clear error messages when the user’s input cannot be parsed.",
+      "source_hint": "apply.html|date step (ux-19 / ux-20) warnings; failures include “Typing failed for ux-19 … type='date' … fill('2026/06/01') … enabled and editable”."
+    },
+    {
+      "severity": "low",
+      "ux_area": "navigation",
+      "user_goal": "Know whether Save & continue advanced or validated the current step",
+      "problem": "Save & continue sometimes does not visibly advance the step in a way that’s clearly explained, creating uncertainty about gating/validation (especially when documents are 0 uploaded).",
+      "evidence": "On mobile (6.1 Summary view), tapping “Save and continue” shows “Auto-saved · just now” and content changes, but the screenshot still indicates “Documents 0 uploaded” and multiple checklist items remain unchecked; no validation dialog/error is shown after the click (agentic-77-click-mobile.png).",
+      "why_it_matters": "Users may assume the system is accepting an incomplete application or may not understand what specifically is required next, leading to frustration or missed requirements.",
+      "suggestion": "When Save & continue is pressed and progression is blocked (or not advanced), show an explicit inline validation summary listing what’s missing (e.g., “Upload Ownership proof to proceed”) near the relevant step header and checklist.",
+      "source_hint": "apply.html mobile agentic-77-click-mobile.png; visible text shows “Documents 0 uploaded” and no validation message after “Save and continue.”"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "confidence": "low",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 44,
+    "action_success_rate_percent": 66,
+    "unchanged_action_percent": 9,
+    "known_pages": [
+      "apply.html",
+      "fees.html",
+      "index.html",
+      "my-applications.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "apply.html",
+      "my-applications.html",
+      "fees.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "check": 6,
+      "click": 66,
+      "open_page": 1,
+      "scroll": 2,
+      "type_text": 4
+    },
+    "total_actions": 79,
+    "successful_actions": 52,
+    "failed_actions": 27,
+    "unchanged_actions": 7,
+    "observed_feature_count": 45,
+    "exercised_feature_count": 20,
+    "unexplored_features": [
+      {
+        "signature": "apply.html|clickable|button|||yes, cancel|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Yes, cancel"
+      },
+      {
+        "signature": "apply.html|clickable|input||checkbox|involves changes to the exterior (façade, roofline, windows, doors)|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Involves changes to the exterior (façade, roofline, windows, doors)"
+      },
+      {
+        "signature": "apply.html|clickable|input||checkbox|removal of any tree >6\" caliper|",
+        "page": "apply.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Removal of any tree >6\" caliper"
+      },
+      {
+        "signature": "apply.html|clickable|input||checkbox|work involves disturbing materials that may contain asbestos|",
+        "page": "apply.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Work involves disturbing materials that may contain asbestos"
+      },
+      {
+        "signature": "apply.html|clickable|input||checkbox|work will alter stormwater runoff for >500 sq ft of surface|",
+        "page": "apply.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Work will alter stormwater runoff for >500 sq ft of surface"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|bathroom|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Bathroom"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|electrical|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Electrical"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|kitchen|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Kitchen"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|no|",
+        "page": "apply.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "No"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|other|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Other"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|plumbing|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Plumbing"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|structural|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Structural"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|unknown|",
+        "page": "apply.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Unknown"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|yes|",
+        "page": "apply.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Yes"
+      },
+      {
+        "signature": "apply.html|typeable|input||number|number|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "number"
+      },
+      {
+        "signature": "apply.html|typeable|input|||avalon bay|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Avalon Bay"
+      },
+      {
+        "signature": "apply.html|typeable|input|||unlabeled control|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "unlabeled control"
+      },
+      {
+        "signature": "fees.html|clickable|a|||fees|fees.html",
+        "page": "fees.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Fees"
+      },
+      {
+        "signature": "fees.html|clickable|a|||my applications|my-applications.html",
+        "page": "fees.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "My applications"
+      },
+      {
+        "signature": "index.html|clickable|a|||apply|apply.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Apply"
+      },
+      {
+        "signature": "index.html|clickable|a|||fees|fees.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Fees"
+      },
+      {
+        "signature": "index.html|clickable|a|||my applications|my-applications.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "My applications"
+      },
+      {
+        "signature": "index.html|clickable|a|||pay fees open invoices, history, refunds.|fees.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pay fees Open invoices, history, refunds."
+      },
+      {
+        "signature": "my-applications.html|clickable|a|||apply|apply.html",
+        "page": "my-applications.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Apply"
+      },
+      {
+        "signature": "my-applications.html|clickable|a|||my applications|my-applications.html",
+        "page": "my-applications.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "My applications"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 44% of visible interactive feature signatures.",
+      "27 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-02-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-05-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-06-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-10-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-15-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-17-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-20-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-23-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-28-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-57-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-62-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-70-check-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-75-check-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run/screenshots/agentic-80-check-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-nano/civicport/_run",
+  "claude_fix": null
+}

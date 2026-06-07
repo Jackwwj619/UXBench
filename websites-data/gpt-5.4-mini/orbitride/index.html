@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OrbitRide — Same orbit, half the price</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="9" fill="none" stroke="#5B2C6F" stroke-width="2.4"/><ellipse cx="16" cy="16" rx="14" ry="5" fill="none" stroke="#5B2C6F" stroke-width="1.6" transform="rotate(-20 16 16)"/><circle cx="16" cy="16" r="3" fill="#5B2C6F"/></svg><span>OrbitRide</span></a>
+  <nav><a href="#">Routes</a><a href="#">Help</a><a href="#">Sign in</a></nav>
+</header>
+
+<section class="hero-search">
+  <h1>Same orbit. Half the price.</h1>
+  <p>Comfy shared shuttles between 20+ Midwest cities. Wi-Fi, USB, refunds up to 24h.</p>
+  <form class="search-card" id="searchForm">
+    <label class="f">From<input list="cities" name="from" required value="Cedar Plains, IA"></label>
+    <label class="f">To<input list="cities" name="to" required value="Falconer, NY"></label>
+    <label class="f">Date<input type="date" name="date" required value="2026-05-25"></label>
+    <label class="f">Passengers<select name="passengers"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
+    <button class="btn-primary" type="submit">Find rides</button>
+    <datalist id="cities" >
+      <option>Cedar Plains, IA</option><option>Falconer, NY</option><option>Mountainview, VT</option><option>Coppergate, OH</option>
+      <option>Northbank, PA</option><option>Foundry, IN</option><option>Sea Glass, MI</option><option>Halcyon, IL</option>
+      <option>Bracken, MN</option><option>Tide Harbor, ME</option><option>Quanta Falls, NH</option><option>Sun Hollow, WI</option>
+      <option>Pelagic Bay, MA</option><option>Tessera Springs, KY</option><option>Lattice Grove, TN</option>
+      <option>Solstice, MI</option><option>Aurora Heights, NJ</option><option>Forge District, OH</option>
+      <option>Almanac, MO</option><option>Atlas Heights, CT</option>
+    </datalist>
+  </form>
+</section>
+
+<section class="reasons">
+  <div><h3>Wi-Fi onboard</h3><p>Unlimited. Streams hold on the highway.</p></div>
+  <div><h3>USB-C at every seat</h3><p>And a 110V outlet at the front row.</p></div>
+  <div><h3>Free refund up to 24h</h3><p>No call needed. One click in your trip page.</p></div>
+</section>
+
+<section class="popular">
+  <h2>Popular routes</h2>
+  <div class="route-cards">
+    <a class="route-card" href="#" data-from="Cedar Plains, IA" data-to="Falconer, NY"><h4>Cedar Plains → Falconer</h4><p>6h 20m · from $34</p><span class="book-cta">BOOK THIS ROUTE</span></a>
+    <a class="route-card" href="#" data-from="Coppergate, OH" data-to="Tide Harbor, ME"><h4>Coppergate → Tide Harbor</h4><p>9h 10m · from $48</p><span class="book-cta">BOOK THIS ROUTE</span></a>
+    <a class="route-card" href="#" data-from="Foundry, IN" data-to="Halcyon, IL"><h4>Foundry → Halcyon</h4><p>3h 50m · from $22</p><span class="book-cta">BOOK THIS ROUTE</span></a>
+    <a class="route-card" href="#" data-from="Lattice Grove, TN" data-to="Sun Hollow, WI"><h4>Lattice Grove → Sun Hollow</h4><p>7h 40m · from $38</p><span class="book-cta">BOOK THIS ROUTE</span></a>
+    <a class="route-card" href="#" data-from="Solstice, MI" data-to="Mountainview, VT"><h4>Solstice → Mountainview</h4><p>5h 15m · from $28</p><span class="book-cta">BOOK THIS ROUTE</span></a>
+    <a class="route-card" href="#" data-from="Sea Glass, MI" data-to="Pelagic Bay, MA"><h4>Sea Glass → Pelagic Bay</h4><p>11h 30m · from $58</p><span class="book-cta">BOOK THIS ROUTE</span></a>
+  </div>
+</section>
+
+<footer class="site-foot"><p class="disclaimer">Local demo for UXBench. Fictional product, not a real company.</p></footer>
+<script>
+document.getElementById("searchForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const q = new URLSearchParams({from:fd.get("from"),to:fd.get("to"),date:fd.get("date"),passengers:fd.get("passengers")});
+  sessionStorage.setItem("orbit-search", q.toString());
+  window.location.href = "routes.html?" + q;
+});
+document.querySelectorAll(".route-card[data-from]").forEach(card => {
+  card.addEventListener("click", e => {
+    e.preventDefault();
+    const form = document.getElementById("searchForm");
+    const date = form.elements.date.value || new Date().toISOString().slice(0,10);
+    const passengers = form.elements.passengers.value || "2";
+    const q = new URLSearchParams({from:card.dataset.from, to:card.dataset.to, date, passengers});
+    sessionStorage.setItem("orbit-search", q.toString());
+    window.location.href = "routes.html?" + q;
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+{
+  "summary": "The core hotel funnel is generally understandable: search leads to results, hotel detail and room-selection preserve key context, and confirmation gives strong success feedback with booking details and next steps. The biggest UX weaknesses are in result filtering/sorting trust and the mobile checkout layout, where overflow, tiny targets, and weak progress feedback make completion feel brittle. Coverage spans all pages, but only a small share of interactive elements were directly exercised, so some supporting flows remain only partially validated.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "multiple-key-mobile-booking-pages-are",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "reservation.html / confirmation.html / hotel-detail-granbell.html / room-selection.html",
+      "problem": "Multiple key mobile booking pages are wider than the viewport, causing horizontal overflow and partially off-screen content during the funnel.",
+      "evidence": "Observed overflow on hotel-detail-granbell.html (812px content on 390px viewport), room-selection.html (713px on 390px), reservation.html (814px on 390px), and confirmation.html (633px on 390px). Recent screenshots and observations note content/cards cut off to the right and header links extending off-screen.",
+      "suggested_fix": "Fix responsive layouts for the booking funnel first: ensure containers, cards, headers, and form rows collapse to a single-column mobile layout with no horizontal scroll."
+    },
+    {
+      "id": "the-results-pages-present-contradictory-state",
+      "severity": "high",
+      "area": "feedback",
+      "page_hint": "tokyo.html and shinjuku.html results header / empty-state region",
+      "problem": "The results pages present contradictory state messaging, showing available properties while also surfacing a 'No properties match your filters' heading.",
+      "evidence": "Repeated observations on tokyo.html and shinjuku.html report visible hotel cards and counts like 'Tokyo: 6 properties found', 'Tokyo: 4 properties found', 'Tokyo: 3 properties found', and 'Shinjuku: 423 properties found' while the DOM simultaneously contains the heading 'No properties match your filters'.",
+      "suggested_fix": "Ensure only one state is rendered/announced at a time: either show results with counts and active chips, or a true empty state with recovery actions such as removing filters."
+    },
+    {
+      "id": "budget-filters-do-not-match-the",
+      "severity": "high",
+      "area": "clarity",
+      "page_hint": "tokyo.html filter sidebar and hotel price cards",
+      "problem": "Budget filters do not match the visible prices users see, making the filtering logic hard to understand.",
+      "evidence": "After selecting bands such as 'JPY 10,000 - 20,000', 'JPY 20,000 - 40,000', and 'JPY 40,000 - 80,000', visible cards still showed much higher totals like JPY 198,000, JPY 245,000, and JPY 135,000. Observations explicitly flagged this mismatch several times on tokyo.html.",
+      "suggested_fix": "Label the pricing basis clearly wherever filters and card prices appear, e.g. 'per night' vs '3-night total', and keep filter ranges consistent with displayed card prices."
+    },
+    {
+      "id": "the-reservation-form-gives-very-weak",
+      "severity": "medium",
+      "area": "forms",
+      "page_hint": "reservation.html form fields and Complete booking button",
+      "problem": "The reservation form gives very weak progress feedback: the primary CTA was disabled without clear explanation, and filling required fields produced little or no visible confirmation until it suddenly became enabled later.",
+      "evidence": "On reservation.html, 'Complete booking' was initially disabled and click attempts failed with the native disabled state. Recent mobile steps show phone, email, last name, arrival-time selection, and first name changes produced 'no obvious visible-text or URL change' and no inline guidance, yet the same CTA later became enabled and successfully navigated to confirmation.html.",
+      "suggested_fix": "Show explicit inline validation and a persistent completion checklist near the CTA, including which required fields are satisfied and which still need attention."
+    },
+    {
+      "id": "several-important-inputs-are-unlabeled-or",
+      "severity": "medium",
+      "area": "accessibility",
+      "page_hint": "tokyo.html, shinjuku.html, reservation.html, airport-taxis.html form controls",
+      "problem": "Several important inputs are unlabeled or weakly labeled, especially on search and booking forms.",
+      "evidence": "The Tokyo and Shinjuku results destination inputs were flagged as missing labels/aria-labels/placeholders. On reservation.html, the Country/region select had a missing-label warning. On airport-taxis.html, the date/time and passenger inputs were also flagged as having no label, aria-label, or placeholder.",
+      "suggested_fix": "Add persistent visible labels and matching programmatic labels to all core inputs, especially destination, country/region, passenger count, and pickup time fields."
+    },
+    {
+      "id": "many-mobile-controls-are-too-small",
+      "severity": "medium",
+      "area": "mobile usability",
+      "page_hint": "reservation.html mobile controls; hotel-detail-granbell.html and room-selection.html mobile nav/secondary controls",
+      "problem": "Many mobile controls are too small for comfortable touch interaction, including some important navigation and form choices.",
+      "evidence": "Observations repeatedly flagged sub-44px targets such as header nav items, Booking.com brand link, JPY control, breadcrumb links, review links, 'Change your selection', and 13x13px radio/checkbox targets on reservation.html for guest selection and special requests.",
+      "suggested_fix": "Increase touch target size and spacing for mobile, prioritizing form radios/checkboxes, header actions, breadcrumbs, and secondary controls within the booking funnel."
+    },
+    {
+      "id": "hotel-cards-appear-to-have-oversized",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "tokyo.html hotel cards near sort controls",
+      "problem": "Hotel cards appear to have oversized clickable areas, making it easy to navigate into a detail page when trying to interact with nearby controls like sorting.",
+      "evidence": "During sort testing on tokyo.html, attempts intended for sort-related controls instead activated the Park Hyatt result card and navigated to hotel-detail.html. Reflections note this suggests a broad clickable hotel card area and accidental navigation risk, with recovery only available via '← Back to results'.",
+      "suggested_fix": "Tighten card hit areas so only explicit card CTAs/titles navigate, and visually separate sorting/filtering controls from clickable result cards."
+    },
+    {
+      "id": "the-shinjuku-granbell-hotel-detail-page",
+      "severity": "medium",
+      "area": "trust",
+      "page_hint": "hotel-detail-granbell.html hero gallery",
+      "problem": "The Shinjuku Granbell hotel detail page uses placeholder-style hero imagery instead of believable photos.",
+      "evidence": "Chunk observations for hotel-detail-granbell.html state the hero gallery shows large colored placeholder tiles with emoji/icons rather than real hotel photography.",
+      "suggested_fix": "Replace placeholder gallery tiles with real property images or, if unavailable, clearly label the gallery as sample/coming soon rather than presenting it as the main photo area."
+    },
+    {
+      "id": "several-support-and-footer-links-appear",
+      "severity": "low",
+      "area": "error recovery",
+      "page_hint": "confirmation.html footer; deals.html / airport-taxis.html / attractions.html footer links",
+      "problem": "Several support and footer links appear to be dead ends, which weakens recovery and site credibility.",
+      "evidence": "Across deals, help-adjacent, airport-taxis, attractions, and final confirmation observations, items like 'Manage your trips', 'Contact Customer Service', 'Genius loyalty program', 'Privacy & cookies', 'Terms & conditions', 'Extranet login', and 'List your property' were noted as linking to '#'.",
+      "suggested_fix": "Prioritize wiring support, legal, and account-management footer links to real destinations, especially on confirmation and promotional pages where reassurance matters most."
+    }
+  ]
+}

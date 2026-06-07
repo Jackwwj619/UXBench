@@ -1,0 +1,427 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and evaluate the UX of the WeaveAPI developer documentation, focusing on navigation, interactive API explorers, and responsiveness.",
+    "summary": "The exploration will start by verifying global elements like the side navigation, search, dark mode, and code snippet tabs on the homepage. It will then proceed to the core API reference pages, specifically testing the interactive 'Try It' panel on the Charges page for state synchronization and mock response handling. Finally, the run will cover supporting pages (Customers, Webhooks, Errors) and perform a dedicated mobile viewport pass to check for layout overflows and tap target sizing.",
+    "assumptions": [
+      "The search bar (ctrl+K) may be a visual mock or rely on a simple client-side filter.",
+      "The 'Try It' panel on charges.html contains mock logic specifically handling 'currency' values to return different JSON payloads.",
+      "Horizontal scrolling may be required for tables or code blocks on mobile viewports."
+    ],
+    "target_pages": [
+      "index.html",
+      "quickstart.html",
+      "charges.html",
+      "customers.html",
+      "webhooks.html",
+      "errors.html"
+    ],
+    "risk_hotspots": [
+      "The right-column 'Try It' panel in charges.html (syncing with scroll position and handling form submissions)",
+      "Horizontal overflow in API parameter tables (charges.html, customers.html)",
+      "Small tap targets in the left navigation menu on mobile",
+      "Code block tab switching (CURL, PYTHON, NODE, GO)"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global Navigation & Core UI",
+        "objective": "Validate global controls like dark mode, search, left navigation, and in-page anchor links.",
+        "target_pages": [
+          "index.html",
+          "quickstart.html"
+        ],
+        "key_checks": [
+          "Toggle dark mode (🌙 button) and observe color contrast changes.",
+          "Interact with the 'Search docs' input (trigger ctrl+K if possible).",
+          "Click through code language tabs (PYTHON, NODE, GO) to verify content switching.",
+          "Test 'ON THIS PAGE' right-side anchor links for smooth scrolling."
+        ],
+        "exit_criteria": [
+          "Dark mode, search focus, code tabs, and anchor links have been interacted with and their visual states recorded."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Interactive API Explorer (Charges)",
+        "objective": "Thoroughly test the 'Try It' interactive mock panel on the Charges API page.",
+        "target_pages": [
+          "charges.html"
+        ],
+        "key_checks": [
+          "Scroll through the page to verify if the right panel syncs its state to the visible endpoint.",
+          "Fill out parameters in the 'Try It' panel and click Send.",
+          "Test successful mock response (using currency=usd).",
+          "Test error mock response (using an unsupported currency like 'cad')."
+        ],
+        "exit_criteria": [
+          "The 'Try It' panel has been exercised with both success and error inputs, and scrolling synchronization has been observed."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Reference Pages & Tables",
+        "objective": "Review the layout and readability of data-heavy reference pages.",
+        "target_pages": [
+          "customers.html",
+          "webhooks.html",
+          "errors.html"
+        ],
+        "key_checks": [
+          "Verify rendering of the Customer object and Webhook events tables.",
+          "Check for horizontal scrollability on wide tables.",
+          "Ensure error codes list is readable and well-structured."
+        ],
+        "exit_criteria": [
+          "All secondary reference pages have been visited and captured."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness Evaluation",
+        "objective": "Switch to a mobile viewport to assess layout adaptations and usability issues.",
+        "target_pages": [
+          "index.html",
+          "charges.html"
+        ],
+        "key_checks": [
+          "Check if the left navigation collapses into a hamburger menu or remains accessible.",
+          "Verify how the three-column layout (nav, content, anchors/try-it) degrades on small screens.",
+          "Evaluate the severity of horizontal overflows in tables and code blocks.",
+          "Assess usability of the flagged 'small tap targets' in the navigation."
+        ],
+        "exit_criteria": [
+          "Screenshots and interaction attempts are completed on a mobile viewport for at least the index and charges pages."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 6 HTML pages identified in the prescan.",
+      "features": "Test dark mode, code tabs, and the interactive API console.",
+      "mobile": "Execute Phase 4 specifically in mobile mode to validate responsiveness of the 3-column layout and data tables."
+    },
+    "notes": [
+      "Pay special attention to the visual feedback when interacting with the Try It panel on charges.html, as this is the most complex custom interaction on the site."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "WeaveAPI — Threads of value, woven simple",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/weaveapi/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "WeaveAPI GETTING STARTED Quickstart Authentication Idempotency Pagination CORE RESOURCES Charges Customers PAYMENT METHODS Cards Bank Wallets WEBHOOKS Events Verifying Retries ERRORS Error codes 🌙 Accept your first payment in 5 minutes. WeaveAPI is a payments-as-an-API platform built for backend engineers who want to ship value capture without inheriting a banking compliance department. Quickstart The most basic flow: collect a payment method, create a charge, capture funds. CURL PYTHON NODE GO curl -X POST https://api.weave.dev/v1/charges \\ -H \"Authorization: Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc\" \\ -H \"Idempotency-Key: $(uuidgen)\" \\ -d amount=2000 -d currency=usd -d payment_method=pm_card_visa Copy Authentication WeaveAPI uses API keys. Test keys are prefixed sk_test_; live keys are sk_live_. Send your key in the Authorization header as a bearer token. CURL PYTHON NODE GO curl https:",
+      "headings": [
+        "Accept your first payment in 5 minutes.",
+        "Quickstart",
+        "Authentication",
+        "Idempotency",
+        "Pagination",
+        "Errors",
+        "Popular guides",
+        "Charges API →",
+        "Customers API →",
+        "Webhooks →"
+      ],
+      "counts": {
+        "buttons": 11,
+        "links": 24,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Quickstart",
+        "clickable:a:Authentication",
+        "clickable:a:Idempotency",
+        "clickable:a:Pagination",
+        "clickable:a:Charges",
+        "clickable:a:Customers",
+        "clickable:a:Cards",
+        "clickable:a:Bank",
+        "clickable:a:Wallets",
+        "clickable:a:Events",
+        "clickable:a:Verifying",
+        "clickable:a:Retries",
+        "clickable:a:Error codes",
+        "typeable:input:Search docs… (ctrl+K)",
+        "clickable:button:🌙",
+        "clickable:button:CURL"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "charges.html",
+      "title": "Charges — WeaveAPI",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/weaveapi/charges.html",
+      "load_error": null,
+      "visible_text_excerpt": "WeaveAPI GETTING STARTED Quickstart Authentication Idempotency Pagination CORE RESOURCES Charges Customers PAYMENT METHODS Cards Bank Wallets WEBHOOKS Events Verifying Retries ERRORS Error codes 🌙 Charges Use the Charges API to capture value from a payment method. A charge is the most atomic state change in WeaveAPI: money moved from your customer to you. The Charge object ATTRIBUTE TYPE DESCRIPTION id string Unique identifier, ch_… object string Always \"charge\" amount integer Amount in the smallest currency unit (cents for USD) currency string ISO 4217 code, lowercase customer string Customer ID, or null for guest charges status enum pending · succeeded · failed · refunded captured boolean Whether funds have been captured. False after a successful authorize without capture. refunded boolean True if fully refunded amount_refunded integer Sum of refunds in smallest currency unit payment_m",
+      "headings": [
+        "Charges",
+        "The Charge object",
+        "Create a charge",
+        "Retrieve a charge",
+        "Capture a charge",
+        "Refund a charge",
+        "List charges"
+      ],
+      "counts": {
+        "buttons": 27,
+        "links": 13,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Quickstart",
+        "clickable:a:Authentication",
+        "clickable:a:Idempotency",
+        "clickable:a:Pagination",
+        "clickable:a:Charges",
+        "clickable:a:Customers",
+        "clickable:a:Cards",
+        "clickable:a:Bank",
+        "clickable:a:Wallets",
+        "clickable:a:Events",
+        "clickable:a:Verifying",
+        "clickable:a:Retries",
+        "clickable:a:Error codes",
+        "typeable:input:Search docs…",
+        "clickable:button:🌙",
+        "clickable:button:CURL"
+      ],
+      "layout_warning_kinds": [
+        "horizontal_overflow",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "customers.html",
+      "title": "Customers — WeaveAPI",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/weaveapi/customers.html",
+      "load_error": null,
+      "visible_text_excerpt": "WeaveAPI GETTING STARTED Quickstart Authentication Idempotency Pagination CORE RESOURCES Charges Customers PAYMENT METHODS Cards Bank Wallets WEBHOOKS Events Verifying Retries ERRORS Error codes 🌙 Customers Customers tie payment methods, charges, subscriptions, and invoices to a single record. Use them whenever a buyer might return. The Customer object ATTRIBUTE TYPE DESCRIPTION id string cus_… email string Required for receipts name string Display name default_payment_method string PM used for off-session charges balance integer Credit balance, applied to next invoice (negative = credit) currency string Default currency address object Billing address shipping object Shipping address (optional) tax_ids array VAT/EIN/etc metadata object Up to 50 keys created integer Unix timestamp Create a customer POST /v1/customers CURL PYTHON NODE GO curl https://api.weave.dev/v1/customers -H \"Authoriz",
+      "headings": [
+        "Customers",
+        "The Customer object",
+        "Create a customer",
+        "Retrieve a customer",
+        "Update a customer",
+        "Delete a customer",
+        "List customers"
+      ],
+      "counts": {
+        "buttons": 22,
+        "links": 13,
+        "inputs": 3,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Quickstart",
+        "clickable:a:Authentication",
+        "clickable:a:Idempotency",
+        "clickable:a:Pagination",
+        "clickable:a:Charges",
+        "clickable:a:Customers",
+        "clickable:a:Cards",
+        "clickable:a:Bank",
+        "clickable:a:Wallets",
+        "clickable:a:Events",
+        "clickable:a:Verifying",
+        "clickable:a:Retries",
+        "clickable:a:Error codes",
+        "typeable:input:Search docs…",
+        "clickable:button:🌙",
+        "clickable:button:CURL"
+      ],
+      "layout_warning_kinds": [
+        "horizontal_overflow",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "errors.html",
+      "title": "Errors — WeaveAPI",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/weaveapi/errors.html",
+      "load_error": null,
+      "visible_text_excerpt": "WeaveAPI GETTING STARTED Quickstart Authentication Idempotency Pagination CORE RESOURCES Charges Customers PAYMENT METHODS Cards Bank Wallets WEBHOOKS Events Verifying Retries ERRORS Error codes 🌙 Error codes All WeaveAPI errors are returned as a structured object. Use code for programmatic handling and message for display. CODE HTTP MESSAGE HOW TO HANDLE card_declined 402 The card was declined Surface a retry; offer alternate payment method insufficient_funds 402 Insufficient funds on the card Retry with a different method expired_card 402 The card has expired Prompt user to update the card incorrect_cvc 402 CVC check failed Re-ask for the CVC processing_error 502 Issuer was unreachable Safe to retry with idempotency key fraud_blocked 402 Blocked by our risk system Do not retry; escalate via dashboard three_d_secure_required 402 3DS authentication required Redirect to three_d_secure.url",
+      "headings": [
+        "Error codes"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 13,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Quickstart",
+        "clickable:a:Authentication",
+        "clickable:a:Idempotency",
+        "clickable:a:Pagination",
+        "clickable:a:Charges",
+        "clickable:a:Customers",
+        "clickable:a:Cards",
+        "clickable:a:Bank",
+        "clickable:a:Wallets",
+        "clickable:a:Events",
+        "clickable:a:Verifying",
+        "clickable:a:Retries",
+        "clickable:a:Error codes",
+        "typeable:input:Search docs…",
+        "clickable:button:🌙"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "quickstart.html",
+      "title": "Quickstart — WeaveAPI",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/weaveapi/quickstart.html",
+      "load_error": null,
+      "visible_text_excerpt": "WeaveAPI GETTING STARTED Quickstart Authentication Idempotency Pagination CORE RESOURCES Charges Customers PAYMENT METHODS Cards Bank Wallets WEBHOOKS Events Verifying Retries ERRORS Error codes 🌙 Quickstart Capture your first $1 in under five minutes. 1. Install the SDK CURL PYTHON NODE GO # pick one of the SDKs Copy 2. Make your first charge CURL PYTHON NODE GO curl https://api.weave.dev/v1/charges \\ -H \"Authorization: Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc\" \\ -d amount=2000 -d currency=usd -d payment_method=pm_card_visa Copy That's it. You should see a charge in the dashboard. Read on: full Charges reference, webhooks.",
+      "headings": [
+        "Quickstart",
+        "1. Install the SDK",
+        "2. Make your first charge"
+      ],
+      "counts": {
+        "buttons": 11,
+        "links": 15,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Quickstart",
+        "clickable:a:Authentication",
+        "clickable:a:Idempotency",
+        "clickable:a:Pagination",
+        "clickable:a:Charges",
+        "clickable:a:Customers",
+        "clickable:a:Cards",
+        "clickable:a:Bank",
+        "clickable:a:Wallets",
+        "clickable:a:Events",
+        "clickable:a:Verifying",
+        "clickable:a:Retries",
+        "clickable:a:Error codes",
+        "typeable:input:Search docs…",
+        "clickable:button:🌙",
+        "clickable:button:CURL"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "webhooks.html",
+      "title": "Webhooks — WeaveAPI",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/weaveapi/webhooks.html",
+      "load_error": null,
+      "visible_text_excerpt": "WeaveAPI GETTING STARTED Quickstart Authentication Idempotency Pagination CORE RESOURCES Charges Customers PAYMENT METHODS Cards Bank Wallets WEBHOOKS Events Verifying Retries ERRORS Error codes 🌙 Webhooks WeaveAPI sends HTTP POST callbacks to your endpoint when interesting events happen. Each event is signed; verify before processing. Event types EVENT DESCRIPTION charge.succeeded A charge transitioned to succeeded charge.failed A charge transitioned to failed charge.refunded Full or partial refund applied charge.disputed Buyer opened a dispute charge.dispute.closed Dispute resolved (won or lost) customer.created New customer record customer.updated Customer attributes changed customer.deleted Customer was deleted payment_method.attached PM linked to a customer payment_method.detached PM unlinked invoice.created New invoice generated invoice.finalized Invoice is no longer draft invoice.",
+      "headings": [
+        "Webhooks",
+        "Event types",
+        "Verifying signatures",
+        "Retries"
+      ],
+      "counts": {
+        "buttons": 6,
+        "links": 16,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Quickstart",
+        "clickable:a:Authentication",
+        "clickable:a:Idempotency",
+        "clickable:a:Pagination",
+        "clickable:a:Charges",
+        "clickable:a:Customers",
+        "clickable:a:Cards",
+        "clickable:a:Bank",
+        "clickable:a:Wallets",
+        "clickable:a:Events",
+        "clickable:a:Verifying",
+        "clickable:a:Retries",
+        "clickable:a:Error codes",
+        "typeable:input:Search docs…",
+        "clickable:button:🌙",
+        "clickable:button:CURL"
+      ],
+      "layout_warning_kinds": [
+        "horizontal_overflow",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

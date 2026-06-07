@@ -1,0 +1,165 @@
+{
+  "plan": {
+    "goal": "Evaluate the UX, accessibility, and functional integrity of the single-page multi-step passport application form, focusing on state management, validation logic, and mobile responsiveness.",
+    "summary": "The exploration will proceed by first handling the cookie consent banner, then initiating the 'Start now' flow. It will systematically traverse the multi-step form (Application Type -> Personal Info -> Address -> Previous Passport -> Photo), testing both valid inputs and error states to verify inline validation and error summaries. Finally, it will review the summary page and test the 'Cancel' functionality, repeating critical path checks on a mobile viewport.",
+    "assumptions": [
+      "The entire application is contained within `index.html` using JavaScript to toggle visibility of sections (SPA behavior).",
+      "Form state is persisted via `localStorage` as indicated in the prescan summary.",
+      "The 'Demo result' link in the header may provide a shortcut to the final confirmation state for verification purposes."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Cookie Banner: Blocking interaction with the main 'Start now' button if not dismissed.",
+      "Step Navigation: Logic for 'Save and continue' vs 'Back' buttons and history state.",
+      "Validation: Inline error messages vs the global Error Summary at the top of the page.",
+      "Photo Upload: File input handling and preview logic.",
+      "Mobile Layout: Step indicator visibility and touch target sizes (prescan noted small tap targets)."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Entry & Initialization",
+        "objective": "Clear initial overlays and enter the service flow.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Dismiss cookie banner (Accept/Reject) and verify it disappears.",
+          "Click 'Start now' and verify transition to Step 1 (Application Type).",
+          "Verify presence of step indicator/progress bar."
+        ],
+        "exit_criteria": [
+          "Cookie banner is hidden.",
+          "First form step (Application Type) is visible and interactive."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Core Form Flow & Validation",
+        "objective": "Traverse the primary data entry steps, testing happy paths and error states.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Select Application Type (e.g., Renew) and proceed.",
+          "Enter invalid data in Personal Info (e.g., empty required fields) to trigger inline errors.",
+          "Verify Error Summary appears and links to specific fields.",
+          "Correct errors and proceed to Address and Previous Passport steps.",
+          "Test Photo Upload interaction (select file/cancel)."
+        ],
+        "exit_criteria": [
+          "All form steps have been visited.",
+          "Inline validation and Error Summary behavior confirmed.",
+          "Data persists when moving back and forth between steps."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Review, Submission & Recovery",
+        "objective": "Validate the final review screen and test exit/cancellation paths.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Reach the 'Check your answers' / Review step.",
+          "Verify all entered data is displayed correctly.",
+          "Test 'Change' links on the review page to jump back to specific sections.",
+          "Test 'Cancel' button behavior (does it clear state? confirm dialog?).",
+          "Attempt final submission (noting it stops before payment)."
+        ],
+        "exit_criteria": [
+          "Review page content verified.",
+          "Cancellation flow tested.",
+          "Final submission state reached or documented."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Accessibility",
+        "objective": "Repeat critical flows on mobile viewport to check layout and touch targets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE/Pixel 5).",
+          "Verify step indicator adapts (e.g., becomes horizontal or collapsible).",
+          "Re-test cookie banner dismissal and 'Start now' clickability.",
+          "Check that input fields and buttons meet minimum touch target sizes (44px).",
+          "Verify no horizontal scrolling issues on form pages."
+        ],
+        "exit_criteria": [
+          "Critical path usable on mobile.",
+          "No major layout breakages observed."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Full coverage of the single HTML file's dynamic states.",
+      "features": "Exercise all form inputs, validation errors, navigation buttons, and the photo upload control.",
+      "mobile": "Repeat Phase 1 and Phase 2 key interactions on mobile viewport."
+    },
+    "notes": [
+      "Prescan identified multiple 'small_tap_target' warnings; prioritize checking these on mobile.",
+      "Since this is a local demo, do not attempt real payment processing; stop at the pre-payment confirmation.",
+      "Monitor console for localStorage errors if clearing cache/cookies during the run."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Apply for or renew a passport - GOV.UK local demo",
+      "url": "file:///Users/timchef/UXBench/websites/govuk-passport/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "GOV.UK Home Service Demo result Local demo only. This is not an official GOV.UK or HM Passport Office service. Do not enter real passport, payment or personal information. Cookies on GOV.UK We use some essential cookies to make this website work. We'd also like to use analytics cookies so we can understand how you use the service and make improvements. Accept analytics cookies Reject analytics cookies View cookies Home Citizenship and living in the UK Passports, travel and living abroad Passports Apply for or renew a passport Apply online for a UK passport. You can also renew, replace, change details on, or apply for a child passport. This local version recreates the public GOV.UK page and a complete interactive form flow for demonstration and design review. You must use the official GOV.UK service for a real passport application. This page is an offline prototype. Start now › Before you",
+      "headings": [
+        "Cookies on GOV.UK",
+        "Apply for or renew a passport",
+        "Before you start",
+        "Related content",
+        "Services and information",
+        "Government activity",
+        "Support links"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 24,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:GOV.UK local demo home",
+        "clickable:a:Home",
+        "clickable:a:Service",
+        "clickable:a:Demo result",
+        "clickable:button:Accept analytics cookies",
+        "clickable:button:Reject analytics cookies",
+        "clickable:a:View cookies",
+        "clickable:a:Citizenship and living in the UK",
+        "clickable:a:Passports, travel and living abroad",
+        "clickable:a:Start now ›",
+        "clickable:a:Renew an adult passport",
+        "clickable:a:Apply for a child passport",
+        "clickable:a:Report a lost or stolen passport",
+        "clickable:a:Passport fees",
+        "clickable:a:Yes"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

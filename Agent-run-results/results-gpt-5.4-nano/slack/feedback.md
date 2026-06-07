@@ -1,0 +1,47 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full slack system, prioritizing the primary pricing flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: False
+
+## Summary
+
+The Slack pricing-to-signup journey is mostly smooth: navigation to pricing, billing toggle feedback, and form validation/next-step recovery all work in observable ways. However, several high-friction UX issues appear on mobile—especially small tap targets and unreliable feedback for accordion/frequently clicked FAQ interactions. There are also trust/UX clarity gaps where user actions don’t reliably produce perceivable UI state changes (or the automation can’t detect them), which undermines confidence.
+
+## Issues (6)
+
+### [HIGH] the-primary-continue-action-on-get — forms
+- **Page**: `steps-31-36; get-started.html: Continue; get-started.html: Continue with Google; /slack/_run/screenshots/ (agentic-77/78/79 indicate similar patterns around state detectability)`
+- **Problem**: The primary “Continue” action on get-started does not advance the flow (URL unchanged; no new step/success state visible). This can make users think the button didn’t register or the site is broken.
+- **Evidence**: Recent trajectory chunk: clicking the primary “Continue” button on `get-started.html` resulted in no navigation (URL unchanged: `file:///.../get-started.html`), with no new visible success/step state. Additionally, clicking “Continue with Google” similarly produced no observable navigation/state change (URL remained on get-started.html; feedback reported changed=false).
+- **Suggested fix**: Provide immediate in-place progress feedback on click (spinner/loading state), and ensure successful/failed outcomes are clearly communicated. If SSO is blocked, present a clear error with next steps (e.g., sign-in alternative) rather than staying on the same screen silently.
+
+### [HIGH] faq-accordion-interactions-on-mobile-appear — feedback
+- **Page**: `steps-67-72, steps-73-78; recent trajectory: agentic-77-click-mobile.png (pricing.html: ux-19)`
+- **Problem**: FAQ accordion interactions on mobile appear inconsistent: the automation reports no visible change for taps even when the UI screenshot suggests some answers are expanded. This creates a reliability/feedback gap for users (and makes interaction feel untrustworthy).
+- **Evidence**: Recent trajectory window: tap on “Who can use Slackbot?” on mobile (`pricing.html`) returned `changed: false` with “No obvious URL or visible-text change was detected,” yet the following observation notes the accordion appears open (minus icon; inline content visible in the screenshot). Similar inconsistent detection occurred across other FAQ taps on mobile (e.g., “What payment methods does Slack accept?” and “How does Slack AI handle my data?” reported changed=false).
+- **Suggested fix**: Ensure the accordion state changes are visually unambiguous: animate height/content reveal, update the plus/minus state synchronously, and maintain scroll position so users clearly see the expanded answer. Also ensure tap area is comfortably large on mobile.
+
+### [HIGH] many-interactive-elements-on-mobile-are — mobile usability
+- **Page**: `Across recent chunks: steps-25-30, steps-31-36, steps-43-48, steps-67-72, plus latest observations in the enterprise mobile click flow; screenshot paths in results show mobile viewport.`
+- **Problem**: Many interactive elements on mobile are below recommended tap target sizes (44px), which increases mis-taps and frustration.
+- **Evidence**: Multiple layout warnings across pages show small targets (examples): mobile header/utility links such as “slack” (133x33), “Pricing” (47x23), and “Sign in” (~34x45 / or 44x23 depending on step). Accordion/category links like “Learn more about Channels” are ~200x18 on mobile. Similar warnings are repeated on contact and sign-in flows (e.g., “Forgot your password?” 142x17; “Back to sign in” 89x17).
+- **Suggested fix**: Increase tap target size (44px) for all primary/secondary navigation and in-page links; add padding around small text links while keeping typography styling. Ensure sufficient spacing between adjacent links to reduce accidental taps.
+
+### [MEDIUM] footer-navigation-on-mobile-can-appear — navigation
+- **Page**: `steps-79-79 and steps-80-80; targets: enterprise.html: About Us (ux-18) and brand slack (ux-1)`
+- **Problem**: Footer navigation on mobile can appear inert or poorly signaling: “About Us” on the enterprise page resulted in a URL hash-only change (`enterprise.html#`) instead of meaningful navigation to `about.html` in that attempt.
+- **Evidence**: Recent trajectory: on mobile `enterprise.html`, tapping “About Us” changed URL from `enterprise.html` to `enterprise.html#` (hash addition), suggesting ineffective/inert anchor behavior rather than routing to `about.html`. Recovery required explicitly tapping the brand “slack” to return to `index.html` (agentic-80).
+- **Suggested fix**: Ensure footer links route to correct pages (not hash placeholders). When using hashes for in-page scrolling, provide visible scroll/content change and update focus/viewport so the user can confirm success.
+
+### [MEDIUM] faq-accordion-state-changes-were-sometimes — feedback
+- **Page**: `steps-19-24; pricing.html FAQ section clicks`
+- **Problem**: FAQ accordion state changes were sometimes not perceivable to the testing tool, and at least one desktop interaction showed no obvious visible state change after clicking different questions.
+- **Evidence**: Chunk: steps-19-24 indicates clicking FAQ items (“What payment methods does Slack accept?” and “How does fair billing work?”) produced no noticeable state change; tool feedback explicitly says no obvious URL or visible-text change was detected after the action, even though the screenshot shows plus/minus indicators in collapsed/expanded states.
+- **Suggested fix**: Make the accordion expanded state highly salient (icon rotation, bolding selected question, smooth reveal) and ensure accessibility attributes (aria-expanded) update in sync with visuals.
+
+### [LOW] validation-feedback-is-present-but-some — error recovery
+- **Page**: `steps-55-60; contact.html: Submit, Company size *, Work email *`
+- **Problem**: Validation feedback is present, but some progressive validation expectations aren’t consistently evident in observed screenshots—users may not immediately know which field becomes next after earlier fields are filled.
+- **Evidence**: In contact sales (`contact.html`), submitting empty fields triggers inline tooltips (“Please fill out this field.”). However, after selecting required “Company size *”, the expected next unmet requirement cue/focus change was not clearly observable (“no obvious confirmation or inline recovery cue”).
+- **Suggested fix**: After each successful field completion, explicitly move focus to the next required field and/or show a short instruction indicating the next step in the form completion sequence.

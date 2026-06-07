@@ -1,0 +1,270 @@
+{
+  "plan": {
+    "goal": "Evaluate the UX of a static ChatGPT clone, focusing on the chat interface interaction flow, sidebar navigation, and responsive layout constraints.",
+    "summary": "The run will validate the primary chat loop (input -> simulated streaming response) and secondary flows like history navigation and pricing. It will specifically test the 'fake' AI behavior to ensure the typewriter effect feels natural despite being hardcoded. Finally, it will audit mobile responsiveness given the prescan warnings about small tap targets.",
+    "assumptions": [
+      "The site is a pure frontend mock; no real API calls are made.",
+      "AI responses are triggered by keyword matching in script.js, not semantic understanding.",
+      "Authentication pages (login/signup) are visual mocks and do not persist state."
+    ],
+    "target_pages": [
+      "index.html",
+      "pricing.html",
+      "login.html",
+      "signup.html"
+    ],
+    "risk_hotspots": [
+      "Mobile tap targets: Prescan indicates multiple elements <44px height/width.",
+      "Sidebar toggle: Ensuring content reflows correctly when sidebar is closed.",
+      "Input area: Verifying the textarea auto-resizes or scrolls with long text.",
+      "Streaming simulation: Checking if the setInterval typewriter effect blocks UI or feels laggy."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Primary Chat Interaction & Simulation",
+        "objective": "Validate the core loop: sending messages, receiving simulated streaming responses, and using post-response controls.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Send a generic message to trigger a default/hardcoded response.",
+          "Observe the 'typewriter' streaming effect for smoothness.",
+          "Test 'Regenerate' to see if it cycles through different hardcoded responses.",
+          "Test 'Copy', 'Thumbs Up', and 'Thumbs Down' for visual feedback states.",
+          "Test 'Attach file' and 'Voice input' buttons for expected UI reactions (even if non-functional)."
+        ],
+        "exit_criteria": [
+          "At least two distinct conversation turns completed.",
+          "All post-message action buttons clicked and visually verified."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Navigation & History Management",
+        "objective": "Ensure sidebar interactions, history switching, and view toggles work without breaking layout.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click existing history items (e.g., 'Travel planning request') to load that context.",
+          "Click 'New chat' to reset the main view.",
+          "Toggle 'Close sidebar' and verify main content expands/reflows correctly.",
+          "Use 'Search chats...' input to filter the history list.",
+          "Click 'Explore GPTs' and 'Upgrade plan' links to ensure routing works."
+        ],
+        "exit_criteria": [
+          "Sidebar open/close state toggled successfully.",
+          "Navigated to at least one historical chat and back to new chat."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Monetization & Auth Flows",
+        "objective": "Verify the structure and navigation of the pricing and authentication pages.",
+        "target_pages": [
+          "pricing.html",
+          "login.html",
+          "signup.html"
+        ],
+        "key_checks": [
+          "On Pricing: Toggle between 'Monthly' and 'Annual' to check for price updates.",
+          "On Pricing: Click 'Get started' or 'Upgrade' to check navigation logic.",
+          "On Login/Signup: Verify form layouts and social login button presence.",
+          "Check links between Login and Signup pages ('Don't have an account?', 'Already have an account?')."
+        ],
+        "exit_criteria": [
+          "Pricing toggle interaction verified.",
+          "Auth page navigation loop (Login <-> Signup) verified."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Accessibility Audit",
+        "objective": "Re-evaluate critical paths on mobile viewport, focusing on the prescan's tap target warnings.",
+        "target_pages": [
+          "index.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Repeat Phase 1 (Chat) on mobile viewport.",
+          "Specifically attempt to tap 'Thumbs up/down' and 'Copy' buttons (identified as small targets).",
+          "Verify sidebar opens/closes cleanly on mobile (hamburger menu behavior).",
+          "Check if text in the chat window remains readable and doesn't overflow horizontally."
+        ],
+        "exit_criteria": [
+          "Critical chat functions usable on mobile despite small tap targets.",
+          "No horizontal scrolling issues in chat bubbles."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 HTML files (index, pricing, login, signup).",
+      "features": "Exercise all visible buttons in the chat footer (attach, voice, send) and message actions (copy, vote, regenerate).",
+      "mobile": "Full pass on index.html and pricing.html to document touch target usability."
+    },
+    "notes": [
+      "Since the AI is fake, do not expect coherent follow-up answers unless keywords match the hardcoded logic.",
+      "Focus UX critique on the *feel* of the streaming animation and the clarity of the UI states rather than content accuracy."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "ChatGPT",
+      "url": "file:///Users/timchef/UXBench/websites/chatgpt/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "New chat TODAY Travel planning request Python debugging help YESTERDAY Recipe suggestions for dinner Email draft for client PREVIOUS 7 DAYS JavaScript async patterns Explore GPTs Upgrade plan J Jack ChatGPT J Plan a 5-day trip to Tokyo for me. I have a budget of $2000, I'm vegetarian, and I want a mix of cultural experiences and modern city life. I prefer walking-friendly areas and need restaurant recommendations that accommodate dietary restrictions. Here's a travel plan for Tokyo that fits your constraints: 5-Day Tokyo Itinerary (Budget: $2000, Vegetarian-Friendly) Day 1 - Arrival & Shibuya Check into hotel in Shinjuku area (~$120/night) Explore Shibuya Crossing and Hachiko statue Dinner at Afuri Ramen (excellent vegetarian options) Day 2 - Traditional Tokyo Senso-ji Temple in Asakusa (free) Nakamise shopping street Ueno Park and museums (~$10) Vegetarian kaiseki dinner at Sougo (~$40)",
+      "headings": [],
+      "counts": {
+        "buttons": 14,
+        "links": 13,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:New chat",
+        "clickable:button:Close sidebar",
+        "typeable:input:Search chats...",
+        "clickable:a:Travel planning request",
+        "clickable:a:Python debugging help",
+        "clickable:a:Recipe suggestions for dinner",
+        "clickable:a:Email draft for client",
+        "clickable:a:JavaScript async patterns",
+        "clickable:a:Explore GPTs",
+        "clickable:a:Upgrade plan",
+        "clickable:button:Share",
+        "clickable:button:Copy",
+        "clickable:button:Thumbs up",
+        "clickable:button:Thumbs down",
+        "clickable:button:Regenerate",
+        "clickable:button:Attach file"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "login.html",
+      "title": "Log in - ChatGPT",
+      "url": "file:///Users/timchef/UXBench/websites/chatgpt/login.html",
+      "load_error": null,
+      "visible_text_excerpt": "Welcome back Log in to your OpenAI account to continue Email address Continue or Continue with Google Continue with Apple Continue with Microsoft Don't have an account? Sign up",
+      "headings": [
+        "Welcome back"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 1,
+        "inputs": 1,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "typeable:input:Email address",
+        "clickable:button:Continue",
+        "clickable:button:Continue with Google",
+        "clickable:button:Continue with Apple",
+        "clickable:button:Continue with Microsoft",
+        "clickable:a:Sign up"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "pricing.html",
+      "title": "ChatGPT Pricing",
+      "url": "file:///Users/timchef/UXBench/websites/chatgpt/pricing.html",
+      "load_error": null,
+      "visible_text_excerpt": "ChatGPT Log in Sign up Choose your ChatGPT plan Start for free, upgrade when you need more Monthly Annual Save 17% Free $0 /month Get started Access to GPT-4o mini Limited access to GPT-4o Limited access to file uploads, vision, and web browsing Use custom GPTs Most popular Plus $20 /month Upgrade to Plus Everything in Free Extended limits on GPT-4o and o1 Access to o1, GPT-4o, and GPT-4o mini DALL-E image generation Create and use custom GPTs Access to Advanced Voice Mode Team $25 /person/month Upgrade to Team Everything in Plus Higher message limits on GPT-4o and o1 Create and share GPTs with your workspace Admin console for workspace management Data excluded from training by default Enterprise Contact us Contact sales Everything in Team Unlimited high-speed access to GPT-4o and o1 Expanded context window for longer inputs SSO, SCIM, and domain verification Analytics dashboard Priority",
+      "headings": [
+        "Choose your ChatGPT plan",
+        "Free",
+        "Plus",
+        "Team",
+        "Enterprise",
+        "Frequently asked questions"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 7,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:ChatGPT",
+        "clickable:a:Log in",
+        "clickable:a:Sign up",
+        "clickable:button:Monthly",
+        "clickable:button:Annual Save 17%",
+        "clickable:a:Get started",
+        "clickable:a:Upgrade to Plus",
+        "clickable:a:Upgrade to Team",
+        "clickable:a:Contact sales"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "signup.html",
+      "title": "Sign up - ChatGPT",
+      "url": "file:///Users/timchef/UXBench/websites/chatgpt/signup.html",
+      "load_error": null,
+      "visible_text_excerpt": "Create your account Sign up to start using ChatGPT Email address Continue or Continue with Google Continue with Apple Continue with Microsoft Already have an account? Log in By signing up, you agree to our Terms of Use and Privacy Policy.",
+      "headings": [
+        "Create your account"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 3,
+        "inputs": 1,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "typeable:input:Email address",
+        "clickable:button:Continue",
+        "clickable:button:Continue with Google",
+        "clickable:button:Continue with Apple",
+        "clickable:button:Continue with Microsoft",
+        "clickable:a:Log in",
+        "clickable:a:Terms of Use",
+        "clickable:a:Privacy Policy"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

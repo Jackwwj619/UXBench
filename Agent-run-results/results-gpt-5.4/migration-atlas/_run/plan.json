@@ -1,0 +1,194 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the Migration Atlas primary visualization workflow on index.html, validating how filters, time playback, map inspection, and utility actions behave across desktop and mobile.",
+    "summary": "The run should center on the single known atlas page, starting with baseline comprehension of the default state and then exercising the core exploratory flow: filter species, change season, scrub/play time, and inspect map-linked details. Adjacent checks should cover the visible top navigation and utility controls only to verify whether they meaningfully change state, since no separate pages were discovered in prescan. Because this is a dense three-column data visualization with many tiny controls, mobile validation should focus on layout integrity, reachability, and touch usability of the most important interactions.",
+    "assumptions": [
+      "Only one HTML page is known from prescan: index.html.",
+      "The main experience is an inline SVG/data-vis atlas with state changes occurring within the page rather than through navigation.",
+      "Links labeled Studies, Submit a track, Methods, and About may be placeholders or in-page no-op links because prescan shows href '#'.",
+      "Map objects such as trails, dots, or tags are likely clickable even though they were not surfaced as standard interactables in the prescan.",
+      "The right-side Individual panel is expected to update after a map selection, while Aggregate stats should react to filters and/or month changes."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "index.html: SVG map interactions for trails/dots/tags may be hard to discover, hard to click, or fail to synchronize with the Individual panel.",
+      "index.html: Month range slider and Play button may desynchronize visible month, animated trails, and aggregate stats.",
+      "index.html: Species checkboxes and search filter may create confusing empty/partial states or inaccurate species/individual counts.",
+      "index.html: Study year selector, especially '2026 season (in progress)', may expose incomplete-state messaging or inconsistent data coverage.",
+      "index.html: Display toggles (trail / monthly positions / stop-over polygons) may not visibly change the map or may interfere with inspection.",
+      "index.html: Save view and Cite this view are high-risk utility controls because their outcomes are unknown and may lack feedback.",
+      "index.html mobile: very small checkbox targets and compact top-nav/action buttons were already flagged as undersized tap targets.",
+      "index.html mobile: three-column desktop layout may collapse poorly, hiding the player, inspector, or filters below the fold."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline atlas state and information architecture",
+        "objective": "Establish the default state of the only known page and verify the visible structure, defaults, and static comprehension cues before altering state.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm default selected species, study year, display toggles, current month, species shown count, and individuals count.",
+          "Check whether the page communicates the primary task clearly: filter species, play through months, inspect individuals.",
+          "Verify that left filter rail, center map/player, and right inspector/stats are all visible and readable on desktop.",
+          "Note whether top navigation and utility actions appear actionable versus decorative in the default state."
+        ],
+        "exit_criteria": [
+          "A complete record of the default desktop state is captured, including selected filters and visible summary metrics.",
+          "The primary workflow and the page regions involved in that workflow are identified from direct observation."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Filtering and dataset state changes",
+        "objective": "Validate that filtering controls produce coherent updates across map, counters, and inspector/stat areas, including recovery from narrow or empty states.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the species search input to narrow the species list and verify filtering behavior, matching text, and clearing/reset behavior.",
+          "Toggle multiple species on and off, including reducing to one species and attempting zero species if allowed.",
+          "Confirm species shown and individuals counts update correctly when species selections change.",
+          "Switch between 2024, 2025, and 2026 season (in progress) and observe whether the map, counts, or labels update consistently.",
+          "Toggle Show trail, Show monthly positions, and Show stop-over polygons individually and in combination to verify visible impact.",
+          "Watch for broken states such as blank map without explanation, stale inspector content, or stats not matching current filters."
+        ],
+        "exit_criteria": [
+          "Most visible filter controls have been exercised at least once, including search, species toggles, year selector, and display toggles.",
+          "At least one reduced-data state and one recovery back to a richer state have been validated."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Temporal playback and progression",
+        "objective": "Test the time-based interaction model to ensure slider scrubbing, playback, and speed changes are understandable and synchronized with the map and metrics.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Scrub the month slider across multiple positions including beginning, middle, and end of year and verify the current month label changes appropriately.",
+          "Observe whether trails extend progressively as described when advancing through months.",
+          "Use Play/Pause to animate through months and verify whether playback advances smoothly and can be stopped reliably.",
+          "Change speed between 0.5×, 1×, 2×, and 4× and confirm the cadence changes without breaking playback state.",
+          "Check whether aggregate stats such as active individuals, max range this month, fastest individual, and stop-overs detected change with month progression.",
+          "Look for edge behavior at January/December boundaries, such as looping, stopping, or resetting unexpectedly."
+        ],
+        "exit_criteria": [
+          "Slider, play/pause, and speed selector have all been exercised in combination.",
+          "There is clear evidence whether temporal controls stay synchronized with month label, map rendering, and summary metrics."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Map inspection and detail panel linkage",
+        "objective": "Verify the inspect-an-individual flow by interacting directly with the map and confirming whether selection state is intelligible and persistent across other controls.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Attempt to click visible trails, monthly dots, or tags in the map to trigger the Individual panel.",
+          "Confirm whether selected individual identifiers and related details appear in the right-side inspector.",
+          "Test selection on at least two different visible species/track colors if clickable targets can be found.",
+          "While an individual is selected, change month and/or filters to see whether selection persists, updates, or clears appropriately.",
+          "Check whether hiding trails or monthly positions affects the ability to select and inspect individuals.",
+          "Look for affordance problems: no hover/cursor change, unclear selected state, overlapping marks, or accidental selections."
+        ],
+        "exit_criteria": [
+          "Either the inspect flow has been successfully triggered and validated, or strong evidence is gathered that the map selection affordance is missing/broken.",
+          "Selection behavior under at least one subsequent state change has been observed."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Adjacent actions and mobile resilience",
+        "objective": "Probe visible non-core controls for meaningful behavior, then repeat the most important atlas checks on mobile to assess responsiveness and touch usability.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click Explore, Studies, Submit a track, Methods, and About to verify whether they navigate, jump, or do nothing.",
+          "Use Save view and Cite this view to observe any message, copied state, modal, URL change, or silent failure.",
+          "Switch to mobile viewport and verify whether filters, map, player, and inspector remain reachable and understandable.",
+          "Repeat one species-filter change, one month scrub/play interaction, and one attempt at map selection on mobile.",
+          "Assess whether the tiny checkbox targets and compact top action buttons are practically operable on touch.",
+          "Watch for clipping, horizontal scrolling, hidden controls, overlapping columns, or reordered content that weakens the core flow."
+        ],
+        "exit_criteria": [
+          "All visible top-nav and utility controls have been tried once and their outcomes documented.",
+          "Critical path interactions have been rechecked on mobile with at least one concrete finding about responsiveness or touch ergonomics."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit the only known page, index.html, and revisit it through multiple UI states rather than expecting additional HTML pages.",
+      "features": "Exercise nearly all visible controls on index.html: species search, all species toggles at least selectively, study year selector, all display toggles, month slider, play/pause, speed selector, map inspection attempts, and top utility/nav controls.",
+      "mobile": "Repeat the critical exploration flow on a mobile viewport: access filters, change species, scrub or play months, inspect the visibility of the right-side detail content, and test touchability of the smallest controls."
+    },
+    "notes": [
+      "Prioritize evidence-rich interactions over exhaustive clicking of every map mark; the site appears to be a single-page local demo with synthetic data.",
+      "If top navigation links remain on '#', document them as adjacent UX affordances rather than missing page coverage.",
+      "Because there are no console or network errors in prescan, focus more on interaction clarity, state consistency, and responsive usability than on technical failure hunting."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Migration Atlas — global animal tracking",
+      "url": "file:///Users/timchef/UXBench/websites/migration-atlas/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Migration Atlas Explore Studies Submit a track Methods About Cite this view Save view Filters SPECIES Western osprey (n=12) Boreal caribou (n=18) Leatherback sea turtle (n=9) Monarch butterfly (n=24, swarm aggregate) Bar-tailed godwit (n=7) Humpback whale (n=11) Wandering albatross (n=4) STUDY YEAR 2024 season 2025 season 2026 season (in progress) DISPLAY Show trail Show monthly positions Show stop-over polygons NOTES All individuals carry solar GPS loggers (model \"PicaTag-12\"). Fixes are taken every 4 hours and downsampled to monthly mean position. Migration Atlas — 2025 season Use the month slider to play through the year. Click any trail or pin to inspect the individual. 3 SPECIES SHOWN 54 INDIVIDUALS May CURRENT MONTH CAR-52 ▶ Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec 0.5× 1× 2× 4× Individual Click a trail, dot, or tag in the map to inspect that individual. Aggregate stats Acti",
+      "headings": [
+        "Filters",
+        "SPECIES",
+        "STUDY YEAR",
+        "DISPLAY",
+        "NOTES",
+        "Migration Atlas — 2025 season",
+        "Individual",
+        "Aggregate stats"
+      ],
+      "counts": {
+        "buttons": 3,
+        "links": 5,
+        "inputs": 14,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Explore",
+        "clickable:a:Studies",
+        "clickable:a:Submit a track",
+        "clickable:a:Methods",
+        "clickable:a:About",
+        "clickable:button:Cite this view",
+        "clickable:button:Save view",
+        "typeable:input:Filter species…",
+        "clickable:input:Western osprey (n=12)",
+        "clickable:input:Boreal caribou (n=18)",
+        "clickable:input:Leatherback sea turtle (n=9)",
+        "clickable:input:Monarch butterfly (n=24, swarm aggregate)",
+        "clickable:input:Bar-tailed godwit (n=7)",
+        "clickable:input:Humpback whale (n=11)",
+        "clickable:input:Wandering albatross (n=4)",
+        "selectable:select:2024 season 2025 season 2026 season (in progress)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

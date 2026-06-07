@@ -1,0 +1,173 @@
+{
+  "plan": {
+    "goal": "Critique and validate the UX of the MeadowOS marketing/long-scroll landing experience, focusing on navigation, reading/progress affordances, and the ISO download CTA and its recovery states on desktop and mobile.",
+    "summary": "Run a full long-scroll exploration of the single-page index.html, validating anchor navigation (Story/Garden/Docs), scroll progress behavior, and the Download .iso flow including its modal states. Then validate footer links and any external navigation affordances. Repeat the most critical checks (nav anchors + download modal) on mobile viewport to confirm responsive layout and tappability.",
+    "assumptions": [
+      "meadowos is a single-page experience (only index.html) with in-page anchors (#story, #garden, #docs, #download) rather than multiple HTML routes.",
+      "script.js implements the scroll progress bar, smooth anchor scrolling, and a fake download-progress modal that reaches 100% and shows SHA256 verification passed.",
+      "The only form-like interaction is the Download button; other visible CTAs are navigation links (anchors) and footer external links."
+    ],
+    "target_pages": [
+      "index.html",
+      "styles.css",
+      "script.js"
+    ],
+    "risk_hotspots": [
+      "Top nav anchor links (Story/Garden/Docs/Get the .iso) with small tap target warnings on mobile (UX-1/UX-2/UX-3/UX-4) — verify touch usability and scroll landing accuracy.",
+      "Scroll progress bar correctness during long scroll (progress updates, no jump/stall, correct at top/bottom).",
+      "Download .iso button (UX-5) triggers modal — validate modal progression (increments to 100%) and post-completion state (SHA256 verification passed).",
+      "Potential modal dismissal/interaction edge cases: clicking Download multiple times, using browser back/ESC (if supported), and ensuring the page remains usable after closing.",
+      "Footer links (GitHub, Matrix room) may be placeholders (#) — verify whether they navigate or dead-end."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline load + scroll progress instrumentation",
+        "objective": "Confirm the page loads cleanly and that the scroll progress affordance reflects position accurately from top to bottom.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify header renders correctly: brand, nav links (Story, Garden, Docs), and Get the .iso CTA.",
+          "Scroll from very top to the first chapter; observe whether any progress bar updates smoothly (no flicker/jumps).",
+          "Scroll to mid-page sections (Garden card grid area and reviewer quotes area); confirm progress continues updating.",
+          "Scroll to bottom; confirm progress reaches 100% and does not overshoot."
+        ],
+        "exit_criteria": [
+          "Scroll progress bar is visible and continuously updates throughout the scroll without errors.",
+          "Top state and bottom state are correct (0% at top; 100% at end)."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Anchor navigation correctness (Story/Garden/Docs/Download)",
+        "objective": "Validate smooth anchor scrolling and correct final focus/position for each nav target.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click Story (ux-1) and verify the viewport lands within the intended Story/chapter section (#story).",
+          "Click Garden (ux-2) and verify the viewport lands on the 6-card plant-app grid (#garden).",
+          "Click Docs (ux-3) and verify the viewport lands on the docs/tooling section (#docs) rather than stopping short.",
+          "Click Get the .iso (ux-4) to navigate to the download section (#download) and confirm the Download button (ux-5) is visible afterward.",
+          "Repeat each click once while already partway down the page to ensure anchor scrolling still works."
+        ],
+        "exit_criteria": [
+          "All anchor clicks land at the correct section each time (no wrong offsets/near-miss).",
+          "Navigation feels smooth (no abrupt jumps) and does not break subsequent scrolling."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Download .iso modal flow + post-completion state",
+        "objective": "Exercise the Download CTA and validate the modal’s full lifecycle and usability after completion.",
+        "target_pages": [
+          "index.html",
+          "script.js"
+        ],
+        "key_checks": [
+          "Click Download · meadowos-0.7.iso · 1.2 GB (ux-5); confirm the fake download-progress modal appears.",
+          "Verify progress increments stepwise and reaches 100%.",
+          "Confirm the modal transitions to the SHA256 verification passed message/state after reaching 100%.",
+          "Try closing/dismissing the modal (if a close control exists) and verify the page remains scrollable.",
+          "Edge case: click Download again immediately while the modal is open (confirm behavior: ignore, restart, or queue) and ensure no broken UI state."
+        ],
+        "exit_criteria": [
+          "Modal shows download progress, completes to 100%, and displays 'SHA256 verification passed' as described in the prescan.",
+          "After completion/closing, the page remains functional (scroll/nav works)."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Adjacent content validation (Garden cards + manifesto + footer links)",
+        "objective": "Ensure key content blocks and interactive elements around the primary flow are usable and visually coherent.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Interrogate the Garden 6-card plant-app grid: attempt hover/click on each card region (Nextfile/Bramble/Cottage/Smithy/Hearth/Postcard) to see if cards are clickable or purely illustrative.",
+          "Check that reviewer quotes and manifesto items (numbered items) are readable and not overlapped at common scroll positions.",
+          "Scroll to footer; click GitHub (ux-6) and Matrix room (ux-7) to confirm whether they navigate externally or are non-functional placeholders."
+        ],
+        "exit_criteria": [
+          "Garden cards behave consistently with affordances (either clickable with expected behavior or clearly non-clickable).",
+          "Footer links respond to clicks without causing UI errors (even if they are placeholders)."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile viewport regression (critical path only)",
+        "objective": "Repeat the most important interactions on mobile to validate responsive layout and tap-target accessibility.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "On mobile viewport, tap Story/Garden/Docs and confirm correct anchor landing (no mis-taps).",
+          "Tap Get the .iso to reach the download section; confirm Download button is visible and tappable.",
+          "Tap Download to trigger the modal; verify the progress to 100% and SHA256 verification state is still reachable and not obstructed.",
+          "Verify header/tap targets are usable despite prescan 'small tap target' warnings (especially ux-1/ux-2/ux-3/ux-4)."
+        ],
+        "exit_criteria": [
+          "Critical path (anchor navigation + download modal) works end-to-end on mobile.",
+          "No major usability failures (mis-navigation, modal inaccessible, or persistent overlay trapping)."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (index.html).",
+      "features": "Exercise all visible controls from the prescan: Story/Garden/Docs anchors, Get the .iso anchor, Download .iso modal lifecycle, and footer links (GitHub, Matrix room).",
+      "mobile": "Repeat critical checks on mobile viewport: anchor navigation (3 items + get the .iso) and the download modal flow."
+    },
+    "notes": [
+      "Because the prescan only lists index.html, all exploration should remain within this single long-scroll page; do not assume additional routes beyond anchor targets.",
+      "Log any discrepancies between the specified modal behavior in the prescan (download-progress increments + SHA256 verification passed) and actual observed UI states."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "MeadowOS — Bring your data home",
+      "url": "file:///Users/timchef/UXBench/websites/meadowos/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MeadowOS Story Garden Docs Get the .iso Read time · ~6 min Plant your data in a meadow. A small, friendly operating system for your own server. Run the apps you love. Tend them like a garden. A small home for your photos, your notes, your mail, your files. Not in someone else's cloud. I. The Cloud is Someone Else's House. You moved into a place you don't own. You hung your photographs on rented walls. The landlord raised the rent — three times last year. They walked into your bedroom and rearranged the furniture. They told you when guests could visit and which windows you could open. When you complained, they sent you a 47-page Terms of Service in a font designed to discourage you from reading it. This is the situation we are in. Our memories live on disks that we cannot point to on a map. Our notes are subject to deprecations. Our address books vanish in mergers. We accept it because th",
+      "headings": [
+        "Plant your data\nin a meadow.",
+        "The Cloud is Someone Else's House.",
+        "A Patch of Land.",
+        "What Grows Here.",
+        "Nextfile",
+        "Bramble",
+        "Cottage",
+        "Smithy",
+        "Hearth",
+        "Postcard"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 6,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Story",
+        "clickable:a:Garden",
+        "clickable:a:Docs",
+        "clickable:a:Get the .iso",
+        "clickable:button:Download · meadowos-0.7.iso · 1.2 GB",
+        "clickable:a:GitHub",
+        "clickable:a:Matrix room"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

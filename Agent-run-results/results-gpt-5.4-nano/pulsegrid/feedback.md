@@ -1,0 +1,41 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full pulsegrid system, prioritizing the primary dashboard flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: False
+
+## Summary
+
+On the Alarms page, core operator workflows (checkbox selection, “Acknowledge selected”, and row-level “Open →” actions) show little to no visible state change, making it hard to trust whether acknowledgements are actually happening. Filter controls appear present, but several dropdown and filter interactions show unreliable/no visible filtering feedback, further eroding operator confidence. In parallel, mobile usability risks are elevated due to small tap targets and missing accessible labels for multiple form controls.
+
+## Issues (5)
+
+### [HIGH] checkbox-selection-does-not-provide-reliable — error recovery
+- **Page**: `alarms.html (mobile); checkbox ux-14; button ux-9; screenshots: agentic-78-click-mobile.png, agentic-79-click-mobile.png`
+- **Problem**: Checkbox selection does not provide reliable, visible feedback and bulk acknowledgement appears to do nothing (no visible status transition, KPI update, or confirmation).
+- **Evidence**: Mobile: tapping alarm checkbox (ux-14) returned changed=false with “No obvious URL or visible-text change was detected” (steps-78). Clicking “Acknowledge selected” on mobile (ux-9) also produced changed=false with no observable UI/KPI/status update (steps-79). Screenshot after these actions still shows the same table and KPI tiles (ACTIVE 8, CRITICAL 2, RESOLVED · 24H 34) and rows with OPEN/ACKED/UNATTENDED statuses.
+- **Suggested fix**: After checkbox selection, visibly confirm selection (checked styling + selected count) and enable/disable “Acknowledge selected” based on selection. After acknowledgement, show explicit confirmation (toast/banner) and update affected rows and KPI tiles (ACTIVE/CRITICAL/RESOLVED), or present an error if the action fails.
+
+### [HIGH] row-level-actions-like-open-provide — goal completion
+- **Page**: `alarms.html (mobile); button ux-16; screenshot: agentic-80-click-mobile.png`
+- **Problem**: Row-level actions like “Open →” provide no detectable UI feedback or state change.
+- **Evidence**: Mobile: clicking “Open →” (ux-16) produced changed=false with no observable STATUS/KPI updates (steps-80). The screenshot continues to show “Open →” buttons and the same visible alarm statuses (e.g., rows still show OPEN/UNATTENDED/ACKED as before).
+- **Suggested fix**: Implement immediate visual feedback: disable the clicked action briefly, animate/confirm the row state change (e.g., OPEN → ACKED), and show a small per-row status/confirmation message. If backend is async, show a loading indicator and then update the row.
+
+### [HIGH] filter-controls-appear-interactive-but-the — clarity
+- **Page**: `alarms.html; Severity select ux-10; Status select ux-11; Time select ux-12; search input placeholder “Filter by unit, rule, or owner…” ux-13`
+- **Problem**: Filter controls appear interactive, but the alarm list and visible summary do not update in a way users can verify (unreliable wiring or insufficient feedback).
+- **Evidence**: Desktop: selecting Severity dropdown (e.g., “Major+”) did not visibly narrow the list or update summary/kpis; tool reported “Selected option Severity: All” with no obvious visible change and KPIs stayed the same (ACTIVE 8, CRITICAL 2) (steps-31 and steps-37/42). Typing into the free-text filter (“WND-12” / “COL-3”) showed the entered text but no obvious visible filtering results immediately afterward (steps-25, steps-31).
+- **Suggested fix**: Provide perceivable filtering feedback: update the visible alarm rows and any count badges on selection; add an “Apply” affordance if filtering is not instant; otherwise show loading/skeleton and a “Showing X of Y alarms” indicator tied to each filter.
+
+### [MEDIUM] multiple-form-controls-lack-accessible-labels — accessibility
+- **Page**: `alarms.html (mobile); missing_input_label warnings for ux-10, ux-11, ux-12, ux-14`
+- **Problem**: Multiple form controls lack accessible labels, and checkboxes lack an accessible name/labeling linkage.
+- **Evidence**: Mobile layout warnings show “missing_input_label” for Severity (ux-10), Status (ux-11), Time (ux-12), and even the checkbox input (ux-14). Screenshot/target summaries show selects have no explicit aria-label/placeholder/visible tied label beyond the combined “Severity: All…” text, and checkbox has empty name/label.
+- **Suggested fix**: Add explicit labels (or aria-label) for each select/checkbox and ensure the checkbox is associated with its row context (e.g., label includes alarm ID/UNIT).
+
+### [MEDIUM] tap-targets-for-primary-navigation-and — mobile usability
+- **Page**: `alarms.html (mobile); layout warning small_tap_target for ux-1/ux-2/ux-5/ux-8 and others; screenshot agentic-77-click-mobile.png`
+- **Problem**: Tap targets for primary navigation and some controls are small, increasing mis-taps during urgent alarm handling.
+- **Evidence**: Mobile observations flag small tap targets (below 44px guidance): left-rail items like “PulseGrid” (~125x30), “▦ Overview” (~112x43), “⚠ Alarms 8” (~132x43) and theme toggle (~30x36) (layout_warnings count 49). The alarms table also contains numerous compact controls (e.g., row “Open →” buttons).
+- **Suggested fix**: Increase minimum tap target sizes for nav/actions (44px tall/width), add spacing between adjacent controls, and consider a mobile-specific sticky action area for acknowledgement/filters to reduce accidental taps.

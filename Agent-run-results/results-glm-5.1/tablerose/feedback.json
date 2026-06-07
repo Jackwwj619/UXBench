@@ -1,0 +1,87 @@
+{
+  "summary": "The Tablerose booking flow is functionally complete from search to confirmation, but suffers from systemic mobile usability issues and several dead-end interactions. Small tap targets (13x13px) on all checkboxes and radio buttons make the guest details form highly frustrating on touch devices. Critical post-booking actions on the confirmation page—Modify, Resend email, and calendar exports—are completely unresponsive, leaving users without expected functionality or feedback. Additionally, misleading filter counts and missing form labels further degrade the user experience.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "all-dietary-checkboxes-and-occasion-radio",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "guest.html dietary/occasion inputs",
+      "problem": "All dietary checkboxes and occasion radio buttons have tiny 13x13px tap targets, far below the 44px minimum mobile guidance.",
+      "evidence": "Layout warnings consistently flag Vegetarian, Vegan, Gluten-free, Dairy-free, Shellfish, Nut allergy checkboxes and Birthday, Anniversary, Date night, Business, Celebration, None radio buttons as 13x13px across desktop and mobile viewports (e.g., steps-37-42, steps-67-72, agentic-80-click).",
+      "suggested_fix": "Increase the clickable area of checkboxes and radios to at least 44x44px using CSS padding or pseudo-elements, and ensure the visible label text is also clickable."
+    },
+    {
+      "id": "the-modify-and-resend-email-buttons",
+      "severity": "high",
+      "area": "feedback",
+      "page_hint": "confirmation.html Modify and Resend email buttons",
+      "problem": "The 'Modify' and 'Resend email' buttons on the confirmation page are completely unresponsive, acting as dead-end clicks with no navigation, dialog, or visual feedback.",
+      "evidence": "Clicking 'Modify' resulted in no visible change, URL navigation, or dialog (steps-19-24). Clicking 'Resend email' produced no visible text change, URL change, or feedback (steps-19-24).",
+      "suggested_fix": "Implement functional behavior for these buttons. 'Modify' should navigate to an edit flow, and 'Resend email' should trigger an API call and display a success toast/message (e.g., 'Email sent!')."
+    },
+    {
+      "id": "clicking-the-apple-google-or-outlook",
+      "severity": "high",
+      "area": "feedback",
+      "page_hint": "confirmation.html Apple/Google/Outlook buttons",
+      "problem": "Clicking the 'Apple', 'Google', or 'Outlook' calendar buttons produces no download, navigation, or visual feedback, failing to deliver the promised functionality.",
+      "evidence": "Clicking 'Apple', 'Google', and 'Outlook' buttons resulted in no visible change, URL change, or download (steps-19-24).",
+      "suggested_fix": "Implement .ics file downloads for Apple/Outlook and a Google Calendar URL for the Google button. Provide visual feedback (e.g., button state change) upon click."
+    },
+    {
+      "id": "the-cuisine-filter-label-italian-12",
+      "severity": "medium",
+      "area": "clarity",
+      "page_hint": "restaurants.html Italian filter checkbox",
+      "problem": "The cuisine filter label 'Italian (12)' sets an expectation of 12 results, but applying the filter only shows 2 Italian restaurants on the page.",
+      "evidence": "Clicking the 'Italian (12)' filter updated the results list to show only 2 Italian restaurants (Bella Suora, Lupinus & Roma) (steps-01-06).",
+      "suggested_fix": "Ensure the filter count accurately reflects the number of restaurants that will be displayed when the filter is applied, or clarify if the count refers to total restaurants in the city vs. current search results."
+    },
+    {
+      "id": "the-party-size-select-dropdown-is",
+      "severity": "medium",
+      "area": "accessibility",
+      "page_hint": "restaurant.html party size select",
+      "problem": "The party size select dropdown is missing a form label, aria-label, or placeholder, making it inaccessible to screen reader users.",
+      "evidence": "A medium-severity layout warning indicates the party size select element (ux-13) is missing a form label (steps-31-36, steps-55-60).",
+      "suggested_fix": "Add a visible <label> element associated with the select, or at minimum an aria-label attribute (e.g., aria-label='Party size')."
+    },
+    {
+      "id": "the-help-link-in-the-navigation",
+      "severity": "medium",
+      "area": "navigation",
+      "page_hint": "guest.html Help link",
+      "problem": "The 'Help' link in the navigation is a dead link (href='#') that provides no assistance, dialog, or feedback.",
+      "evidence": "Clicking 'Help' on guest.html only appended a hash to the URL without opening a dialog or providing feedback (steps-61-66). It also has a severely undersized tap target of 30x16px.",
+      "suggested_fix": "Link the 'Help' button to a valid help center, FAQ page, or open a support chat dialog. Also, increase its tap target size to at least 44x44px."
+    },
+    {
+      "id": "time-slots-displayed-per-restaurant-on",
+      "severity": "medium",
+      "area": "clarity",
+      "page_hint": "restaurants.html time slot buttons",
+      "problem": "Time slots displayed per restaurant on the results page show unusually early times (e.g., 6:00 am, 6:30 am) for dinner reservations, which appears to be a data display error.",
+      "evidence": "Visible times for dinner search results include '6:00 am' and '6:30 am' (steps-01-06, agentic-77-click).",
+      "suggested_fix": "Review the time formatting logic to ensure times are displayed correctly (e.g., 6:00 pm instead of 6:00 am) and filter out times that don't match the user's searched meal period."
+    },
+    {
+      "id": "the-cvc-field-uses-input-type",
+      "severity": "low",
+      "area": "trust",
+      "page_hint": "payment.html CVC input",
+      "problem": "The CVC field uses input_type='text' instead of 'password' or 'tel', exposing the sensitive security code to shoulder surfing.",
+      "evidence": "The CVC field accepted text input '123' matching its placeholder, but uses input_type='text' (steps-13-18).",
+      "suggested_fix": "Change the CVC input type to 'password' to mask the characters, or use 'tel' with a mask to bring up the numeric keypad while obscuring the input."
+    },
+    {
+      "id": "the-phone-field-accepts-raw-numeric",
+      "severity": "low",
+      "area": "forms",
+      "page_hint": "guest.html Phone input",
+      "problem": "The phone field accepts raw numeric input without auto-formatting to match its placeholder '(503) 555-0144', leading to inconsistent formatting.",
+      "evidence": "Phone field accepted raw numeric input '5035550144' without auto-formatting to match its placeholder (steps-07-12).",
+      "suggested_fix": "Implement input masking to automatically format the phone number as the user types, matching the placeholder format."
+    }
+  ]
+}

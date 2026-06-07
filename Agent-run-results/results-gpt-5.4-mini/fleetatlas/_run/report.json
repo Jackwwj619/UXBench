@@ -1,0 +1,719 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/fleetatlas/index.html",
+  "site": {
+    "name": "fleetatlas",
+    "site_dir": "/Users/timchef/UXBench/websites/fleetatlas",
+    "start_page": "index.html",
+    "page_type": "dashboard",
+    "html_files": [
+      "alerts.html",
+      "analytics.html",
+      "index.html",
+      "vehicles.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/fleetatlas/README.md",
+    "summary": "FleetAtlas Fictional commercial fleet real-time management SaaS dashboard, used as a UXBench fixture. Pages - `index.html` — Fleet overview map home. Left thin rail nav; top bar with org switcher, view tabs (Map / List / Analytics), search box, alert bell (dropdown shows the 5 most recent on click); status filter strip (All / Running / Idle / Maintenance / Offline / Alert); full-screen SVG city map with 25 vehicles in real-time positions (running vehicles jitter their position every 5 seconds to simulate live updates); clicking a vehicle icon or drawer row → right detail panel slides in; bottom pull-up drawer showing the vehicle list. - Right detail panel (controlled by JS within the map page) — basic info (plate / model / year / VIN / fleet), driver info (with phone / shift / accumulated drive hours), current task (route / location / ETA / remaining miles), historical track SVG (24h / 7d / 30d toggle), fuel and speed sparklines; 4 action buttons (Send command / Contact driver / Maintenance record / Reassign task), with Reassign being a destructive action that has a second-confirmation modal. - `alerts.html` — Alerts center. 4 KPI cards (open / new today / by severity / mean handli",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full fleetatlas system, prioritizing the primary dashboard flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "FleetAtlas’s core dashboard, alerts, and analytics flows are generally functional, but several interactions feel inert because they provide little or no visible state feedback. The biggest UX risks are in mobile: horizontal overflow, clipped tables, and undersized/unnamed controls make the app harder to use on touch screens. There are also a few placeholder-style branches in the shared shell (e.g., Drivers/Routes/Settings) that don’t clearly confirm where they go, which can undermine trust in navigation.",
+  "exploration_plan": {
+    "goal": "Exhaustively explore the core fleet management dashboard flow and verify the main adjacent pages, with emphasis on map/list switching, vehicle/alert drill-downs, and destructive action handling.",
+    "summary": "Start on the dashboard because it is the primary entry point and contains the richest interactive surface: org switching, view tabs, status filters, search, notification dropdown, map vehicle selection, and the bottom vehicle drawer. Then cover the standalone pages (Vehicles, Alerts, Analytics) to validate cross-page consistency, filtering/search behavior, and table/detail workflows. Finish with deeper validation of high-risk states such as alert handling, vehicle detail actions, and mobile viewport usability where small tap targets and unlabeled controls are most likely to regress.",
+    "assumptions": [
+      "The visible dashboard controls are the primary route to vehicle detail and action workflows; side-nav placeholder items like Drivers, Routes, Maintenance, and Settings may not navigate to full pages and should only be probed cautiously.",
+      "The explorer should treat the prescan as authoritative: only index.html, vehicles.html, alerts.html, and analytics.html are known HTML pages.",
+      "The right-side vehicle detail panel and confirmation modal are implemented within index.html and should be validated through map/list interactions rather than expecting separate pages.",
+      "The alert bell dropdown on the dashboard contains the five most recent alerts, and the reassignment flow is the only explicitly noted destructive action."
+    ],
+    "target_pages": [
+      "index.html",
+      "vehicles.html",
+      "alerts.html",
+      "analytics.html"
+    ],
+    "risk_hotspots": [
+      "index.html: org selector with missing label, search box, and Map/List/Analytics view toggles with small tap targets on mobile",
+      "index.html: alert bell dropdown and notification count state",
+      "index.html: vehicle click/drill-down into right detail panel, including 24h/7d/30d toggle and action buttons",
+      "index.html: Reassign task destructive action and second-confirmation modal",
+      "vehicles.html: dense filter/search/table controls and row-level details",
+      "alerts.html: multiple filters (time, severity, type, status) and Assign/Details actions on alert rows",
+      "analytics.html: report view integrity and any interaction on the lightweight controls present",
+      "mobile viewport: small tap targets and unlabeled select/input controls on all key pages"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard orientation and navigation",
+        "objective": "Validate the main landing experience and the top-level navigation controls before digging into deeper workflows.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the default dashboard state loads with map view selected, status chips visible, and vehicle list drawer available",
+          "Exercise org switcher selection and verify the page updates consistently or remains stable",
+          "Check the notification bell dropdown contents and whether the count matches the visible alert badge",
+          "Try the top-level view toggles (Map view, List view, Analytics view) and note which ones change state versus navigate",
+          "Verify the status filter strip changes the visible vehicle set or highlights filtered state"
+        ],
+        "exit_criteria": [
+          "All visible top-bar controls on the dashboard have been clicked or at least state-checked once",
+          "Navigator behavior is understood for map/list/analytics tabs and alert dropdown",
+          "No blocking rendering or interaction issues are observed in the initial dashboard state"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Vehicle discovery and detail panel",
+        "objective": "Exercise the primary fleet workflow: finding a vehicle, opening details, and validating the vehicle-specific actions and history widgets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the search box with at least two query styles (plate and driver/route terms) to confirm filtering or matching behavior",
+          "Click representative vehicles from the map and from the drawer list, including at least one running vehicle and one non-running vehicle",
+          "Validate the right detail panel fields: basic info, driver info, current task, and historical track display",
+          "Switch the 24h/7d/30d history toggle and confirm the chart updates or the selected state changes",
+          "Check the four action buttons: Send command, Contact driver, Maintenance record, and Reassign task",
+          "Open Reassign task and verify the second-confirmation modal appears and is dismissible",
+          "Observe whether live map positions or status counts visibly change over time for running vehicles"
+        ],
+        "exit_criteria": [
+          "At least two distinct vehicle detail views have been opened successfully",
+          "The history toggle and all vehicle action buttons have been exercised or inspected",
+          "The destructive reassign confirmation path has been confirmed"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Vehicle list and filtering page",
+        "objective": "Validate the dedicated Vehicles page as the structured list/search/filter counterpart to the dashboard drawer.",
+        "target_pages": [
+          "vehicles.html"
+        ],
+        "key_checks": [
+          "Open the Vehicles page and confirm the table/list is populated with vehicle rows and details actions",
+          "Test the status filter, fleet filter, and vehicle search field with representative inputs",
+          "Check whether selecting filters narrows the visible table rows and whether row counts remain sensible",
+          "Open at least one vehicle row detail action if available from the list",
+          "Confirm the page’s many inputs render and remain usable without overlap or truncation"
+        ],
+        "exit_criteria": [
+          "Search and both major filter types have been tried",
+          "At least one vehicle row has been inspected beyond the table summary",
+          "The page remains readable with dense data and no obvious layout collapse"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Alert triage workflow",
+        "objective": "Validate alert management, prioritization, and row-level actions on the Alerts page.",
+        "target_pages": [
+          "alerts.html"
+        ],
+        "key_checks": [
+          "Confirm KPI cards and the alert table are visible and coherent with the alert counts in navigation",
+          "Test the alert search field and the time, severity, type, and status filters individually",
+          "Exercise both Assign and Details actions on at least one high-severity alert row",
+          "Check that the filtered views still show plausible alert records and that row metadata updates accordingly",
+          "Look for any mismatch between alert severity/status filters and row contents"
+        ],
+        "exit_criteria": [
+          "All major filter categories have been interacted with",
+          "At least one alert row action has been triggered",
+          "The page behavior matches the expected alert triage pattern without broken controls"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Analytics verification",
+        "objective": "Confirm the analytical reporting page loads cleanly and the key dashboard metrics, heatmap, and ranking table are legible.",
+        "target_pages": [
+          "analytics.html"
+        ],
+        "key_checks": [
+          "Validate the headline KPIs and the fleet utilization heatmap render correctly",
+          "Inspect the driver performance ranking table for sorting/readability issues if sortable behavior exists",
+          "Exercise the visible search/control on this page and the org selector if it appears",
+          "Verify that the page remains stable on navigation from the dashboard analytics tab if that route is used"
+        ],
+        "exit_criteria": [
+          "The analytics page has been fully loaded and reviewed",
+          "Any visible control has been checked at least once",
+          "No data-visualization rendering issues are observed"
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile recheck of critical paths",
+        "objective": "Repeat the most important interactions in a mobile viewport to validate tap usability and responsive behavior.",
+        "target_pages": [
+          "index.html",
+          "vehicles.html",
+          "alerts.html",
+          "analytics.html"
+        ],
+        "key_checks": [
+          "Recheck dashboard navigation, search, status chips, and notification/org controls on mobile",
+          "Verify that vehicle selection and detail opening still works without precision issues",
+          "Confirm the Vehicles and Alerts page filters remain operable and readable on smaller screens",
+          "Look for tap-target failures, clipped text, or hidden controls around the dense table/list layouts"
+        ],
+        "exit_criteria": [
+          "Critical dashboard, vehicle, and alert interactions have been attempted in mobile viewport",
+          "Any mobile-specific breakage is documented with page and control context",
+          "Coverage includes the controls already flagged as small tap targets in prescan"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages and verify navigation between them from the dashboard entry point",
+      "features": "exercise most visible controls per key page, including search, filters, tabs, row actions, dropdowns, and the destructive reassign flow",
+      "mobile": "repeat critical checks on mobile viewport, prioritizing tap-target-sensitive controls and dense table/list layouts"
+    },
+    "notes": [
+      "Treat the placeholder left-nav items that use '#' as low-priority unless they reveal real state changes; avoid spending excessive budget on dead-end links.",
+      "Prioritize at least one non-running vehicle and one critical alert because those are the most likely to expose edge-state bugs.",
+      "If the dashboard list drawer or map behavior is ambiguous, use the dedicated Vehicles page as the fallback source of truth for list interactions."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Use search and filters to quickly narrow fleet data and confirm the selection worked.",
+      "problem": "Several primary controls change state without any obvious visible confirmation, making the interface feel unresponsive even when the control is technically working.",
+      "evidence": "On index.html, typing into the search box showed no visible filtering/highlighting after Enter; clicking the \"All 25\" status filter produced no visible change; selecting the org switcher retained the value but did not change the page content. On mobile analytics, typing \"Hill\" and \"Chen\" into Search… produced no obvious visible filtering or echoed value change.",
+      "why_it_matters": "Users need immediate confirmation that a search or filter did something, especially in a fleet dashboard where speed and confidence matter. Without feedback, people may repeat actions, assume the system is broken, or miss that a filter was applied.",
+      "suggestion": "Show explicit result-count changes, loading/filtered-state chips, row highlighting, or an empty-state message after search/filter actions. For org switching, update a visible scope label or dashboard content so the change is unmistakable.",
+      "source_hint": "index.html / analytics.html search, status filters, org select"
+    },
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Read and operate the analytics and fleet views comfortably on a phone-sized screen.",
+      "problem": "The mobile analytics layout exceeds the viewport width and clips content, so important data is partially off-screen and the bottom navigation/header crowd the view.",
+      "evidence": "The mobile observation reports page width 527px vs 390px viewport, horizontal overflow warnings, and a lower Driver Performance table clipped on the right. The screenshot path for the mobile analytics scroll state shows the bottom nav still visible while content is cut off.",
+      "why_it_matters": "On mobile, clipped tables and overflow force horizontal scrolling or hide key columns, which makes comparison tasks slow and error-prone. This is especially harmful for analytics, where users need to scan multiple metrics at once.",
+      "suggestion": "Rework the mobile analytics layout into stacked cards or collapsible rows, and ensure tables degrade gracefully with fewer visible columns. Avoid fixed-width containers that overflow the viewport.",
+      "source_hint": "analytics.html mobile screenshot / layout warnings"
+    },
+    {
+      "severity": "high",
+      "ux_area": "goal completion",
+      "user_goal": "Navigate reliably between major sections and know when a destination is real versus a placeholder.",
+      "problem": "Some shared-shell navigation items behave like dead ends or hash-only placeholders instead of clear destinations.",
+      "evidence": "Clicking Drivers on analytics.html only changed the URL to analytics.html# with no visible view change. On alerts.html, clicking Routes similarly only changed the URL hash and kept the Alerts section selected. Settings also changed URLs to a hash state rather than opening a distinct settings view.",
+      "why_it_matters": "Users may assume these are real sections and waste time trying to recover from what looks like a broken nav link. In a management dashboard, ambiguous navigation weakens trust in the product structure.",
+      "suggestion": "Either route these items to dedicated pages/views or visually mark them as disabled/coming soon. If they are intentional placeholders, label them clearly so users know they are not actionable.",
+      "source_hint": "analytics.html / alerts.html nav items"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "accessibility",
+      "user_goal": "Use primary navigation and account controls without ambiguity, especially on smaller screens.",
+      "problem": "A core organization/account switcher is unlabeled, and the avatar/profile button is below the recommended mobile tap target size.",
+      "evidence": "Across pages, the org selector is reported as a form field with no label/aria-label/placeholder. On mobile analytics, the profile button is 36x36px, and the mobile observations repeatedly flag small tap targets in the nav.",
+      "why_it_matters": "Unlabeled controls are harder to understand for everyone and much worse for screen reader users. Small targets increase mis-taps on touch devices, especially in a dense dashboard shell.",
+      "suggestion": "Add visible labels or accessible names to the org switcher, and increase the profile button and compact nav targets to at least 44x44px on mobile.",
+      "source_hint": "global shell / org selector / 👤 button"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "visual hierarchy",
+      "user_goal": "Find the current section and understand where the main content is on alerts and vehicles pages.",
+      "problem": "The alerts and vehicles experiences can appear visually broken or empty in some states, which makes it hard to tell whether content is missing or just hidden offscreen.",
+      "evidence": "The vehicles page initially rendered as a blank main content area even though the DOM still exposed search/filter controls; scrolling later revealed the hidden table. Alerts repeatedly appeared with an empty or collapsed main content area in some desktop/mobile observations, even when navigation remained visible.",
+      "why_it_matters": "Users may think the page failed to load or that they are in the wrong place. Hidden content also hurts discoverability of important table and triage actions.",
+      "suggestion": "Give these pages stronger above-the-fold content cues, such as visible section headers, counts, or a preview of the table/filter strip. If content is below the fold, make that more obvious with layout spacing or a “scroll for table” affordance.",
+      "source_hint": "vehicles.html / alerts.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "forms",
+      "user_goal": "Use the available filters confidently across dashboard, vehicles, alerts, and analytics pages.",
+      "problem": "Multiple select controls are missing accessible labels, which makes the filter set harder to interpret and use consistently.",
+      "evidence": "The session repeatedly reports missing-label warnings for the org switcher select on index.html, vehicles.html, alerts.html, and analytics.html. Vehicles also has an unlabeled fleet/status-related select, and Alerts/Analytics mobile views show the same issue in the compact shell.",
+      "why_it_matters": "Filter-heavy dashboards depend on recognizable controls. Unlabeled selects reduce scanability and create friction for keyboard and assistive-tech users.",
+      "suggestion": "Add clear visible labels or aria-labels for each select, especially org scope, fleet scope, and any status filters. Keep labels visible in the mobile layout so the purpose of each control remains obvious.",
+      "source_hint": "shared select controls on index.html / vehicles.html / alerts.html / analytics.html"
+    },
+    {
+      "severity": "low",
+      "ux_area": "navigation",
+      "user_goal": "Move between major top-level sections quickly on touch devices.",
+      "problem": "Several sidebar/nav targets are smaller than mobile guidance, making the shell harder to tap accurately.",
+      "evidence": "Layout warnings repeatedly flagged 41px-tall nav items and a 36x36px user button, including in the mobile analytics observation and broader desktop/mobile coverage notes.",
+      "why_it_matters": "Small targets increase accidental taps and slow down frequent navigation between fleet views. This is a practical issue for field operators using phones or small tablets.",
+      "suggestion": "Increase tap target height/spacing for sidebar and bottom-nav items on compact screens and ensure rows have generous hit areas.",
+      "source_hint": "global sidebar / bottom nav"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 43,
+    "action_success_rate_percent": 96,
+    "unchanged_action_percent": 33,
+    "known_pages": [
+      "alerts.html",
+      "analytics.html",
+      "index.html",
+      "vehicles.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "vehicles.html",
+      "alerts.html",
+      "analytics.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 29,
+      "open_page": 28,
+      "reload": 1,
+      "scroll": 5,
+      "select_option": 8,
+      "type_text": 8
+    },
+    "total_actions": 79,
+    "successful_actions": 76,
+    "failed_actions": 3,
+    "unchanged_actions": 26,
+    "observed_feature_count": 72,
+    "exercised_feature_count": 31,
+    "unexplored_features": [
+      {
+        "signature": "alerts.html|clickable|a|||⚠️ alerts 12|alerts.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚠️ Alerts 12"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||🔧 maintenance|#",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔧 Maintenance"
+      },
+      {
+        "signature": "alerts.html|clickable|button|||details|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Details"
+      },
+      {
+        "signature": "alerts.html|clickable|button|||👤|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "alerts.html|selectable|select|||all types speeding off route hard brake low fuel service overdue offline|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "All types Speeding Off route Hard brake Low fuel Service overdue Offline"
+      },
+      {
+        "signature": "alerts.html|selectable|select|||aurora logistics group|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "Aurora Logistics Group"
+      },
+      {
+        "signature": "alerts.html|selectable|select|||last 24 hours last 7 days last 30 days|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "Last 24 hours Last 7 days Last 30 days"
+      },
+      {
+        "signature": "alerts.html|typeable|input|||search by plate / driver…|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Search by plate / driver…"
+      },
+      {
+        "signature": "analytics.html|clickable|a|||fleetatlas|index.html",
+        "page": "analytics.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "FleetAtlas"
+      },
+      {
+        "signature": "analytics.html|clickable|a|||⚙️ settings|#",
+        "page": "analytics.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "analytics.html|clickable|a|||📈 analytics|analytics.html",
+        "page": "analytics.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📈 Analytics"
+      },
+      {
+        "signature": "analytics.html|clickable|a|||📊 dashboard|index.html",
+        "page": "analytics.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📊 Dashboard"
+      },
+      {
+        "signature": "analytics.html|clickable|a|||🔧 maintenance|#",
+        "page": "analytics.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔧 Maintenance"
+      },
+      {
+        "signature": "analytics.html|clickable|a|||🚛 vehicles|vehicles.html",
+        "page": "analytics.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🚛 Vehicles"
+      },
+      {
+        "signature": "analytics.html|clickable|a|||🛣️ routes|#",
+        "page": "analytics.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🛣️ Routes"
+      },
+      {
+        "signature": "analytics.html|clickable|button|||👤|",
+        "page": "analytics.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "index.html|clickable|a|||fleetatlas|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "FleetAtlas"
+      },
+      {
+        "signature": "index.html|clickable|a|||view all →|alerts.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "View all →"
+      },
+      {
+        "signature": "index.html|clickable|a|||⚙️ settings|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "index.html|clickable|a|||⚠️ alerts 12|alerts.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚠️ Alerts 12"
+      },
+      {
+        "signature": "index.html|clickable|a|||👤 drivers|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "👤 Drivers"
+      },
+      {
+        "signature": "index.html|clickable|a|||📈 analytics|analytics.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📈 Analytics"
+      },
+      {
+        "signature": "index.html|clickable|a|||📊 dashboard|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📊 Dashboard"
+      },
+      {
+        "signature": "index.html|clickable|a|||🔧 maintenance|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔧 Maintenance"
+      },
+      {
+        "signature": "index.html|clickable|a|||🛣️ routes|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🛣️ Routes"
+      },
+      {
+        "signature": "index.html|clickable|button|||alert 3|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Alert 3"
+      },
+      {
+        "signature": "index.html|clickable|button|||idle 4|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Idle 4"
+      },
+      {
+        "signature": "index.html|clickable|button|||maintenance 3|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Maintenance 3"
+      },
+      {
+        "signature": "index.html|clickable|button|||map view|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Map view"
+      },
+      {
+        "signature": "index.html|clickable|button|||offline 2|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Offline 2"
+      },
+      {
+        "signature": "index.html|clickable|button|||running 13|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Running 13"
+      },
+      {
+        "signature": "index.html|clickable|button|||👤|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "vehicles.html|clickable|a|||fleetatlas|index.html",
+        "page": "vehicles.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "FleetAtlas"
+      },
+      {
+        "signature": "vehicles.html|clickable|a|||⚙️ settings|#",
+        "page": "vehicles.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "vehicles.html|clickable|a|||📊 dashboard|index.html",
+        "page": "vehicles.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📊 Dashboard"
+      },
+      {
+        "signature": "vehicles.html|clickable|a|||🔧 maintenance|#",
+        "page": "vehicles.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔧 Maintenance"
+      },
+      {
+        "signature": "vehicles.html|clickable|a|||🚛 vehicles|vehicles.html",
+        "page": "vehicles.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🚛 Vehicles"
+      },
+      {
+        "signature": "vehicles.html|clickable|a|||🛣️ routes|#",
+        "page": "vehicles.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🛣️ Routes"
+      },
+      {
+        "signature": "vehicles.html|clickable|button|||👤|",
+        "page": "vehicles.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "vehicles.html|selectable|select|||all fleets northeast fleet west coast fleet texas fleet southeast fleet midwest |",
+        "page": "vehicles.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "All fleets Northeast Fleet West Coast Fleet Texas Fleet Southeast Fleet Midwest Fleet Pacific Fleet"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 43% of visible interactive feature signatures.",
+      "3 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-01-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-02-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-03-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-04-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-07-reload-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-11-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-13-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-15-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-16-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-17-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-18-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-19-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-23-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-24-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-25-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-26-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-27-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-31-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-32-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-33-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-34-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-35-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-36-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-37-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-40-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-41-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-43-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-45-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-46-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-47-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-50-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-51-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-52-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-53-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-54-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-55-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-58-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-59-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-61-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-62-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-63-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-68-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-69-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-72-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-73-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-74-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-76-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-78-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-79-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run/screenshots/agentic-80-scroll-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-mini/fleetatlas/_run",
+  "claude_fix": null
+}

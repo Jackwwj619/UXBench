@@ -1,0 +1,206 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the Stratabox single-page marketing/pricing experience, with emphasis on the primary pricing/CTA path and the interactive product sections that support conversion and trust.",
+    "summary": "The run should start at the hero and top navigation, then move through the long-scroll sections in order to validate the primary conversion path, product explanation, and supporting proof points. Special attention should go to the live block builder, SDK tabs/copy interaction, and integrations search because these are the richest interactive surfaces and most likely to reveal state bugs. Since the prescan shows only one HTML page, coverage should focus on deep state exploration across visible controls, plus repeat checks in a mobile viewport to confirm tap-target and layout issues already hinted by the prescan.",
+    "assumptions": [
+      "The site is a single-page experience with in-page anchor navigation rather than separate HTML pages.",
+      "The 'Pricing' navigation item and 'See full plans' CTA likely scroll to or reveal the pricing teaser section within index.html.",
+      "Interactive controls shown in the prescan are implemented in script.js and should respond without additional routes or backend dependencies.",
+      "Mobile behavior is important because the prescan already flagged multiple small tap targets in the top nav and builder controls."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Top navigation on mobile: small tap targets for Product, Builder, SDKs, Integrations, Customers, Pricing, Sign in, and Start free.",
+      "Hero CTA cluster: Start free and Book a demo should be checked for scroll/anchor behavior and any inconsistent focus states.",
+      "Live block builder: drag-and-drop reorder, type switching, add/delete blocks, and debounced auto-save status are high-risk for state sync issues.",
+      "SDK tab strip: JS/Python/Ruby/curl switching and copy-to-clipboard toast should be validated for correctness and feedback.",
+      "Integrations search: filtering by name and category with live count may produce empty-state or mismatch bugs.",
+      "Pricing teaser / See full plans: likely conversion-critical and should be checked for clarity, anchoring, and responsive layout."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline conversion and navigation sweep",
+        "objective": "Validate the top-of-page conversion path and anchor navigation from the sticky header.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click Start free, Book a demo, and Sign in to confirm they behave consistently and do not break page state.",
+          "Use the sticky nav links Product, Builder, SDKs, Integrations, Customers, and Pricing to confirm in-page navigation lands on the intended sections.",
+          "Verify the hero split-panel and trust badges render legibly at the initial viewport."
+        ],
+        "exit_criteria": [
+          "All primary header and hero links have been activated at least once.",
+          "Anchor navigation reaches each major section without visible layout corruption.",
+          "No console or network errors are introduced by navigation."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Trust and product storytelling sections",
+        "objective": "Check the informational sections that reinforce the product narrative and conversion credibility.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Observe the stat row count-up behavior when it enters view and confirm counts animate cleanly.",
+          "Review the feature cards and adjacent content for alignment, truncation, and hierarchy.",
+          "Inspect customer quote area and brand/logo strip for readability and spacing."
+        ],
+        "exit_criteria": [
+          "The stat animation has been triggered and settled.",
+          "Feature and proof sections are scrolled through in both directions with no obvious overlap or clipping.",
+          "Customer proof content remains readable at the tested viewport."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Live builder interaction validation",
+        "objective": "Deeply exercise the builder as the highest-risk interactive surface on the page.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Add each available block type shown in the builder controls, especially the types already visible in the prescan (+ Paragraph, + Heading, + Image, + Callout, + Quote).",
+          "Edit the builder's text inputs to confirm live preview updates and auto-save status transitions after debouncing.",
+          "Reorder blocks via drag-and-drop and verify the editor list and render preview stay in sync.",
+          "Switch block types and delete a block to confirm state updates are reflected in both panes.",
+          "Check for any loss of focus, stale preview content, or broken saved-state messaging after repeated edits."
+        ],
+        "exit_criteria": [
+          "At least one add, edit, reorder, type-switch, and delete action has been completed successfully.",
+          "The preview pane matches the edited builder state after debounce delay.",
+          "No interaction leaves the builder in a stuck or inconsistent state."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "SDK tab and copy workflow",
+        "objective": "Validate the developer-facing SDK snippet interaction and clipboard feedback.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch among JS, Python, Ruby, and curl tabs and confirm code content changes appropriately.",
+          "Use the copy button and verify the toast or feedback state appears and clears as expected.",
+          "Check that syntax highlighting and monospace formatting remain legible across tab changes."
+        ],
+        "exit_criteria": [
+          "Each SDK tab has been selected at least once.",
+          "Copy feedback has been observed at least once.",
+          "Tab state remains consistent after switching back and forth."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Integrations discovery and pricing CTA",
+        "objective": "Exercise search/filtering in the integrations grid and then validate the pricing conversion teaser.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Search integrations by a name term and by a category term to confirm both matching modes work.",
+          "Clear the search to ensure the full set returns and live count resets correctly.",
+          "Scroll to the pricing teaser and activate See full plans to confirm the pricing CTA path is coherent.",
+          "Confirm footer links and section navigation are visually intact at the bottom of the page."
+        ],
+        "exit_criteria": [
+          "Search returns both filtered and unfiltered states correctly.",
+          "Pricing teaser CTA is reachable and behaves consistently.",
+          "Footer navigation is present and accessible at the end of the scroll."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile viewport regression pass",
+        "objective": "Repeat critical conversion and interaction checks on mobile to catch tap-target and layout problems.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Recheck header nav, Start free, and primary hero CTA tapability in the narrow viewport.",
+          "Confirm the builder controls remain usable and do not collapse into unusable touch targets.",
+          "Repeat at least one SDK tab change, one copy action, and one integrations search on mobile.",
+          "Inspect the long-scroll sections for wrapping, overflow, or clipped text at small width."
+        ],
+        "exit_criteria": [
+          "Critical CTAs and at least one representative interaction per major feature have been tested in mobile viewport.",
+          "Any mobile-only spacing or tap-target issues are documented with section-specific evidence.",
+          "No new functional failures appear beyond expected responsive compression."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit the single known HTML page, index.html, and cover all major anchor sections within it.",
+      "features": "Exercise the primary hero CTAs, every top-nav anchor, the live builder controls, all SDK tabs, the copy button, integrations search/filter, and the pricing teaser CTA.",
+      "mobile": "Repeat header/CTA, builder, SDK copy, and integrations search checks in a mobile viewport, with explicit attention to the small tap-target warnings already identified."
+    },
+    "notes": [
+      "Because the prescan shows no separate pricing page, treat pricing as an in-page section and verify anchor behavior rather than looking for route transitions.",
+      "The absence of console and network errors in the prescan suggests a stable baseline; prioritize state integrity and responsive usability over crash hunting."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Stratabox — the structured content platform",
+      "url": "file:///Users/timchef/UXBench/websites/stratabox/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Stratabox Product Builder SDKs Integrations Customers Pricing Sign in Start free v8 · Stratabox Studio Structured content for every surface. A headless content platform where editors author with composable blocks, developers query a typed GraphQL+REST API, and your team ships content to web, mobile, kiosks, and email — from a single source of truth. Start free → Book a demo ✔ 50 GB asset CDN free ✔ SOC 2 Type II ✔ EU + US regions studio.stratabox.dev / articles / coastal-bloom EDITOR ● saved H1 Coastal Bloom Returns ¶ After a two-year hiatus the festival returns to the Pier 22 boardwalk… ▣ hero-coast-2026.jpg · 4096×2304 ★ Callout · Tickets on sale May 22 ¶ Organizers expect twelve thousand visitors over the weekend… ▦ Gallery · 8 images LIVE PREVIEW web · mobile · email Coastal Bloom Returns After a two-year hiatus the festival returns to the Pier 22 boardwalk… hero-coast-2026.jpg ★ Tic",
+      "headings": [
+        "Structured content\nfor every surface.",
+        "Coastal Bloom Returns",
+        "Built around composable blocks.",
+        "Composable schema",
+        "Real-time collaboration",
+        "Edge content API",
+        "Drag, drop, ship.",
+        "A field guide to coastal birds",
+        "One schema. Every SDK.",
+        "Plays well with your stack."
+      ],
+      "counts": {
+        "buttons": 15,
+        "links": 29,
+        "inputs": 11,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Stratabox",
+        "clickable:a:Product",
+        "clickable:a:Builder",
+        "clickable:a:SDKs",
+        "clickable:a:Integrations",
+        "clickable:a:Customers",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Start free",
+        "clickable:a:Start free →",
+        "clickable:a:Book a demo",
+        "clickable:button:+ Paragraph",
+        "clickable:button:+ Heading",
+        "clickable:button:+ Image",
+        "clickable:button:+ Callout",
+        "clickable:button:+ Quote"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

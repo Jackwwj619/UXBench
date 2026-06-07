@@ -1,0 +1,166 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the Pelagic landing page, validating all interactive components, dynamic animations, responsive layouts, and navigation flows.",
+    "summary": "The exploration will focus entirely on the single-page landing site, systematically validating the hero section, interactive code tabs, copy-to-clipboard functionality, and dynamic benchmark animations. It will then scroll to test mid-page feature cards, the architecture diagram, and the blog/changelog feeds. Finally, it will repeat critical checks on a mobile viewport to assess responsive behavior and tap-target sizing.",
+    "assumptions": [
+      "The site is a single-page application with no separate pages for Docs, Pricing, or Blog; navigation links likely anchor to sections on index.html.",
+      "The 'Copy install command' button triggers a toast notification and copies 'pip install pelagic' to the clipboard.",
+      "The benchmark numbers and GitHub stars counter are animated via script.js and require observation to verify smooth rendering.",
+      "Footer and navigation links pointing to external resources (GitHub, Discord, Forum) will use '#' placeholders and won't navigate away."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Code tab switching (Python/Node/Go/curl) may fail to update the code block or cause layout shifts.",
+      "The 'Copy install command' button has a small tap target (50x24px) and may lack clear visual feedback if the toast fails.",
+      "Dynamic benchmark rotation might be janky, inaccessible, or fail to cycle properly.",
+      "Navigation anchor links (Product, Docs, Pricing, Blog) might misbehave or have offset issues on mobile viewports.",
+      "Multiple small tap targets in the header nav and code tabs pose mobile usability risks."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Hero & Interactive Code Validation",
+        "objective": "Validate the primary conversion flow, interactive code snippets, and copy functionality in the hero section.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Quickstart' and 'View on GitHub' CTAs to verify anchor/link behavior.",
+          "Click each code tab (python, node, go, curl) and verify the code block updates correctly.",
+          "Click the 'Copy install command' button and verify the toast notification appears.",
+          "Observe the benchmark number rotation for smooth animation and correct data display."
+        ],
+        "exit_criteria": [
+          "All 4 code tabs have been clicked and displayed corresponding code.",
+          "Copy button clicked and toast verified.",
+          "CTAs clicked and responses observed."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Mid-Page Features & Architecture",
+        "objective": "Validate the feature cards, three-step flow, and architecture SVG rendering.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Scroll to 'Built for the way modern retrieval actually works' and check 3 core-feature cards for layout and readability.",
+          "Verify the Ingest → Index → Query three-step flow layout and content.",
+          "Inspect the Architecture SVG diagram for proper rendering and scaling.",
+          "Check the 'Trusted in production by' logo row for correct rendering and alignment."
+        ],
+        "exit_criteria": [
+          "Feature cards and 3-step flow visually verified.",
+          "Architecture SVG confirmed visible and well-scaled."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Footer, Feeds & Navigation Anchors",
+        "objective": "Validate the blog/changelog feeds, footer structure, and all anchor navigation links.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Scroll to Blog and Changelog dual feed; verify layout and content presence.",
+          "Click footer links (Overview, Docs, GitHub, Discord, etc.) to check for broken anchors or placeholders.",
+          "Click top navigation links (Product, Docs, Pricing, Blog) and verify smooth scrolling to correct sections.",
+          "Verify the GitHub stars counter pill animation and display."
+        ],
+        "exit_criteria": [
+          "All top nav and footer links clicked.",
+          "Blog/Changelog feed layout verified."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Viewport & Responsiveness",
+        "objective": "Assess mobile usability, responsive breakpoints, and tap-target issues identified in prescan.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (<880px) and check for layout collapses or overlaps.",
+          "Verify hamburger menu appearance and functionality if the top nav collapses.",
+          "Re-test code tabs and copy button on mobile to ensure they remain usable despite small tap targets.",
+          "Check if the architecture SVG and logo row scale appropriately on small screens."
+        ],
+        "exit_criteria": [
+          "Mobile layout visually verified.",
+          "Interactive elements re-tested on mobile viewport.",
+          "Responsive breakpoint behavior confirmed."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of known HTML pages (index.html)",
+      "features": "Exercise all 5 buttons, 4 code tabs, and representative anchor links",
+      "mobile": "Repeat hero interactions and layout checks on mobile viewport"
+    },
+    "notes": [
+      "Prescan flagged 10 small_tap_target warnings, primarily in the header and code tabs; prioritize these during the mobile phase.",
+      "Since this is a single-page site, deep exploration means thoroughly interacting with every visible control and observing dynamic states rather than navigating multiple URLs."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Pelagic — Open-source vector database",
+      "url": "file:///Users/timchef/UXBench/websites/pelagic/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Pelagic Product Docs Pricing Blog ★ 17.8k Quickstart Open-source · MIT licensed The vector database that scales with your retrieval, not your bill. Pelagic powers hybrid search, RAG, and recommender pipelines at sub-20ms p95 — across billions of vectors, on your own hardware or ours. Quickstart View on GitHub pip install pelagic Copy Running benchmark on YFCC-100M… Recall@10: 0.987 python node go curl from pelagic import Client db = Client(\"https://api.pelagic.dev\", api_key=\"pk_live_…\") index = db.create_index( name=\"docs\", dim=1536, metric=\"cosine\", hybrid=True, ) index.upsert([ {\"id\": \"doc-001\", \"vector\": embed(text), \"filter\": {\"lang\": \"en\"}} ]) hits = index.query( vector=embed(\"what is hnsw\"), top_k=10, filter={\"lang\": \"en\"}, rerank=\"bge-large\", ) 0.987 Recall@10 on SIFT-1B 18 ms p95 query latency 42k queries / second / node 63% lower cost vs leading hosted DB* TRUSTED IN PRODUCTION ",
+      "headings": [
+        "The vector database that scales with your retrieval, not your bill.",
+        "Built for the way modern retrieval actually works.",
+        "Hybrid search out of the box",
+        "Drop-in for FAISS or pgvector",
+        "Self-host or managed",
+        "How it fits",
+        "Architecture",
+        "From the blog",
+        "Why we rewrote our HNSW build in Rust",
+        "Pelagic 0.42: hybrid search, done right"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 21,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Pelagic",
+        "clickable:a:Product",
+        "clickable:a:Docs",
+        "clickable:a:Pricing",
+        "clickable:a:Blog",
+        "clickable:a:GitHub stars",
+        "clickable:a:Quickstart",
+        "clickable:a:View on GitHub",
+        "clickable:button:Copy install command",
+        "clickable:button:python",
+        "clickable:button:node",
+        "clickable:button:go",
+        "clickable:button:curl",
+        "clickable:a:Overview",
+        "clickable:a:Hybrid search"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "summary": "PulseGrid’s dashboard and adjacent pages have functional navigation and filtering in some areas (e.g., generator status filters, checkbox selection), but many interactive elements (dropdowns, ‘Details →’ buttons, forecast/time filters) lack responsiveness or visual feedback. Mobile viewports face tap target and overflow issues, and alarm acknowledgment/filtering has inconsistent functionality. Coverage is 28% of visible controls, with many untested features (e.g., topology, events, BA selector on mobile).",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "clicking-details-buttons-for-generator-units",
+      "severity": "high",
+      "area": "affordance",
+      "page_hint": "generators.html: Details →",
+      "problem": "Clicking ‘Details →’ buttons for generator units (e.g., Palo Verde 1, Antelope CCGT) does not trigger any visible change (modal, navigation, or UI update), suggesting non-functional or unimplemented interactions.",
+      "evidence": "Multiple attempts to click ‘Details →’ buttons across desktop and mobile viewports resulted in no URL change, modal, or detailed view. For example, clicking ‘Details →’ for ‘Antelope CCGT 1’ on mobile (target_id ux-18) showed no UI update.",
+      "suggested_fix": "Implement modal or page navigation for ‘Details →’ buttons, ensuring visual feedback (e.g., loading state) during interaction. Test responsiveness across viewports."
+    },
+    {
+      "id": "alarm-filters-severity-status-and-acknowledge",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "alarms.html: Acknowledge selected, Severity: All Critical only",
+      "problem": "Alarm filters (severity/status) and ‘Acknowledge selected’ button have inconsistent functionality: selecting ‘Critical only’ did not filter alarms, and clicking ‘Acknowledge selected’ with checked alarms did not update statuses (e.g., COL-3, WND-12 remained ‘OPEN’).",
+      "evidence": "After selecting ‘Critical only’ in the severity filter, non-critical alarms remained visible. Clicking ‘Acknowledge selected’ with two critical alarms (COL-3, WND-12) checked did not change their statuses from ‘OPEN’/‘UNATTENDED’.",
+      "suggested_fix": "Fix filter logic to update alarm lists dynamically and ensure ‘Acknowledge selected’ updates alarm statuses (e.g., to ‘ACKED’) with visual confirmation. Add loading states or success messages for acknowledgment."
+    },
+    {
+      "id": "mobile-dropdowns-e-g-all-fuels",
+      "severity": "medium",
+      "area": "mobile usability",
+      "page_hint": "generators.html: All fuels Natural gas Hydro Wind Solar Coal Nuclear Battery",
+      "problem": "Mobile dropdowns (e.g., ‘All fuels’, ‘All zones’) do not expand or show options when clicked, and tap targets are below 44px (e.g., ‘All fuels’ dropdown height 31px), violating mobile usability guidelines.",
+      "evidence": "Clicking ‘All fuels’ (target_id ux-15) and ‘All zones’ (target_id ux-16) on mobile resulted in no expansion. Layout warnings indicate tap targets (e.g., dropdowns, navigation links) are smaller than 44px, causing interaction failures.",
+      "suggested_fix": "Increase dropdown tap targets to ≥44px, ensure dropdowns expand on click (e.g., via CSS/JS fixes), and test responsiveness on mobile viewports."
+    },
+    {
+      "id": "clicking-the-time-range-filter-e",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "forecast.html: Day-ahead Hour-ahead Real-time",
+      "problem": "Clicking the time range filter (e.g., ‘Day-ahead’) on the forecast page did not update the view or selected state, suggesting non-functional interaction.",
+      "evidence": "Clicking the time range dropdown (target_id ux-10) with options ‘Day-ahead’, ‘Hour-ahead’, ‘Real-time’ showed no UI change or forecast update.",
+      "suggested_fix": "Implement dynamic forecast updates based on time range selection, with visual feedback (e.g., highlighted selected option, updated chart data)."
+    },
+    {
+      "id": "the-western-interconnect-dropdown-ba-selector",
+      "severity": "low",
+      "area": "mobile usability",
+      "page_hint": "index.html: Western Interconnect ERCOT SPP MISO",
+      "problem": "The ‘Western Interconnect’ dropdown (BA selector) does not expand on mobile, and tap targets are small (e.g., 211x30px on desktop, smaller on mobile), violating usability guidelines.",
+      "evidence": "Clicking the BA selector (target_id ux-8) on mobile did not expand the dropdown. Layout warnings indicate small tap targets (e.g., 211x30px on desktop, below 44px mobile guidance) for this element.",
+      "suggested_fix": "Increase the BA selector’s tap target to ≥44px on mobile, ensure dropdown expansion on click, and test responsiveness across viewports."
+    },
+    {
+      "id": "clicking-open-buttons-for-alarms-e",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "alarms.html: Open →",
+      "problem": "Clicking ‘Open →’ buttons for alarms (e.g., COL-3, WND-12) does not trigger any visible change (modal, navigation, or detailed view), suggesting non-functional interactions.",
+      "evidence": "Multiple attempts to click ‘Open →’ buttons for alarms (e.g., COL-3, WND-12) resulted in no URL change, modal, or detailed view. For example, clicking ‘Open →’ for ‘COL-3 · Colstrip Unit 3’ showed no UI update.",
+      "suggested_fix": "Implement modal or page navigation for ‘Open →’ buttons, ensuring visual feedback (e.g., loading state) during interaction. Test responsiveness across viewports."
+    },
+    {
+      "id": "mobile-viewports-e-g-generators-html",
+      "severity": "low",
+      "area": "visual hierarchy",
+      "page_hint": "generators.html (mobile viewport)",
+      "problem": "Mobile viewports (e.g., generators.html) have horizontal overflow (page width 505px > viewport 390px), causing content to be cut off and requiring horizontal scrolling, which is non-intuitive for mobile users.",
+      "evidence": "Layout warnings indicate page width (505px) exceeds mobile viewport (390px) on generators.html, with content (e.g., generator table columns) cut off.",
+      "suggested_fix": "Implement responsive design for tables (e.g., horizontal scrolling, collapsible columns) and ensure page width fits mobile viewports. Test layout across devices."
+    },
+    {
+      "id": "the-all-fuels-dropdown-initially-failed",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "generators.html: All fuels Natural gas Hydro Wind Solar Coal Nuclear Battery",
+      "problem": "The ‘All fuels’ dropdown initially failed to expand on desktop, requiring multiple clicks to reveal options. This inconsistency reduces user confidence in filter functionality.",
+      "evidence": "Clicking ‘All fuels’ (target_id ux-15) on desktop initially showed no expansion, but later attempts revealed options. This inconsistent behavior suggests a race condition or unresponsive interaction.",
+      "suggested_fix": "Fix dropdown expansion logic to ensure consistent responsiveness (e.g., on first click) and add visual feedback (e.g., open/closed state indicators)."
+    }
+  ]
+}

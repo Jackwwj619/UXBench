@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My applications — CivicPort</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="portal-home">
+<header class="civic-bar"><div class="brand"><svg width="32" height="32" viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#14517A"/><path d="M10 22 L18 10 L26 22 Z" fill="#C5A572"/></svg><strong>CivicPort</strong></div>
+<nav><a href="apply.html">Apply</a><a href="my-applications.html" class="current">My applications</a><a href="fees.html">Fees</a></nav></header>
+<main class="portal">
+<h1>My applications</h1>
+<p class="lede">Click any row to see status, inspector notes, and next steps.</p>
+<div id="newApplicationBanner"></div>
+<div class="apps-tbl-wrap">
+<table class="apps-tbl apps-tbl-clickable">
+<thead><tr><th>App ID</th><th>Type</th><th>Address</th><th>Submitted</th><th>Status</th><th aria-label="Actions"></th></tr></thead>
+<tbody id="appsTbody">
+<tr data-detail="AB-2026-PERM-7042" tabindex="0" role="link" aria-label="Open application AB-2026-PERM-7042"><td data-label="App ID">AB-2026-PERM-7042</td><td data-label="Type">Kitchen renovation</td><td data-label="Address">148 Coppergate St.</td><td data-label="Submitted">Apr 12, 2026</td><td data-label="Status"><span class="badge ok">Approved</span></td><td class="row-cta" data-label="Action"><span class="row-link">View details ›</span></td></tr>
+<tr data-detail="AB-2025-PERM-9981" tabindex="0" role="link" aria-label="Open application AB-2025-PERM-9981"><td data-label="App ID">AB-2025-PERM-9981</td><td data-label="Type">Roof replacement</td><td data-label="Address">148 Coppergate St.</td><td data-label="Submitted">Nov 3, 2025</td><td data-label="Status"><span class="badge ok">Approved</span></td><td class="row-cta" data-label="Action"><span class="row-link">View details ›</span></td></tr>
+<tr data-detail="AB-2025-PERM-6601" tabindex="0" role="link" aria-label="Open application AB-2025-PERM-6601"><td data-label="App ID">AB-2025-PERM-6601</td><td data-label="Type">Bathroom remodel</td><td data-label="Address">22 Foundry Lane</td><td data-label="Submitted">Aug 19, 2025</td><td data-label="Status"><span class="badge warn">Inspector follow-up</span></td><td class="row-cta" data-label="Action"><span class="row-link">View details ›</span></td></tr>
+</tbody></table>
+</div>
+
+<dialog id="detailDialog" class="detail-dlg">
+  <h3 id="detailTitle">Application detail</h3>
+  <div id="detailBody"></div>
+  <div class="dlg-row"><button class="btn-secondary" id="detailClose" type="button">Close</button></div>
+</dialog>
+</main>
+<footer class="civic-foot"><p class="disclaimer">Local demo for UXBench. Fictional product, not a real company.</p></footer>
+<script>
+const SUBMITTED_STORAGE = "civicport-submitted-apps-v1";
+const DEMO_DETAILS = {
+  "AB-2026-PERM-7042": {
+    inspector: "M. Rivera",
+    notes: "Final inspection completed Apr 18. Permit issued.",
+    nextSteps: "No further action required. Permit valid through Oct 12, 2026.",
+    paid: "$478 paid Apr 12.",
+  },
+  "AB-2025-PERM-9981": {
+    inspector: "K. Tanaka",
+    notes: "Roof inspection passed Nov 9. Permit closed.",
+    nextSteps: "Closed. Keep the certificate of completion for your records.",
+    paid: "$285 paid Nov 3.",
+  },
+  "AB-2025-PERM-6601": {
+    inspector: "L. Okafor",
+    notes: "Plumbing rough-in passed. Final wall inspection requires you to schedule a follow-up.",
+    nextSteps: "Action required: schedule the final inspection through the contractor portal.",
+    paid: "$372 paid Aug 19.",
+  },
+};
+
+function injectSubmitted(){
+  const submitted = JSON.parse(localStorage.getItem(SUBMITTED_STORAGE) || "[]");
+  if(!submitted.length) return;
+  const tbody = document.getElementById("appsTbody");
+  const banner = document.getElementById("newApplicationBanner");
+  const newest = submitted[0];
+  banner.innerHTML = `<div class="success-banner" role="status"><strong>✓ Application ${newest.id} submitted.</strong> A plan reviewer will contact you within 1 business day.</div>`;
+  submitted.forEach(s => {
+    const tr = document.createElement("tr");
+    tr.setAttribute("data-detail", s.id);
+    tr.setAttribute("tabindex", "0");
+    tr.setAttribute("role", "link");
+    tr.setAttribute("aria-label", "Open application " + s.id);
+    tr.classList.add("new-row");
+    tr.innerHTML = `<td data-label="App ID">${s.id}</td><td data-label="Type">${s.type}</td><td data-label="Address">${s.address}</td><td data-label="Submitted">${s.submitted}</td><td data-label="Status"><span class="badge warn">${s.status}</span></td><td class="row-cta" data-label="Action"><span class="row-link">View details ›</span></td>`;
+    tbody.insertBefore(tr, tbody.firstChild);
+    DEMO_DETAILS[s.id] = {
+      inspector: "Pending assignment",
+      notes: "Application received and queued for review.",
+      nextSteps: s.nextSteps || "A plan reviewer will be assigned within 1 business day.",
+      paid: s.fee ? (s.fee + " due at acceptance.") : "Fees pending.",
+    };
+  });
+}
+
+function openDetail(id){
+  const meta = DEMO_DETAILS[id] || {};
+  const row = document.querySelector(`tr[data-detail="${id}"]`);
+  const cells = row ? row.querySelectorAll("td") : [];
+  const type = cells[1]?.textContent || "";
+  const addr = cells[2]?.textContent || "";
+  const submitted = cells[3]?.textContent || "";
+  const status = cells[4]?.textContent || "";
+  document.getElementById("detailTitle").textContent = id;
+  document.getElementById("detailBody").innerHTML = `
+    <div class="parcel-result"><dl>
+      <dt>Type</dt><dd>${type}</dd>
+      <dt>Address</dt><dd>${addr}</dd>
+      <dt>Submitted</dt><dd>${submitted}</dd>
+      <dt>Status</dt><dd>${status}</dd>
+      <dt>Inspector</dt><dd>${meta.inspector || "—"}</dd>
+      <dt>Inspector notes</dt><dd>${meta.notes || "—"}</dd>
+      <dt>Payment</dt><dd>${meta.paid || "—"}</dd>
+      <dt>Next steps</dt><dd>${meta.nextSteps || "—"}</dd>
+    </dl></div>`;
+  document.getElementById("detailDialog").showModal();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  injectSubmitted();
+  document.querySelectorAll("tr[data-detail]").forEach(tr => {
+    tr.addEventListener("click", () => openDetail(tr.dataset.detail));
+    tr.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openDetail(tr.dataset.detail); }
+    });
+  });
+  document.getElementById("detailClose").addEventListener("click", () => document.getElementById("detailDialog").close());
+});
+</script>
+</body>
+</html>

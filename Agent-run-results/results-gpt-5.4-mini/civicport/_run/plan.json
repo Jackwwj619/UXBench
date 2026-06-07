@@ -1,0 +1,305 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the CivicPort permit onboarding flow, with emphasis on application creation, conditional step progression, fees visibility, and recovery/navigation paths across the known pages.",
+    "summary": "Start from the home page and validate the three primary entry points: Apply, Track/My applications, and Fees, then spend most of the run inside the application wizard. The apply flow should be exercised through its visible steps, especially any conditional branches triggered by project type, parcel location, and document requirements, while checking the right-side materials checklist and fee panel for state changes. End by revisiting the list/fees pages to confirm cross-page navigation and by repeating critical checks in a mobile viewport, since the prescan already shows small tap targets on the header links.",
+    "assumptions": [
+      "The known HTML files represent the full in-scope surface for this run: index.html, apply.html, fees.html, and my-applications.html.",
+      "The application wizard is dynamic and can reveal different steps and document requirements based on user selections such as project type, historic parcel status, and exterior changes.",
+      "No dedicated login, payment processing, or server-backed submission is visible in the prescan; validation should focus on in-page behavior, not real transaction completion.",
+      "The 'Help' control on the home page appears to be a non-navigating or placeholder control based on href '#', so its behavior should be checked for affordance rather than expected content.",
+      "The preset sample application IDs on my-applications.html are likely static demo data, but row-level affordances should still be checked if present during runtime.",
+      "The small tap target warnings on the top-nav links are likely to recur in mobile viewport and should be explicitly rechecked there."
+    ],
+    "target_pages": [
+      "index.html",
+      "apply.html",
+      "fees.html",
+      "my-applications.html"
+    ],
+    "risk_hotspots": [
+      "apply.html: dynamic multi-step wizard with completed/current/locked steps and click-back behavior",
+      "apply.html: conditional steps for exterior changes, historic parcels, addition/structural projects, and roof/electrical/HVAC-related energy worksheet requirements",
+      "apply.html: file upload and affidavit sections, plus final review/submit state",
+      "apply.html: auto-save/cancel recovery path and any cancel confirmation dialog",
+      "apply.html: right-side 'What you'll need' checklist and estimated fee breakdown with expedited toggle",
+      "index.html: small top-nav tap targets and placeholder Help link",
+      "fees.html: fee schedule accuracy and relationship to application choices/expedited pricing",
+      "my-applications.html: status presentation and any per-application navigation or inspection follow-up details if interactive"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Home page entry and navigation sanity",
+        "objective": "Validate the portal landing page, primary navigation, and entry points into the three major flows.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the main Apply card and top Apply link to confirm both route to the application flow.",
+          "Click the My applications entry point and verify it reaches the applications list page.",
+          "Click the Fees entry point and verify it reaches the fee schedule page.",
+          "Check the Help control for behavior, even if it is a placeholder link, to see whether it opens anything or remains inert.",
+          "Note whether the service alerts content is stable and readable, since it provides contextual cues for the portal."
+        ],
+        "exit_criteria": [
+          "All three primary destinations have been reached from the home page.",
+          "Any non-functional or placeholder behavior on Help has been confirmed.",
+          "No unexpected console or network errors occur during navigation."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Application wizard core progression",
+        "objective": "Exercise the main onboarding flow from the initial project information step through early state transitions and persistence cues.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Inspect the initial step layout: left step tree, center form, right materials checklist, and estimated fee panel.",
+          "Fill the visible property address fields and verify the form accepts input without breaking layout or labels.",
+          "Test Back and Save and continue controls for responsiveness and state retention.",
+          "Observe whether the application ID and auto-saved indicator remain stable as edits occur.",
+          "Verify that the 'What you'll need' checklist updates when required fields are completed or selections change.",
+          "Check that the estimated fee panel starts at $0 and reacts once a project type is selected."
+        ],
+        "exit_criteria": [
+          "At least the initial property-address step has been completed or advanced past.",
+          "The auto-save/persistence behavior has been observed at least once.",
+          "The dynamic right-rail checklist or fee panel has shown a state change."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Conditional branches and document requirements",
+        "objective": "Force the wizard into its higher-risk branches and validate step gating, visibility, and requirement updates.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Select a project type that should trigger one of the documented conditional document requirements, such as Addition/Structural or Roof/Electrical/HVAC.",
+          "Confirm whether elevation drawings or energy worksheet requirements appear when the relevant project type is chosen.",
+          "If reachable from visible fields, test a condition that would imply exterior changes and see whether the neighbor signature/materials step appears.",
+          "If parcel/historic status can be set from visible inputs or lookup results, confirm the historic-district step or surcharge messaging appears.",
+          "Check that locked steps stay locked until prerequisites are satisfied and that completed steps remain click-back-able.",
+          "Validate the parcel lookup/ownership/contractor/document sections for required-state indicators or blocking behavior."
+        ],
+        "exit_criteria": [
+          "At least one conditional branch has been triggered and its related requirement surfaced.",
+          "Step gating or lock/unlock behavior has been verified.",
+          "The sidebar checklist reflects the selected project context."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Review, fees, and cancellation recovery",
+        "objective": "Test the end-of-flow summary controls, fee implications, and recovery paths such as cancel or backtracking.",
+        "target_pages": [
+          "apply.html",
+          "fees.html"
+        ],
+        "key_checks": [
+          "Advance to later wizard sections if possible, including review and submit or the closest reachable summary state.",
+          "Verify that fee estimates stay consistent with the selected project type and any expedited toggle.",
+          "Open the cancel confirmation dialog and confirm that recovery/cancel affordances are understandable and safe.",
+          "Cross-check the advertised fee breakdown against the standalone fee schedule page for consistency.",
+          "If submit is reachable, inspect its final confirmation affordance without assuming actual transaction completion."
+        ],
+        "exit_criteria": [
+          "The end-state controls or a late-stage summary have been examined.",
+          "Cancel/recovery behavior has been confirmed.",
+          "Fee-related language matches between the wizard and the fees page at a high level."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Applications list and status browsing",
+        "objective": "Validate the account/history page as the adjacent flow for tracking prior permits and status review.",
+        "target_pages": [
+          "my-applications.html"
+        ],
+        "key_checks": [
+          "Review all visible application rows and status badges for clarity and hierarchy.",
+          "Check whether application IDs, types, addresses, and statuses are legible and scan-friendly.",
+          "Look for row clicks or links that open details, follow-up notes, or related actions if any are present.",
+          "Confirm that the page supports the primary 'track' use case implied by the home page messaging."
+        ],
+        "exit_criteria": [
+          "All listed applications have been inspected.",
+          "Any row-level interaction available has been tested.",
+          "The tracking/status use case is understandable from the page content."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile viewport regression pass",
+        "objective": "Repeat the most important navigation and form interactions in mobile viewport, focusing on tap targets and responsive usability.",
+        "target_pages": [
+          "index.html",
+          "apply.html",
+          "fees.html",
+          "my-applications.html"
+        ],
+        "key_checks": [
+          "Recheck the top navigation on the home page for tap target usability and spacing.",
+          "Repeat the first application step interaction on a narrow viewport to ensure inputs and step navigation remain usable.",
+          "Verify that the fee panel, sidebar checklist, and any sticky elements do not obscure form content on mobile.",
+          "Revisit the fees and applications pages to confirm content remains readable and that links/buttons are still practical to tap.",
+          "Confirm whether the previously observed small tap target issue is still present in mobile mode."
+        ],
+        "exit_criteria": [
+          "Critical flows have been exercised at least once in mobile viewport.",
+          "Mobile-specific tap target or layout issues have been confirmed or ruled out.",
+          "No additional mobile-only breakage blocks the primary tasks."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages and return to apply.html for deeper state coverage",
+      "features": "exercise the home navigation, application wizard controls, conditional step logic, fee estimate toggle, cancel/recovery dialog, and applications list status display",
+      "mobile": "repeat the home navigation and at least one meaningful apply-flow progression in mobile viewport, with explicit attention to the small tap targets already flagged"
+    },
+    "notes": [
+      "Prioritize depth on apply.html over breadth elsewhere, since it is the only page with substantial dynamic behavior.",
+      "Use the fee schedule page as a consistency reference for pricing language rather than expecting live calculation parity.",
+      "If the wizard has unreachable states due to missing prerequisites, document the blockage instead of forcing unrealistic completion."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "CivicPort — City of Avalon Bay",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort City of Avalon Bay Apply My applications Fees Help Welcome to CivicPort. Apply for a renovation, building, electrical, or roof permit. Track everything from one place. Apply for a permit Residential, electrical, plumbing, roof. ~25 min. Track an application See status, inspector notes, next steps. Pay fees Open invoices, history, refunds. Service alerts Mon, May 11 — Online plan-check intake is operating normally. Average decision time: 6 business days. Thu, May 7 — Historical-district overlay updated for the Foundry District. New parcels may require additional review. Apr 24 — Counter service at Civic Plaza is by appointment only on Mondays. Avalon Bay Permits Office · 123 Civic Plaza · Mon–Fri 8am–4pm · 555-242-PERM Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Welcome to CivicPort.",
+        "Apply for a permit",
+        "Track an application",
+        "Pay fees",
+        "Service alerts"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 7,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees",
+        "clickable:a:Help",
+        "clickable:a:Apply for a permit Residential, electrical, plumbing, roof. ~25 min.",
+        "clickable:a:Track an application See status, inspector notes, next steps.",
+        "clickable:a:Pay fees Open invoices, history, refunds."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "apply.html",
+      "title": "Apply for a permit — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/apply.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Application AB-2026-PERM-7311 Auto-saved · just now Cancel APPLICATION 1. Project info Property address Project type Project scope Start / end dates 2. Property & ownership Parcel lookup Ownership proof Contractor license 3. Plans & documents Site plan Floor plan 5. Affidavits Lead paint (pre-1978) Environmental 6. Review & submit Summary Fees Submit 1.1 Property address Where is the work happening? You can also start with the parcel number on step 2.1. Street address City State / Zip Back Save and continue WHAT YOU'LL NEED Property address Project type selected Scope described Parcel verified Ownership proof Site plan Floor plan ESTIMATED FEES Pick a project type first Total estimated $0 Expedited review (+50%, decision in 3 days) Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "APPLICATION",
+        "1.1 Property address",
+        "WHAT YOU'LL NEED",
+        "ESTIMATED FEES",
+        "Cancel this application?"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 0,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:button:Cancel",
+        "typeable:input:unlabeled control",
+        "typeable:input:Avalon Bay",
+        "typeable:input:Zip",
+        "clickable:button:Back",
+        "clickable:button:Save and continue",
+        "clickable:input:Expedited review (+50%, decision in 3 days)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "missing_input_label",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "fees.html",
+      "title": "Fees — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/fees.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Apply My applications Fees Permit fee schedule Project type Base fee Per sq ft (over 200) Expedited review Kitchen $320 $1.80 +50% Bathroom $240 $1.60 +50% Addition $680 $2.40 +50% Roof $210 $0.90 +50% Structural $540 $2.10 +50% Electrical $160 — +50% Plumbing $160 — +50% Neighbor mail request: $18 each. Historical-district review: $120 surcharge. Fees are non-refundable once a plan reviewer is assigned. Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Permit fee schedule"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "my-applications.html",
+      "title": "My applications — CivicPort",
+      "url": "file:///Users/timchef/UXBench/websites/civicport/my-applications.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Apply My applications Fees My applications App ID Type Address Submitted Status AB-2026-PERM-7042 Kitchen renovation 148 Coppergate St. Apr 12, 2026 Approved AB-2025-PERM-9981 Roof replacement 148 Coppergate St. Nov 3, 2025 Approved AB-2025-PERM-6601 Bathroom remodel 22 Foundry Lane Aug 19, 2025 Inspector follow-up Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "My applications"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

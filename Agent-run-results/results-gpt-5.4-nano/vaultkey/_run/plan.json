@@ -1,0 +1,216 @@
+{
+  "plan": {
+    "goal": "Autonomously explore and critique the vaultkey marketing-to-pricing UX, prioritizing navigation, plan selection/billing logic, and the most interactive pricing controls, then validating key responsive/mobile behaviors.",
+    "summary": "Start at the landing page to validate top navigation, primary CTAs, and the in-page messaging/visual metaphor (searchable vault screenshot). Then move to the pricing page to thoroughly exercise the Yearly/Monthly toggle, plan CTAs, and the Business seat slider + linked number input and tiered volume pricing totals. Finish by validating the FAQ accordion and enterprise/contact CTA, including repeat checks on mobile viewport for critical interactions.",
+    "assumptions": [
+      "Only two HTML pages exist in the prescan: index.html and pricing.html; other nav items (Security/Enterprise/Help/Sign in) likely use in-page anchors or placeholders rather than separate HTML files.",
+      "Pricing page contains the primary interactive controls: Yearly/Montly billing toggle, plan buttons, Business team-size slider linked to a number input, tiered volume pricing, and an FAQ accordion.",
+      "Responsive behavior is implemented via styles.css breakpoints at >1000, <1000, and <640, so mobile checks are meaningful."
+    ],
+    "target_pages": [
+      "index.html",
+      "pricing.html"
+    ],
+    "risk_hotspots": [
+      "pricing.html: Business per-seat slider (3–200) linked to number input—risk of desync, incorrect min/max handling, or totals not updating",
+      "pricing.html: volume pricing tiers (3–24/25–49/50–99/100–199/200+)—risk that boundaries calculate wrong or yearly/monthly totals disagree with the billing toggle",
+      "pricing.html: Yearly · save 20% vs Monthly—risk of UI state not persisting and/or CTAs sending to inconsistent pricing",
+      "pricing.html: FAQ accordion—risk of multiple panels opening/closing incorrectly or keyboard focus/expand state issues",
+      "index.html: top nav 'Security'/'Enterprise'/'Help' are href='#' anchors—risk of dead links or non-functional sections",
+      "index.html: mobile usability—prescan shows multiple small tap targets in header links (e.g., Help icon, Sign in); risk of mis-taps on mobile"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing page navigation & primary CTAs",
+        "objective": "Validate that the header navigation and primary CTAs correctly route users (especially to pricing.html) and that the landing page provides a coherent entry to plan consideration.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify clicking 'Pricing' in the header navigates to pricing.html and the corresponding active nav state highlights 'Pricing' (prescan shows a green underline on Pricing)",
+          "Verify both landing CTAs ('See plans →' and 'See pricing →') lead to pricing.html and land in/near the plans section (not just at top of page)",
+          "Verify 'Download free' and 'Get Vaultkey' buttons/links have expected behavior (if they are placeholders, confirm there is at least a clear UI response such as opening a section or starting a flow)",
+          "Click header items with href='#' (Security, Enterprise, Help) and confirm they either scroll to content or provide a reasonable non-dead response (no blank/undefined state)",
+          "Use the fake searchable vault screenshot area: check if Cmd/Ctrl shortcut hints correspond to any functional keyboard/search UI (if present); otherwise validate that the static metaphor is readable and not misleading"
+        ],
+        "exit_criteria": [
+          "Confirmed all header items either navigate correctly (for Pricing) or behave consistently (anchors/placeholder responses are non-dead)",
+          "At least one 'See plans/See pricing' CTA was clicked and confirmed to reach pricing.html",
+          "No console/network errors during interactions on index.html"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Pricing page billing toggle, plan CTAs, and Business seat control",
+        "objective": "Thoroughly exercise pricing selection logic and ensure interactive controls correctly update displayed pricing totals and tier labels.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Toggle 'Yearly · save 20%' and 'Monthly' and verify the displayed prices/totals for at least Personal and Family change consistently with the toggle",
+          "For each plan card (Personal, Family, Business), click the primary CTA (e.g., 'Get Personal', 'Start free 30-day trial', and Business CTAs if present) and confirm expected navigation/feedback (e.g., scroll to relevant form/contact section or show a dialog/anchor)",
+          "Exercise Business team size input linkage: drag the seat slider to several points and confirm the team size number input updates; then type values directly and confirm the slider thumb moves",
+          "Check boundary values for Business team size (at least: 3, 24, 25, 49, 50, 99, 100, 199, 200) and verify which tier applies and that monthly/yearly totals update correctly",
+          "Validate that monthly vs yearly totals remain consistent with the applied billing toggle and the same seat count (no mismatch between tier and computed totals)"
+        ],
+        "exit_criteria": [
+          "Billing toggle produces coherent and consistent price changes across plans",
+          "Slider and number input remain synchronized for repeated changes",
+          "Tier boundary checks show correct tier selection and totals at all tested boundaries",
+          "No broken UI states or console/network errors while interacting with controls"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Pricing page compare table, FAQ accordion, and enterprise contact",
+        "objective": "Validate information architecture and disclosure mechanics (feature comparison + FAQ accordion) and confirm enterprise/contact CTA behavior.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Scroll through the 'Compare every feature' section and verify the grouped feature comparison table is readable (no overlapping columns at current viewport)",
+          "Interact with the FAQ accordion: open multiple questions, verify only the intended panels expand/collapse (and animations are smooth), and confirm expanded state is accessible (focus/aria behavior if detectable)",
+          "Find and click the enterprise-related CTA ('Talk to sales →' or similar) and confirm it leads to the enterprise/contact strip or a clear next step",
+          "Confirm that 'Need bigger?' and the enterprise strip are reachable (not obscured) and that the CTA is consistent regardless of earlier billing/seat interactions"
+        ],
+        "exit_criteria": [
+          "FAQ accordion interactions work reliably across multiple opens/closes with no stuck states",
+          "Enterprise/contact CTA produces the expected next step (scroll or navigation) and remains functional",
+          "No layout breaks while reaching compare table + FAQ sections"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Responsive/mobile validation for critical flows",
+        "objective": "Repeat the highest-risk interactions on mobile viewport to catch tap-target and layout issues.",
+        "target_pages": [
+          "index.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "On mobile, tap header links (Pricing, Sign in, Get Vaultkey, and at least one href='#' item) and confirm they are selectable and not mis-targeted",
+          "On pricing mobile, toggle Yearly/Monthly and verify control hit areas are usable and state updates",
+          "On pricing mobile, operate Business seat slider (or alternative control if slider becomes constrained) and confirm number input updates; test at least one mid value and one boundary",
+          "Open/close FAQ accordion on mobile and verify expanded content remains readable and not hidden behind sticky elements"
+        ],
+        "exit_criteria": [
+          "Critical interactions (nav-to-pricing, billing toggle, Business seat linkage, FAQ accordion) are functional on mobile viewport",
+          "No severe usability issues (e.g., controls not tappable or overlap causing wrong targets)"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages (index.html, pricing.html)",
+      "features": "exercise most visible controls per key page: header nav CTAs, pricing Yearly/Monthly toggle, all plan CTAs, Business slider+number input+tiered totals, FAQ accordion, enterprise CTA",
+      "mobile": "repeat critical checks on mobile viewport for: nav-to-pricing, billing toggle, Business seat control linkage, and FAQ accordion"
+    },
+    "notes": [
+      "Prescan indicates multiple small header tap targets; prioritize mobile tap accuracy checks on nav items.",
+      "Because Security/Enterprise/Help appear to be href='#' anchors in the prescan, treat them as potential in-page sections or placeholders and verify they do not lead to dead ends."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Vaultkey — passwords, passkeys, and shared secrets for everyone",
+      "url": "file:///Users/timchef/UXBench/websites/vaultkey/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Vaultkey Product Pricing Security Enterprise Help Sign in Get Vaultkey A password manager you'll actually use Every login, every passkey, one keychain. Vaultkey stores passwords, passkeys, 2FA codes, and shared team secrets — encrypted end-to-end with a key only you can derive. Works on every browser, every device, every shell. See plans → Download free app.vaultkey.io / vault / personal All items 248 Logins 184 Passkeys 23 Cards 9 Notes 32 SHARED Family 14 Engineering 57 ⌘K · search 248 items G github.com m.harlowe · passkey Passkey N netflix.com harlowe.family@… Family F figma.com milena@halcyon.co Engineering S stripe.com milena@halcyon.co · 2FA 2FA L linear.app passkey · synced Passkey TRUSTED BY SECURITY TEAMS AT Halcyon Northwind Vesper Wine Pinecrest PR Atlas Bicycle Holm & Brock Studio Nephele ⌘ One shortcut, every site Cmd-Shift-L drops a passkey or password into whatever's focu",
+      "headings": [
+        "Every login, every passkey,\none keychain.",
+        "One shortcut, every site",
+        "Real end-to-end",
+        "Shared with intent",
+        "Stop reusing passwords."
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 11,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Vaultkey",
+        "clickable:a:Product",
+        "clickable:a:Pricing",
+        "clickable:a:Security",
+        "clickable:a:Enterprise",
+        "clickable:a:Help",
+        "clickable:a:Sign in",
+        "clickable:a:Get Vaultkey",
+        "clickable:a:See plans →",
+        "clickable:a:Download free",
+        "clickable:a:See pricing →"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "pricing.html",
+      "title": "Pricing — Vaultkey",
+      "url": "file:///Users/timchef/UXBench/websites/vaultkey/pricing.html",
+      "load_error": null,
+      "visible_text_excerpt": "Vaultkey Product Pricing Security Enterprise Help Sign in Get Vaultkey Pricing Plans for every kind of keychain. One credit card, unlimited devices, end-to-end encryption on every plan. Yearly · save 20% Monthly Personal For one human and their stuff. $ 0 / month Free forever for one device. Get Personal Unlimited passwords & passkeys 1 device Browser extensions (Chrome, Firefox, Safari, Arc) 2FA codes Basic password health report MOST PICKED Family Share with up to 6, never with the strangers. $ 3.99 / month Billed yearly · for the whole household Start free 30-day trial Everything in Personal Up to 6 family members Shared family vault & per-person private vaults Unlimited devices Encrypted file storage (5 GB / member) Emergency access for trusted contacts Dark-web monitoring on every email Business Per seat, with the audit log to prove it. $ 5.59 / seat / month Team size: 12 seats 3–24",
+      "headings": [
+        "Plans for every kind of keychain.",
+        "Personal",
+        "Family",
+        "Business",
+        "Need bigger?",
+        "Compare every feature.",
+        "Common questions."
+      ],
+      "counts": {
+        "buttons": 10,
+        "links": 12,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Vaultkey",
+        "clickable:a:Product",
+        "clickable:a:Pricing",
+        "clickable:a:Security",
+        "clickable:a:Enterprise",
+        "clickable:a:Help",
+        "clickable:a:Sign in",
+        "clickable:a:Get Vaultkey",
+        "clickable:button:Yearly · save 20%",
+        "clickable:button:Monthly",
+        "clickable:a:Get Personal",
+        "clickable:a:Start free 30-day trial",
+        "clickable:input:Team size: 12 seats",
+        "typeable:input:12",
+        "clickable:a:Start 14-day trial",
+        "clickable:a:Talk to sales →"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

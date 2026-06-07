@@ -1,0 +1,700 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/pulsegrid/index.html",
+  "site": {
+    "name": "pulsegrid",
+    "site_dir": "/Users/timchef/UXBench/websites/pulsegrid",
+    "start_page": "index.html",
+    "page_type": "dashboard",
+    "html_files": [
+      "alarms.html",
+      "forecast.html",
+      "generators.html",
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/pulsegrid/README.md",
+    "summary": "PulseGrid Fictional bulk-power-system SCADA / EMS dashboard \"PulseGrid\" for the Western Interconnect. UXBench fixture in the Dashboard category. Pages - `index.html` — **Overview**. Left rail nav (6 entries with alarm badge); top bar with BA selector (Western / ERCOT / SPP / MISO), Production / Replay / Plan tabs, live ticking clock, ⌘K, theme toggle, alert bell, operator avatar; 5 KPI cards (demand / generation / frequency / renewables share / active alarms) each with sparkline; **2-column body grid**: 48-hour load chart with actual / forecast (dashed) / net renewables area + \"NOW\" marker, weather card with 4 zones (Phoenix 112°F driving 1.8 GW cooling load, Tehachapi wind, etc.), 24-cell generator status grid (color-coded online / tripped / ramping / maintenance with output + % capacity), active-alarms list with severity dots (critical pulses), live fuel-mix bars (7 fuels), interchange table with 6 tie-lines (sched / actual / Δ). - `generators.html` — **Generator list** (38 units across the fleet). Filter strip with status pills (All / Online / Ramping / Tripped / Maintenance), fuel and zone selectors, and search. Sortable-style table with EMS ID, plant name, fuel-color icon, zon",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full pulsegrid system, prioritizing the primary dashboard flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "PulseGrid’s core dashboard and alarm triage flow are understandable, with strong operational data density and clear route switching between Overview, Forecast, Generators, and Alarms. The biggest UX risks are weak feedback for filter/actions, several placeholder-looking nav items, and mobile touch/accessibility friction from small targets and unlabeled controls. Coverage is substantial but not complete, so there may be additional issues in untested interactions like the remaining dashboard/nav features and deeper recovery paths.",
+  "exploration_plan": {
+    "goal": "Explore PulseGrid’s main operator dashboard and verify the adjacent fleet, forecast, and alarm workflows across desktop and mobile, with emphasis on state changes, filtering, and recovery paths.",
+    "summary": "Start on the Overview dashboard to confirm the top-level operational picture, then branch into the generator list, forecast view, and alarms queue using the visible navigation and in-page links. Focus on how the dashboard’s controls behave (BA selector, Production/Replay/Plan tabs, time-range toggles, status filters, search, and alarm actions), and use those pages to check whether detail/state transitions are clear and consistent. Repeat the most important interactions on mobile viewport because several navigation and header controls were flagged as small tap targets, and the BA selector lacks an input label. Avoid assuming hidden topology/events functionality beyond the placeholder links seen in the prescan.",
+    "assumptions": [
+      "Topology and Events were present in navigation but only shown as '#' placeholders in the prescan, so they should be treated as non-functional or out of scope unless they reveal real content during execution.",
+      "The four known HTML pages are the full reachable surface for this run: index.html, generators.html, forecast.html, and alarms.html.",
+      "The left-rail nav and top-bar controls are shared enough that issues found on one page may recur on the others.",
+      "The visible alert counts and labels are meaningful for UX validation, but the exact SCADA data values are fixture content rather than live system truth."
+    ],
+    "target_pages": [
+      "index.html",
+      "generators.html",
+      "forecast.html",
+      "alarms.html"
+    ],
+    "risk_hotspots": [
+      "index.html: BA selector with missing label/accessible name concerns and small tap targets in the top bar.",
+      "index.html: Production / Replay / Plan tabs and time-range buttons (24h, 48h, 7d) because they appear to drive core operational context.",
+      "index.html: Active alarms preview and the 'All alarms →' / 'View all 312 →' drill-down links.",
+      "generators.html: Search field, status pills, fuel/zone selectors, and the large generator table with many rows and mixed states (online, ramping, tripped, maintenance).",
+      "forecast.html: Model/timescale selector and the hourly breakdown rows that are described as tappable overlays.",
+      "alarms.html: Acknowledge selected action, severity/status/time filters, filter input, checkbox selection, and per-row Open/Acked/Resolved actions.",
+      "Mobile viewport: multiple navigation buttons and header controls are under 44px tall, creating likely touch usability risk."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline dashboard verification",
+        "objective": "Validate the Overview page as the primary operator landing surface and confirm the visible cross-system status, charts, and summary cards behave coherently.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Inspect the five KPI cards for readable state, trend indicators, and consistency with the visible alarm/demand/generation context.",
+          "Switch the system load chart between 24h, 48h, and 7d and confirm the chart and NOW marker update without layout breakage.",
+          "Review generator-status summary tiles, active alarms preview, fuel mix, and interchange table for internal consistency and drill-in affordances.",
+          "Check the BA selector, Production/Replay/Plan tabs, clock/theme/bell/command button, and note whether any of them visibly change state."
+        ],
+        "exit_criteria": [
+          "All major visible Overview regions have been inspected at least once.",
+          "At least one time-range toggle and one top-bar control have been exercised.",
+          "Any obvious accessibility or interaction anomalies on the landing page have been recorded."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Generator fleet navigation and filtering",
+        "objective": "Validate the fleet list as the main drill-down from the dashboard and verify filtering, search, and row-level information density.",
+        "target_pages": [
+          "generators.html"
+        ],
+        "key_checks": [
+          "Open the generator list from the left nav and/or the 'View all 312 →' link to confirm consistent routing.",
+          "Exercise the status pills (All, Online, Ramping, Tripped, Maintenance) and verify the table contents respond appropriately.",
+          "Use the fuel and zone selectors plus the search field to narrow the list and observe whether counts/table rows update predictably.",
+          "Inspect a sample of rows across different states, especially tripped and maintenance units, to check clarity of status, capacity, output, operator, and details affordance."
+        ],
+        "exit_criteria": [
+          "At least three filter combinations have been tested, including one search-driven narrowing.",
+          "A representative sample of generator states has been inspected.",
+          "The page’s table and controls are confirmed usable at desktop and then rechecked on mobile viewport."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Forecast scenario and horizon checks",
+        "objective": "Validate the forecast page’s model context, horizon controls, and hourly breakdown interactions for planning-style review.",
+        "target_pages": [
+          "forecast.html"
+        ],
+        "key_checks": [
+          "Confirm the model metadata, day-ahead/hour-ahead/real-time selector, and peak/reserve context are visible and understandable.",
+          "Toggle the 12h, 24h, and 7d horizon buttons and verify the chart and summary figures remain coherent.",
+          "Interact with several hourly breakdown rows to see whether row selection/overlay behavior is discoverable and stable.",
+          "Check the reserve adequacy warnings around higher forecast hours and whether they are legible at a glance."
+        ],
+        "exit_criteria": [
+          "At least one model selector state and one horizon state have been exercised.",
+          "Multiple hourly rows have been inspected for interaction clarity.",
+          "No chart/control rendering issues appear when switching horizons."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Alarm triage and recovery workflow",
+        "objective": "Validate the alarms queue as the main operational recovery path, including filtering, selection, and acknowledge flows.",
+        "target_pages": [
+          "alarms.html"
+        ],
+        "key_checks": [
+          "Open the alarms page and verify the active/critical/resolved summary counts and mean-handle-time KPI.",
+          "Test severity, status, and time filters, plus the free-text filter input, to confirm the list can be narrowed in a controlled way.",
+          "Select one or more alarms and evaluate whether 'Acknowledge selected' reflects the current selection state appropriately.",
+          "Inspect row-level actions and status labels for open, acked, and resolved alarms, especially the critical COL-3 and WND-12 entries."
+        ],
+        "exit_criteria": [
+          "All visible filter classes have been tried at least once.",
+          "At least one selection-based action path has been tested.",
+          "The alarm list’s triage workflow is understandable without hidden behavior."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile viewport regression pass",
+        "objective": "Repeat the most critical task flows in a narrow viewport to validate touch usability and responsive stability.",
+        "target_pages": [
+          "index.html",
+          "generators.html",
+          "forecast.html",
+          "alarms.html"
+        ],
+        "key_checks": [
+          "Revisit the left navigation, top bar controls, and primary filters to confirm the small-tap-target warnings are user-impacting on mobile.",
+          "Repeat one high-value action per page: chart range toggle on Overview, filter/search on Generators, horizon toggle on Forecast, and alarm filtering/selection on Alarms.",
+          "Check whether any control labels, tables, or charts overflow or become difficult to operate in mobile layout."
+        ],
+        "exit_criteria": [
+          "Critical interactions have been replayed in mobile viewport on all known pages.",
+          "Responsive issues are categorized by impact rather than only recorded as generic warnings.",
+          "Any unusable control on mobile is tied to its exact page and interaction."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (4/4) and validate the main entry, list, planning, and triage flows.",
+      "features": "Exercise most visible controls on each key page, including navigation, selectors, filters, chart horizon toggles, search, and at least one row-level or action-level interaction where present.",
+      "mobile": "Repeat the highest-value interactions on mobile viewport, prioritizing the header/nav controls and one primary workflow per page."
+    },
+    "notes": [
+      "Treat the placeholder Topology and Events nav items as exploratory probes only; do not assume they expose meaningful content unless they resolve during the run.",
+      "Because the fixture shows no console or network errors, focus critique on usability, accessibility, and state clarity rather than error recovery from failed loads."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Triage alarms quickly and know whether filter changes are actually narrowing the queue.",
+      "problem": "Changing severity or time filters does not visibly update the alarms list or summary, so the page gives almost no confirmation that the user’s filter choice took effect.",
+      "evidence": "On mobile, selecting \"Major+\" returned feedback saying \"Selected option 'Severity: All'\" and the visible alarms list/summary stayed the same. Selecting \"Last 6h\" also produced \"No obvious URL or visible-text change was detected\" while the table remained visually unchanged.",
+      "why_it_matters": "In a live operations queue, silent filters create uncertainty and slow down decision-making because operators cannot tell whether they are looking at the intended subset.",
+      "suggestion": "Make the active filter state explicit in the UI, update counts/list immediately, and show a visible \"filtered to X alarms\" confirmation or chip when a filter changes.",
+      "source_hint": "alarms.html"
+    },
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Acknowledge selected alarms and see that the action completed.",
+      "problem": "The bulk acknowledge action appears to do nothing visible after activation, so users get no confirmation or state change.",
+      "evidence": "Clicking \"Acknowledge selected\" produced no visible confirmation, URL change, or status change. Earlier on mobile, the button only turned orange after selection, but the action itself still had no post-click feedback.",
+      "why_it_matters": "For triage workflows, lack of confirmation makes it hard to trust whether an incident was actually acknowledged, increasing the risk of duplicate work or missed handoffs.",
+      "suggestion": "After acknowledgement, show a success toast and update row/status chips immediately; if the action is asynchronous, show a spinner and disabled state until completion.",
+      "source_hint": "alarms.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Use the shared top navigation to move to other sections with confidence.",
+      "problem": "Several nav items behave like placeholders rather than real destinations, which makes the shell feel incomplete and undermines orientation.",
+      "evidence": "Clicking \"🌐 Topology\" only changed the URL to `#` on both desktop and mobile, with no content change. \"📜 Events\" also appears as an unexplored `#` destination in the shell.",
+      "why_it_matters": "Operators expect nav items to either open a useful section or clearly signal that they are unavailable; placeholder links waste time and create doubt about the app’s completeness.",
+      "suggestion": "Either wire these items to real views or style them as disabled/coming soon with clearer affordance and explanatory labels.",
+      "source_hint": "index.html / alarms.html / generators.html / forecast.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "forms",
+      "user_goal": "Use filters efficiently, especially on mobile or with assistive tech.",
+      "problem": "Multiple select controls have no visible label/aria-label/placeholder, so the filter strip is harder to scan and less accessible.",
+      "evidence": "The alarms page reported missing labels for Severity, Status, and Time selects. Forecast also had an unlabeled mode selector, and the dashboard BA selector was flagged as missing a label.",
+      "why_it_matters": "Unlabeled form controls slow down expert users, break screen-reader clarity, and make compact operator dashboards harder to learn under pressure.",
+      "suggestion": "Add explicit labels for all selects and compact controls, and keep them visible in the mobile layout even if visually minimized.",
+      "source_hint": "alarms.html / forecast.html / index.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap navigation and header controls accurately on a phone.",
+      "problem": "Many shared-shell controls are below mobile tap-target guidance, making the dashboard difficult to use with touch.",
+      "evidence": "Layout warnings flagged small targets for left-nav links, the theme button, Production/Replay buttons, the Alarms tab, and even compact filter pills. The mobile dashboard also showed horizontal overflow with 697px content on a 390px viewport.",
+      "why_it_matters": "Small targets and overflow increase mis-taps, especially for operators who need fast, reliable interactions during live monitoring.",
+      "suggestion": "Increase hit areas to at least 44px, reduce header density on small screens, and ensure the shell wraps without horizontal overflow.",
+      "source_hint": "index.html / alarms.html / forecast.html / generators.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "See whether the current BA/region or operating mode selection changed context.",
+      "problem": "Some top-level context selectors appear to change state only partially or ambiguously, so users cannot tell what mode they are in.",
+      "evidence": "Changing the BA selector on mobile updated only the title to \"PulseGrid — Western Interconnect\" without a clearly visible in-page confirmation. Forecast scenario selection changed to Hour-ahead, but there was no visible content change reflecting the new mode.",
+      "why_it_matters": "Context selectors are central to situational awareness; if they feel silent, operators may assume they are viewing the wrong region or scenario.",
+      "suggestion": "Reflect selected context prominently in the page header/body and consider a brief state-change message or highlighted chips after selection.",
+      "source_hint": "index.html / forecast.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "affordance",
+      "user_goal": "Drill into generator or alarm details and understand what the action does.",
+      "problem": "Row-level detail actions are visible, but activation does not clearly reveal a destination or interaction outcome.",
+      "evidence": "On generators, clicking \"Details →\" produced no visible-text or URL change. On alarms, clicking \"Open →\" also produced no visible or URL change, even though the row stayed visible in the table.",
+      "why_it_matters": "If drill-down controls do not visibly respond, users cannot trust that they reached the right unit or incident detail, which weakens investigation workflows.",
+      "suggestion": "Make drill-down open a clear detail panel, route, or drawer and preserve the originating list context with a breadcrumb or back affordance.",
+      "source_hint": "generators.html / alarms.html"
+    },
+    {
+      "severity": "low",
+      "ux_area": "accessibility",
+      "user_goal": "Operate the interface without relying on precise mouse clicks.",
+      "problem": "The compact header includes several under-sized controls, including the moon/theme toggle and some nav links, which are likely to be hard to tap reliably.",
+      "evidence": "Mobile layout warnings called out the theme toggle at 30x36px and several nav items at 43px tall or less. The dashboard and alarms shell both flagged these as below the 44px mobile guidance.",
+      "why_it_matters": "Even if the pages are readable, undersized controls create friction and reduce confidence for touch users.",
+      "suggestion": "Loosen spacing in the header, enlarge icon buttons, and consider collapsing less essential controls into an overflow menu on small screens.",
+      "source_hint": "index.html / alarms.html / forecast.html"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 44,
+    "action_success_rate_percent": 95,
+    "unchanged_action_percent": 35,
+    "known_pages": [
+      "alarms.html",
+      "forecast.html",
+      "generators.html",
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "generators.html",
+      "forecast.html",
+      "alarms.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 38,
+      "open_page": 19,
+      "scroll": 4,
+      "select_option": 15,
+      "type_text": 3
+    },
+    "total_actions": 79,
+    "successful_actions": 75,
+    "failed_actions": 4,
+    "unchanged_actions": 28,
+    "observed_feature_count": 71,
+    "exercised_feature_count": 31,
+    "unexplored_features": [
+      {
+        "signature": "alarms.html|clickable|a|||pulsegrid|index.html",
+        "page": "alarms.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "PulseGrid"
+      },
+      {
+        "signature": "alarms.html|clickable|a|||⚡ generators|generators.html",
+        "page": "alarms.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚡ Generators"
+      },
+      {
+        "signature": "alarms.html|clickable|a|||📜 events|#",
+        "page": "alarms.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Events"
+      },
+      {
+        "signature": "alarms.html|clickable|button|||☀|",
+        "page": "alarms.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "☀"
+      },
+      {
+        "signature": "forecast.html|clickable|a|||pulsegrid|index.html",
+        "page": "forecast.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "PulseGrid"
+      },
+      {
+        "signature": "forecast.html|clickable|a|||▦ overview|index.html",
+        "page": "forecast.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "▦ Overview"
+      },
+      {
+        "signature": "forecast.html|clickable|a|||⚡ generators|generators.html",
+        "page": "forecast.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚡ Generators"
+      },
+      {
+        "signature": "forecast.html|clickable|a|||📈 forecast|forecast.html",
+        "page": "forecast.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📈 Forecast"
+      },
+      {
+        "signature": "forecast.html|clickable|button|||☀|",
+        "page": "forecast.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "☀"
+      },
+      {
+        "signature": "generators.html|clickable|a|||pulsegrid|index.html",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "PulseGrid"
+      },
+      {
+        "signature": "generators.html|clickable|a|||⚠ alarms 8|alarms.html",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚠ Alarms 8"
+      },
+      {
+        "signature": "generators.html|clickable|a|||⚡ generators|generators.html",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚡ Generators"
+      },
+      {
+        "signature": "generators.html|clickable|a|||🌐 topology|#",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🌐 Topology"
+      },
+      {
+        "signature": "generators.html|clickable|a|||📈 forecast|forecast.html",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📈 Forecast"
+      },
+      {
+        "signature": "generators.html|clickable|a|||📜 events|#",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Events"
+      },
+      {
+        "signature": "generators.html|clickable|button|||all 38|",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "All 38"
+      },
+      {
+        "signature": "generators.html|clickable|button|||maintenance 3|",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Maintenance 3"
+      },
+      {
+        "signature": "generators.html|clickable|button|||online 30|",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Online 30"
+      },
+      {
+        "signature": "generators.html|clickable|button|||ramping 3|",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Ramping 3"
+      },
+      {
+        "signature": "generators.html|clickable|button|||☾|",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "☾"
+      },
+      {
+        "signature": "generators.html|clickable|input||checkbox|checkbox|",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "checkbox"
+      },
+      {
+        "signature": "generators.html|selectable|select|||all fuels natural gas hydro wind solar coal nuclear battery|",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "All fuels Natural gas Hydro Wind Solar Coal Nuclear Battery"
+      },
+      {
+        "signature": "generators.html|selectable|select|||all zones nw sw rm ca-n ca-s az nv|",
+        "page": "generators.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "All zones NW SW RM CA-N CA-S AZ NV"
+      },
+      {
+        "signature": "index.html|clickable|a|||all alarms →|alarms.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "All alarms →"
+      },
+      {
+        "signature": "index.html|clickable|a|||pulsegrid|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "PulseGrid"
+      },
+      {
+        "signature": "index.html|clickable|a|||view all 312 →|generators.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "View all 312 →"
+      },
+      {
+        "signature": "index.html|clickable|a|||▦ overview|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "▦ Overview"
+      },
+      {
+        "signature": "index.html|clickable|a|||🌐 topology|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🌐 Topology"
+      },
+      {
+        "signature": "index.html|clickable|a|||📜 events|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Events"
+      },
+      {
+        "signature": "index.html|clickable|button|||24h|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "24h"
+      },
+      {
+        "signature": "index.html|clickable|button|||48h|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "48h"
+      },
+      {
+        "signature": "index.html|clickable|button|||7d|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "7d"
+      },
+      {
+        "signature": "index.html|clickable|button|||all|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "All"
+      },
+      {
+        "signature": "index.html|clickable|button|||maintenance|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Maintenance"
+      },
+      {
+        "signature": "index.html|clickable|button|||online|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Online"
+      },
+      {
+        "signature": "index.html|clickable|button|||plan|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Plan"
+      },
+      {
+        "signature": "index.html|clickable|button|||tripped|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Tripped"
+      },
+      {
+        "signature": "index.html|clickable|button|||⌘k|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "⌘K"
+      },
+      {
+        "signature": "index.html|clickable|button|||☀|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "☀"
+      },
+      {
+        "signature": "index.html|clickable|button|||🔔|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "🔔"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 44% of visible interactive feature signatures.",
+      "4 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-07-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-08-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-09-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-10-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-14-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-15-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-16-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-17-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-19-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-22-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-23-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-24-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-26-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-30-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-31-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-33-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-35-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-37-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-41-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-42-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-43-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-45-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-47-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-48-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-51-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-52-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-53-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-54-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-56-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-57-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-58-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-60-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-61-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-62-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-66-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-69-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-71-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-72-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-77-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-78-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-79-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-mini/pulsegrid/_run",
+  "claude_fix": null
+}

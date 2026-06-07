@@ -1,0 +1,170 @@
+{
+  "plan": {
+    "goal": "Evaluate the usability, responsiveness, and data integrity of the Climate Almanac explorer, focusing on the multi-variable overlay logic, chart interactivity, and mobile accessibility.",
+    "summary": "The run will proceed by first validating the core visualization loop (selecting variables, changing regions/smoothing) to ensure the chart updates correctly. It will then test edge cases like maximum variable limits and axis toggling. Finally, it will switch to mobile viewport to assess the critical tap-target issues identified in the prescan and verify layout adaptability.",
+    "assumptions": [
+      "The application is a Single Page Application (SPA); navigation links (Datasets, Stories, etc.) likely toggle views or scroll rather than load new HTML files.",
+      "Chart interactions (hover/zoom) rely on JavaScript event listeners that must be tested via simulated mouse movements.",
+      "The 'Download .csv' and 'Share view' buttons trigger client-side actions (blob download or clipboard copy) rather than server requests."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Left rail checkboxes: Small 13x13px targets are high-risk for mobile usability.",
+      "Chart Overlay Logic: Ensuring the dual-axis scaling handles conflicting units (e.g., °C vs ppm) without visual distortion.",
+      "Inspector Panel: Verifying that hover states on the chart accurately sync with the right-rail data display.",
+      "Navigation Links: Checking if placeholder links (#) cause unexpected page jumps or errors."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Core Visualization & Control Loop",
+        "objective": "Validate that the primary inputs (Variables, Region, Smoothing) correctly update the central chart and metadata.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Toggle all 6 variable checkboxes individually to verify series appear/disappear.",
+          "Attempt to select a 5th variable to test the 'up to four' constraint enforcement.",
+          "Change 'Region' dropdown (e.g., to Arctic) and verify chart title/data updates.",
+          "Change 'Smoothing' (e.g., to No smoothing) and observe chart granularity changes.",
+          "Verify the 'Layers' list updates dynamically when variables are toggled."
+        ],
+        "exit_criteria": [
+          "All 6 variables have been toggled on/off at least once.",
+          "At least 2 different Regions and Smoothing options have been applied.",
+          "Chart renders without console errors after each change."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Chart Interaction & Data Inspection",
+        "objective": "Test the fidelity of the data visualization, including tooltips, zooming, and axis configuration.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over multiple points on the chart to trigger tooltips; verify values match the Inspector panel.",
+          "Toggle Y-Axis between 'Dual axes' and 'Single (z-scored)' to check axis label and scale changes.",
+          "Use 'Reset zoom' button after interacting with the chart (if zoom functionality exists via scroll/drag).",
+          "Click '+ Note' to test annotation creation flow (if interactive) or inspect modal behavior.",
+          "Inspect existing Annotations in the right rail; click 'x' to dismiss one and verify chart marker removal."
+        ],
+        "exit_criteria": [
+          "Tooltips display valid numerical data for hovered years.",
+          "Inspector panel updates synchronously with chart hover.",
+          "Y-Axis toggle visibly changes the chart's vertical scale/labels."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Export, Sharing & Navigation",
+        "objective": "Validate secondary actions and global navigation elements.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Download .csv' and verify a file download is initiated (or blob created).",
+          "Click 'Share view' and check for URL update or clipboard notification.",
+          "Click top-nav links (Datasets, Stories, Methods, About) to determine if they are functional placeholders or broken.",
+          "Click Source links in the left rail (e.g., 'Berkeley Earth...') to verify external linking behavior."
+        ],
+        "exit_criteria": [
+          "Download action triggers browser download prompt or equivalent.",
+          "Navigation links either route to content or clearly indicate 'coming soon' state without crashing."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Accessibility",
+        "objective": "Assess layout adaptation and usability on small screens, specifically targeting known tap-target risks.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE or Pixel 5).",
+          "Verify the three-panel layout collapses into a stacked or drawer-based layout.",
+          "Attempt to toggle variables using the small checkboxes; note difficulty or need for zoom.",
+          "Check if the chart remains readable and interactive on narrow widths.",
+          "Verify the Inspector panel is accessible (does it move below chart or become a modal?).",
+          "Test touch interactions for chart hovering (tap-to-inspect vs hover)."
+        ],
+        "exit_criteria": [
+          "No horizontal scrolling required for main content.",
+          "Critical controls (variable toggles) are usable, even if difficult due to size.",
+          "Chart text labels do not overlap illegibly."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of visible interactive states within index.html",
+      "features": "All 6 variables, 5 regions, 4 smoothing options, 2 axis modes, and export functions",
+      "mobile": "Full layout reflow validation and critical path interaction test"
+    },
+    "notes": [
+      "Pay close attention to the 'Layers Drag to Reorder' feature mentioned in text; if drag handles are visible, attempt to reorder series.",
+      "The prescan indicates 'small_tap_target' warnings; document specific instances where mobile interaction fails or requires excessive precision.",
+      "Since this is a local demo, network errors are unlikely, but console JS errors during chart rendering are a key failure mode to watch for."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Climate Almanac — multi-variable explorer",
+      "url": "file:///Users/timchef/UXBench/websites/climate-almanac/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Climate Almanac Explorer Datasets Stories Methods About Share view Download .csv VARIABLES Add up to four variables to overlay. Surface temperature anomaly °C vs 1951–1980 baseline · Berkeley Earth-style Precipitation mm/year · gridded gauge product Atmospheric CO₂ ppm · Mauna Loa-style monthly mean Global mean sea level mm vs 1993 satellite-era zero Arctic sea-ice extent million km² · September minimum ENSO index (ONI) °C · 3-month running mean of NINO 3.4 REGION Global Northern Hemisphere Southern Hemisphere Tropics (23°S–23°N) Arctic (60°N–90°N) SMOOTHING No smoothing (monthly/annual raw) 3-year running mean 10-year running mean 30-year normal Y-AXIS Dual axes Single (z-scored) LAYERS DRAG TO REORDER ≡ Surface temperature anomaly × ≡ Atmospheric CO₂ × SOURCES Berkeley Earth Surface Temperature v4 NOAA Global Monitoring Lab CO₂ CMIP6 reanalysis (synthetic) NSIDC Sea Ice Index Surface t",
+      "headings": [
+        "VARIABLES",
+        "REGION",
+        "SMOOTHING",
+        "Y-AXIS",
+        "LAYERS\nDRAG TO REORDER",
+        "SOURCES",
+        "Surface temperature anomaly & Atmospheric CO₂",
+        "Inspector",
+        "Annotations"
+      ],
+      "counts": {
+        "buttons": 9,
+        "links": 9,
+        "inputs": 10,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Explorer",
+        "clickable:a:Datasets",
+        "clickable:a:Stories",
+        "clickable:a:Methods",
+        "clickable:a:About",
+        "clickable:button:Share view",
+        "clickable:button:Download .csv",
+        "clickable:input:Surface temperature anomaly",
+        "clickable:input:Precipitation",
+        "clickable:input:Atmospheric CO₂",
+        "clickable:input:Global mean sea level",
+        "clickable:input:Arctic sea-ice extent",
+        "clickable:input:ENSO index (ONI)",
+        "selectable:select:Global Northern Hemisphere Southern Hemisphere Tropics (23°S–23°N) Arctic (60°N–90°N)",
+        "selectable:select:No smoothing (monthly/annual raw) 3-year running mean 10-year running mean 30-year normal",
+        "clickable:input:Dual axes"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

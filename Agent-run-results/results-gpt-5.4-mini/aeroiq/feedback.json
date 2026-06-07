@@ -1,0 +1,87 @@
+{
+  "summary": "AeroIQ gives strong at-a-glance operational context, with clear KPI summaries, triage filters, and cross-page navigation between dashboard, endpoints, alerts, and service map. The biggest UX risks are mobile crampedness and weak feedback for some controls: several controls are too small, the layout overflows on small screens, and a few interactions appear inert or fail to communicate state changes. There are also discoverability gaps in drilldown affordances, especially for endpoint cards and some header controls. Coverage is substantial but not complete, so a few auxiliary destinations remain untested.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "the-mobile-layout-overflows-the-viewport",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "alerts.html / endpoints.html",
+      "problem": "The mobile layout overflows the viewport, making the app feel cramped and harder to scan or operate.",
+      "evidence": "On alerts.html mobile, the page width is 699px on a 390px viewport; on endpoints.html mobile it was even wider (978px+), with the left rail and content cut off horizontally.",
+      "suggested_fix": "Redesign the mobile layout to collapse or stack the left rail and header controls, and ensure the main content fits within the viewport without horizontal scrolling."
+    },
+    {
+      "id": "several-primary-nav-and-header-targets",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "index.html / alerts.html",
+      "problem": "Several primary nav and header targets are below mobile tap-target guidance, which makes them hard to tap accurately.",
+      "evidence": "Observed targets include 39x58px sidebar links, a 34x34px profile button, and compact environment/time controls; the layout warnings repeatedly flagged these as below 44px guidance.",
+      "suggested_fix": "Increase touch target sizes to at least 44px in both dimensions where possible, and add more spacing between adjacent controls in the rail and top bar."
+    },
+    {
+      "id": "the-org-switcher-lacks-a-visible",
+      "severity": "medium",
+      "area": "clarity",
+      "page_hint": "header org select",
+      "problem": "The org switcher lacks a visible label/aria-label/placeholder, so its purpose and state are unclear, especially on mobile.",
+      "evidence": "Layout warnings repeatedly reported a missing input label for the Acme Cloud Org select on alerts.html and index.html; selecting it also produced no visible state change.",
+      "suggested_fix": "Add a visible label and stronger selected-state feedback for the org selector, and confirm changes with an explicit context update."
+    },
+    {
+      "id": "some-top-bar-controls-appear-inert",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "index.html / services.html",
+      "problem": "Some top-bar controls appear inert or provide no visible feedback after interaction, notably the org selector and environment toggle in the captured flows.",
+      "evidence": "Clicking the org selector on index.html produced no visible state change; clicking Production on services.html produced no visible state change or content update.",
+      "suggested_fix": "Make control responses explicit with selected-state styling, text updates, or a brief confirmation of the active scope/environment."
+    },
+    {
+      "id": "endpoint-cards-read-as-dense-metric",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "index.html endpoint health grid",
+      "problem": "Endpoint cards read as dense metric tiles, but their tappability is not obvious and direct clicks on a visible card target were not successful.",
+      "evidence": "On the mobile dashboard, endpoint cards showed method, service/path, RPS, p95, and errors, but no clear card-level affordance was visible; an attempted click on a candidate endpoint card target timed out with no visible change.",
+      "suggested_fix": "Add a clearer card affordance such as hover/tap feedback, chevrons, or a consistent clickable card styling and press state."
+    },
+    {
+      "id": "some-filters-update-clearly-but-others",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "alerts.html / endpoints.html",
+      "problem": "Some filters update clearly, but others do not provide enough visible feedback, making filter state ambiguous.",
+      "evidence": "Alerts severity filtering to Critical visibly changed the table and selected state, but assignee and status changes did not visibly update rows or control text; on endpoints, health and service filters did narrow results visibly, but selected-state emphasis was weak in the compact filter row.",
+      "suggested_fix": "Standardize filter feedback with stronger selected-state styling and immediate result-count or row-update confirmation for every filter change."
+    },
+    {
+      "id": "several-top-level-destinations-are-inert",
+      "severity": "medium",
+      "area": "navigation",
+      "page_hint": "left rail / logo",
+      "problem": "Several top-level destinations are inert dead ends, which weakens the navigation model.",
+      "evidence": "The alerts page exposes Logs and Integrations as visible nav items, but their hrefs are '#'; the dashboard logo also did not function as a drilldown entry point in the observed flows.",
+      "suggested_fix": "Either wire these items to real destinations or visually mark them as unavailable/coming soon so users do not expect functional navigation."
+    },
+    {
+      "id": "some-controls-are-unlabeled-or-minimally",
+      "severity": "low",
+      "area": "accessibility",
+      "page_hint": "header controls",
+      "problem": "Some controls are unlabeled or minimally labeled in ways that reduce accessibility clarity.",
+      "evidence": "The org select was reported missing a label/aria-label/placeholder, and the profile button is only represented as an icon button with a 34x34px target.",
+      "suggested_fix": "Add accessible names and descriptive labels to the org selector and icon-only actions, and verify tab order and focus visibility."
+    },
+    {
+      "id": "several-auxiliary-destinations-were-visible-but",
+      "severity": "low",
+      "area": "other",
+      "page_hint": "coverage gaps / unvisited controls",
+      "problem": "Several auxiliary destinations were visible but not yet meaningfully tested, leaving uncertainty about deeper workflows.",
+      "evidence": "Coverage notes show only 33% of visible interactive feature signatures exercised, with untested items like Settings, Logs, Integrations, and some alert-page controls still remaining.",
+      "suggested_fix": "Prioritize validation of the remaining auxiliary destinations and any drill-in paths that support incident recovery and configuration workflows."
+    }
+  ]
+}

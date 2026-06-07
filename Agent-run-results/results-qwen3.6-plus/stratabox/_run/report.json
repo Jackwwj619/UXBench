@@ -1,0 +1,493 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/stratabox/index.html",
+  "site": {
+    "name": "stratabox",
+    "site_dir": "/Users/timchef/UXBench/websites/stratabox",
+    "start_page": "index.html",
+    "page_type": "pricing",
+    "html_files": [
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/stratabox/README.md",
+    "summary": "stratabox-clone Fictional headless content platform \"Stratabox\" marketing site (Contentful / Sanity-style). Pages | File | Purpose | | --- | --- | | `index.html` | Single-page long scroll: sticky top nav; hero with editor-vs-live-preview split panel that periodically swaps blocks; trusted-by logo strip; 4-stat row with intersection-observer count-up; 3 feature cards; **live block builder** (drag-and-drop reorder, type switcher, add/delete blocks, two-pane editor + render with debounced auto-save status); 4-language SDK code tabs (JS / Python / Ruby / curl) with copy button; 24-card searchable integrations grid; 3 customer quotes; gradient pricing teaser; dark 4-column footer | | `styles.css` | Brand color #0E7E7E warm teal + cream paper; Inter + JetBrains Mono; responsive at 3 breakpoints (>1100 / 720–1100 / <720) | | `script.js` | Stat count-up via IntersectionObserver; hero block-swap micro-animation every 3.5s; full builder logic (reorder via HTML5 drag-and-drop, type switcher, add/delete, debounced auto-save status); SDK tab switcher with syntax-highlighted snippets and copy-to-clipboard toast; integrations search filter (matches name + category) with live count |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full stratabox system, prioritizing the primary pricing flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The Stratabox landing page effectively demonstrates its core value proposition through an interactive 'Live Block Builder' that syncs edits in real-time, providing strong immediate feedback. However, the user journey is severely compromised by non-functional primary calls-to-action (CTAs) and navigation links that lead to dead ends (#), creating a significant trust gap for users attempting to evaluate pricing or sign up. Additionally, mobile usability is hindered by consistently undersized tap targets across the global navigation and complex builder controls, failing standard accessibility guidelines.",
+  "exploration_plan": {
+    "goal": "Evaluate the UX of the Stratabox single-page marketing site, focusing on the interactive 'Live Block Builder' demo, SDK documentation usability, and mobile responsiveness of complex UI elements.",
+    "summary": "The run will treat index.html as a multi-section application. It begins with global navigation and hero validation, moves to deep interaction testing of the drag-and-drop content builder, verifies the developer-facing SDK tabs and search filters, and concludes with a rigorous mobile viewport check to address known tap-target risks.",
+    "assumptions": [
+      "The site is a Single Page Application (SPA) style landing page where 'Pricing', 'Product', etc., are scroll anchors rather than separate HTML files.",
+      "The 'Start free' and 'Sign in' buttons likely trigger modals or external redirects not fully captured in the static prescan.",
+      "The 'Live Block Builder' relies on client-side JS for state management (drag-and-drop, auto-save simulation)."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Builder Drag-and-Drop: HTML5 DnD often fails on touch devices or has poor accessibility.",
+      "SDK Copy Buttons: Clipboard API permissions can fail silently in local file contexts.",
+      "Mobile Navigation: Prescan indicates numerous small tap targets (<44px) in the header and builder controls.",
+      "Integrations Search: Live filtering logic may have edge cases with special characters or empty states."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global Nav & Hero Validation",
+        "objective": "Verify sticky header behavior, smooth scrolling to anchors, and initial hero state.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click each nav link (Product, Builder, SDKs, Pricing) to verify scroll-to-anchor behavior.",
+          "Validate 'Start free' and 'Book a demo' CTA visibility and hover states.",
+          "Observe the hero 'editor-vs-live-preview' split panel for the periodic block-swap animation."
+        ],
+        "exit_criteria": [
+          "All nav links scroll to correct sections.",
+          "Hero animation cycles at least once."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Interactive Builder Stress Test",
+        "objective": "Deeply exercise the 'Live Block Builder' demo to validate drag-and-drop, editing, and state feedback.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Drag a block (e.g., 'Callout') to reorder it; verify visual drop indicator and final position.",
+          "Type into the 'New section heading' input; verify real-time update in the Live Preview pane.",
+          "Click '+ Paragraph' or '+ Image' to add a new block; verify it appears in both panes.",
+          "Wait for the 'debounced auto-save' status indicator to update (e.g., 'saved' vs 'saving')."
+        ],
+        "exit_criteria": [
+          "Successful reordering of at least 2 blocks.",
+          "Real-time text reflection confirmed.",
+          "Auto-save status change observed."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Developer Experience (SDKs & Integrations)",
+        "objective": "Validate the usability of code snippets and the integrations discovery flow.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch between SDK tabs (JS, Python, Ruby, curl); verify syntax highlighting updates.",
+          "Click the 'Copy' button on a snippet; check for toast notification or visual feedback.",
+          "Type a query in the 'Search 24 visible integrations' input; verify grid filtering and count update.",
+          "Clear the search input; verify all integrations return."
+        ],
+        "exit_criteria": [
+          "All 4 SDK tabs viewed.",
+          "Copy button interaction triggered feedback.",
+          "Search filter successfully hid non-matching items."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Accessibility",
+        "objective": "Repeat critical checks on mobile viewport to address prescan warnings about small tap targets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (<720px).",
+          "Attempt to use the Builder drag-and-drop on touch/mobile emulation (high risk of failure).",
+          "Check if the sticky nav collapses into a hamburger menu or remains usable.",
+          "Verify text readability in the split-pane editor on narrow screens."
+        ],
+        "exit_criteria": [
+          "Layout does not break horizontally.",
+          "Critical CTAs remain clickable.",
+          "Builder usability assessment completed (even if unusable, that is a finding)."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of index.html sections (Hero, Builder, SDKs, Integrations, Footer)",
+      "features": "Exercise all builder controls (add, delete, reorder, edit) and all SDK tabs",
+      "mobile": "Full pass on mobile viewport for layout integrity and touch targets"
+    },
+    "notes": [
+      "Prescan identified ~10 small tap targets in the header and builder controls; prioritize checking these in Phase 4.",
+      "Since this is a local file system run, clipboard permissions for the 'Copy' button might be restricted by the browser; note if this prevents testing.",
+      "The 'Pricing' section is described as a 'teaser' in the summary; verify if it links out or expands."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "goal completion",
+      "user_goal": "View detailed pricing plans or start a free trial to evaluate the product.",
+      "problem": "Primary conversion CTAs ('See full plans', 'Start free') are dummy links (href='#') that trigger no action, modal, or navigation.",
+      "evidence": "Clicking 'See full plans' (ux-34) and 'Start free' (ux-3/ux-4) resulted in no visual change or URL navigation other than appending a hash fragment. The agent confirmed these are placeholder links with no functional destination.",
+      "why_it_matters": "This creates a dead-end experience for high-intent users. When primary actions fail without error feedback, users assume the site is broken or the product is not ready, leading to immediate abandonment.",
+      "suggestion": "Implement functional routing for these CTAs. If pricing details are not ready, link to a 'Contact Sales' form or a waitlist signup rather than a dead anchor.",
+      "source_hint": "index.html: #pricing section, header nav"
+    },
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Navigate the site and interact with the block builder on a mobile device.",
+      "problem": "Critical navigation links and builder controls have tap targets significantly smaller than the recommended 44x44px minimum.",
+      "evidence": "Layout warnings identified 'Sign in' (45x17px), '+ Paragraph' (95x26px), and delete buttons (21x22px) as failing mobile touch target guidelines. The agent noted persistent warnings across all viewport tests.",
+      "why_it_matters": "Users on mobile devices will experience frequent mis-taps, especially when trying to delete specific blocks or navigate via the top bar. This increases cognitive load and frustration, making the 'Studio' demo feel difficult to use on phones.",
+      "suggestion": "Increase the padding/height of all interactive elements to meet the 44px minimum height guideline. For small icons like 'delete', expand the clickable area using transparent padding or pseudo-elements.",
+      "source_hint": "Global Nav, Live Block Builder controls"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "Understand the status of their content while editing in the Live Block Builder.",
+      "problem": "The auto-save status indicator ('auto-saved just now') provides positive confirmation, but there is no clear visual indication of what happens if the save fails or if the user is offline.",
+      "evidence": "The agent observed the 'auto-saved just now' text updating correctly after edits. However, no error states or recovery mechanisms were visible or tested during the session.",
+      "why_it_matters": "In a 'headless' or cloud-based editor, trust is paramount. Users need to know if their work is safe. Without explicit error handling (e.g., 'Save failed - retry'), users may lose work silently.",
+      "suggestion": "Add robust error states for the auto-save mechanism. If a network request fails, display a distinct warning icon and a 'Retry' button near the status indicator.",
+      "source_hint": "Live Block Builder header/status area"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "accessibility",
+      "user_goal": "Use screen readers or keyboard navigation to operate the block builder.",
+      "problem": "Form fields within the block builder (specifically type selectors) lack associated labels, aria-labels, or placeholders.",
+      "evidence": "A medium-severity layout warning flagged a form field (ux-140, likely a select dropdown for block types) as having no label, aria-label, or placeholder text.",
+      "why_it_matters": "Screen reader users will encounter unlabeled controls, making it impossible to understand the purpose of the input. This violates WCAG guidelines and excludes users with disabilities from testing the core product feature.",
+      "suggestion": "Ensure every form control has a programmatically associated label. For icon-only or compact controls, use `aria-label` to describe the action (e.g., 'Change block type').",
+      "source_hint": "Live Block Builder: Block type dropdowns"
+    },
+    {
+      "severity": "low",
+      "ux_area": "navigation",
+      "user_goal": "Explore secondary resources like API docs, changelogs, or customer stories.",
+      "problem": "Footer and secondary navigation links (e.g., 'API reference', 'Changelog', 'Customers') are also dummy links (href='#').",
+      "evidence": "Clicking 'API reference' (ux-41) and 'Contact' (ux-49) updated the URL hash but did not navigate or open modals. The agent noted these as untested/placeholder features.",
+      "why_it_matters": "While less critical than the primary CTA, this reinforces the impression of an incomplete or 'under construction' site. Developers looking for API docs will hit a dead end immediately.",
+      "suggestion": "Either remove these links until the pages exist or replace them with external links to relevant documentation repositories (e.g., GitHub Readme) if available.",
+      "source_hint": "Footer columns"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 55,
+    "action_success_rate_percent": 95,
+    "unchanged_action_percent": 53,
+    "known_pages": [
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 32,
+      "drag": 5,
+      "open_page": 3,
+      "screenshot_pair": 10,
+      "scroll": 20,
+      "select_option": 1,
+      "type_text": 8
+    },
+    "total_actions": 79,
+    "successful_actions": 75,
+    "failed_actions": 4,
+    "unchanged_actions": 42,
+    "observed_feature_count": 47,
+    "exercised_feature_count": 26,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|a|||assets|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Assets"
+      },
+      {
+        "signature": "index.html|clickable|a|||changelog|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Changelog"
+      },
+      {
+        "signature": "index.html|clickable|a|||cli|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "CLI"
+      },
+      {
+        "signature": "index.html|clickable|a|||customers|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Customers"
+      },
+      {
+        "signature": "index.html|clickable|a|||customers|#customers",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Customers"
+      },
+      {
+        "signature": "index.html|clickable|a|||docs|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Docs"
+      },
+      {
+        "signature": "index.html|clickable|a|||localization|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Localization"
+      },
+      {
+        "signature": "index.html|clickable|a|||read the api reference →|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Read the API reference →"
+      },
+      {
+        "signature": "index.html|clickable|a|||schema|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Schema"
+      },
+      {
+        "signature": "index.html|clickable|a|||sdks|#sdk",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "SDKs"
+      },
+      {
+        "signature": "index.html|clickable|a|||security|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Security"
+      },
+      {
+        "signature": "index.html|clickable|a|||start free|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Start free"
+      },
+      {
+        "signature": "index.html|clickable|a|||status|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Status"
+      },
+      {
+        "signature": "index.html|clickable|a|||stratabox|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Stratabox"
+      },
+      {
+        "signature": "index.html|clickable|a|||studio|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Studio"
+      },
+      {
+        "signature": "index.html|clickable|a|||webhooks|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Webhooks"
+      },
+      {
+        "signature": "index.html|clickable|button|tab||javascript|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "JavaScript"
+      },
+      {
+        "signature": "index.html|clickable|button|||copied!|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Copied!"
+      },
+      {
+        "signature": "index.html|typeable|input||text|a pull quote.|",
+        "page": "index.html",
+        "viewport": "mobile",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "A pull quote."
+      },
+      {
+        "signature": "index.html|typeable|input||text|call out something important.|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Call out something important."
+      },
+      {
+        "signature": "index.html|typeable|input||text|image-name.jpg · alt text|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "image-name.jpg · alt text"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 55% of visible interactive feature signatures.",
+      "4 browser action(s) failed and should be retried or analyzed.",
+      "53% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-04-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-05-drag-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-09-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-10-drag-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-11-drag-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-12-drag-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-13-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-14-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-19-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-20-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-21-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-23-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-24-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-25-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-25-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-26-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-28-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-28-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-30-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-30-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-31-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-32-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-33-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-34-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-35-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-36-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-36-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-38-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-38-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-39-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-40-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-40-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-41-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-43-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-45-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-46-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-47-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-47-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-48-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-49-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-49-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-50-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-52-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-53-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-54-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-55-drag-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-58-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-58-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-59-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-60-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-60-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-62-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-65-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-68-open_page-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-73-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-79-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run/screenshots/agentic-80-scroll-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-qwen3.6-plus/stratabox/_run",
+  "claude_fix": null
+}

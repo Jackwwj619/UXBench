@@ -1,0 +1,310 @@
+{
+  "plan": {
+    "goal": "Explore the Stripe docs clone end-to-end across the hosted quickstart, embedded checkout, and customization pages, validating navigation, interactive doc controls, external references, and responsive behavior without assuming functionality beyond what the prescan shows.",
+    "summary": "Start on the hosted quickstart as the primary flow, then branch into embedded checkout and customization to confirm the adjacent tutorial paths and cross-links. Validate the visible controls that are actually present: top nav tabs, left-side section links, search, branding/open-source links, code block language switches, copy buttons, and any dialog-backed interactions. Repeat the critical checks in mobile viewport, with extra attention to tap targets and layout stability because several controls were flagged as small on mobile.",
+    "assumptions": [
+      "The three local HTML pages are the full site surface available for this run.",
+      "External Stripe docs/dashboard links may open live sites, but the core local UX should still be validated from the clone.",
+      "The visible dialog on the pages is likely tied to a control such as search or a confirmation state, but its exact behavior should be discovered during exploration.",
+      "Code examples and step markers on the docs pages are interactive enough to test copying and language switching where present."
+    ],
+    "target_pages": [
+      "index.html",
+      "embedded.html",
+      "customization.html"
+    ],
+    "risk_hotspots": [
+      "Top navigation controls on index.html, embedded.html, and customization.html: Hosted/Embedded/Customization tabs, Search button, Branding, and Open source links",
+      "Code block controls on the docs pages: language switch button(s) and multiple Copy buttons with small mobile tap targets",
+      "Right-side on-this-page outline / scroll-spy behavior on index.html, especially whether section highlighting tracks scroll correctly",
+      "External reference links to live Stripe docs and Dashboard pages, which may expose broken or misleading destinations",
+      "Mobile viewport tap targets flagged as small: home/logo link, Stripe Checkout breadcrumb/link, Copy buttons, Yes/No buttons, and reference links",
+      "Any search or dialog interaction because the prescan reports one dialog on each page but does not reveal the trigger"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Host quickstart baseline",
+        "objective": "Validate the main hosted Checkout tutorial flow and its primary in-page interactions on index.html.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the hosted page loads with the expected three-column docs layout and top nav",
+          "Open and close the search control if it reveals a dialog or overlay",
+          "Exercise the left sidebar navigation and the main hosted content anchors",
+          "Click at least one code-language toggle and one Copy button in the hosted tutorial",
+          "Scroll through the page to verify outline/scroll-spy highlighting in the right rail"
+        ],
+        "exit_criteria": [
+          "Primary hosted flow visually and interactively confirmed",
+          "At least one code block interaction and one navigation interaction validated",
+          "No broken local-state behavior observed in the main content or sidebar"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Hosted adjacent flows and external references",
+        "objective": "Validate the hosted page’s adjacent flows and outbound references for correctness and consistency.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open the local links to Embedded payment form and Customize Checkout from the left nav and return to index.html",
+          "Check the top tabs for Hosted, Embedded, and Customization consistency",
+          "Open official external references such as Checkout overview, Webhook quickstart, Testing cards, Branding settings, and Official docs/Open source",
+          "Verify the local breadcrumb/section labeling remains accurate after navigation or return"
+        ],
+        "exit_criteria": [
+          "All local cross-links between the three pages have been traversed at least once from the hosted page",
+          "Several external links have been sampled and their destinations confirmed",
+          "No obvious mismatch between the page label and the visible hosted tutorial content"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Embedded checkout variant",
+        "objective": "Validate the embedded quickstart as a distinct flow with its own content, controls, and return-path framing.",
+        "target_pages": [
+          "embedded.html"
+        ],
+        "key_checks": [
+          "Confirm the embedded page content differs appropriately from hosted checkout and references ui_mode/embedded behavior",
+          "Exercise the embedded page’s visible code block interactions, copy controls, and any step markers",
+          "Check the local nav and top tabs for correct active-state behavior",
+          "Verify any return_url or resume-flow guidance is presented consistently with the embedded tutorial"
+        ],
+        "exit_criteria": [
+          "Embedded variant content is readable and functionally distinct from the hosted flow",
+          "At least one interactive control on the embedded page has been used successfully",
+          "Navigation back to the other local pages works from the embedded page"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Customization and policy surface",
+        "objective": "Validate what Checkout branding/customization actually allows and ensure the page does not overpromise unsupported controls.",
+        "target_pages": [
+          "customization.html"
+        ],
+        "key_checks": [
+          "Confirm the page framing is reality-checked and focused on branding, text, policies, blocked card brands, and custom domains",
+          "Exercise any local controls present on the page, including code or option toggles and copy actions",
+          "Open relevant external references to Stripe docs or Dashboard branding settings",
+          "Check that claims about customization remain consistent with the visible controls"
+        ],
+        "exit_criteria": [
+          "Customization page content and scope align with its visible controls",
+          "At least one control and one outbound reference validated",
+          "No false impression of broad Checkout customization is introduced by the UI"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Responsive and mobile validation",
+        "objective": "Repeat critical interactions on mobile viewport and assess the flagged tap-target and layout risks.",
+        "target_pages": [
+          "index.html",
+          "embedded.html",
+          "customization.html"
+        ],
+        "key_checks": [
+          "Re-open the three local pages in mobile viewport and confirm the main navigation still works",
+          "Test the smallest flagged tap targets, especially logo/home, Stripe Checkout link, Copy buttons, Yes/No buttons, and reference links",
+          "Verify the multi-column layout adapts acceptably without hiding essential content or controls",
+          "Check that search/dialog behavior remains usable on mobile"
+        ],
+        "exit_criteria": [
+          "Critical navigation and content remain usable on mobile",
+          "At least one representative small-tap-target issue has been confirmed or ruled out in context",
+          "No major mobile-only breakage prevents the docs flows from being explored"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages",
+      "features": "exercise most visible controls per key page, including top nav, local side nav, search/dialog trigger, code language toggle, copy buttons, and selected external links",
+      "mobile": "repeat critical checks on mobile viewport, prioritizing flagged small tap targets and cross-page navigation"
+    },
+    "notes": [
+      "Keep the run anchored to the local three-page docs clone; external Stripe links are supporting validation, not the main target.",
+      "Because the prescan shows no console or network errors, prioritize UX correctness, control behavior, and responsive usability over error recovery."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Stripe-hosted Checkout quickstart | Stripe docs clone",
+      "url": "file:///Users/timchef/UXBench/websites/stripe-docs/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "stripe Docs clone Hosted Embedded Customization Official docs Search… / Branding Open source LOCAL REBUILD Hosted quickstart Embedded payment form Customize Checkout OFFICIAL REFERENCES Checkout overview Compare hosted and embedded Checkout flows. Webhook quickstart Handle post-payment events reliably. Testing cards Use Stripe's current test numbers and flows. Branding settings Manage Checkout branding in the Dashboard. WHY THIS CLONE EXISTS Every visible control is wired up, and every source link points to the live Stripe docs or Dashboard. Stripe Checkout / Hosted quickstart REBUILT GUIDE Build a Stripe-hosted checkout page that behaves like the real docs. This page now mirrors the current hosted Checkout flow: create a Checkout Session on your server, send a 303 redirect to session.url, and use webhooks for fulfillment instead of trusting the success page. Matches current Checkout Ses",
+      "headings": [
+        "Build a Stripe-hosted checkout page that behaves like the real docs.",
+        "No more dead links or fake guidance",
+        "Why start with the Stripe-hosted page",
+        "Lowest integration effort",
+        "Same Sessions API, more in-page control",
+        "Install the Stripe server SDK",
+        "Create a Checkout Session on your server",
+        "Post to your Session endpoint from the storefront",
+        "Your site",
+        "Show a success page, but fulfill from webhooks"
+      ],
+      "counts": {
+        "buttons": 23,
+        "links": 41,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Stripe docs clone home",
+        "clickable:a:Hosted",
+        "clickable:a:Embedded",
+        "clickable:a:Customization",
+        "clickable:a:Official docs",
+        "clickable:button:Open search (press /)",
+        "clickable:a:Branding",
+        "clickable:a:Open source",
+        "clickable:a:Hosted quickstart",
+        "clickable:a:Embedded payment form",
+        "clickable:a:Customize Checkout",
+        "clickable:a:Checkout overview Compare hosted and embedded Checkout flows.",
+        "clickable:a:Webhook quickstart Handle post-payment events reliably.",
+        "clickable:a:Testing cards Use Stripe's current test numbers and flows.",
+        "clickable:a:Branding settings Manage Checkout branding in the Dashboard.",
+        "clickable:a:Stripe Checkout"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "customization.html",
+      "title": "Customize Checkout | Stripe docs clone",
+      "url": "file:///Users/timchef/UXBench/websites/stripe-docs/customization.html",
+      "load_error": null,
+      "visible_text_excerpt": "stripe Docs clone Hosted Embedded Customization Official docs Search… / Branding Open source LOCAL REBUILD Hosted quickstart Embedded payment form Customize Checkout OFFICIAL REFERENCES Checkout overview Compare hosted and embedded Checkout flows. Webhook quickstart Handle post-payment events reliably. Testing cards Use Stripe's current test numbers and flows. Branding settings Manage Checkout branding in the Dashboard. WHY THIS CLONE EXISTS Every visible control is wired up, and every source link points to the live Stripe docs or Dashboard. Stripe Checkout / Customization REALITY-CHECKED Customize Checkout without inventing controls Stripe doesn’t actually offer. This page removes the fake “everything is configurable” framing and replaces it with the real Stripe Checkout surface: branding settings, branding_settings, text and policies, blocked card brands, custom domains for hosted page",
+      "headings": [
+        "Customize Checkout without inventing controls Stripe doesn’t actually offer.",
+        "Checkout stays opinionated on purpose",
+        "What Stripe Checkout actually lets you change",
+        "Most complete branding surface",
+        "Same policy tools, narrower visual surface",
+        "Appearance and branding settings",
+        "Text, policies, support details, and terms",
+        "Filter card brands with brands_blocked",
+        "Custom domains are for the Stripe-hosted page",
+        "Valid use case"
+      ],
+      "counts": {
+        "buttons": 17,
+        "links": 42,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Stripe docs clone home",
+        "clickable:a:Hosted",
+        "clickable:a:Embedded",
+        "clickable:a:Customization",
+        "clickable:a:Official docs",
+        "clickable:button:Open search (press /)",
+        "clickable:a:Branding",
+        "clickable:a:Open source",
+        "clickable:a:Hosted quickstart",
+        "clickable:a:Embedded payment form",
+        "clickable:a:Customize Checkout",
+        "clickable:a:Checkout overview Compare hosted and embedded Checkout flows.",
+        "clickable:a:Webhook quickstart Handle post-payment events reliably.",
+        "clickable:a:Testing cards Use Stripe's current test numbers and flows.",
+        "clickable:a:Branding settings Manage Checkout branding in the Dashboard.",
+        "clickable:a:Stripe Checkout"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "embedded.html",
+      "title": "Embedded Checkout page quickstart | Stripe docs clone",
+      "url": "file:///Users/timchef/UXBench/websites/stripe-docs/embedded.html",
+      "load_error": null,
+      "visible_text_excerpt": "stripe Docs clone Hosted Embedded Customization Official docs Search… / Branding Open source LOCAL REBUILD Hosted quickstart Embedded payment form Customize Checkout OFFICIAL REFERENCES Checkout overview Compare hosted and embedded Checkout flows. Webhook quickstart Handle post-payment events reliably. Testing cards Use Stripe's current test numbers and flows. Branding settings Manage Checkout branding in the Dashboard. WHY THIS CLONE EXISTS Every visible control is wired up, and every source link points to the live Stripe docs or Dashboard. Stripe Checkout / Embedded page CURRENT API FLOW Embed Stripe Checkout on your site without freezing the docs in an old API version. This rebuild follows Stripe’s current embedded quickstart: create a Session with ui_mode: 'embedded_page', return the client_secret, mount with stripe.createEmbeddedCheckoutPage(), and use return_url to resume after red",
+      "headings": [
+        "Embed Stripe Checkout on your site without freezing the docs in an old API version.",
+        "Keep checkout on your domain while Stripe still owns the secure payment UI",
+        "When to use the embedded page instead of hosted or Elements",
+        "Best when you want in-page checkout with low code",
+        "Use only when you need deeper UI control",
+        "Install the server SDK and load Stripe.js on the page",
+        "Create an embedded Checkout Session on the server",
+        "Mount the embedded page with Stripe.js",
+        "What your app owns",
+        "Build a return page that can resume or finish the flow"
+      ],
+      "counts": {
+        "buttons": 26,
+        "links": 42,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Stripe docs clone home",
+        "clickable:a:Hosted",
+        "clickable:a:Embedded",
+        "clickable:a:Customization",
+        "clickable:a:Official docs",
+        "clickable:button:Open search (press /)",
+        "clickable:a:Branding",
+        "clickable:a:Open source",
+        "clickable:a:Hosted quickstart",
+        "clickable:a:Embedded payment form",
+        "clickable:a:Customize Checkout",
+        "clickable:a:Checkout overview Compare hosted and embedded Checkout flows.",
+        "clickable:a:Webhook quickstart Handle post-payment events reliably.",
+        "clickable:a:Testing cards Use Stripe's current test numbers and flows.",
+        "clickable:a:Branding settings Manage Checkout branding in the Dashboard.",
+        "clickable:a:Stripe Checkout"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

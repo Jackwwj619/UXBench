@@ -1,0 +1,197 @@
+{
+  "plan": {
+    "goal": "Critique and validate the pelagic marketing-site UX end-to-end, focusing on the primary Quickstart/installation intent, code-tab interaction, and navigation-to-section recovery, with desktop and mobile checks.",
+    "summary": "Run a structured scan of the single-page index.html: validate top navigation anchors, code language tabs, copy-to-clipboard toast behavior, and the rotating benchmark numbers. Then verify the in-page “Quickstart” and “View on GitHub” paths, the 3-step “How it fits” flow, and the blog/changelog dual feeds for discoverability. Finally, repeat the critical interactions on mobile viewport to confirm tap targets, sticky/header behavior, and section navigation.",
+    "assumptions": [
+      "The site is a single-page landing experience (index.html) with in-page anchor navigation rather than multiple HTML pages.",
+      "Key dynamic behaviors are implemented in script.js: GitHub-stars counter animation, rotating benchmark rows, language code-tab switching, and 'pip install pelagic' copy toast.",
+      "All critical controls are visible on index.html and reachable via scroll or anchor links (no additional HTML pages are expected beyond index.html per prescan)."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets in header/nav and code-tab buttons (prescan flagged multiple <44px height/width), especially on mobile: 'Pelagic', 'Product', 'Docs', 'Pricing', 'Blog', 'Quickstart', and code tabs (python/node/go/curl).",
+      "GitHub stars counter pill is an interactive anchor-like element (★ 18.2k) with animation; validate that it doesn’t mislead as a link and that the animation completes reliably.",
+      "Language code tabs: ensure correct code content mapping (python/node/go/curl) and that switching is keyboard/screen-reader friendly enough to at least not break layout.",
+      "Copy interaction for 'pip install pelagic' (button labeled as copy install command): validate toast text, clipboard success/failure handling, and repeated clicks.",
+      "Rotating benchmark numbers every 2.5s: validate that motion doesn’t cause readability issues and that pause/interaction doesn’t break content.",
+      "Blog (left) and Changelog (right) dual lists: validate that both feeds scroll naturally, links are distinguishable, and that section headings/spacing remain readable across breakpoints."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Header + anchor navigation sanity (desktop)",
+        "objective": "Confirm the primary navigation and CTAs reliably move to the intended sections and maintain context.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click each header link: Product (#product), Docs (#docs), Pricing (#pricing), Blog (#blog) and validate scroll-to-section behavior (no dead anchors).",
+          "Activate 'Quickstart' anchor (#quickstart) and confirm the scroll position aligns with the Quickstart section entry.",
+          "Click 'View on GitHub' in the hero and verify it navigates as expected (new tab vs same tab consistent with UX expectation).",
+          "Click the 'Pelagic' brand in header (href '#') and verify it returns to top without breaking the current dynamic widgets."
+        ],
+        "exit_criteria": [
+          "All named header/nav links are clickable and result in a visible scroll position change to the relevant section within index.html.",
+          "No navigation causes layout collapse or hides the code panel/benchmark content permanently."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Code tabs + copy-to-clipboard interaction (desktop)",
+        "objective": "Validate the comprehension loop for quick adoption: code language selection and copy/install affordances.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch code tabs in sequence: python → node → go → curl; confirm each tab changes the visible code block and the active tab styling updates correctly.",
+          "Verify code block formatting remains readable and does not overflow/overlap when switching.",
+          "Click the 'pip install pelagic' copy button; confirm toast appears and the copied value matches the displayed command.",
+          "Repeat copy clicks rapidly (2-3 times) to confirm idempotent behavior (no duplicate toasts or error states).",
+          "If stars pill is clickable: click '★ 18.2k' and verify it doesn’t navigate unexpectedly (or that navigation is intentional) while the animation remains smooth."
+        ],
+        "exit_criteria": [
+          "Language tabs always show the correct corresponding snippet and never leave the panel in an inconsistent state.",
+          "Copy action provides clear feedback (success toast or graceful error) and works repeatedly."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Benchmark rotation + content stability (desktop)",
+        "objective": "Ensure rotating performance metrics remain legible and don’t undermine comprehension or interaction.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Observe rotation of benchmark rows (noted as every 2.5s) for at least 2 full cycles; confirm values update as expected.",
+          "Attempt to interact with nearby controls during rotation (e.g., switch code tabs or scroll slightly) and confirm rotation doesn’t break focus/selection.",
+          "Check for any flashing/overlap or sudden layout shifts around the rotating content region."
+        ],
+        "exit_criteria": [
+          "Benchmark values rotate smoothly with stable layout and without interfering with other interactions."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Primary “How it fits” flow + deeper sections (desktop)",
+        "objective": "Validate comprehension of the 3-step system narrative and adjacent architecture/customer content discoverability.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the in-page feature navigation items under the 'How it fits' area (Overview, Hybrid search, Managed, Pricing, Docs, Quickstart, Benchmarks, Migration guides) to confirm each anchor scrolls and lands on the right subsection.",
+          "Follow the visible 3-step flow: Ingest → Index → Query; confirm each step is clearly labeled and visually distinct.",
+          "Scan the architecture SVG diagram region for readability (no clipped labels) and confirm it doesn’t block tab interactions when present.",
+          "Review customer quote cards region for link/button presence (none expected) and confirm layout doesn’t jump."
+        ],
+        "exit_criteria": [
+          "All 'How it fits' related anchor links lead to their corresponding sections within index.html.",
+          "The Ingest/Index/Query narrative remains clear at the typical scroll positions."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Blog + changelog dual feed usability (desktop)",
+        "objective": "Validate that both left Blog and right Changelog lists are discoverable, readable, and actionable.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Scroll to 'From the blog' and 'Changelog' sections; confirm headings are visible and the two-column layout remains aligned.",
+          "Click at least one Blog post link and one Changelog entry link; verify navigation behavior (external vs same page) and that link affordances are clear.",
+          "Verify hover/focus states (if any) clearly indicate clickability."
+        ],
+        "exit_criteria": [
+          "Both lists remain usable with clear separation between Blog and Changelog items, and their links respond correctly."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile critical-path replay (mobile viewport)",
+        "objective": "Re-run the highest-risk interactions on mobile: tap targets, navigation, tabs, and copy feedback.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Tap header nav items and Quickstart (Product/Docs/Pricing/Blog/Quickstart) and verify correct scroll-to-section behavior.",
+          "Tap each code language tab (python/node/go/curl) and confirm the code panel updates without mis-taps (given prescan small tap target warnings).",
+          "Tap the 'pip install pelagic' copy button; confirm toast appears and no accidental scroll occurs due to tiny targets.",
+          "Verify rotating benchmark numbers remain readable and don’t overlap touch targets."
+        ],
+        "exit_criteria": [
+          "Critical interactions (anchor navigation, code tabs, copy button) work on mobile without mis-taps or broken states.",
+          "No major responsive layout issues (overlap/clipping) occur in the hero region."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (only index.html per prescan).",
+      "features": "Exercise: header anchor navigation (all visible links), hero CTAs (Quickstart + View on GitHub), GitHub stars interaction (if it is clickable), code tabs (python/node/go/curl), copy button (pip install pelagic), rotating benchmark content, 'How it fits' anchor list, and at least one Blog link + one Changelog entry.",
+      "mobile": "Repeat critical checks on mobile viewport: header navigation, code tabs, copy-to-clipboard toast, benchmark rotation legibility, and ensure tap targets do not cause failure."
+    },
+    "notes": [
+      "Because prescan indicates a single-page site, prioritize scroll-to-anchor correctness and state preservation rather than page-to-page navigation.",
+      "Focus extra attention on small tap targets flagged in the prescan; if mobile tap accuracy is poor, log which specific elements fail most often (and whether any larger alternative UI appears at smaller breakpoints)."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Pelagic — Open-source vector database",
+      "url": "file:///Users/timchef/UXBench/websites/pelagic/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Pelagic Product Docs Pricing Blog ★ 17.8k Quickstart Open-source · MIT licensed The vector database that scales with your retrieval, not your bill. Pelagic powers hybrid search, RAG, and recommender pipelines at sub-20ms p95 — across billions of vectors, on your own hardware or ours. Quickstart View on GitHub pip install pelagic Copy Running benchmark on YFCC-100M… Recall@10: 0.987 python node go curl from pelagic import Client db = Client(\"https://api.pelagic.dev\", api_key=\"pk_live_…\") index = db.create_index( name=\"docs\", dim=1536, metric=\"cosine\", hybrid=True, ) index.upsert([ {\"id\": \"doc-001\", \"vector\": embed(text), \"filter\": {\"lang\": \"en\"}} ]) hits = index.query( vector=embed(\"what is hnsw\"), top_k=10, filter={\"lang\": \"en\"}, rerank=\"bge-large\", ) 0.987 Recall@10 on SIFT-1B 18 ms p95 query latency 42k queries / second / node 63% lower cost vs leading hosted DB* TRUSTED IN PRODUCTION ",
+      "headings": [
+        "The vector database that scales with your retrieval, not your bill.",
+        "Built for the way modern retrieval actually works.",
+        "Hybrid search out of the box",
+        "Drop-in for FAISS or pgvector",
+        "Self-host or managed",
+        "How it fits",
+        "Architecture",
+        "From the blog",
+        "Why we rewrote our HNSW build in Rust",
+        "Pelagic 0.42: hybrid search, done right"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 21,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Pelagic",
+        "clickable:a:Product",
+        "clickable:a:Docs",
+        "clickable:a:Pricing",
+        "clickable:a:Blog",
+        "clickable:a:GitHub stars",
+        "clickable:a:Quickstart",
+        "clickable:a:View on GitHub",
+        "clickable:button:Copy install command",
+        "clickable:button:python",
+        "clickable:button:node",
+        "clickable:button:go",
+        "clickable:button:curl",
+        "clickable:a:Overview",
+        "clickable:a:Hybrid search"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

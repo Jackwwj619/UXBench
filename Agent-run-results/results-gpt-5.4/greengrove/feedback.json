@@ -1,0 +1,69 @@
+{
+  "summary": "GreenGrove’s flows are easy to orient within: landing, FAQ, claims, and quote pages all have clear headings and consistent navigation, and the primary routes between them work. The main UX weaknesses are in the quote onboarding’s first step and in mobile usability: step 1 blocks progress without clear guidance, the pet choices appear weakly interactive and may not be keyboard reachable, and many navigation/CTA targets are below recommended mobile tap sizes. The claims form is simpler and generally understandable, but its validation relies on browser-native messages that become ambiguous on mobile, and one header action (“Sign in”) behaves like a dead end.",
+  "intent_completed": true,
+  "issues": [
+    {
+      "id": "the-quote-wizard-blocks-progression-on",
+      "severity": "high",
+      "area": "goal completion",
+      "page_hint": "quote.html step 1 / Continue button",
+      "problem": "The quote wizard blocks progression on step 1 without giving visible feedback when the user clicks Continue before selecting a pet.",
+      "evidence": "In quote.html, clicking Continue on step 1 produced no URL or visible-text change and the page remained on 'Start with the basics — who are we covering?' with the six pet cards still visible. The captured view showed no helper text or error explaining that pet selection is required.",
+      "suggested_fix": "Disable Continue until a pet is selected, or allow the click but show immediate inline guidance near the pet options such as 'Choose a pet type to continue.'"
+    },
+    {
+      "id": "the-pet-type-choices-on-quote",
+      "severity": "high",
+      "area": "accessibility",
+      "page_hint": "quote.html step 1 pet cards",
+      "problem": "The pet-type choices on quote step 1 do not appear keyboard reachable or exposed as standard interactive controls, which makes the core onboarding step inaccessible for some users.",
+      "evidence": "In desktop/mobile testing, the interactable extraction exposed only the GreenGrove link and Continue button on quote step 1, despite six visible pet cards. Pressing Tab did not move visible focus onto any pet card; only Continue showed focus styling.",
+      "suggested_fix": "Implement the pet choices as clearly focusable radio-card controls with visible focus and selected states, and ensure they are announced properly to assistive tech."
+    },
+    {
+      "id": "the-pet-cards-have-subtle-default",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "quote.html step 1 / pet type card grid",
+      "problem": "The pet cards have subtle default styling, making them read more like informational tiles than required selections.",
+      "evidence": "The quote step 1 screenshot shows six large pet cards with similar pale border/fill treatment and no obvious hover, focus, or selected cue. The testing notes explicitly call the selection affordance visually subtle.",
+      "suggested_fix": "Increase card affordance with stronger borders, hover/focus states, a more explicit selected style, and supporting microcopy such as 'Select one pet type.'"
+    },
+    {
+      "id": "many-header-links-and-primary-controls",
+      "severity": "medium",
+      "area": "mobile usability",
+      "page_hint": "global header across index.html, faq.html, claims.html, quote.html",
+      "problem": "Many header links and primary controls are undersized tap targets on mobile, increasing miss-tap risk across the site.",
+      "evidence": "Repeated layout warnings flagged mobile targets below 44px guidance: FAQ 28x22px, Claims 43–44x22px, Get a quote 73x22px, GreenGrove 135–139x28–30px, Continue 94x39px, Submit claim 292x39px, and See the FAQ → 112x22px.",
+      "suggested_fix": "Increase tap area height and padding for header links and primary actions to meet mobile guidance, while preserving the current visual design."
+    },
+    {
+      "id": "claims-form-validation-depends-on-browser",
+      "severity": "medium",
+      "area": "error recovery",
+      "page_hint": "claims.html form validation / screenshot agentic-53-click-mobile.png",
+      "problem": "Claims-form validation depends on browser-native tooltips rather than persistent in-page error messaging, and on mobile the feedback can appear disconnected from the field that needs attention.",
+      "evidence": "Submitting the empty claims form triggered a native 'Please fill out this field.' tooltip. In mobile testing, focus moved to Pet name but the validation bubble appeared near the Visit date area, making the first missing field ambiguous.",
+      "suggested_fix": "Add clear inline required-field errors and an error summary/state near the submit area so users know exactly what needs attention after submit."
+    },
+    {
+      "id": "the-landing-page-sign-in-link",
+      "severity": "medium",
+      "area": "clarity",
+      "page_hint": "index.html header / Sign in link",
+      "problem": "The landing-page 'Sign in' link is a dead-end affordance that changes the URL to a hash but provides no page change, dialog, or explanation.",
+      "evidence": "Clicking 'Sign in' on index.html only changed the URL from index.html to index.html# and left the landing page content unchanged, with no visible feedback. The final observation still shows the control as a visible header action.",
+      "suggested_fix": "Either remove the Sign in link until it is functional, or provide a real destination/modal with clear messaging such as 'Portal coming soon.'"
+    },
+    {
+      "id": "the-mobile-faq-page-remains-readable",
+      "severity": "low",
+      "area": "navigation",
+      "page_hint": "faq.html mobile long-scroll state",
+      "problem": "The mobile FAQ page remains readable, but once scrolled down it becomes a long uniform stack with little structural orientation.",
+      "evidence": "Mobile testing found the FAQ rows readable and well spaced, but noted that the lower portion of the page is a uniform stack of collapsed items with no section marker or progress cue once scrolled.",
+      "suggested_fix": "Add lightweight grouping, sticky section labeling, or anchor shortcuts so the FAQ is easier to navigate in longer sessions."
+    }
+  ]
+}

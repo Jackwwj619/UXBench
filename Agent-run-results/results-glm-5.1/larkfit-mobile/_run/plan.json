@@ -1,0 +1,162 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the larkfit-mobile fitness tracker, validating all tab screens, interactive states, and mobile responsiveness.",
+    "summary": "The exploration will systematically navigate through the four primary bottom-tab screens (Today, Workouts, Activity, You) to validate layout, state changes, and interactive controls. It will then deep-dive into specific interactions like workout details, adding new data, and toggling preferences. Finally, the entire flow will be validated on a mobile viewport to assess edge-to-edge behavior and tap target issues flagged in the prescan.",
+    "assumptions": [
+      "The app is a single-page application (SPA) where tab buttons and other controls manipulate the DOM (likely via `data-screen` attributes) rather than loading new HTML files.",
+      "The '+' button and '▶' workout buttons trigger modals, dialogs, or detailed screen overlays.",
+      "The 2 detected inputs are located within the 'You' or 'Activity' screens for user preferences or data logging."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets: The '+' (38x38px) and '▶' (36x36px) buttons fail the 44px mobile guidance and may cause touch errors on actual devices.",
+      "Workout detail state: Clicking '▶' on 'Easy 5K' or 'Hip-mobility flow' may trigger complex state changes or overlays that require dismissal.",
+      "Mobile viewport transition: The layout shifts from a 390x844 phone frame with bezel to edge-to-edge on widths ≤460px, which may break layout or overlap content."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Explore Today Screen",
+        "objective": "Validate the default 'Today' screen layout, data visualization, and initial interactions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify the 'Today' tab is active and its metrics (MOVE, EXERCISE, STAND, steps, etc.) are visible.",
+          "Click the 'All workouts →' link/button to check navigation to the Workouts screen or list expansion.",
+          "Click the '+' button and verify the outcome (e.g., modal, new screen, or input focus).",
+          "Dismiss any opened overlay to return to the default state."
+        ],
+        "exit_criteria": [
+          "All visible elements on the 'Today' screen have been inspected.",
+          "The '+' button interaction has been triggered and its state validated."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Explore Workouts Screen",
+        "objective": "Validate the 'Workouts' tab, workout list, and workout detail interactions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the '▶ Workouts' tab and verify the screen transition and active tab state.",
+          "Inspect the workout list and click the '▶' button on 'Easy 5K — recovery pace'.",
+          "Validate the workout detail view (Plan, You'll need, etc.) and check for layout issues.",
+          "Dismiss the detail view and repeat for 'Hip-mobility flow'."
+        ],
+        "exit_criteria": [
+          "Workouts tab is fully rendered.",
+          "Both workout '▶' buttons have been clicked and their detail states validated and dismissed."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Explore Activity Screen",
+        "objective": "Validate the 'Activity' tab, data visualizations, and 30-day intensity metrics.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the '📊 Activity' tab and verify screen transition.",
+          "Inspect the '30-day intensity' chart/graph and 'Recent' activity list.",
+          "Interact with any visible controls or inputs specific to the Activity screen."
+        ],
+        "exit_criteria": [
+          "Activity tab is fully rendered.",
+          "Visual data elements and recent items have been inspected."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Explore You Screen",
+        "objective": "Validate the 'You' profile tab, connected apps, and preference inputs.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the '◉ You' tab and verify screen transition.",
+          "Locate and interact with the 2 detected inputs (likely under 'Preferences' or 'Connected').",
+          "Toggle any switches or modify input values to test state persistence and validation."
+        ],
+        "exit_criteria": [
+          "You tab is fully rendered.",
+          "Both inputs have been interacted with and their behaviors validated."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Viewport Validation",
+        "objective": "Re-test critical flows and layout shifts on a mobile viewport (≤460px).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch viewport to mobile (e.g., 390x844) and verify edge-to-edge layout and bezel/notch disappearance.",
+          "Navigate back through all 4 tabs to check for broken layouts or overlapping elements.",
+          "Re-evaluate the small tap targets ('+' and '▶' buttons) for usability on the mobile viewport.",
+          "Trigger a workout detail view on mobile to ensure overlays adapt correctly."
+        ],
+        "exit_criteria": [
+          "All 4 tabs have been visited on the mobile viewport.",
+          "Layout transition from framed to edge-to-edge is validated.",
+          "Tap target usability has been critiqued."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of known HTML pages (index.html)",
+      "features": "Interact with all 4 tab screens, both detected inputs, and all small tap target buttons ('+', '▶')",
+      "mobile": "Validate all 4 tab screens and 1 overlay/detail state on mobile viewport"
+    },
+    "notes": [
+      "Pay close attention to the DOM changes when navigating tabs, as the site uses a single HTML file with likely JS-driven screen switching.",
+      "Document any layout breakage when transitioning to the edge-to-edge mobile view, especially around the status bar and home indicator areas."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Lark — mobile fixture",
+      "url": "file:///Users/timchef/UXBench/websites/larkfit-mobile/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "8:26 Wednesday, May 13 Morning, Sumi + MOVE 820/600 cal EXERCISE 34/30 min STAND 9/12 hrs 👟 8,432 steps 🚴 5.2 mi distance ❤ 62 bpm resting 😴 7h 14m slept TODAY'S PLAN All workouts → 🏃 Easy 5K — recovery pace 28 min · zone 2 · scheduled 5:30 pm ▶ 🧘 Hip-mobility flow 12 min · low-intensity · post-run ▶ 14 days Move-goal streak · personal best 22 🔥 S M T W T F S ⌂ Today ▶ Workouts 📊 Activity ◉ You",
+      "headings": [
+        "TODAY'S PLAN",
+        "Workouts",
+        "Easy 5K · recovery",
+        "Easy 5K — recovery pace",
+        "Plan",
+        "You'll need",
+        "Activity",
+        "30-day intensity",
+        "Recent",
+        "You"
+      ],
+      "counts": {
+        "buttons": 21,
+        "links": 0,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:+",
+        "clickable:button:▶",
+        "clickable:button:⌂ Today",
+        "clickable:button:▶ Workouts",
+        "clickable:button:📊 Activity",
+        "clickable:button:◉ You"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

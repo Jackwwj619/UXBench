@@ -1,0 +1,280 @@
+{
+  "plan": {
+    "goal": "Evaluate the end-to-end UX of the GreenGrove onboarding experience: the 6-step quote wizard (primary flow) plus adjacent Claims and FAQ flows, with desktop and mobile coverage.",
+    "summary": "Start from the landing page and enter the quote wizard via the primary CTA. Progress through all 6 wizard steps, exercising keyboard/mouse interactions for the breed search combobox and the conditions multi-select, and validating the tier comparison/table and final quote lock/review state. Then validate the Claims form and FAQ accordion for completeness, navigation back into the quote flow, and mobile usability.",
+    "assumptions": [
+      "The site is a static multi-page flow with links between index.html, quote.html, claims.html, and faq.html (no observed network errors).",
+      "quote.html contains a 6-step wizard with a top dot stepper, floating Back/Continue controls, and a breed searchable dropdown supporting keyboard (Up/Down/Enter/Esc) as described in the prescan summary.",
+      "claims.html includes a single form with 5 inputs (Pet name, Visit date, Condition/reason, Total paid, Vet invoice upload) and a Submit claim button.",
+      "faq.html uses a <details> accordion with multiple questions."
+    ],
+    "target_pages": [
+      "index.html",
+      "quote.html",
+      "claims.html",
+      "faq.html"
+    ],
+    "risk_hotspots": [
+      "quote.html step 2 (Breed) searchable ARIA combobox: validate keyboard behavior (Up/Down/Enter/Esc), focus trapping/esc dismissal, and selection persistence when moving between steps via dot stepper and Back/Continue",
+      "quote.html step 4 (Pre-existing conditions) 19-item multi-select with a 'None' toggle: validate mutual exclusivity logic, ability to deselect, and whether 'None' correctly clears chosen conditions",
+      "quote.html step 5 (Tier cards + deductible dropdown + collapsible comparison table): validate that selection updates live pricing correctly and that the comparison table expand/collapse is accessible and not visually misaligned on mobile",
+      "quote.html step 6 'Rate locked' summary: validate that back-navigation retains the locked-rate state and that the summary/inclusions/lock messaging matches the tier/deductible inputs",
+      "All pages: small tap target warnings on header nav links (GreenGrove, Get a quote, Claims, FAQ, Sign in) and 'See the FAQ →' on index.html; validate usability on mobile viewport",
+      "claims.html file upload control 'Vet invoice (PDF or image)': validate acceptance/requiredness behavior, error handling when empty/invalid (since no network exists, rely on client-side validation/UX cues)",
+      "claims.html date/number inputs: validate formatting expectations for Visit date and Total paid (e.g., placeholder, min/max, error messaging)"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing page entry + navigation sanity",
+        "objective": "Confirm primary entry points and top-level navigation to adjacent flows, including touch-size/usability issues noted in prescan.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Tap/click 'Start a free quote' to reach quote.html and confirm the wizard starts at Step 1",
+          "Use header links: 'Claims' and 'FAQ' to confirm direct navigation and return paths (header 'Get a quote' back to wizard)",
+          "Tap header 'Sign in' (href is '#'): confirm it does not break flow (e.g., no dead-end modal/blank state) and check for accessible feedback",
+          "On mobile viewport, verify small tap targets (GreenGrove / Get a quote / Claims / FAQ / Sign in / 'See the FAQ →') remain usable without mis-taps"
+        ],
+        "exit_criteria": [
+          "All three primary destinations (quote.html, claims.html, faq.html) load successfully from index.html",
+          "Sign in action does not cause navigation failure or unexpected UI state",
+          "Mobile checks confirm header CTAs are still reliably tappable"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Quote wizard Step 1-2: pet type + searchable breed combobox",
+        "objective": "Validate selection UX, keyboard accessibility, and state persistence before moving deeper into the quote.",
+        "target_pages": [
+          "quote.html"
+        ],
+        "key_checks": [
+          "Step 1 (Pet type): select a species card (try at least Dog, then Cat) and verify Continue becomes meaningful and the step dot indicator highlights",
+          "Step 2 (Breed): for the selected species, open the searchable dropdown and test keyboard controls: ArrowDown/ArrowUp navigation, Enter selection, Esc to close",
+          "Type in the breed search, verify filtering behavior and that selected value reflects the typed/selected item",
+          "Use top dot indicator to jump away and then back to Step 2; verify the chosen breed persists correctly",
+          "Validate that floating Back returns to the previous step without losing Step 1 selection"
+        ],
+        "exit_criteria": [
+          "Pet type and breed selections persist across Back and dot-step navigation",
+          "Breed combobox supports the described keyboard interaction model (Up/Down/Enter/Esc) without focus loss"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Quote wizard Step 3-4: age toggle + conditions multi-select",
+        "objective": "Validate numeric/stepper controls, age input logic, and complex multi-select interactions including 'None' toggle.",
+        "target_pages": [
+          "quote.html"
+        ],
+        "key_checks": [
+          "Step 3 (Age): use year/month toggle and the stepper(s) to set a non-trivial age; verify visual value updates and Continue accepts it",
+          "Move to Step 4 and back to Step 3 via Back/dot-stepper; confirm age value remains",
+          "Step 4 (Pre-existing conditions): select multiple conditions from the 19-item multi-select and verify they appear as selected chips/list items",
+          "Toggle 'None': verify it clears all selected conditions (or enforces mutual exclusivity) and that selecting a condition clears 'None'",
+          "Use Back/Continue across Step 4 boundaries to validate selection persistence and that errors (if any) are clear"
+        ],
+        "exit_criteria": [
+          "Age control and conditions multi-select behavior are consistent, with correct 'None' mutual exclusivity",
+          "Selections persist when navigating back and forth between steps"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Quote wizard Step 5-6: tiers, deductible, comparison table, and rate lock summary",
+        "objective": "Validate pricing calculation updates, interactive tier comparison components, and the final summary/rate lock state when navigating.",
+        "target_pages": [
+          "quote.html"
+        ],
+        "key_checks": [
+          "Step 5 (Tier cards): select Sprout, then change to Sapling, then Oak; verify the live per-tier quote updates accordingly",
+          "Change deductible dropdown and confirm the displayed monthly fee and any tier differences update live",
+          "Expand/collapse the side-by-side comparison table and verify it remains aligned/legible on both desktop and mobile; ensure expand state is not lost unexpectedly when toggling other controls",
+          "Continue to Step 6 and confirm summary includes the monthly fee, annual total, and inclusions consistent with the selections",
+          "Use dot stepper to jump back from Step 6 to Step 5 and modify tier/deductible; return to Step 6 and verify the 'Rate locked!' messaging and values update correctly"
+        ],
+        "exit_criteria": [
+          "Tier/deductible changes deterministically affect Step 6 summary values",
+          "Comparison table expand/collapse works reliably and does not break layout on mobile"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Adjacent flows: Claims form + FAQ accordion",
+        "objective": "Validate critical adjacent pages for form usability, validation cues, and accessible disclosure behavior.",
+        "target_pages": [
+          "claims.html",
+          "faq.html"
+        ],
+        "key_checks": [
+          "Claims: attempt Submit claim with empty required fields to confirm presence and clarity of inline validation messages",
+          "Claims: enter plausible values into Pet name, Visit date, Condition/reason, Total paid; verify input formatting/labels and error behavior",
+          "Claims: interact with 'Vet invoice (PDF or image)' upload control—check whether it is required, shows selected filename/preview/affordance, and handles invalid file selection UX (if implemented)",
+          "Claims: after successful-looking completion (even without network), use Back navigation to ensure no client-side state loss beyond typical form behavior",
+          "FAQ: expand several <details> items; confirm only one or multiple can be open (whatever intended), and that content is readable and navigable via keyboard",
+          "From FAQ/Claims, use header 'Get a quote' to return to quote wizard and ensure no unintended modal/scroll issues"
+        ],
+        "exit_criteria": [
+          "Claims form provides clear validation and behaves sensibly with empty and partially filled inputs",
+          "FAQ accordion <details> expands/collapses reliably and is accessible",
+          "Header navigation between pages works without breaking the browsing session"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (index.html, quote.html, claims.html, faq.html) on both desktop and mobile viewports.",
+      "features": "Exercise most visible controls per key page: index CTAs/nav links; quote wizard step dot navigation + Back/Continue; breed combobox keyboard; age toggle/stepper; conditions multi-select + None; tier cards + deductible dropdown; comparison table expand/collapse; claims inputs + submit + file upload; FAQ details accordion.",
+      "mobile": "Repeat the critical quote flow steps on mobile: Step 2 breed combobox keyboard usability (at least open/type/select/esc), Step 4 multi-select + None, Step 5 tier/deductible updates, and the final Step 6 summary. Additionally verify header CTA tap targets from index.html and navigation links are usable."
+    },
+    "notes": [
+      "Keep track of the selected species/breed/age/conditions/tier/deductible so Step 6 summary can be cross-checked for consistency after back-navigation.",
+      "Because no backend is expected in a static clone, focus validation on client-side UX states (enabled/disabled Continue, inline error messaging, selection persistence, and visual updates)."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "GreenGrove Pet Insurance — Care that grows with your companion",
+      "url": "file:///Users/timchef/UXBench/websites/greengrove/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "GreenGrove Get a quote Claims FAQ Sign in Care that grows with your companion. Pet insurance that pays you back fast, without 60 pages of fine print. Quote in 90 seconds. Start a free quote No waiting period on accidents Reimbursements paid in 5 days, on average 24/7 vet hotline included \"We adopted a rescue dachshund with a heart murmur — three other companies declined her. GreenGrove just asked for the vet history and quoted us in two minutes.\" — Marisol Chen, Portland, OR Common questions How does coverage actually work? When do we kick in? Who's covered? See the FAQ → Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Care that grows with your companion.",
+        "Common questions"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 7,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:GreenGrove",
+        "clickable:a:Get a quote",
+        "clickable:a:Claims",
+        "clickable:a:FAQ",
+        "clickable:a:Sign in",
+        "clickable:a:Start a free quote",
+        "clickable:a:See the FAQ →"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "claims.html",
+      "title": "File a claim — GreenGrove",
+      "url": "file:///Users/timchef/UXBench/websites/greengrove/claims.html",
+      "load_error": null,
+      "visible_text_excerpt": "GreenGrove Get a quote Claims FAQ File a claim Most claims are reimbursed in 3–5 business days. Bring the vet invoice — we do the rest. Pay the vet directly — any licensed clinic in the US. Snap the invoice with your phone, or download a PDF. Submit below — we'll email a decision within 5 days. Pet name Visit date Condition / reason for visit Total paid (USD) Vet invoice (PDF or image) Submit claim Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "File a claim"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 4,
+        "inputs": 5,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:GreenGrove",
+        "clickable:a:Get a quote",
+        "clickable:a:Claims",
+        "clickable:a:FAQ",
+        "typeable:input:Pet name",
+        "typeable:input:Visit date",
+        "typeable:input:Condition / reason for visit",
+        "typeable:input:Total paid (USD)",
+        "clickable:input:Vet invoice (PDF or image)",
+        "clickable:button:Submit claim"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "faq.html",
+      "title": "FAQ — GreenGrove",
+      "url": "file:///Users/timchef/UXBench/websites/greengrove/faq.html",
+      "load_error": null,
+      "visible_text_excerpt": "GreenGrove Get a quote Claims FAQ Frequently asked What's the waiting period? What counts as a pre-existing condition? Is there an age limit? Multi-pet discount? Dental? Prescription food? Do you require my pet's records before enrollment? Can I use any vet? How are claims paid? What's the cancellation policy? Bilingual support? Will my rate go up at renewal? Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Frequently asked"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 4,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:GreenGrove",
+        "clickable:a:Get a quote",
+        "clickable:a:Claims",
+        "clickable:a:FAQ"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "quote.html",
+      "title": "Get a quote — GreenGrove",
+      "url": "file:///Users/timchef/UXBench/websites/greengrove/quote.html",
+      "load_error": null,
+      "visible_text_excerpt": "GreenGrove 1 Pet 2 Breed 3 Age 4 Conditions 5 Tier 6 Quote Start with the basics — who are we covering? Why we ask: different species and sizes have very different vet-cost patterns. Dog Cat Rabbit Bird Reptile Small mammal Continue Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Start with the basics — who are we covering?",
+        "What breed?",
+        "How old?",
+        "Any known conditions?",
+        "Pick a coverage tier",
+        "Sprout",
+        "Sapling",
+        "Oak",
+        "Your quote",
+        "Rate locked!"
+      ],
+      "counts": {
+        "buttons": 6,
+        "links": 1,
+        "inputs": 9,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:GreenGrove",
+        "clickable:button:Continue"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

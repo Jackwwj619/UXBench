@@ -1,0 +1,41 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full moonlight-tickets system, prioritizing the primary checkout/booking flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: False
+
+## Summary
+
+The event-to-checkout handoff and the fee breakdown are clear, but the checkout end-to-end completion experience is severely hindered: clicking “Place order” never transitions to the confirmation page during the session. The checkout also shows accessibility and mobile usability issues (missing labels for several inputs and very small hit targets), and the terms link provides no visible terms modal/acceptance flow. As a result, users may feel blocked or confused at the final step and during form completion.
+
+## Issues (5)
+
+### [HIGH] the-primary-place-order-action-does — goal completion
+- **Page**: `checkout.html|button 'Place order · $143.84' (e.g., screenshot agentic-78-click-desktop.png and steps-78/80/67-72/73-78).`
+- **Problem**: The primary “Place order” action does not progress to confirmation.html and appears blocked or behaves like a destructive/payment confirmation that the agent could not complete. This prevents observing submission validation feedback and the actual success state.
+- **Evidence**: Multiple attempts to click “Place order · $23.46”, “Place order · $24.34”, “Place order · $81.34”, “Place order · $128.04”, “Place order · $143.84” did not navigate away from checkout.html (after_url unchanged). In the agent trace, the tool reports it was "skipped final destructive confirmation" and the objective to reach confirmation.html repeatedly failed.
+- **Suggested fix**: Ensure the final CTA reliably transitions to confirmation on valid form submission, or provide a clear, user-friendly inline validation / confirmation-step UX with unskippable, visible error messages and clear next actions (e.g., highlight missing required fields, show a payment failure banner, then allow retry). Also allow observing a success state without special gating that can confuse users.
+
+### [HIGH] the-terms-link-appears-to-do — clarity
+- **Page**: `checkout.html|a 'terms' (agentic-79-click-desktop.png and step 79).`
+- **Problem**: The “terms” link appears to do nothing visible—no terms modal/panel and no acceptance control is revealed.
+- **Evidence**: Clicking “terms” changed only the URL hash to checkout.html# (no modal/panel appeared). The visible checkout text remained the same with only the static statement: “By placing this order you agree to our terms. Refunds within 48h if the show is canceled.”
+- **Suggested fix**: Implement a visible terms modal (or dedicated terms page) and, if needed, add a clear “I agree” checkbox with validation messaging tied to the final CTA.
+
+### [HIGH] several-checkout-inputs-have-missing-accessible — accessibility
+- **Page**: `checkout.html (layout_warning_count 26; missing_input_label entries for ux-6/ux-7/ux-8/ux-9 in final_observation; screenshot agentic-78-click-desktop.png).`
+- **Problem**: Several checkout inputs have missing accessible names (no label/aria-label/placeholder), which creates confusion for screen readers and can also lead to unclear UI for all users.
+- **Evidence**: In final_observation, multiple controls are flagged as missing_input_label (ux-6, ux-7, ux-8, ux-9, and additional unlabeled inputs around y≈638 and y≈701/704). The agent logs also report a failed click on ux-8 (email input) due to element not visible/stable, suggesting interaction/visibility issues for some controls.
+- **Suggested fix**: Add proper <label> associations (or aria-label) for every input (including optional email, attendee email checkbox, and Ticket 2/3/4 fields). Ensure the expanded/collapsed accordion states provide accessible names and focus management.
+
+### [MEDIUM] multiple-interactive-elements-have-tap-targets — mobile usability
+- **Page**: `checkout.html mobile tap target warnings (final_observation layout_warnings small_tap_target for ux-1/ux-5/ux-9/ux-10).`
+- **Problem**: Multiple interactive elements have tap targets below mobile guidance, increasing mis-taps and missed actions.
+- **Evidence**: Layout warnings flag small tap targets: the brand link (MoonlightTickets) is 183x28px, the email delivery checkbox area is flagged as 550x13px, “Copy buyer info from ticket 1” is 180x27px, and “Cancel order” is 79x31px. Earlier agent notes also flagged small stepper buttons (~32–38px) and small arrow link on event.html.
+- **Suggested fix**: Increase touch target sizes to at least 44x44px, add padding around icon/checkbox/stepper controls, and ensure spacing prevents adjacent hit-area conflicts.
+
+### [MEDIUM] promo-feedback-and-confirmation-flows-appear — feedback
+- **Page**: `checkout.html: Apply + fee breakdown (agent steps 13–18, 55–60), and Cancel order modal/Keep going (steps 7–12 and screenshots/notes).`
+- **Problem**: Promo feedback and confirmation flows appear inconsistent/unclear during interaction attempts; some actions show feedback, others do not produce observable UI/URL changes, making it harder to know whether the state is correct.
+- **Evidence**: The session shows “Applied: $5 off” appearing after entering promo, and later “Promo not recognized.” after clicking Apply for another code attempt; however, multiple tool actions report no obvious UI/URL change after typing/apply steps. For cancellation, the modal appears (“Cancel your order?”), but completion/recovery still doesn’t reach confirmation.
+- **Suggested fix**: Standardize promo UX: after Apply, always show a clear success/error message plus an updated fee breakdown and disable/enable the Apply button appropriately. For cancellation, clearly communicate what is cleared/preserved and visually summarize the resulting cart and readiness state.

@@ -1,0 +1,193 @@
+{
+  "plan": {
+    "goal": "Evaluate the Forge Coder agent IDE’s primary run view end-to-end, with special attention to code-change controls, run-state controls, and mobile usability of the compact toolbar and left file tree.",
+    "summary": "Start on the main agent run page and validate the core tri-pane workflow: navigating the file tree, inspecting the live diff preview, and using the agent conversation controls. Then probe adjacent run-management actions like Interrupt, Rerun, Open editor, Accept all changes, and the view toggles, since these are the main recovery and review paths visible in the prescan. Finish with mobile viewport checks focused on the small tap targets already flagged, especially top navigation, repo/open actions, and diff view controls.",
+    "assumptions": [
+      "The site consists of a single known HTML page, index.html, so coverage should focus on interactive states rather than cross-page navigation.",
+      "The visible run is an in-progress agent task, and its current state can change during exploration; interactions should account for possible live updates.",
+      "File tree entries with modified/new badges are the main way to load diffs into the right pane, and those interactions are part of the intended primary flow.",
+      "No separate auth, settings, inbox, or runs detail pages were confirmed in prescan, so those navigation items should be treated as in-page or stubbed controls unless proven otherwise."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Interrupt and Rerun buttons while the agent is actively working",
+      "Accept all changes bulk action in the top-right toolbar",
+      "Open editor and diff view toggle controls near the live preview",
+      "Small tap targets in top navigation, repo actions, search/add icons, checkbox, and split/unified toggles on mobile",
+      "Modified/new file badges in the left file tree that trigger diff loading",
+      "Chat composer with Auto-apply edits checkbox and Send button"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline run-view walkthrough",
+        "objective": "Confirm the primary three-pane agent workspace and understand the default active run state.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify the left file tree, central agent conversation, and right diff preview are all visible and functional in the default desktop state",
+          "Check whether the currently selected file/diff matches the highlighted file tree entry",
+          "Confirm the run header shows meaningful status and elapsed time, and the agent thread is readable without truncation issues"
+        ],
+        "exit_criteria": [
+          "At least one modified or added file has been selected and its diff is visible",
+          "Default run status, conversation area, and diff pane behavior are understood",
+          "No blocking layout or rendering failures observed on desktop"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "File tree and diff inspection",
+        "objective": "Validate the primary file-navigation flow from the left tree into the diff viewer.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click multiple file-tree entries with M/+ badges to confirm each loads the correct diff content",
+          "Expand/collapse any visible folders such as src, upload, commands, core, test, and docs if controls are present",
+          "Check whether file-status badges, modified counts, and lines-changed summary stay consistent when switching files"
+        ],
+        "exit_criteria": [
+          "Multiple file selections successfully swap the diff preview",
+          "Folder navigation behavior is confirmed for at least one expanded branch",
+          "The modified/added file summary appears stable across selections"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Run control and recovery actions",
+        "objective": "Stress the main agent-management controls that could interrupt or reframe the current task.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Validate Interrupt behavior on an active run and observe any state change or confirmation",
+          "Validate Rerun behavior and whether it resets the current run context or regenerates the work state",
+          "Open editor and assess whether it exposes a separate editing surface or simply changes the preview mode",
+          "Review Accept all changes for scope and safety, especially whether it acts on all visible edits or requires confirmation"
+        ],
+        "exit_criteria": [
+          "Each run-management button has been exercised at least once or confirmed inert",
+          "Any confirmations, state transitions, or disabled states are documented",
+          "No destructive action is triggered without a visible safeguard"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Chat composer and agent response workflow",
+        "objective": "Validate the central conversation input flow and whether user guidance can steer the agent effectively.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Type a follow-up prompt into the reply textarea and verify Send behavior",
+          "Toggle Auto-apply edits and observe whether it changes post-send behavior or edit application state",
+          "Check whether the composer can request another pass, ask for changes, or continue the task without breaking the current thread"
+        ],
+        "exit_criteria": [
+          "Composer accepts text and sends or queues a response",
+          "Auto-apply edits has a clear and observable effect or documented lack of effect",
+          "Conversation state remains coherent after user input"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Navigation, mode toggles, and adjacent controls",
+        "objective": "Verify the nearby top-level navigation and diff-display controls that frame the run experience.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Exercise Agent, Inbox, Runs, and Settings links to see whether they navigate, switch panels, or remain placeholders",
+          "Test Connect a repo and Open in VS Code for expected affordance and any guardrails",
+          "Toggle Unified and Split diff modes and confirm the right pane layout changes appropriately",
+          "Use the search and add controls in the file tree header if they are active"
+        ],
+        "exit_criteria": [
+          "All visible navigation and mode controls have been clicked or ruled out as inert",
+          "At least one layout-mode change has been observed if supported",
+          "Any nonfunctional or placeholder controls are identified"
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile viewport validation",
+        "objective": "Repeat the most important interactions under mobile constraints, focusing on the known tap-target risks.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Recheck top navigation, repo/open actions, search/add icons, Interrupt/Rerun, and Unified/Split buttons on mobile",
+          "Validate file-tree selection and diff loading with touch-sized interaction",
+          "Confirm composer usability on small screens, including textarea, Auto-apply checkbox, and Send"
+        ],
+        "exit_criteria": [
+          "Critical run-flow actions are usable or clearly degraded on mobile",
+          "Small tap target warnings are confirmed against actual touch behavior",
+          "Any layout breakage, overlap, or unreachable controls on mobile are documented"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages; in this fixture that means thoroughly exercising index.html only",
+      "features": "exercise the core run workspace, at least two file-diff selections, all visible run controls, composer submission, and diff view toggles",
+      "mobile": "repeat the core selection, run-control, composer, and mode-toggle checks in a mobile viewport, with emphasis on the small tap targets already flagged"
+    },
+    "notes": [
+      "Prioritize the active run flow around src/upload and the visible modified/new files, since that is the clearest primary user task in the prescan.",
+      "Because the site is a single-page local demo, exploration depth should come from state changes and control behavior rather than page discovery."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Forge Coder — agentic coding",
+      "url": "file:///Users/timchef/UXBench/websites/forge-coder/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Forge / atlas-cli ⌥ feat/streaming-uploads Agent Inbox Runs Settings Connect a repo Open in VS Code RT ATLAS-CLI ⌕ + src upload › stream.ts M › chunker.ts M › retry.ts › index.ts + commands core main.ts test upload.spec.ts M retry.spec.ts auth.spec.ts docs package.json tsconfig.json README.md Modified 3 Added 1 Lines changed +128 / -54 Run #243 · agent is working · 4m 12s elapsed ⏸ Interrupt ↻ Rerun Streaming multipart uploads keep failing on slow connections. Resumes after a network drop just re-upload the whole file. Implement chunked resumable uploads (5 MiB chunks), persist progress to .forge/state.json, and write tests. Don't touch the auth flow. FC I scoped the work to src/upload/ and skimmed the existing stream module. Plan: Split stream.ts: extract a new chunker.ts for chunk-boundary logic (pure functions, easy to test). Add a ChunkedUpload class in index.ts that consults .forge/",
+      "headings": [],
+      "counts": {
+        "buttons": 11,
+        "links": 4,
+        "inputs": 2,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Agent",
+        "clickable:a:Inbox",
+        "clickable:a:Runs",
+        "clickable:a:Settings",
+        "clickable:button:Connect a repo",
+        "clickable:button:Open in VS Code",
+        "clickable:button:⌕",
+        "clickable:button:+",
+        "clickable:button:⏸ Interrupt",
+        "clickable:button:↻ Rerun",
+        "typeable:textarea:Reply, ask for a change, or request another pass…",
+        "clickable:input:Auto-apply edits",
+        "clickable:button:Send",
+        "clickable:button:Open editor",
+        "clickable:button:Accept all changes",
+        "clickable:button:Unified"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

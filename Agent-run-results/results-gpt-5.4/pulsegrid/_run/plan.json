@@ -1,0 +1,357 @@
+{
+  "plan": {
+    "goal": "Autonomously explore the full PulseGrid dashboard experience, centered on the overview-to-detail operator workflow, while validating adjacent filtering, monitoring, and alarm-handling states across desktop and mobile.",
+    "summary": "Start on the Overview dashboard to validate the main situational-awareness flow, global navigation, and key top-bar controls that appear shared across pages. Then follow the strongest linked drill-downs into Generators and Alarms, and separately inspect Forecast for planning-oriented workflows and state toggles. Reserve dedicated time for higher-risk filtering and status-state pages, then repeat the most important navigation and control checks on mobile where the prescan already suggests small tap targets and dense layouts.",
+    "assumptions": [
+      "The four known HTML pages are the intended exploration surface for this run: index.html, generators.html, forecast.html, and alarms.html.",
+      "Topology and Events appear in navigation but only as '#' links in the prescan, so they should be checked as non-functional or placeholder nav items rather than treated as full pages.",
+      "The top bar controls (BA selector, Production/Replay/Plan, theme toggle, bell, and possibly command/search trigger) likely recur across pages and should be sampled on multiple pages for consistency.",
+      "Visible tables, filters, pills, and time-range buttons are expected to be interactive UI states even if no dialogs or forms were detected in prescan."
+    ],
+    "target_pages": [
+      "index.html",
+      "generators.html",
+      "forecast.html",
+      "alarms.html"
+    ],
+    "risk_hotspots": [
+      "index.html: BA selector lacks an apparent label in prescan; verify discoverability and keyboard/accessibility cues.",
+      "index.html top bar: Production / Replay / Plan tabs may change state without clear feedback; validate active-state clarity and consistency.",
+      "index.html: theme toggle, bell, and ⌘K are compact controls; assess responsiveness and mobile tap usability.",
+      "index.html: 24h / 48h / 7d system-load toggles and generator-status filter pills may not provide obvious state change feedback.",
+      "index.html: 'View all 312 →' and 'All alarms →' are primary drill-down links; validate destination relevance and context continuity.",
+      "generators.html: dense filter strip with status pills, fuel selector, zone selector, and search could produce conflicting or unclear filtered states.",
+      "generators.html: long data table and repeated 'Details →' links may create scanning, truncation, or mobile overflow issues.",
+      "forecast.html: model-horizon selector (Day-ahead / Hour-ahead / Real-time) plus 12h / 24h / 7d controls may create ambiguous chart/table synchronization.",
+      "forecast.html: hourly rows are described as tappable overlays; verify row-selection affordance and whether chart response is visible.",
+      "alarms.html: 'Acknowledge selected' depends on checkbox selection state; validate disabled/enabled behavior and clarity before/after selection.",
+      "alarms.html: severity/status/time filters plus text search create a high-risk combinatorial filtering surface.",
+      "alarms.html: alarm row actions labeled 'Open →' may compete with row clickability or be unclear on mobile.",
+      "Shared mobile risk: multiple controls were flagged as small tap targets, especially nav items, mode tabs, and icon buttons."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Overview baseline and shared shell",
+        "objective": "Validate the primary dashboard landing experience, information hierarchy, and the shared navigation/header controls that anchor the rest of the system.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm left-rail navigation routes correctly to Overview, Generators, Forecast, and Alarms.",
+          "Check that Topology and Events nav items behave consistently with their '#' destinations and do not mislead the user.",
+          "Exercise the BA selector and observe whether the selected balancing area is obvious and whether page content appears to respond.",
+          "Toggle Production, Replay, and Plan to verify active-state styling, exclusivity, and any content/state changes.",
+          "Test theme toggle, bell, and ⌘K for visible response, focus behavior, and whether they feel actionable versus decorative.",
+          "Use 24h / 48h / 7d on the system load card and verify chart-range changes are perceptible.",
+          "Try generator-status pills (All / Online / Tripped / Maintenance) in the dashboard grid and confirm filtering feedback.",
+          "Use the direct drill-down links 'View all 312 →' and 'All alarms →' to validate they support the main operator workflow."
+        ],
+        "exit_criteria": [
+          "All shared nav items and visible top-bar controls on the Overview have been exercised at least once.",
+          "At least one successful drill-down from dashboard summary to generators and alarms has been confirmed.",
+          "Observed whether major dashboard toggles produce clear, visible state changes or reveal UX ambiguity."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Generator monitoring and fleet filtering",
+        "objective": "Inspect the fleet-management page as the most likely dense operational work surface, with emphasis on filtering clarity, search, and table usability.",
+        "target_pages": [
+          "generators.html"
+        ],
+        "key_checks": [
+          "Verify landing context from nav and from dashboard drill-down is clear and consistent.",
+          "Exercise status pills: All, Online, Ramping, Tripped, Maintenance, confirming counts and visible row set changes.",
+          "Test fuel selector and zone selector separately, then in combination with a status pill, to see whether filtered results remain understandable.",
+          "Use the search field with a known visible unit or plant term such as COL-3, PVN, or Palo Verde and verify narrowing behavior.",
+          "Inspect at least several rows across different statuses/fuels for readability, status emphasis, and consistency of columns.",
+          "Open one or more 'Details →' links or controls if functional, and determine whether they navigate, expand, or do nothing.",
+          "Assess whether table density, repeated actions, and horizontal content remain scannable without excessive cognitive load."
+        ],
+        "exit_criteria": [
+          "All major generator filters have been sampled, including at least one combined-filter scenario and one search query.",
+          "A tripped or abnormal unit state has been inspected to judge whether exceptions stand out clearly.",
+          "Any generator detail affordance has been tested enough to classify it as functional, weak, or placeholder."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Forecast planning states",
+        "objective": "Validate the forecast page's planning workflow, especially whether chart controls, model horizons, and hourly-breakdown interactions stay synchronized and comprehensible.",
+        "target_pages": [
+          "forecast.html"
+        ],
+        "key_checks": [
+          "Switch among Day-ahead, Hour-ahead, and Real-time modes and verify active-state clarity and content response.",
+          "Use 12h, 24h, and 7d chart controls and confirm the chart visibly changes range or framing.",
+          "Inspect the hourly breakdown table for scannability, reserve warnings, and clarity of notes like 'Approaching capacity'.",
+          "Tap/click one or more hourly rows to verify the promised chart overlay behavior and whether the selected hour is clearly indicated.",
+          "Review reserve adequacy and drivers sections for hierarchy and whether supporting context feels connected to the main chart."
+        ],
+        "exit_criteria": [
+          "All visible forecast horizon and time-range controls have been exercised.",
+          "At least one hourly row interaction has been attempted and its response documented.",
+          "The relationship between forecast chart, table, and supporting panels has been assessed for coherence."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Alarm triage and recovery path",
+        "objective": "Stress the alarm-management surface, focusing on triage workflows, bulk selection behavior, filtering combinations, and clarity of alarm ownership/status transitions.",
+        "target_pages": [
+          "alarms.html"
+        ],
+        "key_checks": [
+          "Confirm the headline metrics and alarm table establish a clear triage starting point.",
+          "Test checkbox selection on one or more alarms and observe whether 'Acknowledge selected' changes enabled state or feedback.",
+          "Exercise Severity, Status, and Time filters independently, then combine at least two filters to evaluate state transparency.",
+          "Use the text filter with a visible unit, rule, or owner name such as COL-3, Okafor, or lvrt to validate narrowing behavior.",
+          "Open at least one alarm via 'Open →' and determine whether the action reveals detail, changes state, or simply navigates.",
+          "Inspect representation of OPEN, UNATTENDED, ACKED, and RESOLVED states for visual differentiation and operational clarity."
+        ],
+        "exit_criteria": [
+          "Bulk-selection and acknowledge behavior has been probed enough to understand whether the workflow is real or superficial.",
+          "Alarm filters and search have been exercised in multiple combinations.",
+          "At least one alarm action path has been followed to judge drill-in clarity."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Cross-page consistency and mobile pass",
+        "objective": "Re-check the most important workflows on mobile viewport, with emphasis on navigation, dense tables/cards, and the small-tap-target issues already surfaced by prescan.",
+        "target_pages": [
+          "index.html",
+          "generators.html",
+          "forecast.html",
+          "alarms.html"
+        ],
+        "key_checks": [
+          "On mobile, verify access to primary navigation and whether left-rail items collapse, overflow, or remain tappable.",
+          "Repeat critical top-bar interactions on mobile: BA selector, Production/Replay/Plan, theme toggle, bell, and ⌘K if visible.",
+          "On Overview, confirm KPI cards, system-load chart controls, generator-status grid, and drill-down links remain usable without overlap.",
+          "On Generators, assess whether filters, search, and the table remain operable or require horizontal scrolling/truncation.",
+          "On Forecast, test horizon/time controls and at least one hourly-row interaction for touch usability.",
+          "On Alarms, test checkbox selection, filter controls, and an alarm action for tap reliability and layout crowding."
+        ],
+        "exit_criteria": [
+          "Each known page has been viewed once on mobile.",
+          "At least one critical task per page has been repeated on mobile.",
+          "Any mobile-specific failures or severe usability regressions have been documented, especially around small tap targets and dense content."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 known HTML pages and validate both nav-based and in-context drill-down access where available.",
+      "features": "Exercise most visible controls on each key page, with full coverage of dashboard toggles, generator filters/search, forecast horizon/time controls, and alarm selection/filtering/actions.",
+      "mobile": "Repeat the primary navigation flow plus 1-2 critical interactions per page on mobile viewport, prioritizing controls already flagged as small tap targets."
+    },
+    "notes": [
+      "Do not spend time seeking unlisted pages; keep exploration focused on the four known HTML files and visible placeholder nav items.",
+      "Because there are no prescanned dialogs or forms, prioritize state changes, filtering logic, navigation continuity, and clarity of feedback over form validation.",
+      "Where controls appear decorative or non-functional, capture that as a UX finding rather than forcing deep interaction."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "PulseGrid — Western Interconnect",
+      "url": "file:///Users/timchef/UXBench/websites/pulsegrid/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "PulseGrid ▦ Overview ⚡ Generators 📈 Forecast ⚠ Alarms 8 🌐 Topology 📜 Events SCADA · OK EMS · sync 2s Op Center West Sumi Okafor on shift · 12:04 PT Western Interconnect ERCOT SPP MISO Production Replay Plan 20:13:35 PT · UTC−7 ⌘K ☾ 🔔 SO TOTAL DEMAND 38,420 MW ▲ 1.4% vs. 7-day avg · at 12:04 GENERATION 38,610 MW +190 MW reserve over demand FREQUENCY 59.998 Hz target 60.000 ± 0.05 Hz RENEWABLES SHARE 42.1 % ▲ 6.2% vs. yesterday ACTIVE ALARMS 8 2 critical 3 new in last 30 min COL-3 over-temp System load · today Actual Forecast Net renewables 24h 48h 7d 44k 35k 26k 18k 9k 0k 0:00 6:00 12:00 18:00 +0h +6h +12h +18h NOW Weather & load drivers refreshed 12:00 PT ☀ Phoenix, AZ 112°F Cooling load · +1,820 MW vs. 5d avg ⛅ Los Angeles, CA 88°F +420 MW · marine-layer dissipating 🌬 Tehachapi Pass 42 mph Wind: capacity 88% · 2.4 GW available ☁ Pacific NW 62°F Hydro spilling · BPA exporting 1,100 MW Ge",
+      "headings": [
+        "System load · today",
+        "Weather & load drivers",
+        "Generator status · 24 of 312",
+        "Active alarms",
+        "Fuel mix · live",
+        "Interchange · neighbouring BAs"
+      ],
+      "counts": {
+        "buttons": 13,
+        "links": 9,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:PulseGrid",
+        "clickable:a:▦ Overview",
+        "clickable:a:⚡ Generators",
+        "clickable:a:📈 Forecast",
+        "clickable:a:⚠ Alarms 8",
+        "clickable:a:🌐 Topology",
+        "clickable:a:📜 Events",
+        "selectable:select:Western Interconnect ERCOT SPP MISO",
+        "clickable:button:Production",
+        "clickable:button:Replay",
+        "clickable:button:Plan",
+        "clickable:button:⌘K",
+        "clickable:button:☾",
+        "clickable:button:🔔",
+        "clickable:button:24h",
+        "clickable:button:48h"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "alarms.html",
+      "title": "Alarms — PulseGrid",
+      "url": "file:///Users/timchef/UXBench/websites/pulsegrid/alarms.html",
+      "load_error": null,
+      "visible_text_excerpt": "PulseGrid ▦ Overview ⚡ Generators 📈 Forecast ⚠ Alarms 8 🌐 Topology 📜 Events Alarms Last refresh 12:04:18 PT ☾ Acknowledge selected ACTIVE 8 +3 in last 30 min CRITICAL 2 COL-3 over-temp · WND-12 ride-thru MEAN HANDLE TIME 06:22 min trailing 24h, target ≤ 10:00 RESOLVED · 24H 34 28 by op · 6 auto-cleared Severity: All Critical only Major+ Minor only Status: Open Acknowledged Resolved All Time: Last 24h Last 1h Last 6h This shift SEV TRIGGERED UNIT / ASSET RULE VALUE STATUS OWNER critical 11:58 PT COL-3 · Colstrip Unit 3 stator_temp > 195 for 60s 210 °C OPEN SO Okafor Open → critical 11:55 PT WND-12 · Windover Wind #12 lvrt_violation V drop 12% UNATTENDED — Open → major 11:42 PT CISO interchange tie ix_dev > 50MW for 10m −72 MW ACKED M Halvorsen Open → major 11:36 PT DLT-G · Delta Peaker agc_no_response 0 MW Δ OPEN — Open → major 11:30 PT Zone AZ · reserves reserve_margin < 8% 7.4% OPEN SO ",
+      "headings": [
+        "Alarms"
+      ],
+      "counts": {
+        "buttons": 14,
+        "links": 7,
+        "inputs": 17,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:PulseGrid",
+        "clickable:a:▦ Overview",
+        "clickable:a:⚡ Generators",
+        "clickable:a:📈 Forecast",
+        "clickable:a:⚠ Alarms 8",
+        "clickable:a:🌐 Topology",
+        "clickable:a:📜 Events",
+        "clickable:button:☾",
+        "clickable:button:Acknowledge selected",
+        "selectable:select:Severity: All Critical only Major+ Minor only",
+        "selectable:select:Status: Open Acknowledged Resolved All",
+        "selectable:select:Time: Last 24h Last 1h Last 6h This shift",
+        "typeable:input:Filter by unit, rule, or owner…",
+        "clickable:input:checkbox",
+        "clickable:button:Open →"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "forecast.html",
+      "title": "Forecast — PulseGrid",
+      "url": "file:///Users/timchef/UXBench/websites/pulsegrid/forecast.html",
+      "load_error": null,
+      "visible_text_excerpt": "PulseGrid ▦ Overview ⚡ Generators 📈 Forecast ⚠ Alarms 8 🌐 Topology 📜 Events Load forecast model: pulse-net-v8 · trained 06:00 PT · MAPE 1.41% Day-ahead Hour-ahead Real-time ☾ Next 24 hours · MW Forecast P10 / P90 Capacity 12h 24h 7d 48k 43k 38k 33k 28k 23k 0:00 4:00 8:00 12:00 16:00 20:00 capacity 46,000 peak 40,895 Hourly breakdown tap a row to overlay on chart HOUR FORECAST P10–P90 RESERVE NOTES 00:00 25,500 24,827 – 26,165 80.4% 01:00 25,756 25,073 – 26,450 78.6% 02:00 26,505 25,828 – 27,264 73.6% 03:00 27,697 27,073 – 28,379 66.1% 04:00 29,250 28,480 – 29,911 57.3% 05:00 31,059 30,385 – 31,717 48.1% 06:00 33,000 32,221 – 33,795 39.4% 07:00 34,941 34,283 – 35,582 31.6% 08:00 36,750 35,953 – 37,535 25.2% 09:00 38,303 37,578 – 38,981 20.1% 10:00 39,495 38,842 – 40,152 16.5% Approaching capacity 11:00 40,244 39,591 – 40,872 14.3% Approaching capacity 12:00 40,500 39,758 – 41,192 13.6% Ap",
+      "headings": [
+        "Load forecast",
+        "Next 24 hours · MW",
+        "Hourly breakdown",
+        "Reserve adequacy",
+        "Drivers · today vs. yesterday"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 7,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:PulseGrid",
+        "clickable:a:▦ Overview",
+        "clickable:a:⚡ Generators",
+        "clickable:a:📈 Forecast",
+        "clickable:a:⚠ Alarms 8",
+        "clickable:a:🌐 Topology",
+        "clickable:a:📜 Events",
+        "selectable:select:Day-ahead Hour-ahead Real-time",
+        "clickable:button:☾",
+        "clickable:button:12h",
+        "clickable:button:24h",
+        "clickable:button:7d"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "generators.html",
+      "title": "Generators — PulseGrid",
+      "url": "file:///Users/timchef/UXBench/websites/pulsegrid/generators.html",
+      "load_error": null,
+      "visible_text_excerpt": "PulseGrid ▦ Overview ⚡ Generators 📈 Forecast ⚠ Alarms 8 🌐 Topology 📜 Events Generators 38 of 38 units ☾ All 38 Online 30 Ramping 3 Tripped 2 Maintenance 3 All fuels Natural gas Hydro Wind Solar Coal Nuclear Battery All zones NW SW RM CA-N CA-S AZ NV UNIT PLANT FUEL ZONE OUTPUT CAPACITY % CAP STATUS OPERATOR PVN-1 Palo Verde 1 Nuclear AZ 1,380 MW 1,400 99% ONLINE APS Details → PVN-2 Palo Verde 2 Nuclear AZ 1,390 MW 1,400 99% ONLINE APS Details → GRC-2 Grand Coulee G2 Hydro NW 720 MW 805 89% ONLINE BPA / WAPA Details → COL-3 Colstrip Unit 3 Coal NW 240 MW 778 31% TRIPPED Mountain States Details → GBP-1 Greenbridge CCGT Natural gas CA-S 610 MW 660 92% ONLINE Halcyon Power Details → TEH-W Tehachapi Wind Wind CA-S 1,980 MW 2,240 88% ONLINE Tehachapi Renewables Details → BRG-S Boulder Ridge PV Solar CA-S 840 MW 900 93% ONLINE SunBelt Generation Details → PRB-S Painted Rock PV Solar AZ 605 MW 6",
+      "headings": [
+        "Generators"
+      ],
+      "counts": {
+        "buttons": 44,
+        "links": 7,
+        "inputs": 41,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:PulseGrid",
+        "clickable:a:▦ Overview",
+        "clickable:a:⚡ Generators",
+        "clickable:a:📈 Forecast",
+        "clickable:a:⚠ Alarms 8",
+        "clickable:a:🌐 Topology",
+        "clickable:a:📜 Events",
+        "typeable:input:Search by name, plant, or EMS ID…",
+        "clickable:button:☾",
+        "clickable:button:All 38",
+        "clickable:button:Online 30",
+        "clickable:button:Ramping 3",
+        "clickable:button:Tripped 2",
+        "clickable:button:Maintenance 3",
+        "selectable:select:All fuels Natural gas Hydro Wind Solar Coal Nuclear Battery",
+        "selectable:select:All zones NW SW RM CA-N CA-S AZ NV"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full brewlog-mobile system, prioritizing the primary data visualization flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: True
+
+## Summary
+
+Brewlog-mobile provides a visually clear coffee journaling experience with strong data visualization and persistent navigation, but suffers from severe mobile usability and accessibility issues in its core logging form. Native radio buttons and checkboxes for brew methods and tasting notes have critically small 13x13px tap targets, making touch interaction highly error-prone. Additionally, missing form labels and unresponsive action buttons undermine the overall mobile user experience.
+
+## Issues (6)
+
+### [HIGH] brew-method-radio-buttons-and-tasting — mobile usability
+- **Page**: `index.html [brew method radio buttons and tasting note checkboxes]`
+- **Problem**: Brew method radio buttons and tasting note checkboxes use tiny native inputs with 13x13px tap targets, far below the 44px minimum mobile touch target guideline.
+- **Evidence**: Layout warnings consistently flagged 13x13px tap targets for Espresso, V60, Aeropress, Chemex, Moka, and French press radio buttons, as well as all tasting note checkboxes (caramel, burnt, citrus, etc.) across both desktop and mobile viewports.
+- **Suggested fix**: Replace native radio/checkbox inputs with custom touch-friendly components (e.g., pill-shaped toggles or cards) that expand the hit area to at least 44x44px while providing clear visual selection feedback.
+
+### [HIGH] the-new-and-brew-buttons-on — affordance
+- **Page**: `index.html [Beans screen: '+ New' button, 'Brew' button]`
+- **Problem**: The '+ New' and 'Brew' buttons on the Beans screen are unresponsive and fail to trigger any visible state change or navigation.
+- **Evidence**: Clicking '+ New' (ux-7) and 'Brew' (ux-9) produced no visible state change or navigation, failing to reveal a new bean entry form or a brew logging form as expected.
+- **Suggested fix**: Ensure '+ New' navigates to an 'Add Bean' form and 'Brew' navigates to the 'Log a brew' form pre-filled with the selected bean details.
+
+### [MEDIUM] critical-form-inputs-including-the-bean — accessibility
+- **Page**: `index.html [Add brew form: bean select, dose/yield inputs; Stats screen: time range selector]`
+- **Problem**: Critical form inputs, including the bean select dropdown, dose/yield number inputs, time input, and stats time range selector, lack associated labels, aria-labels, or placeholders.
+- **Evidence**: Multiple layout warnings flagged missing input labels for the bean select (ux-14), dose input (ux-15), time minutes input (ux-17), and stats time range selector (ux-46).
+- **Suggested fix**: Add explicit <label> elements or aria-label attributes to all form controls (e.g., aria-label='Select bean', aria-label='Dose in grams', aria-label='Time range').
+
+### [MEDIUM] interacting-with-score-buttons-brew-method — feedback
+- **Page**: `index.html [Add brew form: score buttons, brew method radios, tasting note checkboxes]`
+- **Problem**: Interacting with score buttons, brew method radios, and tasting note checkboxes yields no visible text change or clear immediate visual feedback, leaving users unsure if their selection registered.
+- **Evidence**: Clicking score buttons (1-10), radio buttons (V60, Chemex), and checkboxes (burnt, caramel) registered successfully but resulted in 'no visible text change', indicating state changes are either purely visual (CSS) and subtle, or entirely missing.
+- **Suggested fix**: Implement prominent visual feedback for selected states, such as a filled background color, bold border, or checkmark icon, ensuring the active state is unmistakable even without DOM text changes.
+
+### [MEDIUM] several-navigation-and-action-buttons-have — mobile usability
+- **Page**: `index.html [Today: '+ Log'; Add brew: 'Cancel', '←'; Beans: 'Brew', 'Reorder', '+ New']`
+- **Problem**: Several navigation and action buttons have tap targets smaller than the 44px mobile minimum height, including '+ Log' (64x32px), 'Cancel' (73x30px), '←' back (36x36px), and Beans screen actions ('Brew' 54x23px, 'Reorder' 72x25px, '+ New' 68x32px).
+- **Evidence**: Layout warnings consistently flagged these buttons across the Today, Add brew, and Beans screens for falling below the 44px mobile touch target guidance.
+- **Suggested fix**: Increase the padding and height of all interactive buttons to meet the 44x44px minimum touch target size, ensuring comfortable and accurate tapping.
+
+### [LOW] the-back-navigation-button-uses-a — navigation
+- **Page**: `index.html [Add brew form: '←' back button]`
+- **Problem**: The back navigation button uses a non-standard '←' arrow symbol without a clear text label, which may be ambiguous for some users.
+- **Evidence**: The back button (ux-48) uses the text '←' and has a small 36x36px tap target. Additionally, a click attempt on this button timed out (ux-48 click failed), suggesting potential implementation or visibility issues.
+- **Suggested fix**: Replace the standalone '←' with a labeled back button (e.g., '← Back') and ensure it has a reliable click handler and a 44x44px tap target.

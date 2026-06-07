@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lattice DB — Pricing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+        <g stroke="#6D28D9" stroke-width="1.6" fill="none">
+          <path d="M16 2 L30 16 L16 30 L2 16 Z"/>
+          <path d="M16 2 L16 30 M2 16 L30 16"/>
+          <circle cx="16" cy="16" r="3" fill="#6D28D9"/>
+        </g>
+      </svg>
+      <span>Lattice DB</span>
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="pricing.html" class="current">Pricing</a>
+      <a href="#" class="nav-stub" data-stub="Docs">Docs</a>
+      <a href="#" class="nav-stub" data-stub="Customers">Customers</a>
+      <a href="#" class="nav-stub" data-stub="Sign in">Sign in</a>
+      <a href="#" class="btn-primary" id="bookDemoBtn">Book demo</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="page-head">
+    <h1>Pricing scales on two axes — pick a cell.</h1>
+    <p>Row by team size. Column by data volume. The number where they meet is what you'll pay each month.</p>
+  </section>
+
+  <section class="matrix-section">
+    <div class="matrix-col">
+      <div class="matrix-hint" id="matrixHint">Showing an example selection — tap any cell to set yours. <button type="button" id="resetCell" class="reset-btn">Clear</button></div>
+      <div class="matrix-wrap" role="region" aria-label="Pricing matrix, scrollable horizontally">
+        <table class="matrix" id="matrix" role="grid" aria-label="Pricing by team size and data volume">
+          <thead>
+            <tr>
+              <th></th>
+              <th scope="col">Up to 50 GB</th>
+              <th scope="col">50 – 250 GB</th>
+              <th scope="col">250 GB – 1 TB</th>
+              <th scope="col">1 – 5 TB</th>
+              <th scope="col">5 – 20 TB</th>
+              <th scope="col">20 TB+</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="scroll-hint" aria-hidden="true">← scroll horizontally to see all data tiers →</p>
+    </div>
+
+    <aside class="cost-aside">
+      <div class="cost-card">
+        <span class="cost-label">Selected cell</span>
+        <div class="cost-num" id="cellPrice">—</div>
+        <div class="tier-pill" id="tierPill">Pick a cell to begin</div>
+        <div class="contact-cta" id="contactCta" hidden>
+          <p>Enterprise tiers are quoted directly. Typical contracts start around <strong>$40k/mo</strong>.</p>
+          <a href="mailto:sales@lattice.example?subject=Enterprise%20pricing%20inquiry" class="btn-primary small">Email sales</a>
+          <button type="button" class="btn-secondary" id="openDemoFromContact">Book a call</button>
+        </div>
+        <details class="how"><summary>How we got this number</summary><div id="howBreak"></div></details>
+      </div>
+
+      <div class="addons-card">
+        <h4>Add-ons</h4>
+        <div class="addon-group">
+          <div class="addon-group-title">Percentage of base</div>
+          <label class="addon-row"><input type="checkbox" data-key="backup"> <span class="addon-text">Continuous cross-region backups</span><span class="ad" data-pct-preview="backup">+15%</span></label>
+          <label class="addon-row"><input type="checkbox" data-key="replica"> <span class="addon-text">Read replica, cross-AZ</span><span class="ad" data-pct-preview="replica">+35%</span></label>
+          <label class="addon-row"><input type="checkbox" data-key="pitr"> <span class="addon-text">PITR up to 35 days</span><span class="ad" data-pct-preview="pitr">+8%</span></label>
+        </div>
+        <div class="addon-group">
+          <div class="addon-group-title">Flat monthly</div>
+          <label class="addon-row"><input type="checkbox" data-key="hipaa"> <span class="addon-text">HIPAA compliance pack</span><span class="ad">+$400/mo</span></label>
+          <label class="addon-row" id="socRow"><input type="checkbox" data-key="soc"> <span class="addon-text">SOC 2 reporting<span class="addon-sub">included on Team and above</span></span><span class="ad">incl.</span></label>
+          <label class="addon-row"><input type="checkbox" data-key="vpc"> <span class="addon-text">PrivateLink / VPC peering</span><span class="ad">+$120/mo</span></label>
+          <label class="addon-row"><input type="checkbox" data-key="dse"> <span class="addon-text">Dedicated support engineer</span><span class="ad">+$2,500/mo</span></label>
+          <label class="addon-row"><input type="checkbox" data-key="staging"> <span class="addon-text">Sandbox staging cluster</span><span class="ad">+$250/mo</span></label>
+        </div>
+        <div class="addon-group">
+          <div class="addon-group-title">Usage-based</div>
+          <label class="addon-row"><input type="checkbox" data-key="gpu"> <span class="addon-text">GPU acceleration pool<span class="addon-sub">$1.20 / GPU-hour, ~100h estimate</span></span><span class="ad">+$120/mo est.</span></label>
+        </div>
+      </div>
+
+      <div class="total-card">
+        <h4>Final estimated cost</h4>
+        <ul id="finalList"></ul>
+        <div class="grand">Total · <strong id="grand">$0</strong>/mo</div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="tier-explain">
+    <h2>What tier are you in?</h2>
+    <p>Cells in the matrix roll up into four tiers. Hover or select a cell to see which tier you land in.</p>
+    <div class="tier-grid">
+      <div class="tier-bucket" data-tier="developer"><h3>Developer</h3><p>Solo to small teams, datasets under 250 GB.</p><span>Top-left 2×2 of the matrix.</span></div>
+      <div class="tier-bucket" data-tier="team"><h3>Team</h3><p>5–40 seats, 50 GB–5 TB. SSO and audit log included.</p><span>Middle band.</span></div>
+      <div class="tier-bucket" data-tier="scale"><h3>Scale</h3><p>Up to ~100 seats, multi-TB. BYOK, replicas, PITR.</p><span>Lower-right band.</span></div>
+      <div class="tier-bucket" data-tier="enterprise"><h3>Enterprise</h3><p>Hundreds of seats, 20 TB+. Custom terms, dedicated cluster.</p><span>Bottom-right cells.</span></div>
+    </div>
+  </section>
+
+  <section class="compare">
+    <h2>Feature matrix</h2>
+    <div class="compare-wrap" role="region" aria-label="Feature comparison, scrollable horizontally">
+      <table class="compare-table">
+        <thead><tr><th>Feature</th><th>Developer</th><th>Team</th><th>Scale</th><th>Enterprise</th></tr></thead>
+        <tbody>
+          <tr><td>Max concurrent connections</td><td>50</td><td>500</td><td>5,000</td><td>50,000</td></tr>
+          <tr><td>Query timeout</td><td>30s</td><td>5m</td><td>30m</td><td>configurable</td></tr>
+          <tr><td>Dedicated runners</td><td>—</td><td>—</td><td>2</td><td>unlimited</td></tr>
+          <tr><td>Bring-your-own-key (BYOK)</td><td>—</td><td>—</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Audit log retention</td><td>7 days</td><td>30 days</td><td>90 days</td><td>365 days</td></tr>
+          <tr><td>RBAC</td><td>basic</td><td>5 roles</td><td>20 roles</td><td>custom</td></tr>
+          <tr><td>SAML SSO</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><td>SCIM</td><td>—</td><td>—</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Cross-region backups</td><td>add-on</td><td>add-on</td><td>add-on</td><td>included</td></tr>
+          <tr><td>PITR</td><td>—</td><td>7d</td><td>14d</td><td>35d</td></tr>
+          <tr><td>Regions</td><td>1</td><td>2</td><td>3</td><td>any</td></tr>
+          <tr><td>HIPAA</td><td>—</td><td>add-on</td><td>add-on</td><td>included</td></tr>
+          <tr><td>SOC 2</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+          <tr><td>SLA</td><td>none</td><td>99.5%</td><td>99.9%</td><td>99.99%</td></tr>
+          <tr><td>Support</td><td>community</td><td>1 bday</td><td>4h</td><td>24/7, 1h critical</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details><summary>What counts as "data volume" — compressed or raw?</summary><p>Raw uncompressed size of the active dataset, measured monthly P95. Compression and tiering don't reduce your bill until average daily volume drops a full tier for a billing cycle.</p></details>
+    <details><summary>Do you offer committed-use discounts?</summary><p>Yes. Annual commit gets ~18% off; 3-year commit ~32% off. Both applied to the matrix base; add-ons follow the same discount.</p></details>
+    <details><summary>Can I downgrade mid-cycle?</summary><p>You can move down rows (smaller team) any time; column moves (less data) take effect at the next cycle since we measure data P95 monthly.</p></details>
+    <details><summary>Which regions are supported?</summary><p>us-east-1, us-west-2, eu-west-2, eu-central-1, ap-southeast-1, ap-northeast-1. Scale and above can request additional regions.</p></details>
+    <details><summary>How is GPU acceleration billed?</summary><p>Per GPU-hour ($1.20). The matrix sidebar assumes ~100 GPU-hours/mo; you only pay what you use.</p></details>
+    <details><summary>Do you charge for egress?</summary><p>Free up to 5× your storage tier per month. Above that, $0.08/GB; cross-region replication egress is free between Lattice-managed regions.</p></details>
+    <details><summary>Free trial?</summary><p>14 days on Developer-tier cells, no credit card. We send a "we still see you in trial" email at day 12.</p></details>
+    <details><summary>Refund policy?</summary><p>Pro-rated refund within 14 days of upgrade. After that, the remainder of the cycle is non-refundable.</p></details>
+  </section>
+</main>
+
+<div class="mobile-summary" id="mobileSummary" aria-live="polite">
+  <div class="mobile-summary-inner">
+    <span class="mobile-summary-label">Selected</span>
+    <span class="mobile-summary-price" id="mobilePrice">—</span>
+    <span class="mobile-summary-tier" id="mobileTier">Pick a cell</span>
+  </div>
+</div>
+
+<div class="modal" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle" hidden>
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card" role="document">
+    <button type="button" class="modal-close" aria-label="Close" data-close-modal>×</button>
+    <h3 id="demoModalTitle">Book a demo</h3>
+    <p>This is a UXBench demo, so the form is illustrative. In production this would open a Calendly slot.</p>
+    <p>Reach the team directly:</p>
+    <ul class="modal-list">
+      <li>Email <a href="mailto:demo@lattice.example">demo@lattice.example</a></li>
+      <li>Phone <a href="tel:+18005551234">+1 (800) 555-1234</a></li>
+    </ul>
+    <button type="button" class="btn-primary" data-close-modal>Got it</button>
+  </div>
+</div>
+
+<div class="modal" id="stubModal" role="dialog" aria-modal="true" aria-labelledby="stubModalTitle" hidden>
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card" role="document">
+    <button type="button" class="modal-close" aria-label="Close" data-close-modal>×</button>
+    <h3 id="stubModalTitle">Coming soon</h3>
+    <p id="stubModalBody">This page is part of the UXBench demo and isn't wired up yet.</p>
+    <button type="button" class="btn-primary" data-close-modal>OK</button>
+  </div>
+</div>
+
+<footer class="site-foot">
+  <div class="container foot-grid">
+    <div><strong>Lattice DB</strong><br><span>Two axes. One bill. No surprises.</span></div>
+    <div><h5>Product</h5><a href="index.html">Overview</a><a href="pricing.html">Pricing</a><a href="#" class="nav-stub" data-stub="Docs">Docs</a></div>
+    <div><h5>Resources</h5><a href="#" class="nav-stub" data-stub="Architecture">Architecture</a><a href="#" class="nav-stub" data-stub="Benchmarks">Benchmarks</a><a href="#" class="nav-stub" data-stub="Security">Security</a></div>
+    <div><h5>Company</h5><a href="#" class="nav-stub" data-stub="About">About</a><a href="#" class="nav-stub" data-stub="Blog">Blog</a><a href="#" class="nav-stub" data-stub="Careers">Careers</a></div>
+  </div>
+  <p class="disclaimer">Local demo for UXBench. Fictional product, not a real company.</p>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>

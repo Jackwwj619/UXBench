@@ -1,0 +1,360 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the core fleet management dashboard flow and verify the main adjacent pages, with emphasis on map/list switching, vehicle/alert drill-downs, and destructive action handling.",
+    "summary": "Start on the dashboard because it is the primary entry point and contains the richest interactive surface: org switching, view tabs, status filters, search, notification dropdown, map vehicle selection, and the bottom vehicle drawer. Then cover the standalone pages (Vehicles, Alerts, Analytics) to validate cross-page consistency, filtering/search behavior, and table/detail workflows. Finish with deeper validation of high-risk states such as alert handling, vehicle detail actions, and mobile viewport usability where small tap targets and unlabeled controls are most likely to regress.",
+    "assumptions": [
+      "The visible dashboard controls are the primary route to vehicle detail and action workflows; side-nav placeholder items like Drivers, Routes, Maintenance, and Settings may not navigate to full pages and should only be probed cautiously.",
+      "The explorer should treat the prescan as authoritative: only index.html, vehicles.html, alerts.html, and analytics.html are known HTML pages.",
+      "The right-side vehicle detail panel and confirmation modal are implemented within index.html and should be validated through map/list interactions rather than expecting separate pages.",
+      "The alert bell dropdown on the dashboard contains the five most recent alerts, and the reassignment flow is the only explicitly noted destructive action."
+    ],
+    "target_pages": [
+      "index.html",
+      "vehicles.html",
+      "alerts.html",
+      "analytics.html"
+    ],
+    "risk_hotspots": [
+      "index.html: org selector with missing label, search box, and Map/List/Analytics view toggles with small tap targets on mobile",
+      "index.html: alert bell dropdown and notification count state",
+      "index.html: vehicle click/drill-down into right detail panel, including 24h/7d/30d toggle and action buttons",
+      "index.html: Reassign task destructive action and second-confirmation modal",
+      "vehicles.html: dense filter/search/table controls and row-level details",
+      "alerts.html: multiple filters (time, severity, type, status) and Assign/Details actions on alert rows",
+      "analytics.html: report view integrity and any interaction on the lightweight controls present",
+      "mobile viewport: small tap targets and unlabeled select/input controls on all key pages"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard orientation and navigation",
+        "objective": "Validate the main landing experience and the top-level navigation controls before digging into deeper workflows.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the default dashboard state loads with map view selected, status chips visible, and vehicle list drawer available",
+          "Exercise org switcher selection and verify the page updates consistently or remains stable",
+          "Check the notification bell dropdown contents and whether the count matches the visible alert badge",
+          "Try the top-level view toggles (Map view, List view, Analytics view) and note which ones change state versus navigate",
+          "Verify the status filter strip changes the visible vehicle set or highlights filtered state"
+        ],
+        "exit_criteria": [
+          "All visible top-bar controls on the dashboard have been clicked or at least state-checked once",
+          "Navigator behavior is understood for map/list/analytics tabs and alert dropdown",
+          "No blocking rendering or interaction issues are observed in the initial dashboard state"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Vehicle discovery and detail panel",
+        "objective": "Exercise the primary fleet workflow: finding a vehicle, opening details, and validating the vehicle-specific actions and history widgets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the search box with at least two query styles (plate and driver/route terms) to confirm filtering or matching behavior",
+          "Click representative vehicles from the map and from the drawer list, including at least one running vehicle and one non-running vehicle",
+          "Validate the right detail panel fields: basic info, driver info, current task, and historical track display",
+          "Switch the 24h/7d/30d history toggle and confirm the chart updates or the selected state changes",
+          "Check the four action buttons: Send command, Contact driver, Maintenance record, and Reassign task",
+          "Open Reassign task and verify the second-confirmation modal appears and is dismissible",
+          "Observe whether live map positions or status counts visibly change over time for running vehicles"
+        ],
+        "exit_criteria": [
+          "At least two distinct vehicle detail views have been opened successfully",
+          "The history toggle and all vehicle action buttons have been exercised or inspected",
+          "The destructive reassign confirmation path has been confirmed"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Vehicle list and filtering page",
+        "objective": "Validate the dedicated Vehicles page as the structured list/search/filter counterpart to the dashboard drawer.",
+        "target_pages": [
+          "vehicles.html"
+        ],
+        "key_checks": [
+          "Open the Vehicles page and confirm the table/list is populated with vehicle rows and details actions",
+          "Test the status filter, fleet filter, and vehicle search field with representative inputs",
+          "Check whether selecting filters narrows the visible table rows and whether row counts remain sensible",
+          "Open at least one vehicle row detail action if available from the list",
+          "Confirm the page’s many inputs render and remain usable without overlap or truncation"
+        ],
+        "exit_criteria": [
+          "Search and both major filter types have been tried",
+          "At least one vehicle row has been inspected beyond the table summary",
+          "The page remains readable with dense data and no obvious layout collapse"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Alert triage workflow",
+        "objective": "Validate alert management, prioritization, and row-level actions on the Alerts page.",
+        "target_pages": [
+          "alerts.html"
+        ],
+        "key_checks": [
+          "Confirm KPI cards and the alert table are visible and coherent with the alert counts in navigation",
+          "Test the alert search field and the time, severity, type, and status filters individually",
+          "Exercise both Assign and Details actions on at least one high-severity alert row",
+          "Check that the filtered views still show plausible alert records and that row metadata updates accordingly",
+          "Look for any mismatch between alert severity/status filters and row contents"
+        ],
+        "exit_criteria": [
+          "All major filter categories have been interacted with",
+          "At least one alert row action has been triggered",
+          "The page behavior matches the expected alert triage pattern without broken controls"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Analytics verification",
+        "objective": "Confirm the analytical reporting page loads cleanly and the key dashboard metrics, heatmap, and ranking table are legible.",
+        "target_pages": [
+          "analytics.html"
+        ],
+        "key_checks": [
+          "Validate the headline KPIs and the fleet utilization heatmap render correctly",
+          "Inspect the driver performance ranking table for sorting/readability issues if sortable behavior exists",
+          "Exercise the visible search/control on this page and the org selector if it appears",
+          "Verify that the page remains stable on navigation from the dashboard analytics tab if that route is used"
+        ],
+        "exit_criteria": [
+          "The analytics page has been fully loaded and reviewed",
+          "Any visible control has been checked at least once",
+          "No data-visualization rendering issues are observed"
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile recheck of critical paths",
+        "objective": "Repeat the most important interactions in a mobile viewport to validate tap usability and responsive behavior.",
+        "target_pages": [
+          "index.html",
+          "vehicles.html",
+          "alerts.html",
+          "analytics.html"
+        ],
+        "key_checks": [
+          "Recheck dashboard navigation, search, status chips, and notification/org controls on mobile",
+          "Verify that vehicle selection and detail opening still works without precision issues",
+          "Confirm the Vehicles and Alerts page filters remain operable and readable on smaller screens",
+          "Look for tap-target failures, clipped text, or hidden controls around the dense table/list layouts"
+        ],
+        "exit_criteria": [
+          "Critical dashboard, vehicle, and alert interactions have been attempted in mobile viewport",
+          "Any mobile-specific breakage is documented with page and control context",
+          "Coverage includes the controls already flagged as small tap targets in prescan"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages and verify navigation between them from the dashboard entry point",
+      "features": "exercise most visible controls per key page, including search, filters, tabs, row actions, dropdowns, and the destructive reassign flow",
+      "mobile": "repeat critical checks on mobile viewport, prioritizing tap-target-sensitive controls and dense table/list layouts"
+    },
+    "notes": [
+      "Treat the placeholder left-nav items that use '#' as low-priority unless they reveal real state changes; avoid spending excessive budget on dead-end links.",
+      "Prioritize at least one non-running vehicle and one critical alert because those are the most likely to expose edge-state bugs.",
+      "If the dashboard list drawer or map behavior is ambiguous, use the dedicated Vehicles page as the fallback source of truth for list interactions."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "FleetAtlas — See every vehicle, in real time.",
+      "url": "file:///Users/timchef/UXBench/websites/fleetatlas/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "FleetAtlas 📊 Dashboard 🚛 Vehicles 👤 Drivers 🛣️ Routes 🔧 Maintenance 📈 Analytics ⚠️ Alerts 12 ⚙️ Settings Aurora Logistics Group TransOcean Express (Subsidiary) Northern Cold Chain Division Map view List view Analytics view 🔔 12 👤 All 25 Running 13 Idle 4 Maintenance 3 Offline 2 Alert 3 Manhattan Hub Chicago Cargo LA Port Atlanta South DC Houston Logistics Park SF Bay Yard Running Idle Maintenance Offline Alert Vehicle list (25) ▲ Plate Driver Status Speed Fuel / Battery Last update Current task NY-H2X05 James Hill Running 48 mph 62% just now I-95 → Trenton Hub NY-K81M2 Sarah Chen Running 41 mph 41% just now I-80 → Cleveland Terminal CA-47TR9 Marcus Lee Idle 0 mph 88% just now Awaiting dispatch CA-92NL3 Olivia Brown Running 57 mph 55% just now I-5 → Sacramento Warehouse TX-5SH71 Ethan Garcia Alert 65 mph 38% just now I-10 → Phoenix Distribution Center TX-H7P22 Sophia Park Maintenance 0 mp",
+      "headings": [
+        "Vehicle details"
+      ],
+      "counts": {
+        "buttons": 14,
+        "links": 10,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:FleetAtlas",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🚛 Vehicles",
+        "clickable:a:👤 Drivers",
+        "clickable:a:🛣️ Routes",
+        "clickable:a:🔧 Maintenance",
+        "clickable:a:📈 Analytics",
+        "clickable:a:⚠️ Alerts 12",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Aurora Logistics Group TransOcean Express (Subsidiary) Northern Cold Chain Division",
+        "clickable:button:Map view",
+        "clickable:button:List view",
+        "clickable:button:Analytics view",
+        "typeable:input:Search by plate / driver / route…",
+        "clickable:button:🔔 12",
+        "clickable:button:👤"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "alerts.html",
+      "title": "Alert Center — FleetAtlas",
+      "url": "file:///Users/timchef/UXBench/websites/fleetatlas/alerts.html",
+      "load_error": null,
+      "visible_text_excerpt": "FleetAtlas 📊 Dashboard 🚛 Vehicles 👤 Drivers 🛣️ Routes 🔧 Maintenance 📈 Analytics ⚠️ Alerts 12 ⚙️ Settings Aurora Logistics Group 👤 Alert Center Alerts and resolution status from the last 24 hours Open alerts 6 +3 vs yesterday New today 12 −18% vs last week Critical 5 +2 Avg resolution time 42 min −6 min Last 24 hours Last 7 days Last 30 days All severities Critical Warning Info All types Speeding Off route Hard brake Low fuel Service overdue Offline All statuses Open Assigned Resolved Time Vehicle Type Severity Status Note Actions 12:45 NY-M88K1 Speeding Critical Open Current 60 mph, limit 50 Assign Details 12:43 TX-5SH71 Speeding Critical Open Current 65 mph, limit 60 Assign Details 12:38 CA-H08T9 Speeding Critical Open Current 68 mph, limit 60 Assign Details 12:30 CA-82RP6 Offline Critical Open Lost signal 12 min Assign Details 12:22 NY-B45L9 Offline Critical Open Lost signal 28 min, la",
+      "headings": [
+        "Alert Center"
+      ],
+      "counts": {
+        "buttons": 21,
+        "links": 9,
+        "inputs": 7,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:FleetAtlas",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🚛 Vehicles",
+        "clickable:a:👤 Drivers",
+        "clickable:a:🛣️ Routes",
+        "clickable:a:🔧 Maintenance",
+        "clickable:a:📈 Analytics",
+        "clickable:a:⚠️ Alerts 12",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Aurora Logistics Group",
+        "typeable:input:Search alerts…",
+        "clickable:button:👤",
+        "selectable:select:Last 24 hours Last 7 days Last 30 days",
+        "selectable:select:All severities Critical Warning Info",
+        "selectable:select:All types Speeding Off route Hard brake Low fuel Service overdue Offline",
+        "selectable:select:All statuses Open Assigned Resolved"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "analytics.html",
+      "title": "Analytics — FleetAtlas",
+      "url": "file:///Users/timchef/UXBench/websites/fleetatlas/analytics.html",
+      "load_error": null,
+      "visible_text_excerpt": "FleetAtlas 📊 Dashboard 🚛 Vehicles 👤 Drivers 🛣️ Routes 🔧 Maintenance 📈 Analytics ⚠️ Alerts 12 ⚙️ Settings Aurora Logistics Group 👤 Analytics dashboard Fleet performance this month Total mileage 1.5M mi +8.4% vs last month Avg fuel economy 8.3 mpg −0.4 mpg Utilization 76.8% +3.1% On-time rate 93.2% +1.4% Daily active vehicles this month Fleet utilization heatmap (day × hour) Mon Tue Wed Thu Fri Sat Sun 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 Driver Performance — Top 10 Rank Driver Fleet Mileage On-time Efficiency 1 James Hill Northeast Fleet 5879 mi 98.6% 7.7 / 10 2 Sarah Chen Northeast Fleet 7332 mi 95.6% 7.5 / 10 3 Marcus Lee West Coast Fleet 6199 mi 91.8% 9.1 / 10 4 Olivia Brown West Coast Fleet 7946 mi 92.7% 8.0 / 10 5 Ethan Garcia Texas Fleet 7355 mi 96.7% 8.4 / 10 6 Sophia Park Texas Fleet 8647 mi 94.3% 7.8 / 10 7 Daniel Wright Southeast Fleet 9262 mi 98.7% 9.2 ",
+      "headings": [
+        "Analytics dashboard",
+        "Daily active vehicles this month",
+        "Fleet utilization heatmap (day × hour)",
+        "Driver Performance — Top 10"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 9,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:FleetAtlas",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🚛 Vehicles",
+        "clickable:a:👤 Drivers",
+        "clickable:a:🛣️ Routes",
+        "clickable:a:🔧 Maintenance",
+        "clickable:a:📈 Analytics",
+        "clickable:a:⚠️ Alerts 12",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Aurora Logistics Group",
+        "typeable:input:Search…",
+        "clickable:button:👤"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "vehicles.html",
+      "title": "Vehicles — FleetAtlas",
+      "url": "file:///Users/timchef/UXBench/websites/fleetatlas/vehicles.html",
+      "load_error": null,
+      "visible_text_excerpt": "FleetAtlas 📊 Dashboard 🚛 Vehicles 👤 Drivers 🛣️ Routes 🔧 Maintenance 📈 Analytics ⚠️ Alerts 12 ⚙️ Settings Aurora Logistics Group 👤 Vehicles 25 vehicles, filter by status, model, or fleet All statuses Running Idle Maintenance Offline Alert All fleets Northeast Fleet West Coast Fleet Texas Fleet Southeast Fleet Midwest Fleet Pacific Fleet Plate Model Driver Status Location Mileage Last service Next service NY-H2X05 Freightliner Cascadia (2022) James Hill Running New York · Manhattan · I-95 N 115,519 mi 2026-04-07 2026-07-17 Details NY-K81M2 Volvo VNL 760 (2021) Sarah Chen Running New York · Queens · LIE Exit 23 253,458 mi 2026-04-08 2026-07-20 Details CA-47TR9 Peterbilt 579 (2023) Marcus Lee Idle Los Angeles · Vernon · DC-1 Warehouse 88,543 mi 2026-04-28 2026-07-18 Details CA-92NL3 Kenworth T680 (2022) Olivia Brown Running Los Angeles · I-5 N · Mile 245 227,920 mi 2026-04-17 2026-07-09 Deta",
+      "headings": [
+        "Vehicles"
+      ],
+      "counts": {
+        "buttons": 26,
+        "links": 9,
+        "inputs": 31,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:FleetAtlas",
+        "clickable:a:📊 Dashboard",
+        "clickable:a:🚛 Vehicles",
+        "clickable:a:👤 Drivers",
+        "clickable:a:🛣️ Routes",
+        "clickable:a:🔧 Maintenance",
+        "clickable:a:📈 Analytics",
+        "clickable:a:⚠️ Alerts 12",
+        "clickable:a:⚙️ Settings",
+        "selectable:select:Aurora Logistics Group",
+        "typeable:input:Search…",
+        "clickable:button:👤",
+        "selectable:select:All statuses Running Idle Maintenance Offline Alert",
+        "selectable:select:All fleets Northeast Fleet West Coast Fleet Texas Fleet Southeast Fleet Midwest Fleet Pacific Fleet",
+        "typeable:input:Search by plate / driver / VIN…",
+        "clickable:input:checkbox"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

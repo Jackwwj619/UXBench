@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Checkout page quickstart | Stripe docs clone</title>
+    <meta name="description" content="A rebuilt Stripe Docs clone for the full embedded Checkout page using the current embedded_page API flow.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="embedded">
+    <div data-site-header></div>
+
+    <div class="page-layout">
+        <aside class="sidebar" data-site-sidebar></aside>
+
+        <main class="content">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="index.html">Stripe Checkout</a>
+                <span>/</span>
+                <span>Embedded page</span>
+            </nav>
+
+            <section class="hero">
+                <div class="hero-grid">
+                    <div>
+                        <div class="eyebrow">Current API flow</div>
+                        <h1>Embed Stripe Checkout on your site without freezing the docs in an old API version.</h1>
+                        <p class="subtitle">This rebuild follows Stripe’s current embedded quickstart: create a Session with <code>ui_mode: 'embedded_page'</code>, return the <code>client_secret</code>, mount with <code>stripe.createEmbeddedCheckoutPage()</code>, and use <code>return_url</code> to resume after redirect-based methods.</p>
+                        <ul class="hero-list">
+                            <li>Replaces stale <code>ui_mode: 'embedded'</code> examples with the current embedded page flow.</li>
+                            <li>Shows the exact difference between embedded Checkout and a fully custom Elements integration.</li>
+                            <li>Keeps all the utility features from the hosted flow, including working copy and search behavior.</li>
+                        </ul>
+                    </div>
+                    <div class="hero-panels">
+                        <div class="hero-card">
+                            <span class="hero-badge">Why embed</span>
+                            <h3>Keep checkout on your domain while Stripe still owns the secure payment UI</h3>
+                            <p>Customers stay on your page, but Stripe handles the iframe, the payment confirmation states, and the return path for redirect-based methods.</p>
+                        </div>
+                        <div class="hero-meta">
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">embedded_page</span>
+                                <span class="panel-stat-label">Current Checkout Session <code>ui_mode</code></span>
+                            </div>
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">client_secret</span>
+                                <span class="panel-stat-label">Returned by the server and consumed by Stripe.js</span>
+                            </div>
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">return_url</span>
+                                <span class="panel-stat-label">Needed for redirect-based payment methods and retries</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="when-to-embed" data-search-keywords="embedded page compare hosted page elements custom flow ui_mode embedded_page">
+                <div class="section-label">Decision point</div>
+                <div class="step-header">
+                    <span class="step-number">0</span>
+                    <h2>When to use the embedded page instead of hosted or Elements</h2>
+                </div>
+                <p>Embedded Checkout is the middle ground. You keep the payment form in-page, but you still let Stripe manage the form lifecycle and most payment-method complexity.</p>
+
+                <div class="comparison-grid">
+                    <article class="comparison-card">
+                        <span class="comparison-card-meta">Embedded page</span>
+                        <h3>Best when you want in-page checkout with low code</h3>
+                        <p>Use the Checkout Sessions API plus Stripe.js. Your server returns a <code>client_secret</code>, and the client mounts the page with <code>stripe.createEmbeddedCheckoutPage()</code>.</p>
+                        <ul class="checklist">
+                            <li>Customers stay on your site for the main payment step.</li>
+                            <li>Branding is still limited compared with fully custom Elements.</li>
+                            <li>Stripe handles redirect-based payment methods through the <code>return_url</code>.</li>
+                        </ul>
+                    </article>
+                    <article class="comparison-card">
+                        <span class="comparison-card-meta">Elements</span>
+                        <h3>Use only when you need deeper UI control</h3>
+                        <p>Elements gives you the most control, but it also asks you to manage more UI state, layout, and integration details. Stripe positions Checkout Sessions plus Elements as a more advanced build.</p>
+                        <ul class="checklist">
+                            <li>Custom layout and component composition.</li>
+                            <li>More code and more surface area to maintain.</li>
+                            <li>Recommended only if Checkout’s limited customization isn’t enough.</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <div class="lang-selector" data-lang-group="server">
+                <div>
+                    <div class="lang-label">Server examples</div>
+                    <p class="subtitle">Switch the examples below without losing your place in the guide.</p>
+                </div>
+                <div class="lang-tabs">
+                    <button class="lang-tab active" type="button" data-lang="node">Node</button>
+                    <button class="lang-tab" type="button" data-lang="python">Python</button>
+                    <button class="lang-tab" type="button" data-lang="ruby">Ruby</button>
+                    <button class="lang-tab" type="button" data-lang="php">PHP</button>
+                </div>
+            </div>
+
+            <section class="step" id="step-install" data-search-keywords="install stripe js stripe.js createEmbeddedCheckoutPage package">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    <h2>Install the server SDK and load Stripe.js on the page</h2>
+                </div>
+                <p>The server still creates the Session, but the client now needs Stripe.js because Stripe mounts the embedded Checkout frame on your page.</p>
+
+                <div class="code-block" data-lang-group="server" data-lang="node">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-install-node">Copy</button>
+                    </div>
+                    <pre><code id="embedded-install-node">npm install stripe express</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="python">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-install-python">Copy</button>
+                    </div>
+                    <pre><code id="embedded-install-python">pip install stripe flask</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="ruby">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-install-ruby">Copy</button>
+                    </div>
+                    <pre><code id="embedded-install-ruby">gem install stripe sinatra</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="php">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-install-php">Copy</button>
+                    </div>
+                    <pre><code id="embedded-install-php">composer require stripe/stripe-php</code></pre>
+                </div>
+
+                <div class="callout callout-warning">
+                    <strong>Do not nest Checkout inside another iframe</strong>
+                    <p>Stripe explicitly warns against placing embedded Checkout inside your own iframe because some payment methods need to redirect the customer to another page to complete confirmation.</p>
+                </div>
+            </section>
+
+            <section class="step" id="step-session" data-search-keywords="ui_mode embedded_page client_secret return_url redirect_on_completion existing customer">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    <h2>Create an embedded Checkout Session on the server</h2>
+                </div>
+                <p>Create the Session server-side, set <code>ui_mode: 'embedded_page'</code>, and return the Session’s <code>client_secret</code> to the client. For this flow, <code>success_url</code> is not allowed. Instead, use <code>return_url</code>.</p>
+
+                <div class="callout callout-info">
+                    <strong>Why <code>return_url</code> still matters</strong>
+                    <p>Even though the payment form is embedded, some payment methods still redirect the customer to an intermediate bank or wallet page. Stripe sends them back to your <code>return_url</code> and substitutes <code>{CHECKOUT_SESSION_ID}</code> so you can recover the Session state.</p>
+                </div>
+
+                <div class="code-block" data-lang-group="server" data-lang="node">
+                    <div class="code-header">
+                        <span class="code-filename">server.js</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-session-node">Copy</button>
+                    </div>
+                    <pre><code id="embedded-session-node">const express = require("express");
+const Stripe = require("stripe");
+
+const app = express();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+app.post("/create-checkout-session", async (req, res) => {
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price: "price_12345",
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    ui_mode: "embedded_page",
+    return_url: "http://localhost:4242/return?session_id={CHECKOUT_SESSION_ID}",
+  });
+
+  res.json({ clientSecret: session.client_secret });
+});</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="python">
+                    <div class="code-header">
+                        <span class="code-filename">server.py</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-session-python">Copy</button>
+                    </div>
+                    <pre><code id="embedded-session-python">import os
+import stripe
+from flask import Flask, jsonify
+
+stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
+app = Flask(__name__)
+
+@app.post("/create-checkout-session")
+def create_checkout_session():
+    session = stripe.checkout.Session.create(
+        line_items=[
+            {
+                "price": "price_12345",
+                "quantity": 1,
+            }
+        ],
+        mode="payment",
+        ui_mode="embedded_page",
+        return_url="http://localhost:4242/return?session_id={CHECKOUT_SESSION_ID}",
+    )
+    return jsonify({"clientSecret": session.client_secret})</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="ruby">
+                    <div class="code-header">
+                        <span class="code-filename">server.rb</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-session-ruby">Copy</button>
+                    </div>
+                    <pre><code id="embedded-session-ruby">require "json"
+require "sinatra"
+require "stripe"
+
+Stripe.api_key = ENV.fetch("STRIPE_SECRET_KEY")
+
+post "/create-checkout-session" do
+  session = Stripe::Checkout::Session.create(
+    line_items: [
+      {
+        price: "price_12345",
+        quantity: 1,
+      }
+    ],
+    mode: "payment",
+    ui_mode: "embedded_page",
+    return_url: "http://localhost:4242/return?session_id={CHECKOUT_SESSION_ID}",
+  )
+
+  { clientSecret: session.client_secret }.to_json
+end</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="php">
+                    <div class="code-header">
+                        <span class="code-filename">server.php</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-session-php">Copy</button>
+                    </div>
+                    <pre><code id="embedded-session-php">&lt;?php
+require "vendor/autoload.php";
+
+\Stripe\Stripe::setApiKey($_ENV["STRIPE_SECRET_KEY"]);
+
+$session = \Stripe\Checkout\Session::create([
+    "line_items" =&gt; [[
+        "price" =&gt; "price_12345",
+        "quantity" =&gt; 1,
+    ]],
+    "mode" =&gt; "payment",
+    "ui_mode" =&gt; "embedded_page",
+    "return_url" =&gt; "http://localhost:4242/return?session_id={CHECKOUT_SESSION_ID}",
+]);
+
+header("Content-Type: application/json");
+echo json_encode([
+    "clientSecret" =&gt; $session-&gt;client_secret,
+]);</code></pre>
+                </div>
+
+                <div class="param-table">
+                    <div class="param-table-header">Embedded page rules that differ from hosted Checkout</div>
+                    <div class="param-row">
+                        <div class="param-name"><code>ui_mode</code></div>
+                        <div class="param-desc">Use <code>embedded_page</code> for the full embedded page flow. This is the current setting in Stripe’s embedded quickstart and API reference.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>client_secret</code></div>
+                        <div class="param-desc">Return it to the frontend so Stripe.js can mount the embedded Checkout UI.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>return_url</code></div>
+                        <div class="param-desc">Required when redirect-based payment methods are enabled. Stripe appends the Checkout Session ID when it sends the customer back.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>success_url</code></div>
+                        <div class="param-desc">Not allowed in the embedded page flow. Use <code>return_url</code> and then inspect the Session status on your return page.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="step-mount" data-search-keywords="createEmbeddedCheckoutPage stripe.js fetchClientSecret mount checkout container">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    <h2>Mount the embedded page with Stripe.js</h2>
+                </div>
+                <p>Stripe.js loads the embedded Checkout page into an empty container. The client doesn’t build the payment form itself; it only provides a function that fetches the Session secret from your server.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">checkout.html</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-mount-html">Copy</button>
+                    </div>
+                    <pre><code id="embedded-mount-html">&lt;div id="checkout"&gt;&lt;/div&gt;
+
+&lt;script src="https://js.stripe.com/v3/"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const stripe = Stripe("pk_test_12345");
+  initialize();
+
+  async function initialize() {
+    const fetchClientSecret = async () =&gt; {
+      const response = await fetch("/create-checkout-session", {
+        method: "POST",
+      });
+
+      const { clientSecret } = await response.json();
+      return clientSecret;
+    };
+
+    const checkout = await stripe.createEmbeddedCheckoutPage({
+      fetchClientSecret,
+    });
+
+    checkout.mount("#checkout");
+  }
+&lt;/script&gt;</code></pre>
+                </div>
+
+                <div class="preview-shell">
+                    <div class="preview-shell-header">
+                        <strong>Embedded page preview</strong>
+                        <span class="badge badge-warning">Stripe-managed iframe</span>
+                    </div>
+                    <div class="preview-shell-body">
+                        <div class="preview-panel">
+                            <h3>What your app owns</h3>
+                            <ul class="preview-list">
+                                <li>The surrounding layout, spacing, and product context</li>
+                                <li>The endpoint that creates Sessions</li>
+                                <li>The return page and webhook fulfillment logic</li>
+                            </ul>
+                        </div>
+                        <div class="checkout-preview">
+                            <div class="preview-field">
+                                <label>What Stripe owns</label>
+                                <div class="preview-input">The embedded Checkout iframe, payment state transitions, and payment-method-specific redirect handling.</div>
+                            </div>
+                            <div class="preview-field">
+                                <label>Branding surface</label>
+                                <div class="preview-input">Logo, colors, fonts, and border radius are limited to Checkout’s supported branding settings.</div>
+                            </div>
+                            <button type="button" class="preview-pay-btn">Preview embedded mount</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="step-return" data-search-keywords="return page session status open complete remount checkout">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    <h2>Build a return page that can resume or finish the flow</h2>
+                </div>
+                <p>When Stripe returns the customer to your site, fetch the Session using the ID from the URL and branch on its state. Stripe’s guidance is simple: <code>complete</code> means show success; <code>open</code> means let the customer try again.</p>
+
+                <div class="code-block" data-lang-group="server" data-lang="node">
+                    <div class="code-header">
+                        <span class="code-filename">server.js</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-return-node">Copy</button>
+                    </div>
+                    <pre><code id="embedded-return-node">app.get("/session-status", async (req, res) =&gt; {
+  const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+
+  res.json({
+    status: session.status,
+    paymentStatus: session.payment_status,
+    customerEmail: session.customer_details?.email,
+  });
+});</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="python">
+                    <div class="code-header">
+                        <span class="code-filename">server.py</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-return-python">Copy</button>
+                    </div>
+                    <pre><code id="embedded-return-python">@app.get("/session-status")
+def session_status():
+    session = stripe.checkout.Session.retrieve(request.args.get("session_id"))
+    return jsonify({
+        "status": session.status,
+        "paymentStatus": session.payment_status,
+        "customerEmail": session.customer_details.email if session.customer_details else None,
+    })</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="ruby">
+                    <div class="code-header">
+                        <span class="code-filename">server.rb</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-return-ruby">Copy</button>
+                    </div>
+                    <pre><code id="embedded-return-ruby">get "/session-status" do
+  session = Stripe::Checkout::Session.retrieve(params[:session_id])
+
+  {
+    status: session.status,
+    paymentStatus: session.payment_status,
+    customerEmail: session.customer_details&.email,
+  }.to_json
+end</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="php">
+                    <div class="code-header">
+                        <span class="code-filename">server.php</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-return-php">Copy</button>
+                    </div>
+                    <pre><code id="embedded-return-php">$session = \Stripe\Checkout\Session::retrieve($_GET["session_id"]);
+
+echo json_encode([
+    "status" =&gt; $session-&gt;status,
+    "paymentStatus" =&gt; $session-&gt;payment_status,
+    "customerEmail" =&gt; $session-&gt;customer_details?->email,
+]);</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">return-page.js</span>
+                        <button class="copy-btn" type="button" data-copy-from="embedded-return-client">Copy</button>
+                    </div>
+                    <pre><code id="embedded-return-client">const params = new URLSearchParams(window.location.search);
+const sessionId = params.get("session_id");
+
+const session = await fetch(`/session-status?session_id=${sessionId}`).then((res) =&gt; res.json());
+
+if (session.status === "open") {
+  // Remount embedded Checkout so the customer can try again.
+} else if (session.status === "complete") {
+  // Render a success state and show order details.
+}</code></pre>
+                </div>
+
+                <div class="mini-grid">
+                    <article class="mini-card">
+                        <span class="badge badge-success">Status</span>
+                        <h3><code>complete</code></h3>
+                        <p>The payment succeeded. Render a success state and pull any customer-facing details you want from the Session response.</p>
+                    </article>
+                    <article class="mini-card">
+                        <span class="badge badge-warning">Status</span>
+                        <h3><code>open</code></h3>
+                        <p>The payment failed, was canceled, or needs the customer to retry. Remount embedded Checkout instead of acting like the order is done.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="step" id="step-events" data-search-keywords="checkout.session.completed async_payment_succeeded async_payment_failed webhooks fulfillment">
+                <div class="step-header">
+                    <span class="step-number">5</span>
+                    <h2>Use webhooks for fulfillment, not just the return page</h2>
+                </div>
+                <p>The return page is important for UX, but not reliable enough for order fulfillment. Stripe says the same thing here as in the hosted flow: your backend should act on webhook events.</p>
+
+                <div class="event-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>What it means</th>
+                                <th>Typical action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>checkout.session.completed</code></td>
+                                <td>The customer completed the Checkout Session successfully.</td>
+                                <td>Send order confirmation and fulfill the purchase.</td>
+                            </tr>
+                            <tr>
+                                <td><code>checkout.session.async_payment_succeeded</code></td>
+                                <td>A delayed payment method eventually succeeded after Checkout completed.</td>
+                                <td>Fulfill once the asynchronous confirmation arrives.</td>
+                            </tr>
+                            <tr>
+                                <td><code>checkout.session.async_payment_failed</code></td>
+                                <td>A delayed payment method later failed.</td>
+                                <td>Notify the customer and guide them back on-session to retry.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout callout-warning">
+                    <strong>Same reliability rule as hosted Checkout</strong>
+                    <p>Customers can close the tab before your return page loads. If fulfillment depends on that page rendering, you will miss successful orders.</p>
+                </div>
+            </section>
+
+            <section class="step" id="step-test" data-search-keywords="test cards 4242 3220 9995 unionpay redirect methods">
+                <div class="step-header">
+                    <span class="step-number">6</span>
+                    <h2>Test success, authentication, decline, and redirect behavior</h2>
+                </div>
+                <p>Stripe’s embedded guide tests the same core card paths as the hosted flow, but the embedded page is also where redirect behavior becomes especially important.</p>
+
+                <div class="test-cards-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Test method</th>
+                                <th>Expected behavior</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-success">Success</span></td>
+                                <td><code>4242 4242 4242 4242</code></td>
+                                <td>Payment succeeds immediately.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">3DS challenge</span></td>
+                                <td><code>4000 0025 0000 3155</code></td>
+                                <td>Customer completes authentication before the Session finishes.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-error">Decline</span></td>
+                                <td><code>4000 0000 0000 9995</code></td>
+                                <td>The payment is declined and the Session stays recoverable.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">Redirect method</span></td>
+                                <td>Alipay, Bancontact, EPS, iDEAL, or similar</td>
+                                <td>Stripe leaves the page temporarily, then sends the customer back through <code>return_url</code>.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="step" id="step-next" data-search-keywords="customize appearance policies official docs">
+                <div class="step-header">
+                    <span class="step-number">7</span>
+                    <h2>Next steps</h2>
+                </div>
+
+                <div class="next-steps-grid">
+                    <a class="next-step-card" href="customization.html">
+                        <span class="comparison-card-meta">Local guide</span>
+                        <h3>Customize what embedded Checkout actually supports</h3>
+                        <p>See the real limits around branding, policies, card-brand filtering, and product images.</p>
+                    </a>
+                    <a class="next-step-card" href="index.html">
+                        <span class="comparison-card-meta">Local guide</span>
+                        <h3>Compare against the hosted page flow</h3>
+                        <p>Use the hosted guide if the embedded page adds complexity you do not actually need.</p>
+                    </a>
+                    <a class="next-step-card external-link-icon" href="https://docs.stripe.com/payments/accept-a-payment?payment-ui=checkout&ui=embedded-page" target="_blank" rel="noopener noreferrer">
+                        <span class="comparison-card-meta">Official docs</span>
+                        <h3>Open Stripe’s embedded page source</h3>
+                        <p>Check the live guide that this rebuild was aligned against.</p>
+                    </a>
+                    <a class="next-step-card external-link-icon" href="https://docs.stripe.com/checkout/fulfillment?payment-ui=embedded-form" target="_blank" rel="noopener noreferrer">
+                        <span class="comparison-card-meta">Official docs</span>
+                        <h3>Implement fulfillment workflows</h3>
+                        <p>Wire the webhook-based order lifecycle that Stripe expects for production integrations.</p>
+                    </a>
+                </div>
+            </section>
+
+            <div class="page-footer">
+                <div class="footer-feedback">
+                    <span>Was this rebuild useful?</span>
+                    <button class="feedback-btn" type="button" data-value="yes">Yes</button>
+                    <button class="feedback-btn" type="button" data-value="no">No</button>
+                </div>
+                <div class="footer-links">
+                    <a class="external-link-icon" href="https://docs.stripe.com/payments/accept-a-payment?payment-ui=checkout&ui=embedded-page" target="_blank" rel="noopener noreferrer">Official embedded guide</a>
+                    <a class="external-link-icon" href="https://docs.stripe.com/api/checkout/sessions/create" target="_blank" rel="noopener noreferrer">Checkout Session create API</a>
+                    <a class="external-link-icon" href="https://docs.stripe.com/webhooks/quickstart" target="_blank" rel="noopener noreferrer">Webhook quickstart</a>
+                </div>
+            </div>
+        </main>
+
+        <aside class="toc">
+            <div class="toc-title">On this page</div>
+            <a class="toc-link active" href="#when-to-embed">When to embed</a>
+            <a class="toc-link" href="#step-install">Install SDKs</a>
+            <a class="toc-link" href="#step-session">Create a Session</a>
+            <a class="toc-link" href="#step-mount">Mount Checkout</a>
+            <a class="toc-link" href="#step-return">Return page</a>
+            <a class="toc-link" href="#step-events">Post-payment events</a>
+            <a class="toc-link" href="#step-test">Test the flow</a>
+            <a class="toc-link" href="#step-next">Next steps</a>
+        </aside>
+    </div>
+
+    <div data-search-root></div>
+    <script src="script.js"></script>
+</body>
+</html>

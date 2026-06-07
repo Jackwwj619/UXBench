@@ -1,0 +1,315 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the front-end ChatGPT clone, focusing on the primary chat workflow in index.html and the adjacent pricing, login, and signup journeys, including visible interaction states and mobile usability.",
+    "summary": "Start with the main chat interface because it is the primary product flow and exposes the richest interaction surface: sidebar navigation, chat composer, message actions, and outbound navigation to pricing. Then cover the adjacent account-entry pages (pricing, login, signup) and verify that their visible CTAs, toggles, and cross-links behave consistently. Because this is a pure front-end clone with static keyword-based replies and no backend, prioritize state changes, affordances, and error/recovery UX over real authentication or AI correctness. Repeat the most important flows on mobile with extra attention to small tap targets already flagged in the prescan.",
+    "assumptions": [
+      "index.html is the core experience and should receive the deepest coverage.",
+      "AI responses are static and selected by simple keyword matching, so validation should focus on triggerability, presentation, and response-state behavior rather than model quality.",
+      "Login and signup are front-end forms only; successful authentication may not be implemented beyond UI-level transitions.",
+      "Several controls and list items on index.html use '#' or button-only interactions, so some actions may update local UI state rather than navigate.",
+      "Mobile usability is a meaningful risk area because many controls were pre-flagged as below recommended tap-target size."
+    ],
+    "target_pages": [
+      "index.html",
+      "pricing.html",
+      "login.html",
+      "signup.html"
+    ],
+    "risk_hotspots": [
+      "index.html chat composer: textarea, send button, and any empty/filled input state handling",
+      "index.html static reply flow: timing and completeness of the typewriter/streaming effect",
+      "index.html message action row: Copy, Thumbs up, Thumbs down, Regenerate may have weak or no feedback",
+      "index.html sidebar controls: New chat, Close sidebar, Search chats..., and historical conversation links",
+      "index.html outbound links from primary UI: Upgrade plan and possibly Explore GPTs behavior",
+      "pricing.html monthly/annual billing toggle and plan CTA consistency",
+      "pricing.html navigation links to Log in and Sign up from a commercial page",
+      "login.html email entry and Continue button behavior without backend support",
+      "signup.html email entry, Continue flow, and legal links visibility/usability",
+      "Mobile tapability across index, pricing, login, and signup due to repeated small tap target warnings"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Primary chat surface and existing conversation state",
+        "objective": "Understand the default state of the main chat UI and validate that the visible conversation, sidebar, and top-level controls are coherent and usable.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Inspect default landing state: existing selected conversation, visible assistant response, composer, and footer disclaimer",
+          "Use sidebar conversation links such as Travel planning request, Python debugging help, Recipe suggestions for dinner, Email draft for client, and JavaScript async patterns to confirm whether they switch visible content or selection state",
+          "Exercise Search chats... with a matching term and a non-matching term to see whether filtering occurs and whether recovery back to full list is easy",
+          "Click New chat and verify whether the conversation resets, clears composer state, or creates a distinct blank-chat state",
+          "Toggle Close sidebar and verify collapse/expand behavior, preservation of context, and discoverability of restoration",
+          "Check Share button behavior for visible feedback, modal/state changes, or no-op behavior",
+          "Assess whether Explore GPTs does anything meaningful or behaves like a dead-end placeholder"
+        ],
+        "exit_criteria": [
+          "Observed the default index state plus at least 3 sidebar conversation entries",
+          "Confirmed behavior of New chat, Close sidebar, Search chats..., and Share",
+          "Documented whether Explore GPTs and sidebar history items are functional, partial, or inert"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Composer, reply generation, and message-level actions",
+        "objective": "Validate the core send-message loop and the controls attached to assistant output, including recovery and feedback states.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Type at least 3 distinct prompts into Message ChatGPT, including one likely matching known keywords, one generic prompt, and one follow-up style prompt",
+          "Verify send behavior via Send message button and, if possible, keyboard submission from the textarea",
+          "Observe typewriter/streaming effect quality: progressive reveal, interruption risk, completion, and scroll behavior while response appears",
+          "Try sending with an empty composer or whitespace-only input to identify guardrails or lack thereof",
+          "Click Regenerate after a response and confirm whether content reruns, duplicates, or changes state",
+          "Test Copy on a visible assistant message and look for clipboard confirmation or status messaging",
+          "Test Thumbs up and Thumbs down for selectable/latched state, acknowledgment, or absent feedback",
+          "Try Attach file and Voice input to determine whether they expose affordances, disabled states, or misleading dead controls"
+        ],
+        "exit_criteria": [
+          "Completed multiple message sends and observed at least one full response render",
+          "Verified behavior for empty-state submission handling and regenerate",
+          "Documented feedback quality for Copy, rating controls, file attachment, and voice input"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Pricing journey and commercial navigation",
+        "objective": "Assess the upgrade path from the main app into pricing, including billing toggle behavior and onward navigation into auth pages.",
+        "target_pages": [
+          "index.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Navigate from index via Upgrade plan to pricing.html and confirm transition clarity and information scent",
+          "On pricing.html, test Monthly and Annual Save 17% toggle behavior and confirm whether plan prices/content visibly update",
+          "Review CTA behavior for Get started, Upgrade to Plus, Upgrade to Team, and Contact sales",
+          "Use top navigation links ChatGPT, Log in, and Sign up to verify discoverable routes back to product and into auth flows",
+          "Check whether plan hierarchy, most-popular emphasis, and FAQ access are readable and consistent"
+        ],
+        "exit_criteria": [
+          "Reached pricing from the main chat UI",
+          "Exercised both billing toggle states and at least 3 pricing CTAs/navigation links",
+          "Documented whether pricing interactions are functional, partial, or static"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Authentication entry and recovery paths",
+        "objective": "Validate login and signup page usability, form affordances, and cross-link recovery between account-entry states.",
+        "target_pages": [
+          "login.html",
+          "signup.html"
+        ],
+        "key_checks": [
+          "On login.html, enter a plausible email address and test Continue behavior",
+          "Check alternate auth buttons: Continue with Google, Continue with Apple, Continue with Microsoft for honest affordance versus fake-progress risk",
+          "Use the Sign up link from login to verify recovery into signup",
+          "On signup.html, enter a plausible email address and test Continue behavior",
+          "Use the Log in link from signup to return to login and confirm loop consistency",
+          "Inspect Terms of Use and Privacy Policy links for destination validity if they are wired",
+          "Assess form clarity: required-field cues, error prevention, and any message shown for invalid/blank submission"
+        ],
+        "exit_criteria": [
+          "Exercised both auth pages with typed input and Continue actions",
+          "Verified bidirectional navigation between login and signup",
+          "Documented behavior of social auth and legal links"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile regression of critical flows",
+        "objective": "Repeat the highest-value interactions on a mobile viewport, emphasizing navigation, composer usability, and tap-target issues already suggested by the prescan.",
+        "target_pages": [
+          "index.html",
+          "pricing.html",
+          "login.html",
+          "signup.html"
+        ],
+        "key_checks": [
+          "On mobile index, verify access to New chat, sidebar open/close behavior, conversation switching, and composer/send usability",
+          "Retest at least one send-message flow on mobile and observe keyboard overlap, scroll anchoring, and action-button reachability",
+          "Check message-level controls (Copy, Thumbs up/down, Regenerate) for tapability on mobile",
+          "On mobile pricing, retest Monthly/Annual toggle and at least one plan CTA",
+          "On mobile login/signup, verify email field usability, Continue button prominence, and ease of switching between Log in and Sign up",
+          "Specifically note any control that is hard to hit, clipped, crowded, or visually ambiguous because many targets were flagged under 44px"
+        ],
+        "exit_criteria": [
+          "Repeated the critical primary flow on mobile: open app, navigate, compose, send",
+          "Retested at least one key interaction on pricing and one on auth pages in mobile viewport",
+          "Captured concrete mobile-specific UX issues, especially around tap targets and layout density"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 known HTML pages, with deepest coverage on index.html and functional pass-through on pricing, login, and signup.",
+      "features": "Exercise nearly all visible controls on index.html and the primary CTAs/toggles/forms on pricing, login, and signup; aim to validate at least 80-90% of prescanned interactables that appear user-meaningful.",
+      "mobile": "Repeat the primary chat flow and the highest-risk controls on all known pages in mobile viewport, with special attention to the pre-flagged small tap targets."
+    },
+    "notes": [
+      "Do not spend time judging factual quality of assistant answers; this clone uses static keyword-based replies.",
+      "Where controls appear inert or partially implemented, record the mismatch between affordance and outcome as a UX finding rather than treating it as execution failure.",
+      "If legal or social-auth links do not resolve within the local front-end project, note destination ambiguity and return to on-site coverage."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "ChatGPT",
+      "url": "file:///Users/timchef/UXBench/websites/chatgpt/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "New chat TODAY Travel planning request Python debugging help YESTERDAY Recipe suggestions for dinner Email draft for client PREVIOUS 7 DAYS JavaScript async patterns Explore GPTs Upgrade plan J Jack ChatGPT J Plan a 5-day trip to Tokyo for me. I have a budget of $2000, I'm vegetarian, and I want a mix of cultural experiences and modern city life. I prefer walking-friendly areas and need restaurant recommendations that accommodate dietary restrictions. Here's a travel plan for Tokyo that fits your constraints: 5-Day Tokyo Itinerary (Budget: $2000, Vegetarian-Friendly) Day 1 - Arrival & Shibuya Check into hotel in Shinjuku area (~$120/night) Explore Shibuya Crossing and Hachiko statue Dinner at Afuri Ramen (excellent vegetarian options) Day 2 - Traditional Tokyo Senso-ji Temple in Asakusa (free) Nakamise shopping street Ueno Park and museums (~$10) Vegetarian kaiseki dinner at Sougo (~$40)",
+      "headings": [],
+      "counts": {
+        "buttons": 14,
+        "links": 13,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:New chat",
+        "clickable:button:Close sidebar",
+        "typeable:input:Search chats...",
+        "clickable:a:Travel planning request",
+        "clickable:a:Python debugging help",
+        "clickable:a:Recipe suggestions for dinner",
+        "clickable:a:Email draft for client",
+        "clickable:a:JavaScript async patterns",
+        "clickable:a:Explore GPTs",
+        "clickable:a:Upgrade plan",
+        "clickable:button:Share",
+        "clickable:button:Copy",
+        "clickable:button:Thumbs up",
+        "clickable:button:Thumbs down",
+        "clickable:button:Regenerate",
+        "clickable:button:Attach file"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "login.html",
+      "title": "Log in - ChatGPT",
+      "url": "file:///Users/timchef/UXBench/websites/chatgpt/login.html",
+      "load_error": null,
+      "visible_text_excerpt": "Welcome back Log in to your OpenAI account to continue Email address Continue or Continue with Google Continue with Apple Continue with Microsoft Don't have an account? Sign up",
+      "headings": [
+        "Welcome back"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 1,
+        "inputs": 1,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "typeable:input:Email address",
+        "clickable:button:Continue",
+        "clickable:button:Continue with Google",
+        "clickable:button:Continue with Apple",
+        "clickable:button:Continue with Microsoft",
+        "clickable:a:Sign up"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "pricing.html",
+      "title": "ChatGPT Pricing",
+      "url": "file:///Users/timchef/UXBench/websites/chatgpt/pricing.html",
+      "load_error": null,
+      "visible_text_excerpt": "ChatGPT Log in Sign up Choose your ChatGPT plan Start for free, upgrade when you need more Monthly Annual Save 17% Free $0 /month Get started Access to GPT-4o mini Limited access to GPT-4o Limited access to file uploads, vision, and web browsing Use custom GPTs Most popular Plus $20 /month Upgrade to Plus Everything in Free Extended limits on GPT-4o and o1 Access to o1, GPT-4o, and GPT-4o mini DALL-E image generation Create and use custom GPTs Access to Advanced Voice Mode Team $25 /person/month Upgrade to Team Everything in Plus Higher message limits on GPT-4o and o1 Create and share GPTs with your workspace Admin console for workspace management Data excluded from training by default Enterprise Contact us Contact sales Everything in Team Unlimited high-speed access to GPT-4o and o1 Expanded context window for longer inputs SSO, SCIM, and domain verification Analytics dashboard Priority",
+      "headings": [
+        "Choose your ChatGPT plan",
+        "Free",
+        "Plus",
+        "Team",
+        "Enterprise",
+        "Frequently asked questions"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 7,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:ChatGPT",
+        "clickable:a:Log in",
+        "clickable:a:Sign up",
+        "clickable:button:Monthly",
+        "clickable:button:Annual Save 17%",
+        "clickable:a:Get started",
+        "clickable:a:Upgrade to Plus",
+        "clickable:a:Upgrade to Team",
+        "clickable:a:Contact sales"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "signup.html",
+      "title": "Sign up - ChatGPT",
+      "url": "file:///Users/timchef/UXBench/websites/chatgpt/signup.html",
+      "load_error": null,
+      "visible_text_excerpt": "Create your account Sign up to start using ChatGPT Email address Continue or Continue with Google Continue with Apple Continue with Microsoft Already have an account? Log in By signing up, you agree to our Terms of Use and Privacy Policy.",
+      "headings": [
+        "Create your account"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 3,
+        "inputs": 1,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "typeable:input:Email address",
+        "clickable:button:Continue",
+        "clickable:button:Continue with Google",
+        "clickable:button:Continue with Apple",
+        "clickable:button:Continue with Microsoft",
+        "clickable:a:Log in",
+        "clickable:a:Terms of Use",
+        "clickable:a:Privacy Policy"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "plan": {
+    "goal": "Validate the primary UNRATE series-detail experience end to end: chart exploration, time-range controls, metadata accuracy, download-related actions, and responsive/mobile usability on the single-page FRED clone.",
+    "summary": "Start with the main series page and verify the core data-visualization flow: chart rendering, hover/inspection behavior, and the time-range/date controls. Then exercise adjacent controls around the chart and metadata block, including tab switches, edit/download actions, and related informational links, while watching for any broken state changes or regressions. Finish with a mobile viewport pass focused on tap target quality, layout stability, and whether the key chart/control interactions remain usable at smaller widths.",
+    "assumptions": [
+      "The site consists of a single HTML page (index.html) with all primary functionality embedded there.",
+      "The chart is driven by local mock data in data.js and should be inspectable without external network dependencies.",
+      "Controls such as time-range toggles, date inputs, chart/table tabs, and download-related buttons are intended to be interactive even if some links are placeholders.",
+      "Adjacent flows are limited to in-page states and any navigation triggered by visible FRED-style links/buttons; there are no separate documented content pages in the prescan."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Chart interaction area: line chart with recession shading and hover tooltip, especially around dense historical sections and the latest data point.",
+      "Time-range and date controls: 1Y/5Y/10Y/Max plus From/To inputs, where date validation or state syncing could fail.",
+      "Chart vs. data table tab switch: potential for rendering/state bugs when toggling between visualization and tabular views.",
+      "Download / Edit Graph controls: higher-risk actions that may expose broken dialogs, export options, or inconsistent state.",
+      "Mobile tap targets in the top nav and maintenance banner close button: prescan flagged several controls below 44px guidance.",
+      "Metadata and citation-style links under the series info block, which may be incomplete or nonfunctional in the clone."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline page and chart rendering",
+        "objective": "Confirm the UNRATE page loads correctly and the core series presentation is visually and semantically intact before interacting.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify the title, breadcrumb trail, series name, observations summary, and metadata blocks are visible and coherent.",
+          "Confirm the chart renders with recession shading and the expected date span from 1948-01-01 to 2026-04-01.",
+          "Check that the chart legend/title, axis labels, and latest observation summary align with the page text.",
+          "Dismiss or account for the maintenance notice so it does not block primary controls."
+        ],
+        "exit_criteria": [
+          "Primary series page is fully loaded with no console or network errors.",
+          "Chart and summary metadata are visible and consistent with the prescan.",
+          "Any blocking overlay has been dismissed or proven non-blocking."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Chart interaction and range controls",
+        "objective": "Validate the main analytical workflow: hovering the chart, switching ranges, and adjusting the displayed date window.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover multiple chart positions, including near recent data and historical peaks, to verify tooltip behavior and readable values.",
+          "Click each visible time-range toggle (1Y, 5Y, 10Y, Max) and confirm the chart updates appropriately.",
+          "Change the From and To inputs to a narrower range and verify the chart and/or summary respond without error.",
+          "Check that the units and frequency labels remain stable when the date window changes."
+        ],
+        "exit_criteria": [
+          "All visible range toggles have been exercised at least once.",
+          "Date inputs have been changed with a successful update or clear validation response.",
+          "Tooltip/hover behavior has been observed at least in two distinct chart regions."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "View modes and export/edit actions",
+        "objective": "Probe the adjacent controls around the chart for state changes and potential broken behaviors.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch from Chart to View as data table and confirm content changes or table state appears.",
+          "Return to Chart and verify the chart state is restored correctly.",
+          "Open Edit Graph and inspect whether any editing controls/panels appear as expected.",
+          "Activate Download and look for export options, menu behavior, or blocked interactions.",
+          "If visible in the chart area, check whether fullscreen/share-style actions are present and behave consistently."
+        ],
+        "exit_criteria": [
+          "Chart/table toggle has been exercised in both directions.",
+          "Edit/Download actions have been opened or attempted at least once.",
+          "No broken rendering or persistent UI corruption appears after toggling views."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Metadata, references, and related content",
+        "objective": "Validate the informational side of the series page and ensure links or reference content do not break navigation.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Inspect the Notes section for completeness and readability.",
+          "Interact with the source/release-related links or labels, including the source attribution and next release date link.",
+          "Check any related-series or suggestion areas visible on the page for presence and basic link behavior.",
+          "Verify that breadcrumb/navigation links are readable and do not produce obvious dead ends within the clone."
+        ],
+        "exit_criteria": [
+          "Notes and metadata sections have been reviewed.",
+          "At least one source or release-related link has been attempted.",
+          "Any related-content areas visible in the page have been checked for basic functionality."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile responsiveness and tap-target validation",
+        "objective": "Repeat the most important flow on a mobile viewport, with emphasis on layout, chart usability, and flagged touch targets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Re-open the page in mobile viewport and verify the main title, chart, and key controls remain accessible.",
+          "Check that the chart does not become unusable or clipped at small widths.",
+          "Test the most important controls again on mobile: range toggles, Chart/data table switch, and the maintenance notice close button.",
+          "Review tap target sizing and spacing for the top nav, maintenance banner, and primary chart controls."
+        ],
+        "exit_criteria": [
+          "Primary chart flow has been repeated on mobile successfully.",
+          "Flagged small tap targets have been evaluated in context.",
+          "No severe mobile layout breakage prevents completing the primary interaction path."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages (single-page site: index.html) and confirm both desktop and mobile states",
+      "features": "exercise most visible controls on the series page, prioritizing chart hover, range toggles, date inputs, chart/table switch, edit/download actions, and key metadata links",
+      "mobile": "repeat the primary chart-and-controls workflow on a mobile viewport and explicitly assess the low-confidence tap targets flagged in prescan"
+    },
+    "notes": [
+      "Because the prescan shows only one HTML page, coverage should focus on states and interactions rather than navigation breadth.",
+      "The prescan flagged several small tap targets; treat those as a validation priority on mobile even if they are not functional bugs on desktop.",
+      "If the maintenance banner interferes with interaction, record whether it is dismissible and whether dismissal persists during the run."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Unemployment Rate (UNRATE) | FRED | St. Louis Fed",
+      "url": "file:///Users/timchef/UXBench/websites/fred-unrate/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "FRED, ALFRED, and FRED Account will undergo scheduled maintenance on May 15, 2026 starting at 5PM Central Time. Connection to these websites and some of their features may be unavailable. Thank you for your patience and we apologize for any inconvenience. Close Skip to main content FEDERAL RESERVE BANK OF ST. LOUIS FRED Search FRED Data RELEASE CALENDAR TOOLS NEWS BLOG ABOUT Home > Categories > Population, Employment, & Labor Markets > Current Population Survey (Household Survey) > Unemployment Rate Unemployment Rate (UNRATE) Observations Apr 2026: 4.3 Updated: May 8, 2026 8:30 AM CDT Next Release Date: Jun 5, 2026 Units: Percent, Seasonally Adjusted Frequency: Monthly 1Y 5Y 10Y Max From to To Edit Graph Download Chart FRED Unemployment Rate Chart View as data table 0.0 2.5 5.0 7.5 10.0 12.5 15.0 1950 1955 1960 1965 1970 1975 1980 1985 1990 1995 2000 2005 2010 2015 2020 2025 Percent Line",
+      "headings": [
+        "Unemployment Rate (UNRATE)",
+        "Chart",
+        "Notes",
+        "Release Tables",
+        "Related Data and Content",
+        "Data Suggestions Based On Your Search",
+        "Content Suggestions",
+        "Other Formats",
+        "Related Categories",
+        "Releases"
+      ],
+      "counts": {
+        "buttons": 65,
+        "links": 73,
+        "inputs": 14,
+        "forms": 2,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:Close maintenance notice",
+        "clickable:a:Skip to main content",
+        "clickable:a:FRED home",
+        "typeable:input:Search FRED Data",
+        "clickable:button:Search",
+        "clickable:button:Explore FRED apps",
+        "clickable:button:Open account menu",
+        "clickable:a:RELEASE CALENDAR",
+        "clickable:button:TOOLS",
+        "clickable:a:NEWS",
+        "clickable:a:BLOG",
+        "clickable:button:ABOUT",
+        "clickable:a:Home",
+        "clickable:a:Categories",
+        "clickable:a:Population, Employment, & Labor Markets",
+        "clickable:a:Current Population Survey (Household Survey)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

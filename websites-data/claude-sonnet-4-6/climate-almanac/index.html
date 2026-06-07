@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Climate Almanac — multi-variable explorer</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="11" fill="#0a4d6e"/>
+      <path d="M3 12c4-3 7-3 9 0s5 3 9 0" stroke="#7ddfe5" stroke-width="2" fill="none"/>
+      <circle cx="12" cy="6" r="2" fill="#fbd24e"/>
+    </svg>
+    Climate Almanac
+  </div>
+  <nav>
+    <a href="index.html" class="active">Explorer</a>
+    <a href="#" data-stub="Datasets">Datasets <span class="soon">soon</span></a>
+    <a href="#" data-stub="Stories">Stories <span class="soon">soon</span></a>
+    <a href="#" data-stub="Methods">Methods <span class="soon">soon</span></a>
+    <a href="#" data-stub="About">About <span class="soon">soon</span></a>
+  </nav>
+  <div class="topbar-actions">
+    <button id="share-view">Share view</button>
+    <button id="download-csv" class="primary">Download .csv</button>
+  </div>
+</header>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<main class="explorer">
+  <aside class="left-rail">
+    <div class="rail-section">
+      <h3>Variables</h3>
+      <p class="hint">Add up to four variables to overlay.</p>
+      <ul class="var-list">
+        <li class="var" data-key="temp">
+          <label><input type="checkbox" checked /> <span class="swatch" style="background:#d24a3a"></span> Surface temperature anomaly</label>
+          <div class="var-meta">°C vs 1951–1980 baseline · Berkeley Earth-style</div>
+        </li>
+        <li class="var" data-key="precip">
+          <label><input type="checkbox" /> <span class="swatch" style="background:#3a8bd2"></span> Precipitation</label>
+          <div class="var-meta">mm/year · gridded gauge product</div>
+        </li>
+        <li class="var" data-key="co2">
+          <label><input type="checkbox" checked /> <span class="swatch" style="background:#2f8a52"></span> Atmospheric CO₂</label>
+          <div class="var-meta">ppm · Mauna Loa-style monthly mean</div>
+        </li>
+        <li class="var" data-key="sealevel">
+          <label><input type="checkbox" /> <span class="swatch" style="background:#6b46ff"></span> Global mean sea level</label>
+          <div class="var-meta">mm vs 1993 satellite-era zero</div>
+        </li>
+        <li class="var" data-key="ice">
+          <label><input type="checkbox" /> <span class="swatch" style="background:#0fb8c1"></span> Arctic sea-ice extent</label>
+          <div class="var-meta">million km² · September minimum</div>
+        </li>
+        <li class="var" data-key="enso">
+          <label><input type="checkbox" /> <span class="swatch" style="background:#b97d1c"></span> ENSO index (ONI)</label>
+          <div class="var-meta">°C · 3-month running mean of NINO 3.4</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="rail-section">
+      <h3><label for="region">Region</label></h3>
+      <select id="region" aria-label="Region">
+        <option value="global">Global</option>
+        <option value="nh">Northern Hemisphere</option>
+        <option value="sh">Southern Hemisphere</option>
+        <option value="trop">Tropics (23°S–23°N)</option>
+        <option value="arctic">Arctic (60°N–90°N)</option>
+      </select>
+      <h3 style="margin-top:18px;"><label for="smooth">Smoothing</label></h3>
+      <select id="smooth" aria-label="Smoothing">
+        <option value="raw">No smoothing (monthly/annual raw)</option>
+        <option value="3" selected>3-year running mean</option>
+        <option value="10">10-year running mean</option>
+        <option value="30">30-year normal</option>
+      </select>
+      <h3 style="margin-top:18px;">Y-axis</h3>
+      <div class="seg">
+        <label><input type="radio" name="ax" value="dual" checked /> Dual axes</label>
+        <label><input type="radio" name="ax" value="single" /> Single (z-scored)</label>
+      </div>
+    </div>
+
+    <div class="rail-section">
+      <h3>Layers <span class="hint" style="float:right">drag to reorder</span></h3>
+      <ul id="layers" class="layers"></ul>
+    </div>
+
+    <div class="rail-section">
+      <h3>Sources</h3>
+      <p class="hint">Click ⓘ for synthetic dataset description.</p>
+      <ul class="src">
+        <li><span class="src-name">Berkeley Earth Surface Temperature v4</span> <button class="src-info" data-srcid="berkeley" aria-label="About Berkeley Earth dataset">ⓘ</button></li>
+        <li><span class="src-name">NOAA Global Monitoring Lab CO₂</span> <button class="src-info" data-srcid="noaa" aria-label="About NOAA dataset">ⓘ</button></li>
+        <li><span class="src-name">CMIP6 reanalysis (synthetic)</span> <button class="src-info" data-srcid="cmip" aria-label="About CMIP6 dataset">ⓘ</button></li>
+        <li><span class="src-name">NSIDC Sea Ice Index</span> <button class="src-info" data-srcid="nsidc" aria-label="About NSIDC dataset">ⓘ</button></li>
+      </ul>
+    </div>
+  </aside>
+
+  <section class="chart-area">
+    <div class="chart-head">
+      <div>
+        <h1 id="chart-title">Surface temperature anomaly &amp; Atmospheric CO₂</h1>
+        <p class="hint">Global · 3-year running mean · 1900–2024 · tap or hover the chart to inspect a year. Notes are pinned as ⋄.</p>
+      </div>
+      <div class="chart-toolbar">
+        <button id="reset-view">Reset zoom</button>
+        <button id="add-note">+ Note</button>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <svg id="chart" viewBox="0 0 920 460" preserveAspectRatio="none"></svg>
+      <div id="tooltip" class="tooltip" style="display:none;"></div>
+    </div>
+
+    <div class="year-scrubber">
+      <label for="year-scrub">Year</label>
+      <input type="range" id="year-scrub" min="1900" max="2024" value="1962" aria-label="Inspect year" />
+      <output id="year-scrub-out" for="year-scrub">1962</output>
+    </div>
+
+    <div class="brush-wrap">
+      <div class="brush-label"><span id="brush-from">1900</span> — <span id="brush-to">2024</span></div>
+      <svg id="brush" viewBox="0 0 920 70" preserveAspectRatio="none"></svg>
+      <div class="brush-handles" id="brush-handles">
+        <div class="bh bh-l" data-side="l"></div>
+        <div class="bh bh-r" data-side="r"></div>
+        <div class="bh bh-mid"></div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="right-rail" id="right-rail">
+    <h3>Inspector</h3>
+    <div id="inspector" class="hint">Hover the chart to see values for a year.</div>
+
+    <h3 style="margin-top:22px;">Annotations</h3>
+    <ul id="notes" class="notes"></ul>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>Local demo for UXBench. Fictional product, not a real company. Datasets are synthetic and resemble published series but should not be cited.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

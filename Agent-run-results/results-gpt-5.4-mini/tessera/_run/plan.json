@@ -1,0 +1,667 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore Tessera’s documentation/tutorial UX, with emphasis on the primary onboarding path from home to SQL/reference content, while validating adjacent navigation, version switching, search/theme controls, and mobile usability risks.",
+    "summary": "Start on the docs home page and verify the main onboarding path: hero CTA, quick-start cards, and the key documentation categories that branch into SQL syntax, reference, data types, and function detail pages. Then spend most of the run in the reference and function pages, checking category navigation, deep links, example blocks, and collapsible/versioned content for consistency and recoverability. Finally, repeat the most important interactions in a mobile viewport to confirm the known small tap targets and unlabeled select/search controls do not break navigation.",
+    "assumptions": [
+      "The known HTML files in the prescan represent the full in-scope site coverage for this run.",
+      "Top navigation items like Tutorials, Download, and GitHub appear to be placeholder links on the docs home and should be treated as possible dead-end or no-op controls unless they resolve during execution.",
+      "The search and version switcher are visible site-wide, but the prescan does not prove a real search results page exists; validate interaction behavior rather than assuming search-driven navigation.",
+      "The reference sidebar is expected to expand/collapse in-place and may reveal many linked pages not listed as separate HTML files; if those links route to known files, prioritize coverage of the listed pages.",
+      "Mobile validation should focus on responsiveness and tap-target accessibility rather than a full alternate information architecture."
+    ],
+    "target_pages": [
+      "index.html",
+      "reference.html",
+      "sql-select.html",
+      "data-types.html",
+      "function-date-trunc.html",
+      "function-json-extract.html",
+      "function-regexp-match.html",
+      "function-row-number.html",
+      "operators.html"
+    ],
+    "risk_hotspots": [
+      "index.html: version selector (unlabeled select), ⌘K search button, theme toggle, and small top-nav tap targets on mobile",
+      "index.html: placeholder/hash links for Tutorials, Download, GitHub, and some quick-start/documentation cards",
+      "reference.html: expandable left TOC tree for Schemas/Tables/Views/Indexes/Functions/Operators, especially if nested items collapse or become hard to hit",
+      "function-date-trunc.html: canonical example page with signature, examples, error callouts, and version-history panel; high risk for dense content and collapsible state",
+      "function-json-extract.html: JSON path examples and any advanced JSON behavior implied by v2.4 notes",
+      "function-regexp-match.html: RE2 syntax details, flags, and edge-case examples",
+      "function-row-number.html: window-function semantics and version history panel",
+      "operators.html: category tables and precedence ordering, especially if long content creates navigation or readability issues",
+      "sql-select.html: syntax ordering, clause explanations, and examples with copy/code blocks"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Home page onboarding and global controls",
+        "objective": "Validate the first impression flow and the global controls that should be available across docs pages.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open the hero CTA and confirm whether it routes anywhere meaningful or behaves as a dead end",
+          "Open View reference and confirm it lands on the reference overview",
+          "Interact with the version selector and verify the visible versions can be selected without layout breakage",
+          "Open the ⌘K Search button and observe whether it triggers a dialog, overlay, or no-op",
+          "Toggle theme and confirm the page visually updates and remains readable",
+          "Check top-nav and quick-start/documentation cards for consistent link behavior"
+        ],
+        "exit_criteria": [
+          "Hero, global controls, and at least 4 distinct home-page links/cards have been exercised",
+          "Any placeholder or no-op links are identified",
+          "A baseline desktop state is captured for later comparison"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Reference entry and category navigation",
+        "objective": "Validate the main documentation browser and how users move through the deep reference hierarchy.",
+        "target_pages": [
+          "reference.html"
+        ],
+        "key_checks": [
+          "Open the left TOC tree and verify categories expand/collapse cleanly",
+          "Check that the center overview links to popular pages such as DATE_TRUNC, REGEXP_MATCH, JSON_EXTRACT, and ROW_NUMBER",
+          "Inspect the right-side on-this-page outline for usability and anchor behavior",
+          "Verify the v2.4 new-features callout is visible and scannable",
+          "Follow at least one link from each major category group if available"
+        ],
+        "exit_criteria": [
+          "Primary TOC sections and popular links have been exercised",
+          "At least one deep-reference navigation path has been validated end to end",
+          "No major clipping/overlap issues prevent browsing the page"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Core syntax and type reference path",
+        "objective": "Cover the foundational learning path for SQL syntax and data types, since these underpin most adjacent docs.",
+        "target_pages": [
+          "sql-select.html",
+          "data-types.html",
+          "operators.html"
+        ],
+        "key_checks": [
+          "Review SELECT syntax ordering and check any code-copy or example affordances",
+          "Verify section anchors or in-page navigation for clauses like FROM, WHERE, GROUP BY, HAVING, ORDER BY, and LIMIT/OFFSET",
+          "Inspect data type tables for readability, row alignment, and cross-links to related functions/types",
+          "Inspect operators tables for precedence and category separation",
+          "Confirm links from these pages into function/reference pages are consistent"
+        ],
+        "exit_criteria": [
+          "Each foundational page is visited and scannability of tables/code blocks is confirmed",
+          "At least one internal link or anchor interaction is tested on each page",
+          "Any overly dense table or syntax presentation issues are recorded"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Function detail pages and example validation",
+        "objective": "Deeply validate the most content-rich function pages and their example/error/version states.",
+        "target_pages": [
+          "function-date-trunc.html",
+          "function-json-extract.html",
+          "function-regexp-match.html",
+          "function-row-number.html"
+        ],
+        "key_checks": [
+          "On DATE_TRUNC, verify signature, parameter table, return value, all three examples, error callouts, and version history panel",
+          "On JSON_EXTRACT, verify JSONPath description, examples, and any table/result formatting",
+          "On REGEXP_MATCH, verify RE2 guidance, flags parameter, and filtering example clarity",
+          "On ROW_NUMBER, verify window clause explanation, examples, and the tie-vs-rank distinction",
+          "Test page-local links and edit-on-GitHub affordances where present",
+          "Check that collapsed/expanded or example-heavy sections remain usable after interaction"
+        ],
+        "exit_criteria": [
+          "All four function pages have their key sections inspected",
+          "At least one expandable or stateful control on the function pages has been toggled if present",
+          "Example/code/result presentation is confirmed readable and consistent"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile viewport regression pass",
+        "objective": "Recheck the highest-risk navigation and reading flows on mobile, with focus on tap targets and layout stability.",
+        "target_pages": [
+          "index.html",
+          "reference.html",
+          "sql-select.html",
+          "data-types.html",
+          "function-date-trunc.html",
+          "function-json-extract.html",
+          "function-regexp-match.html",
+          "function-row-number.html",
+          "operators.html"
+        ],
+        "key_checks": [
+          "Repeat the home-page version selector, search, theme toggle, and primary CTAs on mobile",
+          "Verify the reference TOC can be expanded and used without accidental taps or clipping",
+          "Check that dense tables, code blocks, and example sections remain legible and scrollable",
+          "Confirm small tap targets flagged in the prescan are still usable or note exact failures",
+          "Ensure no horizontal overflow or broken sticky nav behavior blocks reading"
+        ],
+        "exit_criteria": [
+          "Critical controls have been tested at mobile size on the home and at least two content-heavy pages",
+          "Any tap-target or label issues are confirmed with mobile evidence",
+          "Layout remains navigable across the main docs flow"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 9 known HTML pages, with deeper interaction on the 5 content-heavy docs pages plus home and reference entry.",
+      "features": "Exercise the visible global controls, at least one navigation interaction per major page, and most visible section/expand/collapse controls on reference and function pages.",
+      "mobile": "Repeat the critical onboarding, reference browsing, and dense-content reading checks in a mobile viewport, prioritizing the small-tap-target and unlabeled-select risks."
+    },
+    "notes": [
+      "Because the prescan shows no console or network errors, the run should prioritize interaction quality, navigation depth, and accessibility rather than failure recovery.",
+      "Treat the site as a docs system first: success means users can learn, browse, and compare pages without getting stuck, not just that links open."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Tessera — The embeddable SQL engine for fast local analytics.",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 v2.4 · 2026-04 release The embeddable SQL engine for fast local analytics. Tessera runs in your process, reads Parquet and CSV directly, and ships SIMD-optimized vector kernels for sub-millisecond aggregation over millions of rows. Get started → View reference SELECT SELECT region, SUM(amount_cents) AS revenue FROM read_parquet('orders/*.parquet') WHERE created_at >= '2026-01-01' GROUP BY region ORDER BY revenue DESC; Quick start 1 Install Drop-in single-file build for Linux, macOS, Windows. No service to run. 2 Connect Open a file-backed or in-memory database with one line in your language of choice. 3 Your first query Run analytical queries directly on Parquet, CSV, and Arrow data. Documentation Architecture Storage, vectorized execution, and query planning. SQL Syntax Statements, expressions, an",
+      "headings": [
+        "The embeddable SQL engine for fast local analytics.",
+        "Quick start",
+        "Install",
+        "Connect",
+        "Your first query",
+        "Documentation"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 27,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:Get started →",
+        "clickable:a:View reference",
+        "clickable:a:1 Install Drop-in single-file build for Linux, macOS, Windows. No service to run.",
+        "clickable:a:2 Connect Open a file-backed or in-memory database with one line in your language of choice.",
+        "clickable:a:3 Your first query Run analytical queries directly on Parquet, CSV, and Arrow data.",
+        "clickable:a:Architecture Storage, vectorized execution, and query planning.",
+        "clickable:a:SQL Syntax Statements, expressions, and railroad diagrams."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "data-types.html",
+      "title": "Data types — Tessera",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/data-types.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 › SCHEMAS › TABLES › VIEWS › INDEXES › FUNCTIONS AGGREGATE SUM AVG COUNT MIN MAX ARRAY_AGG STRING LENGTH SUBSTR REPLACE REGEXP_MATCH LOWER UPPER NUMERIC ROUND FLOOR CEIL ABS POWER DATE / TIME NOW DATE_TRUNC EXTRACT DATE_ADD JSON JSON_EXTRACT JSON_VALID JSON_AGG WINDOW ROW_NUMBER RANK LAG LEAD › OPERATORS CATEGORIES Arithmetic Comparison Logical String JSON Array Data types Native types supported by the Tessera storage engine, with storage sizes and value ranges. Numeric types Type Aliases Storage Range Default Notes TINYINT INT8 1 byte −128 to 127 0 Signed 8-bit. SMALLINT INT16 2 bytes −32,768 to 32,767 0 Signed 16-bit. INTEGER INT, INT32 4 bytes −2,147,483,648 to 2,147,483,647 0 Default integer type. BIGINT INT64, LONG 8 bytes −9.22e18 to 9.22e18 0 Signed 64-bit. REAL FLOAT, FLOAT4 4 bytes IEEE 75",
+      "headings": [
+        "Data types",
+        "Numeric types",
+        "String types",
+        "Boolean",
+        "Date / Time types",
+        "Composite"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 65,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:SUM",
+        "clickable:a:AVG",
+        "clickable:a:COUNT",
+        "clickable:a:MIN",
+        "clickable:a:MAX",
+        "clickable:a:ARRAY_AGG",
+        "clickable:a:LENGTH"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "function-date-trunc.html",
+      "title": "DATE_TRUNC — Tessera",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/function-date-trunc.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 › SCHEMAS › TABLES › VIEWS › INDEXES › FUNCTIONS AGGREGATE SUM AVG COUNT MIN MAX ARRAY_AGG STRING LENGTH SUBSTR REPLACE REGEXP_MATCH LOWER UPPER NUMERIC ROUND FLOOR CEIL ABS POWER DATE / TIME NOW DATE_TRUNC EXTRACT DATE_ADD JSON JSON_EXTRACT JSON_VALID JSON_AGG WINDOW ROW_NUMBER RANK LAG LEAD › OPERATORS CATEGORIES Arithmetic Comparison Logical String JSON Array 📝 Edit this page on GitHub DATE_TRUNC Truncate a timestamp to the precision specified by unit, returning a TIMESTAMP at the start of that period. DATE_TRUNC is commonly used in analytical queries to bucket timestamps by week, day, or hour for aggregation. Signature DATE_TRUNC(unit TEXT, timestamp TIMESTAMP) → TIMESTAMP Parameters Name Type Required Description unit TEXT required Truncation unit. One of: microsecond, millisecond, second, min",
+      "headings": [
+        "DATE_TRUNC",
+        "Signature",
+        "Parameters",
+        "Return value",
+        "Examples",
+        "1. Truncate to day",
+        "2. Bucket events by hour for aggregation",
+        "3. Nested with EXTRACT for weekday rollups",
+        "Errors",
+        "Version history"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 74,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:SUM",
+        "clickable:a:AVG",
+        "clickable:a:COUNT",
+        "clickable:a:MIN",
+        "clickable:a:MAX",
+        "clickable:a:ARRAY_AGG",
+        "clickable:a:LENGTH"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "function-json-extract.html",
+      "title": "JSON_EXTRACT — Tessera",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/function-json-extract.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 › SCHEMAS › TABLES › VIEWS › INDEXES › FUNCTIONS AGGREGATE SUM AVG COUNT MIN MAX ARRAY_AGG STRING LENGTH SUBSTR REPLACE REGEXP_MATCH LOWER UPPER NUMERIC ROUND FLOOR CEIL ABS POWER DATE / TIME NOW DATE_TRUNC EXTRACT DATE_ADD JSON JSON_EXTRACT JSON_VALID JSON_AGG WINDOW ROW_NUMBER RANK LAG LEAD › OPERATORS CATEGORIES Arithmetic Comparison Logical String JSON Array 📝 Edit this page on GitHub JSON_EXTRACT Extract a value from a JSON document using a JSONPath expression. JSON_EXTRACT navigates a JSON document with JSONPath. The result is a JSON value (object, array, string, number, boolean, or null). Signature JSON_EXTRACT(document JSON, path TEXT) → JSON Parameters Name Type Required Description document JSON required A JSON document. Strings will be auto-parsed if they contain valid JSON. path TEXT re",
+      "headings": [
+        "JSON_EXTRACT",
+        "Signature",
+        "Parameters",
+        "Return value",
+        "Examples",
+        "1. Extract a string field",
+        "2. Extract from JSON column in table",
+        "3. Array indexing",
+        "Errors",
+        "Version history"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 74,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:SUM",
+        "clickable:a:AVG",
+        "clickable:a:COUNT",
+        "clickable:a:MIN",
+        "clickable:a:MAX",
+        "clickable:a:ARRAY_AGG",
+        "clickable:a:LENGTH"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "function-regexp-match.html",
+      "title": "REGEXP_MATCH — Tessera",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/function-regexp-match.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 › SCHEMAS › TABLES › VIEWS › INDEXES › FUNCTIONS AGGREGATE SUM AVG COUNT MIN MAX ARRAY_AGG STRING LENGTH SUBSTR REPLACE REGEXP_MATCH LOWER UPPER NUMERIC ROUND FLOOR CEIL ABS POWER DATE / TIME NOW DATE_TRUNC EXTRACT DATE_ADD JSON JSON_EXTRACT JSON_VALID JSON_AGG WINDOW ROW_NUMBER RANK LAG LEAD › OPERATORS CATEGORIES Arithmetic Comparison Logical String JSON Array 📝 Edit this page on GitHub REGEXP_MATCH Test whether a string matches a regular expression using the RE2 syntax. REGEXP_MATCH evaluates to TRUE when pattern matches anywhere in the input string. Anchor with ^ and $ for full-string matches. Signature REGEXP_MATCH(string TEXT, pattern TEXT [, flags TEXT]) → BOOLEAN Parameters Name Type Required Description string TEXT required The string to test. pattern TEXT required A RE2-compatible regular",
+      "headings": [
+        "REGEXP_MATCH",
+        "Signature",
+        "Parameters",
+        "Return value",
+        "Examples",
+        "1. Simple match",
+        "2. Case insensitive match with flag",
+        "3. Filter rows matching pattern",
+        "Errors",
+        "Version history"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 74,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:SUM",
+        "clickable:a:AVG",
+        "clickable:a:COUNT",
+        "clickable:a:MIN",
+        "clickable:a:MAX",
+        "clickable:a:ARRAY_AGG",
+        "clickable:a:LENGTH"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "function-row-number.html",
+      "title": "ROW_NUMBER — Tessera",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/function-row-number.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 › SCHEMAS › TABLES › VIEWS › INDEXES › FUNCTIONS AGGREGATE SUM AVG COUNT MIN MAX ARRAY_AGG STRING LENGTH SUBSTR REPLACE REGEXP_MATCH LOWER UPPER NUMERIC ROUND FLOOR CEIL ABS POWER DATE / TIME NOW DATE_TRUNC EXTRACT DATE_ADD JSON JSON_EXTRACT JSON_VALID JSON_AGG WINDOW ROW_NUMBER RANK LAG LEAD › OPERATORS CATEGORIES Arithmetic Comparison Logical String JSON Array 📝 Edit this page on GitHub ROW_NUMBER Assign a unique sequential integer to each row within a window partition. ROW_NUMBER is the simplest of the ranking window functions. Unlike RANK, ties do not share a number. Signature ROW_NUMBER() OVER ([PARTITION BY ...] ORDER BY ...) → BIGINT Parameters Name Type Required Description OVER clause WINDOW required Defines the window. PARTITION BY is optional; ORDER BY is required. Return value BIGINT st",
+      "headings": [
+        "ROW_NUMBER",
+        "Signature",
+        "Parameters",
+        "Return value",
+        "Examples",
+        "1. Number all rows by created_at",
+        "2. Top-N per partition",
+        "3. Distinguishes ties (vs RANK)",
+        "Version history",
+        "2 entries"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 73,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:SUM",
+        "clickable:a:AVG",
+        "clickable:a:COUNT",
+        "clickable:a:MIN",
+        "clickable:a:MAX",
+        "clickable:a:ARRAY_AGG",
+        "clickable:a:LENGTH"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "operators.html",
+      "title": "Operators — Tessera",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/operators.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 › SCHEMAS › TABLES › VIEWS › INDEXES › FUNCTIONS AGGREGATE SUM AVG COUNT MIN MAX ARRAY_AGG STRING LENGTH SUBSTR REPLACE REGEXP_MATCH LOWER UPPER NUMERIC ROUND FLOOR CEIL ABS POWER DATE / TIME NOW DATE_TRUNC EXTRACT DATE_ADD JSON JSON_EXTRACT JSON_VALID JSON_AGG WINDOW ROW_NUMBER RANK LAG LEAD › OPERATORS CATEGORIES Arithmetic Comparison Logical String JSON Array Operators All operators in Tessera, grouped by category. Operator precedence runs highest (unary, multiplicative) to lowest (logical OR). Arithmetic Operator Description Example Result Precedence + Addition 2 + 3 5 6 - Subtraction 10 - 4 6 6 * Multiplication 3 * 4 12 7 / Division (returns DOUBLE if any operand is non-integer) 10 / 4 2 7 % Modulo 10 % 3 1 7 ^ Exponent 2 ^ 8 256 8 Comparison Operator Description Example Result = Equal 'a' = '",
+      "headings": [
+        "Operators",
+        "Arithmetic",
+        "Comparison",
+        "Logical",
+        "String",
+        "JSON",
+        "Array"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 66,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:SUM",
+        "clickable:a:AVG",
+        "clickable:a:COUNT",
+        "clickable:a:MIN",
+        "clickable:a:MAX",
+        "clickable:a:ARRAY_AGG",
+        "clickable:a:LENGTH"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "reference.html",
+      "title": "Reference — Tessera",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/reference.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 › SCHEMAS › TABLES › VIEWS › INDEXES › FUNCTIONS AGGREGATE SUM AVG COUNT MIN MAX ARRAY_AGG STRING LENGTH SUBSTR REPLACE REGEXP_MATCH LOWER UPPER NUMERIC ROUND FLOOR CEIL ABS POWER DATE / TIME NOW DATE_TRUNC EXTRACT DATE_ADD JSON JSON_EXTRACT JSON_VALID JSON_AGG WINDOW ROW_NUMBER RANK LAG LEAD › OPERATORS CATEGORIES Arithmetic Comparison Logical String JSON Array Reference Complete reference for SQL syntax, data types, functions, and operators in Tessera v2.4. Browse by category Use the left navigation to explore the full reference, or jump straight to one of these popular pages: DATE_TRUNC REGEXP_MATCH JSON_EXTRACT ROW_NUMBER Operators Data types SELECT statement CREATE TABLE ALTER TABLE What's new in v2.4 Released 2026-04-15. SIMD vectorization for DATE_TRUNC, JSONPath filter expressions, and para",
+      "headings": [
+        "Reference",
+        "Browse by category",
+        "What's new in v2.4"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 72,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:SUM",
+        "clickable:a:AVG",
+        "clickable:a:COUNT",
+        "clickable:a:MIN",
+        "clickable:a:MAX",
+        "clickable:a:ARRAY_AGG",
+        "clickable:a:LENGTH"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "sql-select.html",
+      "title": "SELECT statement — Tessera",
+      "url": "file:///Users/timchef/UXBench/websites/tessera/sql-select.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tessera Docs Reference Tutorials Download GitHub v2.4 (latest) v2.3 v2.2 v2.1 ⌘ K Search 🌓 › SCHEMAS › TABLES › VIEWS › INDEXES › FUNCTIONS AGGREGATE SUM AVG COUNT MIN MAX ARRAY_AGG STRING LENGTH SUBSTR REPLACE REGEXP_MATCH LOWER UPPER NUMERIC ROUND FLOOR CEIL ABS POWER DATE / TIME NOW DATE_TRUNC EXTRACT DATE_ADD JSON JSON_EXTRACT JSON_VALID JSON_AGG WINDOW ROW_NUMBER RANK LAG LEAD › OPERATORS CATEGORIES Arithmetic Comparison Logical String JSON Array SELECT statement SELECT is the workhorse of Tessera. Its clauses are evaluated in a fixed order even though they may be written in any order in the source text. Syntax SELECT [DISTINCT] expression FROM source [WHERE] predicate [GROUP BY] expression [HAVING] predicate [ORDER BY] expression [LIMIT] n [OFFSET] n WITH Common table expressions for readability and recursion. Copy WITH recent AS ( SELECT id, amount_cents FROM orders WHERE created_",
+      "headings": [
+        "SELECT statement",
+        "Syntax",
+        "WITH",
+        "FROM",
+        "WHERE",
+        "GROUP BY",
+        "HAVING",
+        "ORDER BY",
+        "LIMIT and OFFSET",
+        "Examples"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 69,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tessera",
+        "clickable:a:Docs",
+        "clickable:a:Reference",
+        "clickable:a:Tutorials",
+        "clickable:a:Download",
+        "clickable:a:GitHub",
+        "selectable:select:v2.4 (latest) v2.3 v2.2 v2.1",
+        "clickable:button:⌘ K Search",
+        "clickable:button:🌓",
+        "clickable:a:SUM",
+        "clickable:a:AVG",
+        "clickable:a:COUNT",
+        "clickable:a:MIN",
+        "clickable:a:MAX",
+        "clickable:a:ARRAY_AGG",
+        "clickable:a:LENGTH"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

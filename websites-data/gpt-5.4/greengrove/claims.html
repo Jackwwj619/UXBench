@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File a claim — GreenGrove</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="home">
+<header class="topbar">
+  <a href="index.html" class="brand"><svg width="26" height="26" viewBox="0 0 32 32"><path d="M8 22 Q8 14 16 14 Q24 14 24 22 L24 26 L8 26 Z" fill="#2A7F5F"/></svg><span>GreenGrove</span></a>
+  <nav><a href="quote.html">Get a quote</a><a href="claims.html" class="current">Claims</a><a href="faq.html">FAQ</a></nav>
+</header>
+<main class="claims-page">
+  <h1>File a claim</h1>
+  <p>Most claims are reimbursed in 3–5 business days. Bring the vet invoice — we do the rest.</p>
+  <ol class="how-claim">
+    <li><strong>Pay the vet</strong> directly — any licensed clinic in the US.</li>
+    <li><strong>Snap the invoice</strong> with your phone, or download a PDF.</li>
+    <li><strong>Submit below</strong> — we'll email a decision within 5 days.</li>
+  </ol>
+  <form class="claim-form" id="claimForm" novalidate>
+    <div class="form-summary" id="claimSummary" role="alert" aria-live="assertive" hidden></div>
+    <label>Pet name
+      <input name="petName" required aria-describedby="err-petName">
+      <span class="field-error" id="err-petName"></span>
+    </label>
+    <label>Visit date
+      <input type="date" name="visitDate" required aria-describedby="err-visitDate">
+      <span class="field-error" id="err-visitDate"></span>
+    </label>
+    <label>Condition / reason for visit
+      <input name="reason" placeholder="e.g., ear infection" required aria-describedby="err-reason">
+      <span class="field-error" id="err-reason"></span>
+    </label>
+    <label>Total paid (USD)
+      <input type="number" name="total" min="0" step="0.01" required aria-describedby="err-total">
+      <span class="field-error" id="err-total"></span>
+    </label>
+    <label>Vet invoice (PDF or image)
+      <input type="file" name="invoice" accept="image/*,application/pdf" required aria-describedby="err-invoice">
+      <span class="field-error" id="err-invoice"></span>
+    </label>
+    <button class="btn-primary" type="submit">Submit claim</button>
+  </form>
+  <script>
+  (function(){
+    const form = document.getElementById('claimForm');
+    const summary = document.getElementById('claimSummary');
+    const labels = {petName:'Pet name', visitDate:'Visit date', reason:'Condition / reason for visit', total:'Total paid', invoice:'Vet invoice'};
+    function clearError(input){
+      const errEl = document.getElementById('err-' + input.name);
+      if(errEl){ errEl.textContent = ''; }
+      input.classList.remove('invalid');
+      input.removeAttribute('aria-invalid');
+    }
+    function setError(input, msg){
+      const errEl = document.getElementById('err-' + input.name);
+      if(errEl){ errEl.textContent = msg; }
+      input.classList.add('invalid');
+      input.setAttribute('aria-invalid','true');
+    }
+    form.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', () => clearError(input));
+      input.addEventListener('change', () => clearError(input));
+      input.addEventListener('blur', () => {
+        if(input.value && !input.checkValidity()){ setError(input, input.validationMessage || 'Please check this field.'); }
+      });
+    });
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const inputs = [...form.querySelectorAll('input')];
+      const missing = [];
+      let firstInvalid = null;
+      inputs.forEach(input => {
+        clearError(input);
+        if(!input.checkValidity()){
+          const msg = input.value ? (input.validationMessage || 'Please check this field.') : 'This field is required.';
+          setError(input, msg);
+          missing.push(labels[input.name] || input.name);
+          if(!firstInvalid) firstInvalid = input;
+        }
+      });
+      if(missing.length){
+        summary.hidden = false;
+        summary.textContent = missing.length === 1
+          ? `Please complete: ${missing[0]}.`
+          : `Please complete ${missing.length} fields: ${missing.join(', ')}.`;
+        if(firstInvalid){ firstInvalid.focus(); firstInvalid.scrollIntoView({block:'center', behavior:'smooth'}); }
+        return;
+      }
+      summary.hidden = true;
+      alert('Claim submitted (mock).');
+      form.reset();
+    });
+  })();
+  </script>
+</main>
+<footer class="site-foot"><p>Local demo for UXBench. Fictional product, not a real company.</p></footer>
+</body>
+</html>

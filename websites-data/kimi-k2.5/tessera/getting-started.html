@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Getting Started — Tessera</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+  <a href="index.html" class="brand"><svg width="26" height="26" viewBox="0 0 32 32" fill="none"><rect x="4" y="6" width="24" height="20" rx="3" stroke="#0D5C46" stroke-width="2"/><rect x="8" y="10" width="6" height="6" fill="#0D5C46"/><rect x="16" y="10" width="6" height="6" fill="#0D5C46" opacity="0.6"/><rect x="8" y="18" width="6" height="4" fill="#0D5C46" opacity="0.4"/><rect x="16" y="18" width="6" height="4" fill="#0D5C46" opacity="0.8"/></svg><span>Tessera</span></a>
+  <nav class="topnav"><a href="index.html" class="active">Docs</a><a href="reference.html">Reference</a><a href="#">Tutorials</a><a href="#">Download</a><a href="#">GitHub</a></nav>
+  <select class="ver-switch" id="verSwitch" aria-label="Select Tessera version"><option>v2.4 (latest)</option><option>v2.3</option><option>v2.2</option><option>v2.1</option></select>
+  <button class="cmdk" id="cmdkBtn"><span>⌘ K</span> <span style="color:var(--ink-sub)">Search</span></button>
+  <button class="btn-secondary" id="themeToggle" aria-label="Toggle theme">🌓</button>
+</div></header>
+
+<main class="home-shell">
+  <span class="badge">Tutorial · 5 minutes</span>
+  <h1 style="font-size:36px;margin:6px 0 14px;letter-spacing:-0.02em">Getting started with Tessera</h1>
+  <p style="font-size:16px;color:var(--ink-sub);max-width:680px">Install Tessera, open a database, and run your first analytical query against a Parquet file in under five minutes.</p>
+
+  <h2 class="section-h" id="install">1. Install</h2>
+  <p>Tessera ships as a single static binary. Pick the build for your platform:</p>
+  <pre class="example-block"><span class="cmt"># macOS (Apple Silicon or Intel)</span>
+curl -L https://tessera.example/install.sh | sh
+
+<span class="cmt"># Linux (x86_64)</span>
+curl -LO https://tessera.example/dl/tessera-linux-x86_64.tar.gz
+tar -xzf tessera-linux-x86_64.tar.gz &amp;&amp; sudo mv tessera /usr/local/bin/
+
+<span class="cmt"># Verify</span>
+tessera --version</pre>
+
+  <h2 class="section-h" id="connect">2. Connect</h2>
+  <p>Open an in-memory or file-backed database in your language of choice. The example below uses Python, but the same API exists for Node, Go, and Rust.</p>
+  <pre class="example-block"><span class="kw">import</span> tessera
+
+<span class="cmt"># In-memory database — discarded when the process exits</span>
+db = tessera.connect(<span class="str">":memory:"</span>)
+
+<span class="cmt"># File-backed — persists between runs</span>
+db = tessera.connect(<span class="str">"analytics.tsr"</span>)</pre>
+
+  <h2 class="section-h" id="first-query">3. Your first query</h2>
+  <p>Tessera reads Parquet, CSV, and Arrow files directly — no import step required.</p>
+  <pre class="example-block"><span class="kw">SELECT</span> region, <span class="fn">SUM</span>(amount_cents) / 100.0 <span class="kw">AS</span> revenue
+<span class="kw">FROM</span> read_parquet(<span class="str">'orders/*.parquet'</span>)
+<span class="kw">WHERE</span> created_at &gt;= <span class="str">'2026-01-01'</span>
+<span class="kw">GROUP BY</span> region
+<span class="kw">ORDER BY</span> revenue <span class="kw">DESC</span>;</pre>
+
+  <div class="callout"><b>Tip:</b> Tessera uses SIMD-accelerated vector kernels — for aggregations across millions of rows you should see sub-millisecond response times on a modern laptop.</div>
+
+  <h2 class="section-h">Next steps</h2>
+  <div class="resource-grid">
+    <a href="sql-select.html" class="resource-card"><h4>SQL syntax →</h4><p>Statements, expressions, and railroad diagrams.</p></a>
+    <a href="reference.html" class="resource-card"><h4>Function reference →</h4><p>Scalar, aggregate, window, and string functions.</p></a>
+    <a href="data-types.html" class="resource-card"><h4>Data types →</h4><p>Native and extended types with storage details.</p></a>
+  </div>
+</main>
+
+<footer class="site-footer">© 2026 Tessera Foundation · Local demo for UXBench. Fictional product, not a real company.</footer>
+<div id="cmdkOverlay" class="cmdk-overlay hidden"><div class="cmdk-box"><input id="cmdkInput" placeholder="Search functions, operators, types…"><div id="cmdkResults"></div></div></div>
+<script src="script.js"></script>
+</body>
+</html>

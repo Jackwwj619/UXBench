@@ -1,0 +1,284 @@
+{
+  "plan": {
+    "goal": "Thoroughly explore CodeKite’s marketing site with emphasis on the pricing decision flow: entering usage, interpreting the calculator output, comparing plans, and reaching the right CTA, while also validating adjacent landing and docs paths on desktop and mobile.",
+    "summary": "Start on the landing page to verify how clearly it routes users into pricing or docs, then spend the deepest coverage on pricing.html because it contains the site’s main interactive experience and decision logic. On pricing, test the linked slider/number inputs, runner add-on checkboxes, sticky total/recommended-plan behavior, comparison table readability, and FAQ expansion patterns. Finish by checking docs as a lightweight adjacent flow and then repeat the most critical pricing and navigation checks on mobile, where small tap targets and dense comparison content are most likely to break down.",
+    "assumptions": [
+      "pricing.html is the primary conversion page and the calculator is the core interaction to prioritize.",
+      "The three numeric usage controls on pricing.html are intended to support two-way synchronization between slider and number entry.",
+      "The sticky monthly total, recommended-plan badge, and line-item breakdown on pricing.html should react immediately to usage and runner option changes.",
+      "Several header/footer and utility links use '#' or appear placeholder-like, so exploration should validate their behavior without expecting full destination content.",
+      "Mobile risk is elevated because prescan already detected multiple undersized tap targets and pricing contains dense interactive content."
+    ],
+    "target_pages": [
+      "index.html",
+      "pricing.html",
+      "docs.html"
+    ],
+    "risk_hotspots": [
+      "pricing.html: usage calculator two-way sync between sliders and number inputs for build minutes, concurrency, and storage",
+      "pricing.html: sticky monthly total panel may fail to stay visible, update correctly, or remain usable during scroll",
+      "pricing.html: recommended-plan badge logic may not match visible plan tiers after input changes",
+      "pricing.html: ARM/macOS/GPU runner checkboxes may produce incorrect line items or unclear pricing impact",
+      "pricing.html: numeric inputs may allow invalid/edge values that desync from sliders or create broken totals",
+      "pricing.html: 16-row comparison table may be hard to scan or overflow on mobile",
+      "pricing.html: FAQ accordion with 10 items may have discoverability, state, or spacing issues",
+      "global nav/footer links with '#' destinations, especially Sign in and footer resource/company links, may create dead-end UX",
+      "mobile header/nav links on all pages due to repeated small tap target warnings",
+      "font loading/network timeout observed initially may affect visual stability or text layout during the run"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing page orientation and pathing",
+        "objective": "Validate that index.html communicates the product clearly and routes users cleanly into the primary pricing flow and the adjacent docs flow.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the hero message, YAML example, and three feature cards are understandable without interaction-heavy dependencies.",
+          "Use primary CTAs 'See pricing' and header 'Start free trial' to confirm they both route to pricing.html consistently.",
+          "Use 'Read docs' and header 'Docs' to confirm docs.html is reachable and positioned as a secondary path.",
+          "Check header navigation consistency, including what happens when clicking Product and Sign in links that appear non-destination or placeholder-like.",
+          "Review footer links for discoverability and whether placeholder destinations create confusing dead ends."
+        ],
+        "exit_criteria": [
+          "All visible landing-page navigation paths have been exercised at least once.",
+          "Clear evidence is collected on whether the landing page effectively funnels users to pricing versus docs.",
+          "Any dead-end or misleading links on the landing page are identified with concrete examples."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Pricing overview and conversion entry points",
+        "objective": "Establish whether pricing.html presents the three plans clearly before deep calculator testing begins.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Inspect the Free, Team, and Enterprise cards for hierarchy, feature clarity, and CTA distinctness.",
+          "Trigger the visible plan CTAs ('Get started', 'Start trial', 'Talk to sales') and note whether they behave meaningfully or lead to placeholders.",
+          "Compare the plan cards with the page headline and calculator intro to ensure the page frames usage-based pricing coherently.",
+          "Check whether the initial recommended-plan state aligns with the default calculator values visible on load."
+        ],
+        "exit_criteria": [
+          "All three plan cards and their CTAs have been reviewed or activated once.",
+          "Initial pricing-page state is documented, including visible default input values and recommendation.",
+          "Any mismatch between static plan messaging and calculator recommendation is captured."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Calculator logic and recovery states",
+        "objective": "Stress the pricing calculator as the main product UX, including normal use, edge edits, and state recovery.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "For each of the three usage controls, change the slider and verify the number input updates immediately.",
+          "For each of the three usage controls, type into the number input and verify the slider position and output panel update immediately.",
+          "Exercise a range of values: low/default/high combinations to see whether total cost, line items, and recommendation adapt plausibly.",
+          "Toggle ARM, macOS, and GPU runner checkboxes individually and in combination, verifying that add-on pricing and line-item breakdown reflect each state.",
+          "Check for invalid or awkward numeric entry behavior such as clearing a field, entering very small values, very large values, or nonstandard edits, then verify whether the UI recovers to a coherent state.",
+          "Scroll while interacting to verify the right-side sticky monthly total remains visible and does not overlap or detach unexpectedly."
+        ],
+        "exit_criteria": [
+          "Every calculator control has been manipulated through both available input methods where present.",
+          "At least several distinct usage scenarios are observed, including a low-usage and higher-usage case plus runner add-ons.",
+          "Evidence is collected on whether the recommendation, total, and breakdown stay synchronized under edits and recovery attempts."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Decision-support content below the calculator",
+        "objective": "Validate whether supporting content helps users confirm or refine the plan choice after using the calculator.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Review the 16-row plan comparison table for scanability, alignment with top plan cards, and any ambiguous feature distinctions.",
+          "Cross-check a few notable features from the comparison table against the plan card summaries for consistency.",
+          "Open multiple FAQ items across the 10-question accordion, including first, middle, and last items, to test expansion behavior and content clarity.",
+          "Observe whether FAQ state management is intuitive when opening multiple items or switching between items.",
+          "Verify that trusted logos and footer content do not distract from or interrupt the decision flow."
+        ],
+        "exit_criteria": [
+          "Comparison table has been scrolled and sampled enough to judge readability and consistency.",
+          "FAQ accordion interaction has been exercised across multiple positions in the list.",
+          "Any contradictions or usability issues in supporting decision content are documented."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Adjacent docs flow and mobile regression pass",
+        "objective": "Confirm the secondary docs path is coherent, then repeat the most critical navigation and pricing checks on mobile where layout and tap targets are riskier.",
+        "target_pages": [
+          "docs.html",
+          "index.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "On docs.html, verify the quickstart content is readable, lightweight, and connected back to the rest of the site via header navigation.",
+          "Check whether docs feels intentionally minimal versus incomplete, given it is described as a placeholder quickstart page.",
+          "In mobile viewport, revisit header navigation and primary CTAs on index.html, focusing on tap target comfort and layout integrity.",
+          "In mobile viewport, repeat the highest-value calculator checks on pricing.html: edit all three usage controls, toggle runner checkboxes, and verify sticky summary behavior or any mobile adaptation.",
+          "In mobile viewport, inspect the plan comparison table and FAQ accordion for overflow, clipping, horizontal scrolling, or hard-to-tap controls."
+        ],
+        "exit_criteria": [
+          "docs.html has been visited and evaluated as a secondary path.",
+          "Critical desktop findings have been sanity-checked on mobile for navigation and pricing interactions.",
+          "Mobile-specific issues around tap size, dense content, or sticky behavior are captured with concrete page references."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 3 known HTML pages, with repeated deeper passes on pricing.html and at least one revisit path from index.html to pricing.html and from docs.html back through header navigation.",
+      "features": "Exercise all visible calculator inputs and add-on checkboxes, all major pricing CTAs, representative FAQ accordion items, main header links, and a sample of footer/placeholder links to assess dead-end behavior.",
+      "mobile": "Repeat critical navigation and pricing checks on mobile viewport, specifically CTA access, header tap targets, calculator editability, sticky summary behavior, comparison table readability, and FAQ interaction."
+    },
+    "notes": [
+      "Do not spend excessive time on placeholder links once their dead-end behavior is confirmed; prioritize documenting UX impact over repeated clicking.",
+      "Because no modal, form submission, or checkout flow was seen in prescan, keep exploration focused on navigation, calculator logic, content comprehension, and interaction quality.",
+      "Track whether the initial font/network timeout causes any noticeable fallback typography or reflow during page transitions."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "CodeKite CI — Faster builds. Honest bills.",
+      "url": "file:///Users/timchef/UXBench/websites/codekite/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "CodeKite Product Pricing Docs Sign in Start free trial Faster builds. Honest bills. CodeKite is a CI/CD service that bills you for what you build. No per-seat tax. Bring your .yml and a credit card you'll hopefully never max out. See pricing Read docs version: 2.1 jobs: build: runs-on: linux/x86 steps: - checkout - run: pnpm install - run: pnpm test - cache: path: node_modules key: lock-{{ checksum \"pnpm-lock.yaml\" }} Parallelism, plain Split a 12-min suite across 16 slots; pay per minute, not per slot. Slots scale to zero when idle. Bill you can read Every invoice breaks down to the job, the runner type, and the minute. Per-team and per-pipeline rollups. Drop-in YAML If you've used Circle or GitHub Actions, you're 90% of the way there. We provide a converter. CodeKite CI Faster builds. Honest bills. PRODUCT Overview Pricing Docs RESOURCES Changelog Status Security COMPANY About Blog Car",
+      "headings": [
+        "Faster builds.\nHonest bills.",
+        "Parallelism, plain",
+        "Bill you can read",
+        "Drop-in YAML"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 17,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:CodeKite",
+        "clickable:a:Product",
+        "clickable:a:Pricing",
+        "clickable:a:Docs",
+        "clickable:a:Sign in",
+        "clickable:a:Start free trial",
+        "clickable:a:See pricing",
+        "clickable:a:Read docs",
+        "clickable:a:Overview",
+        "clickable:a:Changelog",
+        "clickable:a:Status",
+        "clickable:a:Security",
+        "clickable:a:About",
+        "clickable:a:Blog"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "docs.html",
+      "title": "CodeKite Docs",
+      "url": "file:///Users/timchef/UXBench/websites/codekite/docs.html",
+      "load_error": null,
+      "visible_text_excerpt": "CodeKite Product Pricing Docs Sign in Quickstart Drop a .codekite.yml at the root of your repo and push. version: 2.1 jobs: test: runs-on: linux/x86 steps: - checkout - run: pnpm install --frozen-lockfile - run: pnpm test --shard $CK_SHARD/$CK_TOTAL_SHARDS parallel: 8 That's it. Push a commit — your first build runs in under a minute. Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Quickstart"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 5,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:CodeKite",
+        "clickable:a:Product",
+        "clickable:a:Pricing",
+        "clickable:a:Docs",
+        "clickable:a:Sign in"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "pricing.html",
+      "title": "CodeKite CI — Faster builds. Honest bills.",
+      "url": "file:///Users/timchef/UXBench/websites/codekite/pricing.html",
+      "load_error": null,
+      "visible_text_excerpt": "CodeKite Product Pricing Docs Sign in Start free trial Pricing built for builds, not seats. Pay for the minutes you ship. No per-seat tax. No surprise overages. Free $0/month 4,000 Linux build min/mo 1 concurrent build 5 GB artifact storage Public & private repos Community support Get started Most teams Team $39/user/month Unlimited Linux build min Up to 16 concurrent builds 100 GB artifact storage SSO + SAML Slack & PagerDuty alerts Email support, 1 business day Start trial Enterprise Contact sales Everything in Team Up to 64 concurrent builds 1 TB artifact storage SCIM, audit log, OIDC, RBAC Dedicated runners (Linux/macOS/GPU) 99.95% SLA, 24/7 support Talk to sales Estimate your monthly cost Drag the sliders. We'll suggest a plan and break the bill down line-by-line. Build minutes per month Average of small/midsize teams: 12,000–60,000 Concurrent builds Higher = faster wall-clock, more",
+      "headings": [
+        "Pricing built for builds, not seats.",
+        "Free",
+        "Team",
+        "Enterprise",
+        "Estimate your monthly cost",
+        "What's in each plan",
+        "Frequently asked"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 18,
+        "inputs": 9,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:CodeKite",
+        "clickable:a:Product",
+        "clickable:a:Pricing",
+        "clickable:a:Docs",
+        "clickable:a:Sign in",
+        "clickable:a:Start free trial",
+        "clickable:a:Get started",
+        "clickable:a:Start trial",
+        "clickable:a:Talk to sales",
+        "clickable:input:20000",
+        "typeable:input:20000",
+        "clickable:input:4",
+        "typeable:input:4",
+        "clickable:input:50",
+        "typeable:input:50",
+        "clickable:input:Linux ARM runners +$0.012/min"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "missing_input_label",
+        "missing_input_label",
+        "missing_input_label"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

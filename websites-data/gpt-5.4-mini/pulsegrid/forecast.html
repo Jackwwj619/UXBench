@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Forecast — PulseGrid</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="dark">
+
+<aside class="sidebar">
+  <a href="index.html" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M3 12 H 7 L 9 5 L 12 19 L 14 9 L 16 14 H 21" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span>PulseGrid</span>
+  </a>
+  <nav class="nav-main">
+    <a href="index.html" class="nav-item"><span>▦</span>Overview</a>
+    <a href="generators.html" class="nav-item"><span>⚡</span>Generators</a>
+    <a href="forecast.html" class="nav-item active"><span>📈</span>Forecast</a>
+    <a href="alarms.html" class="nav-item"><span>⚠</span>Alarms <span class="nav-badge">8</span></a>
+    <a href="#" class="nav-item disabled" aria-disabled="true" title="Topology view — coming soon"><span>🌐</span>Topology <span class="nav-soon">soon</span></a>
+    <a href="#" class="nav-item disabled" aria-disabled="true" title="Events log — coming soon"><span>📜</span>Events <span class="nav-soon">soon</span></a>
+  </nav>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="tb-left">
+      <h2 class="page-title" id="forecastTitle">Load forecast · Day-ahead</h2>
+      <span class="muted-sm">model: pulse-net-v8 · trained 06:00 PT · MAPE 1.41%</span>
+    </div>
+    <div class="tb-right">
+      <label class="field"><span class="field-label">Mode</span>
+        <select class="tb-select" id="forecastMode" aria-label="Forecast mode">
+          <option value="Day-ahead">Day-ahead</option>
+          <option value="Hour-ahead">Hour-ahead</option>
+          <option value="Real-time">Real-time</option>
+        </select>
+      </label>
+      <button class="tb-icon" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">☾</button>
+    </div>
+  </header>
+
+  <section class="forecast-page">
+    <article class="card big">
+      <header class="card-head">
+        <h3>Next 24 hours · MW</h3>
+        <div class="card-controls">
+          <span class="legend"><span class="lg-dot lg-actual"></span>Forecast</span>
+          <span class="legend"><span class="lg-dot lg-forecast"></span>P10 / P90</span>
+          <span class="legend"><span class="lg-dot lg-net"></span>Capacity</span>
+          <button class="card-btn">12h</button>
+          <button class="card-btn active">24h</button>
+          <button class="card-btn">7d</button>
+        </div>
+      </header>
+      <div class="chart-wrap">
+        <svg id="forecastChart" viewBox="0 0 720 300" preserveAspectRatio="none"></svg>
+      </div>
+    </article>
+
+    <div class="forecast-2col">
+      <article class="card">
+        <header class="card-head">
+          <h3>Hourly breakdown</h3>
+          <span class="muted-sm">tap a row to overlay on chart</span>
+        </header>
+        <table class="gen-table forecast-table">
+          <thead><tr><th>Hour</th><th class="num">Forecast</th><th class="num">P10–P90</th><th class="num">Reserve</th><th>Notes</th></tr></thead>
+          <tbody id="hoursBody"></tbody>
+        </table>
+      </article>
+      <article class="card">
+        <header class="card-head">
+          <h3>Reserve adequacy</h3>
+        </header>
+        <ul class="reserve-list">
+          <li><span>Spinning reserve</span><b>4,820 MW</b><span class="up">+220</span></li>
+          <li><span>Non-spin (10-min)</span><b>3,420 MW</b><span class="muted">±0</span></li>
+          <li><span>Replacement (30-min)</span><b>5,140 MW</b><span class="up">+80</span></li>
+          <li><span>Frequency response</span><b>2,210 MW/Hz</b><span class="muted">±0</span></li>
+        </ul>
+        <div class="adequacy-bar">
+          <div class="adq-row"><span>Total reserves vs. requirement</span><strong>112%</strong></div>
+          <div class="bar-track"><div class="bar-fill" style="width: 89%;"></div></div>
+          <div class="adq-foot"><span class="muted-sm">Trigger at &lt; 100% · alarm at &lt; 95%</span></div>
+        </div>
+      </article>
+    </div>
+
+    <article class="card">
+      <header class="card-head">
+        <h3>Drivers · today vs. yesterday</h3>
+      </header>
+      <table class="gen-table">
+        <thead><tr><th>Zone</th><th class="num">Today peak</th><th class="num">Yesterday</th><th class="num">Δ</th><th>Driver</th></tr></thead>
+        <tbody>
+          <tr><td>AZ-Phoenix</td><td class="num">14,200</td><td class="num">12,380</td><td class="num up">+1,820</td><td>Cooling load · 112°F vs. 99°F</td></tr>
+          <tr><td>NV-Las Vegas</td><td class="num">5,640</td><td class="num">5,210</td><td class="num up">+430</td><td>Casino A/C, evening events</td></tr>
+          <tr><td>CA-South</td><td class="num">22,100</td><td class="num">21,680</td><td class="num up">+420</td><td>Marine layer dissipating</td></tr>
+          <tr><td>CA-North</td><td class="num">18,420</td><td class="num">18,540</td><td class="num down">−120</td><td>SF fog persistent</td></tr>
+          <tr><td>NW</td><td class="num">9,820</td><td class="num">9,940</td><td class="num down">−120</td><td>Mild · BPA exporting</td></tr>
+          <tr><td>RM</td><td class="num">7,140</td><td class="num">7,090</td><td class="num up">+50</td><td>Industrial load steady</td></tr>
+        </tbody>
+      </table>
+    </article>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script src="script.js"></script>
+</body>
+</html>

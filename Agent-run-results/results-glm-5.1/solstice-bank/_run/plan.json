@@ -1,0 +1,267 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the Solstice Bank freelancer onboarding flow, including the landing page, the 8-step application, recovery paths, and confirmation state across both desktop and mobile viewports.",
+    "summary": "The run will start by assessing the landing page and its mobile layout warnings, then proceed through the 8-step apply flow as a freelancer. It will deliberately trigger validation errors, test the step navigation, interact with the floating help drawer, and attempt recovery paths like 'Save & continue later' and 'Cancel'. Finally, it will complete the application to reach the confirmation page and verify the end-state.",
+    "assumptions": [
+      "The 8-step form uses client-side JavaScript to switch sections, so navigation and validation can be tested without server calls.",
+      "Mock interactions like the ID photo upload, liveness countdown, and external bank OAuth are fully functional in the local demo.",
+      "The 'Save & continue later' and 'Cancel application' flows simulate their respective states or modals without actually exiting the page.",
+      "Small tap target warnings on the landing page nav links will be more impactful during the mobile viewport checks."
+    ],
+    "target_pages": [
+      "index.html",
+      "apply.html",
+      "confirmation.html"
+    ],
+    "risk_hotspots": [
+      "apply.html Step 1: Consent checkboxes and long legal text readability, especially on mobile",
+      "apply.html Step 5: ID verification photo upload mock and liveness 3-2-1 countdown modal behavior",
+      "apply.html Step 6: Risk questionnaire soft warning trigger when compared against income",
+      "apply.html Step 7: Mock OAuth flow for linking external banks and its error/cancel handling",
+      "apply.html: 'Save & continue later' and 'Cancel application' second-confirmation modal interactions",
+      "index.html: Multiple small tap targets for navigation links causing mobile accessibility issues"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing Page Evaluation",
+        "objective": "Assess the first impression, value proposition clarity, and mobile layout of the index page.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify hero section layout and decorative credit card rendering",
+          "Check 'Materials to prepare' checklist visibility and clarity",
+          "Click top nav 'Open an account' and hero 'Start application' to ensure they route to apply.html",
+          "Evaluate mobile viewport for small tap target severity on nav links"
+        ],
+        "exit_criteria": [
+          "Both CTA links clicked and verified",
+          "Mobile viewport layout assessed for tap target warnings"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Onboarding Steps 1-4",
+        "objective": "Navigate the initial eligibility, personal info, contact, and employment steps as a freelancer, testing validation and progress indicators.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Attempt to continue Step 1 without checking consent boxes to trigger validation error",
+          "Fill Step 2 personal info (name, DOB, masked SSN)",
+          "Fill Step 3 contact and US address",
+          "Select 'freelance / self-employed' in Step 4 employment and fill income",
+          "Verify progress bar updates and completed step dots are clickable to go back"
+        ],
+        "exit_criteria": [
+          "Validation error triggered and resolved on Step 1",
+          "Steps 1-4 completed successfully",
+          "Step navigation (clicking completed dots) verified"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Onboarding Steps 5-8 & Review",
+        "objective": "Complete the high-risk ID verification, risk questionnaire, funding, and review steps, testing complex interactions and soft warnings.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Interact with Step 5 front/back photo upload mock and trigger liveness 3-2-1 countdown modal",
+          "Answer Step 6 risk questionnaire to intentionally trigger the soft warning compared against income",
+          "Use Step 7 mock OAuth to link an external bank from the 4 fictional options",
+          "Use Step 8 Review 'Edit' buttons to jump back to a previous section and change data",
+          "Verify floating Help drawer opens and displays step-specific copy"
+        ],
+        "exit_criteria": [
+          "Liveness modal triggered and dismissed",
+          "Risk soft warning observed",
+          "Mock bank linked in funding step",
+          "Edit from Review step verified",
+          "Help drawer contextual copy verified"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Recovery & Interruption Paths",
+        "objective": "Test the 'Save & continue later' and 'Cancel application' flows to ensure graceful handling of user abandonment.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Click 'Save & continue later' and observe the resulting state or modal",
+          "Click 'Cancel application' and verify the second-confirmation dialog appears",
+          "Dismiss the cancel confirmation to ensure the application state is preserved"
+        ],
+        "exit_criteria": [
+          "Save & continue later behavior observed",
+          "Cancel second-confirmation triggered and dismissed without losing current progress"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Submission & Confirmation",
+        "objective": "Complete the application and validate the success state, animation, and reference number.",
+        "target_pages": [
+          "apply.html",
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Submit the completed application from the Review step",
+          "Verify animated checkmark plays on confirmation.html",
+          "Check that a random application number (SOL-2026-XXXX-XX) is displayed",
+          "Click 'Back to home' link to ensure it routes to index.html"
+        ],
+        "exit_criteria": [
+          "Application submitted successfully",
+          "Confirmation page fully validated including animation and reference number",
+          "Navigation back to home verified"
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile Viewport Deep Dive",
+        "objective": "Re-run critical checks on a mobile viewport to identify responsive design issues, especially forms and modals.",
+        "target_pages": [
+          "index.html",
+          "apply.html",
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Re-evaluate index.html nav tap targets on mobile",
+          "Walk through apply.html steps 1-8 on mobile to check form input usability, modals (liveness, cancel), and the help drawer",
+          "Verify confirmation page layout and animation on a smaller screen"
+        ],
+        "exit_criteria": [
+          "Mobile viewport checks completed for all three pages",
+          "Form factor issues documented"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all 3 known HTML pages (100%)",
+      "features": "exercise all 8 onboarding steps, modals, navigation, and error states per key page",
+      "mobile": "repeat critical checks and form interactions on mobile viewport to validate responsive behavior"
+    },
+    "notes": [
+      "Pay special attention to the liveness countdown modal and mock OAuth as these are common friction points in onboarding.",
+      "The risk questionnaire soft warning is a key UX detail for the freelancer segment; ensure the copy is helpful and dismissible.",
+      "Small tap targets on the landing page nav were flagged in prescan; verify if these persist or worsen on mobile."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Solstice Bank — Banking for the longest day's work",
+      "url": "file:///Users/timchef/UXBench/websites/solstice-bank/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Solstice Bank Why Solstice Pricing Help Sign in Open an account Member FDIC* · For freelancers and the self-employed Banking for the longest day's work. Open your Solstice account in about 7 minutes. A no-fee checking account, a sub-account that auto-saves for taxes, and tools built for someone who is also doing the books at midnight. Start application No credit pull · No monthly fees · A real human if anything goes sideways SOLSTICE •••• 4382 SANA FALCONER TAX VAULT $3,418.22 25% AUTO-SAVED $0 monthly No minimum balance, no maintenance fee, no per-transaction nickels. 2-minute decision Most applications are approved instantly. Funded within one business day. Tax-savings vault Tell us a %; every deposit auto-routes that share to a separate sub-account. What you'll need A US Social Security Number A government-issued photo ID (driver's license or passport) A US residential address A fundi",
+      "headings": [
+        "Banking for the longest day's work.",
+        "$0 monthly",
+        "2-minute decision",
+        "Tax-savings vault",
+        "What you'll need"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 7,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Solstice Bank",
+        "clickable:a:Why Solstice",
+        "clickable:a:Pricing",
+        "clickable:a:Help",
+        "clickable:a:Sign in",
+        "clickable:a:Open an account",
+        "clickable:a:Start application"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "apply.html",
+      "title": "Solstice Bank — Open an account",
+      "url": "file:///Users/timchef/UXBench/websites/solstice-bank/apply.html",
+      "load_error": null,
+      "visible_text_excerpt": "Solstice Save & continue later 1 Eligibility 2 About you 3 Contact 4 Employment 5 Verify ID 6 Risk 7 Funding 8 Review Before we begin Solstice serves US residents 18 and older. Tell us about you. I am a US resident I am 18 years or older I consent to USA PATRIOT Act identity verification Privacy notice (4 min read) I agree to the Deposit Account Agreement and Terms of Service Auto-saved · just now Continue ? Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Please fix the following:",
+        "Before we begin",
+        "About you",
+        "Contact & address",
+        "Employment & income",
+        "Identity verification",
+        "Liveness check",
+        "A few questions to set up your account",
+        "How will you fund your account?",
+        "Connect your bank"
+      ],
+      "counts": {
+        "buttons": 16,
+        "links": 1,
+        "inputs": 41,
+        "forms": 1,
+        "dialogs": 3
+      },
+      "top_interactables": [
+        "clickable:a:Solstice",
+        "clickable:button:Save & continue later",
+        "clickable:input:I am a US resident",
+        "clickable:input:I am 18 years or older",
+        "clickable:input:I consent to USA PATRIOT Act identity verification",
+        "clickable:input:I agree to the Deposit Account Agreement and Terms of Service",
+        "clickable:button:Continue",
+        "clickable:button:Open help"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "confirmation.html",
+      "title": "Welcome to Solstice",
+      "url": "file:///Users/timchef/UXBench/websites/solstice-bank/confirmation.html",
+      "load_error": null,
+      "visible_text_excerpt": "Welcome to Solstice. Your application is in. We'll have a decision in 1–3 business days. REFERENCE SOL-2026-1465-SC Check the email you used to apply — we've sent a confirmation. Download the Solstice mobile app to track your application status. If we need anything else, a human will reach out within one business day. App Store Google Play Back to home Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Welcome to Solstice."
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 1,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Back to home"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

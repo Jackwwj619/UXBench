@@ -1,0 +1,172 @@
+{
+  "plan": {
+    "goal": "Autonomously explore and critique the UX of the govuk-passport single-page application, focusing on the multi-step form flow, validation, state persistence, and responsive design.",
+    "summary": "The run will start by interacting with the cookie banner and initial navigation on the start page. It will then proceed into the main form flow via 'Start now', intentionally triggering validation errors to assess error summaries and inline messaging. After evaluating errors, it will complete a happy path through all steps to the review page. Finally, it will test state persistence by reloading, and evaluate the mobile layout given several small tap target warnings.",
+    "assumptions": [
+      "The entire application is contained within index.html using JavaScript for section switching and DOM updates.",
+      "Navigation relies on hash changes (e.g., #service-start) or hidden/visible sections controlled by script.js.",
+      "State is persisted in localStorage, meaning form data should survive a page reload.",
+      "Form submission does not actually send data to a backend, but halts at a review or payment-stop step."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Client-side validation logic and error summary focus management.",
+      "State persistence mechanism (localStorage) during page reloads or cancellations.",
+      "Responsive layout of the step indicator and form fields on smaller screens.",
+      "Small tap targets identified in the header, footer, and cookie banner."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Start Page & Utilities",
+        "objective": "Evaluate the initial landing state, cookie banner interactions, and header/footer navigation.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Interact with 'Accept/Reject analytics cookies' and ensure the banner dismisses.",
+          "Check top navigation links ('Home', 'Service', 'Demo result') for expected anchor routing.",
+          "Observe the visual layout of the 'Before you start' section."
+        ],
+        "exit_criteria": [
+          "Cookie banner is dismissed and the user is ready to click 'Start now'."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Form Validation & Error Handling",
+        "objective": "Assess how the form handles missing or invalid inputs on the first interactive steps.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Start now' to enter the form flow.",
+          "Attempt to proceed ('Save and continue') without filling out mandatory fields.",
+          "Verify the presence of the GOV.UK style red error summary box at the top.",
+          "Check that inline error messages appear near the respective inputs.",
+          "Ensure focus is correctly managed when clicking an error link in the summary."
+        ],
+        "exit_criteria": [
+          "Validation errors are successfully triggered, observed, and documented."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Happy Path Execution",
+        "objective": "Navigate through all form steps with valid data to reach the review/stop screen.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Provide valid inputs for application type, personal info, address, previous passport, and photo upload.",
+          "Observe the step indicator updates as progression occurs.",
+          "Verify the review screen accurately reflects the inputted data.",
+          "Check the final 'stop before payment' state."
+        ],
+        "exit_criteria": [
+          "The review page is reached and displays the entered data correctly."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Persistence & Navigation",
+        "objective": "Test localStorage persistence and form recovery.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the 'Cancel' or UI back buttons to navigate to a previous step.",
+          "Reload the page (F5/Refresh) while mid-form to verify if data is retained via localStorage.",
+          "Verify that the user returns to the correct step or can resume without losing data."
+        ],
+        "exit_criteria": [
+          "Page reload and back navigation are tested, with state retention verified."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Viewport Evaluation",
+        "objective": "Review the layout and tap targets on a mobile screen size.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport.",
+          "Check if the step indicator shifts correctly (e.g., from left side to top).",
+          "Interact with small tap targets flagged in the prescan (header links, radio buttons).",
+          "Verify form fields and error summaries fit within the mobile width without horizontal scrolling."
+        ],
+        "exit_criteria": [
+          "Mobile layout is thoroughly reviewed for accessibility and usability issues."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Explore all logical steps within the single index.html file.",
+      "features": "Exercise cookie banner, form validation, step navigation, and data persistence.",
+      "mobile": "Validate form responsiveness, step indicator placement, and tap target sizes."
+    },
+    "notes": [
+      "Since this is a single-page application, rely heavily on observing DOM changes and hash URL updates to confirm state transitions.",
+      "Pay special attention to the focus outline (yellow) as per GOV.UK design standards when interacting with form elements."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Apply for or renew a passport - GOV.UK local demo",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/govuk-passport/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "GOV.UK Home Service Demo result Local demo only. This is not an official GOV.UK or HM Passport Office service. Do not enter real passport, payment or personal information. Cookies on GOV.UK We use some essential cookies to make this website work. We'd also like to use analytics cookies so we can understand how you use the service and make improvements. Accept analytics cookies Reject analytics cookies View cookies Home Citizenship and living in the UK Passports, travel and living abroad Passports Apply for or renew a passport Apply online for a UK passport. You can also renew, replace, change details on, or apply for a child passport. This local version recreates the public GOV.UK page and a complete interactive form flow for demonstration and design review. You must use the official GOV.UK service for a real passport application. This page is an offline prototype. Start now › Before you",
+      "headings": [
+        "Cookies on GOV.UK",
+        "Apply for or renew a passport",
+        "Before you start",
+        "Related content",
+        "Services and information",
+        "Government activity",
+        "Support links"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 24,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:GOV.UK local demo home",
+        "clickable:a:Home",
+        "clickable:a:Service",
+        "clickable:a:Demo result",
+        "clickable:button:Accept analytics cookies",
+        "clickable:button:Reject analytics cookies",
+        "clickable:a:View cookies",
+        "clickable:a:Citizenship and living in the UK",
+        "clickable:a:Passports, travel and living abroad",
+        "clickable:a:Start now ›",
+        "clickable:a:Renew an adult passport",
+        "clickable:a:Apply for a child passport",
+        "clickable:a:Report a lost or stolen passport",
+        "clickable:a:Passport fees",
+        "clickable:a:Yes"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

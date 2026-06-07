@@ -1,0 +1,544 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/codekite/index.html",
+  "site": {
+    "name": "codekite",
+    "site_dir": "/Users/timchef/UXBench/websites/codekite",
+    "start_page": "index.html",
+    "page_type": "pricing",
+    "html_files": [
+      "docs.html",
+      "index.html",
+      "pricing.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/codekite/README.md",
+    "summary": "codekite-clone Fictional cloud CI/CD service \"CodeKite CI\" marketing site, focused on the pricing-page usage calculator. Pages | File | Purpose | | --- | --- | | `index.html` | Short landing: hero (YAML code example on the right), 3 feature cards, CTA to pricing | | `pricing.html` | Main page: 3 plan cards (Free / Team / Enterprise) + usage calculator (three slider+number pairs linked two-way: build minutes / concurrency / storage + ARM / macOS / GPU runner checkboxes); right-side sticky monthly total + recommended-plan badge + line-item cost breakdown; below: 16-row plan comparison table; 10-question FAQ accordion; trusted-logo row; 4-column footer | | `docs.html` | Placeholder quickstart page (one YAML example) |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full codekite system, prioritizing the primary pricing flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "CodeKite’s pricing flow communicates value well at first glance: the plan cards, default calculator estimate, and sticky cost breakdown make the core pricing proposition feel concrete. However, several high-impact UX problems interrupt trust and completion, especially dead-end conversion links, opaque calculator assumptions, and weak mobile/accessibility ergonomics. Coverage was substantial across landing, pricing, docs, and both desktop/mobile, but FAQ expansion behavior was only partially verified because the visible accordion controls were hard to target reliably.",
+  "exploration_plan": {
+    "goal": "Thoroughly explore CodeKite’s marketing site with emphasis on the pricing decision flow: entering usage, interpreting the calculator output, comparing plans, and reaching the right CTA, while also validating adjacent landing and docs paths on desktop and mobile.",
+    "summary": "Start on the landing page to verify how clearly it routes users into pricing or docs, then spend the deepest coverage on pricing.html because it contains the site’s main interactive experience and decision logic. On pricing, test the linked slider/number inputs, runner add-on checkboxes, sticky total/recommended-plan behavior, comparison table readability, and FAQ expansion patterns. Finish by checking docs as a lightweight adjacent flow and then repeat the most critical pricing and navigation checks on mobile, where small tap targets and dense comparison content are most likely to break down.",
+    "assumptions": [
+      "pricing.html is the primary conversion page and the calculator is the core interaction to prioritize.",
+      "The three numeric usage controls on pricing.html are intended to support two-way synchronization between slider and number entry.",
+      "The sticky monthly total, recommended-plan badge, and line-item breakdown on pricing.html should react immediately to usage and runner option changes.",
+      "Several header/footer and utility links use '#' or appear placeholder-like, so exploration should validate their behavior without expecting full destination content.",
+      "Mobile risk is elevated because prescan already detected multiple undersized tap targets and pricing contains dense interactive content."
+    ],
+    "target_pages": [
+      "index.html",
+      "pricing.html",
+      "docs.html"
+    ],
+    "risk_hotspots": [
+      "pricing.html: usage calculator two-way sync between sliders and number inputs for build minutes, concurrency, and storage",
+      "pricing.html: sticky monthly total panel may fail to stay visible, update correctly, or remain usable during scroll",
+      "pricing.html: recommended-plan badge logic may not match visible plan tiers after input changes",
+      "pricing.html: ARM/macOS/GPU runner checkboxes may produce incorrect line items or unclear pricing impact",
+      "pricing.html: numeric inputs may allow invalid/edge values that desync from sliders or create broken totals",
+      "pricing.html: 16-row comparison table may be hard to scan or overflow on mobile",
+      "pricing.html: FAQ accordion with 10 items may have discoverability, state, or spacing issues",
+      "global nav/footer links with '#' destinations, especially Sign in and footer resource/company links, may create dead-end UX",
+      "mobile header/nav links on all pages due to repeated small tap target warnings",
+      "font loading/network timeout observed initially may affect visual stability or text layout during the run"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing page orientation and pathing",
+        "objective": "Validate that index.html communicates the product clearly and routes users cleanly into the primary pricing flow and the adjacent docs flow.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the hero message, YAML example, and three feature cards are understandable without interaction-heavy dependencies.",
+          "Use primary CTAs 'See pricing' and header 'Start free trial' to confirm they both route to pricing.html consistently.",
+          "Use 'Read docs' and header 'Docs' to confirm docs.html is reachable and positioned as a secondary path.",
+          "Check header navigation consistency, including what happens when clicking Product and Sign in links that appear non-destination or placeholder-like.",
+          "Review footer links for discoverability and whether placeholder destinations create confusing dead ends."
+        ],
+        "exit_criteria": [
+          "All visible landing-page navigation paths have been exercised at least once.",
+          "Clear evidence is collected on whether the landing page effectively funnels users to pricing versus docs.",
+          "Any dead-end or misleading links on the landing page are identified with concrete examples."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Pricing overview and conversion entry points",
+        "objective": "Establish whether pricing.html presents the three plans clearly before deep calculator testing begins.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Inspect the Free, Team, and Enterprise cards for hierarchy, feature clarity, and CTA distinctness.",
+          "Trigger the visible plan CTAs ('Get started', 'Start trial', 'Talk to sales') and note whether they behave meaningfully or lead to placeholders.",
+          "Compare the plan cards with the page headline and calculator intro to ensure the page frames usage-based pricing coherently.",
+          "Check whether the initial recommended-plan state aligns with the default calculator values visible on load."
+        ],
+        "exit_criteria": [
+          "All three plan cards and their CTAs have been reviewed or activated once.",
+          "Initial pricing-page state is documented, including visible default input values and recommendation.",
+          "Any mismatch between static plan messaging and calculator recommendation is captured."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Calculator logic and recovery states",
+        "objective": "Stress the pricing calculator as the main product UX, including normal use, edge edits, and state recovery.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "For each of the three usage controls, change the slider and verify the number input updates immediately.",
+          "For each of the three usage controls, type into the number input and verify the slider position and output panel update immediately.",
+          "Exercise a range of values: low/default/high combinations to see whether total cost, line items, and recommendation adapt plausibly.",
+          "Toggle ARM, macOS, and GPU runner checkboxes individually and in combination, verifying that add-on pricing and line-item breakdown reflect each state.",
+          "Check for invalid or awkward numeric entry behavior such as clearing a field, entering very small values, very large values, or nonstandard edits, then verify whether the UI recovers to a coherent state.",
+          "Scroll while interacting to verify the right-side sticky monthly total remains visible and does not overlap or detach unexpectedly."
+        ],
+        "exit_criteria": [
+          "Every calculator control has been manipulated through both available input methods where present.",
+          "At least several distinct usage scenarios are observed, including a low-usage and higher-usage case plus runner add-ons.",
+          "Evidence is collected on whether the recommendation, total, and breakdown stay synchronized under edits and recovery attempts."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Decision-support content below the calculator",
+        "objective": "Validate whether supporting content helps users confirm or refine the plan choice after using the calculator.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Review the 16-row plan comparison table for scanability, alignment with top plan cards, and any ambiguous feature distinctions.",
+          "Cross-check a few notable features from the comparison table against the plan card summaries for consistency.",
+          "Open multiple FAQ items across the 10-question accordion, including first, middle, and last items, to test expansion behavior and content clarity.",
+          "Observe whether FAQ state management is intuitive when opening multiple items or switching between items.",
+          "Verify that trusted logos and footer content do not distract from or interrupt the decision flow."
+        ],
+        "exit_criteria": [
+          "Comparison table has been scrolled and sampled enough to judge readability and consistency.",
+          "FAQ accordion interaction has been exercised across multiple positions in the list.",
+          "Any contradictions or usability issues in supporting decision content are documented."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Adjacent docs flow and mobile regression pass",
+        "objective": "Confirm the secondary docs path is coherent, then repeat the most critical navigation and pricing checks on mobile where layout and tap targets are riskier.",
+        "target_pages": [
+          "docs.html",
+          "index.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "On docs.html, verify the quickstart content is readable, lightweight, and connected back to the rest of the site via header navigation.",
+          "Check whether docs feels intentionally minimal versus incomplete, given it is described as a placeholder quickstart page.",
+          "In mobile viewport, revisit header navigation and primary CTAs on index.html, focusing on tap target comfort and layout integrity.",
+          "In mobile viewport, repeat the highest-value calculator checks on pricing.html: edit all three usage controls, toggle runner checkboxes, and verify sticky summary behavior or any mobile adaptation.",
+          "In mobile viewport, inspect the plan comparison table and FAQ accordion for overflow, clipping, horizontal scrolling, or hard-to-tap controls."
+        ],
+        "exit_criteria": [
+          "docs.html has been visited and evaluated as a secondary path.",
+          "Critical desktop findings have been sanity-checked on mobile for navigation and pricing interactions.",
+          "Mobile-specific issues around tap size, dense content, or sticky behavior are captured with concrete page references."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 3 known HTML pages, with repeated deeper passes on pricing.html and at least one revisit path from index.html to pricing.html and from docs.html back through header navigation.",
+      "features": "Exercise all visible calculator inputs and add-on checkboxes, all major pricing CTAs, representative FAQ accordion items, main header links, and a sample of footer/placeholder links to assess dead-end behavior.",
+      "mobile": "Repeat critical navigation and pricing checks on mobile viewport, specifically CTA access, header tap targets, calculator editability, sticky summary behavior, comparison table readability, and FAQ interaction."
+    },
+    "notes": [
+      "Do not spend excessive time on placeholder links once their dead-end behavior is confirmed; prioritize documenting UX impact over repeated clicking.",
+      "Because no modal, form submission, or checkout flow was seen in prescan, keep exploration focused on navigation, calculator logic, content comprehension, and interaction quality.",
+      "Track whether the initial font/network timeout causes any noticeable fallback typography or reflow during page transitions."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "goal completion",
+      "user_goal": "Start a trial, contact sales, or sign in from the pricing page",
+      "problem": "Primary conversion actions look actionable but behave like silent dead ends, with no navigation, modal, or confirmation after click.",
+      "evidence": "On pricing.html, clicking Team \"Start trial,\" Enterprise \"Talk to sales,\" Free \"Get started,\" and header \"Sign in\" all produced no meaningful change; multiple actions only changed the URL to pricing.html# or showed no visible-text change. The docs-page \"Sign in\" similarly changed only from docs.html to docs.html#.",
+      "why_it_matters": "When core CTAs fail silently, users cannot progress and may assume the site is broken or untrustworthy. This is especially damaging on a pricing page where visitors are close to conversion.",
+      "suggestion": "Make every primary CTA lead to a real next step: signup flow, contact form, or at minimum a clear interim message. Avoid placeholder # links for key actions, and provide immediate feedback if a destination is unavailable.",
+      "source_hint": "pricing.html plan cards/header; docs.html header Sign in"
+    },
+    {
+      "severity": "high",
+      "ux_area": "trust",
+      "user_goal": "Use footer and support/navigation links to learn more before deciding",
+      "problem": "Several footer/company/resource links appear legitimate but are placeholders that do nothing except append # to the URL.",
+      "evidence": "Clicks on pricing.html footer links such as \"About\" and \"Overview\" produced no meaningful content change, and mobile testing confirmed index.html \"Careers\" only changed the URL from index.html to index.html#. The interactables list shows multiple footer links with href '#', including Changelog, Status, Security, About, Blog, and Careers.",
+      "why_it_matters": "Dead-end informational links create a bait-and-switch feeling at the exact moment users look for trust signals like company info, status, or security. That weakens credibility for a fictional SaaS-style product that is asking users to evaluate paid plans.",
+      "suggestion": "Either remove unfinished footer links until they exist or route them to lightweight placeholder pages that clearly explain status and preserve navigation context.",
+      "source_hint": "index.html footer links; pricing.html footer links"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "Understand how the pricing calculator arrived at the estimated monthly total",
+      "problem": "The calculator uses hidden assumptions for add-on runner pricing and allowances, so line items do not clearly map to what the user entered.",
+      "evidence": "When ARM, macOS, and GPU add-ons were selected, breakdown rows used unexplained shares like \"ARM runners (~25% of minutes),\" \"macOS runners (~15% of minutes),\" and \"GPU runners (~5% of minutes)\" even though the checkbox labels only promised per-minute pricing. Storage also showed entered values like 1000 GB becoming billed as \"995 GB-month\" without inline explanation.",
+      "why_it_matters": "Users evaluating spend need to trust the math. If totals depend on hidden percentages or allowances, the calculator can feel arbitrary and may reduce confidence in the pricing model.",
+      "suggestion": "Explain assumptions adjacent to each add-on control or let users explicitly set the share of minutes per runner type. Also clarify included storage/base allowances where billed values differ from entered values.",
+      "source_hint": "pricing.html calculator breakdown and runner checkboxes"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "error recovery",
+      "user_goal": "Correct invalid calculator inputs and understand accepted ranges",
+      "problem": "The calculator accepts problematic values like 0 and even -10 without visible validation or explanation, creating contradictory states.",
+      "evidence": "Entering 0 into build minutes recalculated to a Free plan state with no visible validation messaging. Entering -10 into artifact storage changed the field to -10 while the estimate remained $0.00 and Recommended plan: Free, with no visible error or explanation. Earlier invalid/constrained edits to concurrency also produced little to no feedback about whether values were rejected or clamped.",
+      "why_it_matters": "Without clear validation, users cannot tell whether the tool accepted their input, corrected it behind the scenes, or is now showing unreliable estimates. That makes the pricing output feel fragile.",
+      "suggestion": "Add explicit min/max constraints, inline validation messages, and immediate corrective feedback when values are out of range. If values are auto-clamped, show that visibly.",
+      "source_hint": "pricing.html calculator number inputs"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "accessibility",
+      "user_goal": "Understand and operate the pricing calculator with assistive tech or low visual context",
+      "problem": "Multiple calculator controls are missing labels, making the dense form harder to interpret and increasing ambiguity during editing.",
+      "evidence": "Repeated layout warnings flagged missing labels on calculator range and number inputs (referenced as ux-10 to ux-13 in observations/chunks). This issue persisted across desktop and mobile testing while the calculator was being edited directly.",
+      "why_it_matters": "Unlabeled fields are harder for screen-reader users and also reduce clarity for sighted users when multiple similar sliders and numeric inputs sit close together. In a pricing estimator, field identity is essential.",
+      "suggestion": "Provide persistent visible labels tied programmatically to every slider and numeric input, and keep labels close enough that field purpose remains obvious while editing.",
+      "source_hint": "pricing.html calculator inputs"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Navigate and change pricing options comfortably on a phone",
+      "problem": "Mobile tap targets are frequently undersized, including header links, footer links, and add-on checkboxes, making high-value actions fiddly to hit.",
+      "evidence": "Mobile layout warnings repeatedly flagged targets below 44px guidance: header links like \"Product\" at 53x21px and brand/nav items around 27–28px high; footer links such as Overview/Pricing/Docs/About/Blog/Careers were 159x26px; add-on checkboxes on mobile were only 13x13px.",
+      "why_it_matters": "Small targets increase mis-taps and friction, especially in the pricing flow where users need to adjust options quickly. The issue is more serious because several of those taps are already low-confidence actions due to dead ends or ambiguous labeling.",
+      "suggestion": "Increase tappable area for nav, footer, and checkbox rows so the entire row or label is touchable, and bring all key targets up to comfortable mobile size.",
+      "source_hint": "mobile screenshots and layout warnings on index.html, pricing.html, docs.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Use docs as a supporting resource while deciding on a plan",
+      "problem": "The docs page is reachable and coherent, but it feels too sparse and lacks an explicit path back into signup or pricing decision-making.",
+      "evidence": "Docs successfully loads from pricing and landing, but observations describe it as one heading, one YAML example, no buttons/forms, and roughly 399 characters of text. Session notes also state there is no explicit CTA back into signup or pricing from docs beyond generic header navigation.",
+      "why_it_matters": "Users often visit docs to reduce uncertainty before converting. If docs feels placeholder-like and doesn’t actively guide them back to next steps, it becomes a detour rather than a confidence-building support page.",
+      "suggestion": "Add contextual next steps on docs, such as \"See pricing,\" \"Start trial,\" or a small banner tying quickstart setup to plan selection.",
+      "source_hint": "docs.html main content and header"
+    },
+    {
+      "severity": "low",
+      "ux_area": "navigation",
+      "user_goal": "Use header navigation to move between meaningful sections/pages",
+      "problem": "At least one mobile header link behaves as a redundant self-link, so the navigation offers an option that does not meaningfully move the user.",
+      "evidence": "On mobile index.html, clicking \"Product\" changed the URL only from index.html# to index.html while keeping the user on the same landing page. The tap target is also small at 53x21px.",
+      "why_it_matters": "Redundant self-links add noise to compact mobile navigation and can make users question whether they missed a section jump or whether the menu is functioning correctly.",
+      "suggestion": "Either convert self-links into true in-page anchors/section jumps or remove/highlight the current page state so users are not offered a no-op navigation choice.",
+      "source_hint": "index.html mobile header Product link"
+    },
+    {
+      "severity": "low",
+      "ux_area": "visual hierarchy",
+      "user_goal": "Compare plans and reach supporting information efficiently on mobile",
+      "problem": "The mobile comparison table is cramped and text-dense, which makes side-by-side plan scanning difficult before users reach the FAQ.",
+      "evidence": "Mobile exploration found the comparison table displayed in four columns within a narrow viewport, with rows like \"Concurrent builds\" and \"Artifact storage\" appearing tightly packed. Earlier notes also describe the lower page as highly text-dense before the FAQ becomes visible.",
+      "why_it_matters": "On small screens, dense tables slow decision-making and can hide important differences between plans. Users may give up before they reach FAQs or trust-building details.",
+      "suggestion": "Consider a mobile-specific comparison pattern such as stacked cards, sticky row labels, horizontal snapping, or progressive disclosure of only the most important plan differences first.",
+      "source_hint": "pricing.html mobile comparison table"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 60,
+    "action_success_rate_percent": 99,
+    "unchanged_action_percent": 10,
+    "known_pages": [
+      "docs.html",
+      "index.html",
+      "pricing.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "pricing.html",
+      "docs.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "check": 6,
+      "click": 29,
+      "drag": 7,
+      "open_page": 4,
+      "press_key": 1,
+      "reload": 1,
+      "scroll": 13,
+      "type_text": 16,
+      "uncheck": 2
+    },
+    "total_actions": 79,
+    "successful_actions": 78,
+    "failed_actions": 1,
+    "unchanged_actions": 8,
+    "observed_feature_count": 45,
+    "exercised_feature_count": 27,
+    "unexplored_features": [
+      {
+        "signature": "docs.html|clickable|a|||docs|docs.html",
+        "page": "docs.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Docs"
+      },
+      {
+        "signature": "index.html|clickable|a|||about|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "About"
+      },
+      {
+        "signature": "index.html|clickable|a|||changelog|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Changelog"
+      },
+      {
+        "signature": "index.html|clickable|a|||codekite|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "CodeKite"
+      },
+      {
+        "signature": "index.html|clickable|a|||docs|docs.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Docs"
+      },
+      {
+        "signature": "index.html|clickable|a|||overview|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Overview"
+      },
+      {
+        "signature": "index.html|clickable|a|||pricing|pricing.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pricing"
+      },
+      {
+        "signature": "index.html|clickable|a|||security|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Security"
+      },
+      {
+        "signature": "index.html|clickable|a|||sign in|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sign in"
+      },
+      {
+        "signature": "index.html|clickable|a|||status|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Status"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||blog|#",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Blog"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||careers|#",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Careers"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||codekite|index.html",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "CodeKite"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||pricing|pricing.html",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pricing"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||product|index.html",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Product"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||security|#",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Security"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||start free trial|#",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Start free trial"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||status|#",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Status"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 60% of visible interactive feature signatures.",
+      "1 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-05-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-06-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-07-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-08-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-09-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-10-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-11-uncheck-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-12-drag-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-13-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-15-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-16-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-17-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-20-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-24-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-25-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-26-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-29-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-30-drag-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-31-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-32-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-33-drag-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-34-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-35-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-37-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-38-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-39-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-40-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-41-drag-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-42-reload-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-43-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-45-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-47-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-52-drag-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-53-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-54-drag-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-55-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-56-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-59-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-60-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-62-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-63-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-66-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-67-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-68-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-69-check-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-70-check-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-71-check-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-72-uncheck-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-73-drag-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-74-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-75-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4/codekite/_run",
+  "claude_fix": null
+}

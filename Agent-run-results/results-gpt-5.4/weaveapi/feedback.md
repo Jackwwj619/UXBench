@@ -1,0 +1,59 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full weaveapi system, prioritizing the primary docs/tutorial flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: False
+
+## Summary
+
+WeaveAPI’s docs flow is strong at getting developers from home to Quickstart to reference pages, and interactive examples generally provide useful in-place feedback like language switching and copy confirmation. The biggest UX problems are around responsiveness and discoverability: the three-column docs shell overflows even on desktop, mobile views clip key content and controls, and search/theme controls often feel nonfunctional because they provide little or no visible response. Coverage reached all pages and both desktop/mobile, but only about 30% of visible features were exercised, so these findings focus on repeated, evidence-backed issues in the core docs flow.
+
+## Issues (8)
+
+### [HIGH] the-docs-layout-breaks-badly-on — mobile usability
+- **Page**: `charges.html and customers.html mobile layout; final screenshot /Users/timchef/UXBench/results-gpt-5.4/weaveapi/_run/screenshots/agentic-80-click-mobile.png`
+- **Problem**: The docs layout breaks badly on mobile, with horizontal overflow that clips tables, code examples, header controls, and action buttons off-screen.
+- **Evidence**: Repeated mobile observations show severe overflow: charges.html reached 779px and 880px content width on a 390px viewport; customers.html showed 693px and later 880px width on a 390px viewport. In the final mobile observation, the search field starts at x=-4 and the Copy button sits at x=750 on a 390px viewport, indicating key controls are pushed far outside the visible area. Screenshots and notes also mention the Customer object table clipped to the right and code examples cut off.
+- **Suggested fix**: Rework the docs shell for narrow screens: collapse side rails, stack content into a single column, allow tables/code blocks to wrap or scroll within their own containers, and keep header/search controls fully inside the viewport.
+
+### [HIGH] many-interactive-elements-are-below-recommended — accessibility
+- **Page**: `Shared docs shell navigation and code-tab controls; final observation interactables ux-2 to ux-7`
+- **Problem**: Many interactive elements are below recommended mobile tap size, making common actions easy to miss or mis-tap.
+- **Evidence**: Across pages, left-nav links were repeatedly reported as only 31px tall. In mobile observations, code tabs were as small as 34x22px to 62x22px, Copy buttons were 46x24px or 66x24px, and the theme toggle was 36x36px. The final observation on customers.html lists multiple small_tap_target warnings for CURL, PYTHON, NODE, GO, Copy, and the theme toggle.
+- **Suggested fix**: Increase hit areas to at least 44x44px, add more spacing between adjacent controls, and consider larger segmented controls or dropdowns for language switching on mobile.
+
+### [MEDIUM] some-sidebar-labels-imply-distinct-destinations — navigation
+- **Page**: `charges.html left sidebar payment-method links`
+- **Problem**: Some sidebar labels imply distinct destinations but lead to the same generic Charges content, which makes the navigation feel misleading.
+- **Evidence**: On charges.html, clicking 'Cards' changed the URL to charges.html#charge-object and still showed generic 'Charges'/'The Charge object' content. Clicking 'Bank' did not change the URL or visible content, and DOM evidence confirmed Bank, Cards, and sibling links point to the same href: charges.html#charge-object.
+- **Suggested fix**: Either provide distinct sections for Cards/Bank/Wallets or relabel these links so expectations match the destination. If they are just conceptual groupings, make that explicit instead of presenting them like separate docs pages.
+
+### [MEDIUM] the-search-field-looks-available-but — clarity
+- **Page**: `Shared header search input on index.html, charges.html, customers.html`
+- **Problem**: The search field looks available but behaves like a dead end: focusing or typing shows no results, suggestions, helper text, or no-results state.
+- **Evidence**: On index.html, focusing 'Search docs… (ctrl+K)' only showed a blue focus ring with no modal or results. On customers.html desktop, typing 'charge' and pressing Enter produced no URL change, no results, and no feedback. On mobile, typing 'refund' in charges.html and 'customer' in customers.html also showed no suggestions, results panel, or no-results/help message.
+- **Suggested fix**: Add a real search results pattern or, if search is not implemented, disable the field and label it clearly as upcoming. At minimum, show suggestions, loading, or a 'no matches' message so users know the system heard them.
+
+### [MEDIUM] several-important-actions-provide-weak-or — feedback
+- **Page**: `Theme toggle in shared header; Send button in charges.html try-it rail`
+- **Problem**: Several important actions provide weak or ambiguous feedback, especially the theme toggle and try-it submissions.
+- **Evidence**: Clicking the theme toggle on index.html, customers.html desktop, errors.html, and customers.html mobile produced no detectable visible-text or URL change; the icon remained '🌙', leaving state unclear. On charges.html, try-it submissions did update the response JSON, but multiple steps note that there was no obvious button-state or page-level feedback, and tool feedback often reported no visible change even when screenshots showed new responses.
+- **Suggested fix**: For theme switching, change the icon/state label and animate or otherwise clearly transition the page. For try-it sends, add a transient loading state and a stronger success/error confirmation near the button or response panel.
+
+### [MEDIUM] the-try-it-error-state-identifies — error recovery
+- **Page**: `charges.html try-it panel currency field and Response panel`
+- **Problem**: The try-it error state identifies the invalid field but does not clearly help users recover with the correct allowed values.
+- **Evidence**: In charges.html, entering unsupported currency 'aud' was accepted with no inline validation. After Send, the response JSON correctly reported code 'currency_not_supported', param 'currency', and a message that the currency is not enabled, but notes explicitly say supported currencies were not listed near the error and users would need to infer the fix from other context.
+- **Suggested fix**: Add inline field guidance or response-side recovery hints, such as listing supported currencies next to the input and echoing them in the error message.
+
+### [MEDIUM] the-quickstart-prominently-shows-a-realistic — trust
+- **Page**: `quickstart.html first-charge example`
+- **Problem**: The Quickstart prominently shows a realistic-looking secret key in the example request, which can create doubt about whether the docs are exposing real credentials.
+- **Evidence**: The Quickstart curl snippet visibly includes 'Bearer sk_test_4eC39HqLyjWDarjtT1zdp7dc', and the session notes flagged this as a trust concern because it looks like a live secret rather than clearly disposable sample text.
+- **Suggested fix**: Use obviously fake placeholder credentials or add clear sample badges/context such as 'example test key only' directly in the snippet area.
+
+### [MEDIUM] the-three-column-layout-creates-orientation — visual hierarchy
+- **Page**: `charges.html, customers.html, webhooks.html desktop layout`
+- **Problem**: The three-column layout creates orientation issues even on desktop because content exceeds the viewport and parts of the left rail become clipped off-screen.
+- **Evidence**: Desktop observations repeatedly report horizontal overflow on charges.html, customers.html, and webhooks.html, with widths up to 1480px on a 1280px viewport. Multiple steps also note left-nav links with negative x positions, such as x=-57 and x=-158, showing the navigation can drift partially offscreen while scrolling.
+- **Suggested fix**: Tighten the desktop grid so all three columns fit within common laptop widths, or collapse/resize secondary rails sooner. Ensure sticky sidebars never move outside the viewport during scroll.

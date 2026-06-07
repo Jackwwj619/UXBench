@@ -1,0 +1,175 @@
+{
+  "plan": {
+    "goal": "Evaluate the full Forge Coder (agentic coding IDE) UX starting from the primary agent/run view: file selection, diff visualization, run controls (interrupt/rerun/accept), repository/connect actions, and chat/reply workflow—then validate critical behaviors on mobile.",
+    "summary": "Start on index.html (the only known page) and explore the agent run view’s three-pane layout: switch between modified/added files, inspect unified vs split diff, and use run controls (Interrupt/Rerun). Then exercise the chat input loop (Send, auto-apply toggle) and the change acceptance/editing controls (Open editor, Accept all changes). Finally, repeat the same critical interactions in a mobile viewport focusing on tap target issues, layout stability, and any control accessibility.",
+    "assumptions": [
+      "Only index.html is available for navigation in this fixture; no other HTML pages are present per prescan.",
+      "The top nav items (Agent/Inbox/Runs/Settings) may be tabs or in-page sections; if they don’t navigate, they should still be interacted with to verify state changes.",
+      "File tree entries with status badges (M/+), plus search/expand controls (⌕, +), affect the diff preview pane.",
+      "Run controls (⏸ Interrupt, ↻ Rerun) and change controls (Open editor, Accept all changes) exist and trigger visible state updates within the same view."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Mobile tap target risk: top nav links (Agent/Inbox/Runs/Settings) are ~50–70x32px; controls under 44px height/width guidance (ux-1..ux-4).",
+      "Mobile tap target risk: icon buttons ⌕ and + are very small (~26–27px square) (ux-7, ux-8).",
+      "Diff controls risk: Unified/Split toggles and any “Open editor” / “Accept all changes” may fail silently or cause confusing diff/preview states (ux-16, ux-17, ux-14, ux-15).",
+      "Run lifecycle risk: Interrupt and Rerun could create inconsistent run state or lose chat context (ux-9, ux-10).",
+      "Chat/reply risk: textarea Send flow and the Auto-apply edits checkbox may alter behavior of subsequent agent replies/edits; verify persistence and correctness (ux-11, ux-12, ux-13).",
+      "File selection risk: clicking modified/newly added files in the left tree should reliably update the right diff pane; verify for both M and + items."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline run view + navigation/tabs",
+        "objective": "Confirm the core layout, basic state visibility, and whether top-level navigation items change content or are purely decorative.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify three-pane layout is present: file tree (left), agent/run/chat (center), diff preview (right).",
+          "Click each top nav item: Agent, Inbox, Runs, Settings; confirm whether panel content switches, highlights active state, or triggers any modal/overlay.",
+          "Use the search/expand icons in the file tree (⌕ and +) to validate they respond and do not break the file tree/diff binding.",
+          "Check that the run status (e.g., agent working/elapsed time) remains consistent when interacting with non-run controls."
+        ],
+        "exit_criteria": [
+          "All four nav items provide a clear state response (active styling and/or content change).",
+          "File tree remains usable after using ⌕ and +.",
+          "No layout break (no blank panes, overlapping panes, or missing diff content)."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "File tree selection + diff correctness (Unified/Split)",
+        "objective": "Validate that selecting files with status badges (M/+), and switching diff mode, updates the right pane predictably and clearly.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click modified files in the left tree (e.g., items labeled M such as src/upload/stream.ts, chunker.ts, retry.ts, index.ts) and verify corresponding diff content in the right pane changes.",
+          "Click the newly added file(s) marked + (e.g., src/upload/chunker.ts or similar) and verify diff shows addition context (or equivalent).",
+          "Toggle Unified vs Split (ux-16/ux-17) and verify line/context indicators and file path header update appropriately.",
+          "Use any scroll within diff preview (ensure pinned file header/path remains readable).",
+          "Confirm the line diff still matches the selected file after toggling modes and returning to another file."
+        ],
+        "exit_criteria": [
+          "At least 3 different M files and 1 + file are selected and each produces a distinct, correct diff in the right pane.",
+          "Unified/Split toggling does not desync diff content from the current file selection."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Run controls: Interrupt and Rerun lifecycle",
+        "objective": "Exercise agent run controls and ensure state transitions are understandable and do not corrupt chat/diff/history.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click ⏸ Interrupt during an active run; verify run status changes from working to interrupted/paused and buttons reflect the new state.",
+          "Click ↻ Rerun and verify the run restarts; observe whether diff/chat updates correspond to the rerun.",
+          "After rerun/interrupt, re-select a different file in the tree and confirm diff reflects the latest run outputs.",
+          "Check whether chat input remains enabled/disabled appropriately after interruptions."
+        ],
+        "exit_criteria": [
+          "Interrupt produces a clear, user-visible state change; Rerun returns to a working state without breaking panes.",
+          "Diff selection remains functional and reflects the current run context after lifecycle actions."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Chat + change management: Send, Auto-apply, Open editor, Accept all",
+        "objective": "Validate the primary agent interaction loop and how proposed edits/diffs are managed and applied.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Type a short reply in the textarea (placeholder: “Reply, ask for a change, or request another pass…”) and click Send (ux-13).",
+          "Toggle Auto-apply edits on/off and send at least one message in each state; verify whether edits are automatically applied or only suggested in the diff.",
+          "Click Open editor and verify the expected editor action occurs (e.g., opens an in-app view or a simulated editor state) without losing diff selection.",
+          "Click Accept all changes and verify the diff preview and/or file statuses (M/+ badges) update to reflect acceptance."
+        ],
+        "exit_criteria": [
+          "Send works reliably; chat messages appear and subsequent agent/run output updates are visible.",
+          "Auto-apply toggle changes behavior in a measurable way (edits applied vs suggested).",
+          "Accept all changes updates file statuses/diff state in the UI."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile critical path regression",
+        "objective": "Repeat the most failure-prone interactions on mobile viewport (tap targets, layout flow, and accessibility).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Repeat Phase 2: click at least 2 M files and toggle Unified/Split; confirm touch interaction works and diff updates.",
+          "Repeat Phase 3: trigger Interrupt then Rerun once; confirm buttons are tappable and states are clear.",
+          "Repeat Phase 4: toggle Auto-apply (target is very small), send one message, and hit Accept all changes (primary action); confirm no accidental taps or misfires."
+        ],
+        "exit_criteria": [
+          "All critical controls in mobile are reachable and functional (no persistent UI overlap or missing panes).",
+          "Auto-apply checkbox remains selectable and Send/Accept operations are not confused with adjacent UI elements."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (1 total): index.html",
+      "features": "Exercise: top nav items (Agent/Inbox/Runs/Settings), file tree selection (M and +), diff mode (Unified/Split), run controls (Interrupt/Rerun), chat send flow, Auto-apply toggle, Open editor, and Accept all changes",
+      "mobile": "Repeat the same critical interactions from file selection + diff mode, run lifecycle, and chat/change acceptance on mobile viewport"
+    },
+    "notes": [
+      "Limit claims to what is visible in prescan: only index.html exists; treat nav items as in-page sections/tabs unless a click reveals navigation.",
+      "Prioritize validation around known small tap targets (nav links, ⌕, +, Auto-apply) and around run lifecycle actions that can desync UI state."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Forge Coder — agentic coding",
+      "url": "file:///Users/timchef/UXBench/websites/forge-coder/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Forge / atlas-cli ⌥ feat/streaming-uploads Agent Inbox Runs Settings Connect a repo Open in VS Code RT ATLAS-CLI ⌕ + src upload › stream.ts M › chunker.ts M › retry.ts › index.ts + commands core main.ts test upload.spec.ts M retry.spec.ts auth.spec.ts docs package.json tsconfig.json README.md Modified 3 Added 1 Lines changed +128 / -54 Run #243 · agent is working · 4m 12s elapsed ⏸ Interrupt ↻ Rerun Streaming multipart uploads keep failing on slow connections. Resumes after a network drop just re-upload the whole file. Implement chunked resumable uploads (5 MiB chunks), persist progress to .forge/state.json, and write tests. Don't touch the auth flow. FC I scoped the work to src/upload/ and skimmed the existing stream module. Plan: Split stream.ts: extract a new chunker.ts for chunk-boundary logic (pure functions, easy to test). Add a ChunkedUpload class in index.ts that consults .forge/",
+      "headings": [],
+      "counts": {
+        "buttons": 11,
+        "links": 4,
+        "inputs": 2,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Agent",
+        "clickable:a:Inbox",
+        "clickable:a:Runs",
+        "clickable:a:Settings",
+        "clickable:button:Connect a repo",
+        "clickable:button:Open in VS Code",
+        "clickable:button:⌕",
+        "clickable:button:+",
+        "clickable:button:⏸ Interrupt",
+        "clickable:button:↻ Rerun",
+        "typeable:textarea:Reply, ask for a change, or request another pass…",
+        "clickable:input:Auto-apply edits",
+        "clickable:button:Send",
+        "clickable:button:Open editor",
+        "clickable:button:Accept all changes",
+        "clickable:button:Unified"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

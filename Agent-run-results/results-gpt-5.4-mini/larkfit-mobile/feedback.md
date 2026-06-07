@@ -1,0 +1,53 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full larkfit-mobile system, prioritizing the primary docs/tutorial flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: True
+
+## Summary
+
+The mobile fixture has a strong bottom-tab structure and generally stable state changes for core navigation, but several primary actions feel inert or unclear on tap. The biggest UX issues are undersized touch targets, weak feedback for settings/profile actions, and incomplete communication of filter/state changes in the Workouts and Activity flows. Coverage is near complete, but the uncovered workout branches (Start workout, Strength, and the share/export-style control) remain untested, so a few adjacent affordances may still hide issues.
+
+## Issues (7)
+
+### [HIGH] the-time-range-selector-changes-its — forms
+- **Page**: `index.html select[name="Last 30 days This week This year"]`
+- **Problem**: The time-range selector changes its displayed value, but the rest of the Activity screen does not visibly update, so users cannot tell whether the filter actually changed the data they are looking at.
+- **Evidence**: The recent trajectory shows selecting the Activity selector to "This week" produced visible state feedback, but no obvious change in the summary stats, intensity chart, or recent list. The final observation also keeps the same visible metrics and recent workouts after the change.
+- **Suggested fix**: After changing the time range, update at least one obvious data region immediately or show a short loading/refresh state so users can confirm the selection took effect.
+
+### [HIGH] prominent-actions-such-as-adjust-goals — feedback
+- **Page**: `index.html: Adjust goals / Sign out / ⚙`
+- **Problem**: Prominent actions such as Adjust goals and Sign out do not produce any visible response when tapped, making them feel broken or non-functional.
+- **Evidence**: Across multiple trajectory chunks, clicking "Adjust goals" produced no visible content change, modal, or navigation, and clicking "Sign out" likewise produced no visible state change, URL change, or confirmation. The gear/settings control also repeatedly showed no visible feedback.
+- **Suggested fix**: Provide immediate feedback for each action, such as opening a sheet, confirming the sign-out flow, or at minimum showing a pressed state and a brief explanation if the action is unavailable.
+
+### [MEDIUM] several-workout-related-controls-appear-to — affordance
+- **Page**: `index.html: ▶ / workout cards`
+- **Problem**: Several workout-related controls appear to be dead ends: tapping play controls or workout cards did not reveal any obvious detail, start, or expansion state.
+- **Evidence**: The trajectory notes that the Easy 5K and Hip-mobility flow play buttons produced no visible change, and the Recovery workout card also remained a plain card with no modal, expanded state, or other feedback after the attempted tap.
+- **Suggested fix**: Make workout cards and play buttons clearly actionable with a stronger pressed state, a dedicated detail view, or an inline preview so users can tell what will happen.
+
+### [MEDIUM] multiple-important-controls-are-below-mobile — accessibility
+- **Page**: `index.html: + / ▶ / ⚙ / category chips`
+- **Problem**: Multiple important controls are below mobile tap-target guidance, which makes precision tapping harder on a touch screen.
+- **Evidence**: Session memory flagged a 38×38 '+' button and 36×36 play buttons as too small for mobile. Other undersized controls were also noted, including 30px-tall category chips and a 38×38 gear button.
+- **Suggested fix**: Increase touch targets to at least 44×44 px and add more spacing around closely grouped actions such as play, plus, settings, and filter chips.
+
+### [MEDIUM] the-filter-chips-do-change-state — clarity
+- **Page**: `index.html: Run / Yoga / Recovery / HIIT`
+- **Problem**: The filter chips do change state, but the interface gives limited confirmation beyond the chip styling, so the relationship between a chip and the resulting list can be easy to miss.
+- **Evidence**: The Workouts flow showed clear state changes for Run, Yoga, and Recovery, but the screen also had moments where the selected chip was visible while the main results area remained blank or the effect was not immediately obvious. The workout filter row is also flagged as cramped with 30px-tall chips.
+- **Suggested fix**: Add a small result count, clearer empty-state messaging, or a short transition when filters change so the effect is visible at a glance.
+
+### [MEDIUM] the-activity-period-selector-has-no — accessibility
+- **Page**: `index.html select#ux-20`
+- **Problem**: The Activity period selector has no label, aria-label, or placeholder, so its purpose is weakly communicated outside the visible options.
+- **Evidence**: The final observation includes a layout warning: "A form field has no label, aria-label, or placeholder" for the select at the top of the Activity screen.
+- **Suggested fix**: Add an explicit label such as "Time range" or provide an accessible name that states what the dropdown controls.
+
+### [LOW] the-bottom-tab-bar-is-functional — navigation
+- **Page**: `index.html bottom nav`
+- **Problem**: The bottom tab bar is functional and stateful, but individual tab taps are not always visibly different if the tab is already active, which can make repeated taps feel unresponsive.
+- **Evidence**: Clicking Today produced no visible change because the tab was already active, while other tabs like Workouts and Activity do switch content clearly and update the active-state styling.
+- **Suggested fix**: If an active tab is tapped, consider a subtle pressed animation or a tiny scroll-to-top/reset behavior to provide confirmation without changing screens.

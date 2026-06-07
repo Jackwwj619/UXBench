@@ -1,0 +1,35 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full codekite system, prioritizing the primary pricing flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: False
+
+## Summary
+
+The pricing page provides an interactive usage calculator with a sticky estimated monthly total and breakdown that updates as runner add-ons and sliders change. However, multiple primary CTAs appear to be dead/placeholder links (hash-only) with little to no confirmation feedback, which undermines trust and conversion. The FAQ accordion is visually present and uses clear + affordances, but prior interaction attempts show no expansion, suggesting broken or difficult-to-target accordion behavior. Accessibility and mobile usability concerns (missing input labels and small tap targets) add friction to an otherwise responsive calculator experience.
+
+## Issues (4)
+
+### [HIGH] primary-ctas-behave-like-dead-links — trust
+- **Page**: `pricing.html: Header link “Start free trial” (target_id ux-3, href '#'); in-page CTA “Get started” (ux-4), “Start trial” (ux-5), “Talk to sales” (ux-6). See also session steps where after_url stayed `pricing.html#`.`
+- **Problem**: Primary CTAs behave like dead links (only update the hash) without any navigation or confirmation, creating uncertainty about whether the click worked.
+- **Evidence**: Multiple actions on pricing.html show href/hash-only behavior: clicking “Start free trial” (header CTA) keeps URL as `pricing.html#` with after_url unchanged (after_url remained `pricing.html#`; tool reports no obvious navigation/feedback). Similar issue for plan CTAs: “Get started”, “Start trial”, and “Talk to sales” were clicked and only changed by adding a hash with no visible modal/page in the subsequent observations.
+- **Suggested fix**: Ensure CTAs perform real navigation (to a signup/contact flow) or at minimum open a clearly visible modal/dialog with success/error feedback; avoid hash-only links for primary actions.
+
+### [HIGH] faq-expansion-appears-unreliable-broken-or — error recovery
+- **Page**: `pricing.html: Mobile FAQ region visible in screenshot (e.g., `/screenshots/agentic-79-scroll-mobile.png` and final mobile screenshot showing '+’ icons). Also earlier failures where FAQ item clicks yielded no detectable visible change.`
+- **Problem**: FAQ expansion appears unreliable/broken or not easily activated: clicks on FAQ items produced no visible expansion or state change in prior attempts, despite the accordion being present with + affordances.
+- **Evidence**: Prior click attempts on pricing.html FAQ controls (e.g., “Overview”, “Changelog”, “Security”, “Status”) resulted in changed=false and no URL/hash change and no visible expanded answer content in subsequent observations. Later, mobile screenshots show a proper FAQ layout with multiple collapsed rows and + icons (“Frequently asked” with stacked question cards), yet the test interaction failed to expand answers (agent also had an error clicking without target_id at one point).
+- **Suggested fix**: Verify accordion triggers are wired to expand/collapse with visible state (change + to −/rotated chevron, aria-expanded updates, and answer panel becomes visible). Add robust focus/scroll behavior so the expanded content is always visible on mobile.
+
+### [MEDIUM] calculator-inputs-lack-accessible-labels-aria — forms
+- **Page**: `pricing.html calculator inputs: missing_input_label warnings for target_ids ux-7, ux-8, ux-9, ux-10, ux-11, ux-12.`
+- **Problem**: Calculator inputs lack accessible labels/ARIA/placeholder information, harming comprehension and usability—especially for screen-reader and keyboard users.
+- **Evidence**: Layout warnings repeatedly flag missing labels for multiple calculator fields on pricing.html (e.g., range and number inputs ux-7/ux-8/ux-9/ux-10/ux-11/ux-12 all reported “missing_input_label”). In the interactables list, these inputs show empty label/placeholder fields (label: '', placeholder: '', aria-label: not exposed).
+- **Suggested fix**: Add explicit visible labels connected to each input (via label for/id) and ARIA attributes for screen readers; ensure sliders announce current value and units and that number inputs reflect the same accessible name.
+
+### [MEDIUM] tap-targets-in-the-header-navigation — mobile usability
+- **Page**: `pricing.html mobile layout warnings: small_tap_target ux-1 (CodeKite), ux-2 (Pricing), ux-13/ux-14/ux-15 (runner checkboxes).`
+- **Problem**: Tap targets in the header navigation and runner checkboxes are very small relative to mobile usability guidance, raising risk of mis-taps and frustration.
+- **Evidence**: Layout warnings flag multiple header links below mobile guidance (e.g., “Pricing” 47x21px; “CodeKite” 118x28px; plus “Start free trial” slightly under guidance). Runner checkboxes are extremely small (13x13px for Linux ARM/macOS/GPU), specifically flagged as below 44px guidance.
+- **Suggested fix**: Increase touch target sizes (min-height/width), add padding around checkbox hit areas, and consider larger checkbox UI or toggle switches with improved spacing in mobile layouts.

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>API reference — Runeforge</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="light">
+<header class="topnav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 32 32" width="22" height="22"><path d="M16 4 L 28 12 L 28 24 L 16 30 L 4 24 L 4 12 Z" fill="none" stroke="#7C3AED" stroke-width="2"/><path d="M16 10 L 22 14 L 22 20 L 16 22 L 10 20 L 10 14 Z" fill="#F59E0B" opacity="0.7"/></svg></span>
+      <span class="brand-name">Runeforge</span><span class="brand-version">v3.4</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Docs</a><a href="api-reference.html" class="active">API</a><a href="examples.html">Examples</a><a href="#">Blog</a><a href="#">Community</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="search-trigger" id="searchTrigger" aria-label="Search documentation (Cmd+K)"><span>Search docs</span><kbd>⌘K</kbd></button>
+      <label for="versionSelect" class="sr-only">Documentation version</label>
+      <select class="version-select" id="versionSelect" aria-label="Documentation version"><option>v3.4 (latest)</option><option>v3.3</option><option>v3.2</option><option>v2 (legacy)</option></select>
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">☾</button>
+      <a href="#" class="icon-btn" aria-label="GitHub repository (18.4k stars)" title="GitHub">★ 18.4k</a>
+    </div>
+  </div>
+</header>
+
+<div class="docs-layout">
+  <aside class="docs-toc">
+    <div class="toc-section">
+      <h4>Reference</h4>
+      <a href="api-reference.html" class="toc-item active">Overview</a>
+      <a href="#forge" class="toc-item ptoc-sub">forge()</a>
+      <a href="#derive" class="toc-item ptoc-sub">derive()</a>
+      <a href="#use" class="toc-item ptoc-sub">use() · middleware</a>
+      <a href="#asyncSlice" class="toc-item ptoc-sub">asyncSlice()</a>
+      <a href="#listSlice" class="toc-item ptoc-sub">listSlice()</a>
+      <a href="#formSlice" class="toc-item ptoc-sub">formSlice()</a>
+      <a href="#devtools" class="toc-item ptoc-sub">devtools()</a>
+    </div>
+    <div class="toc-section">
+      <h4>React adapter</h4>
+      <a href="#useStore" class="toc-item ptoc-sub">useStore()</a>
+      <a href="#useSnapshot" class="toc-item ptoc-sub">useSnapshot()</a>
+      <a href="#Provider" class="toc-item ptoc-sub">&lt;Provider /&gt; (optional)</a>
+    </div>
+    <div class="toc-section">
+      <h4>Errors</h4>
+      <a href="#errors" class="toc-item ptoc-sub">RF001 — RF019</a>
+    </div>
+    <div class="toc-section">
+      <h4>Other</h4>
+      <a href="index.html" class="toc-item">Docs home</a>
+      <a href="guide-quickstart.html" class="toc-item">Quickstart</a>
+      <a href="examples.html" class="toc-item">Examples</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="breadcrumbs"><a href="index.html">Docs</a> <span>›</span> <span>API reference</span></nav>
+
+    <span class="page-eyebrow">Reference · v3.4</span>
+    <h1 id="api-reference">API reference.</h1>
+
+    <p class="lede">Every public symbol in <code>runeforge</code> and <code>@runeforge/react</code>. Re-export-only modules (<code>runeforge/devtools</code>, <code>runeforge/utils</code>) are linked at the bottom.</p>
+
+    <!-- forge() -->
+    <article class="ref-block">
+      <div class="ref-head">
+        <span class="ref-kind">function</span>
+        <h2 id="forge">forge(definition, options?)</h2>
+      </div>
+      <p class="ref-since">Available since v1.0 · Updated in v3.0 (action signature)</p>
+      <p>Creates a store from a definition object. The shape of <code>definition.state</code> and <code>definition.actions</code> is inferred — TypeScript users get full autocomplete and type-checking with no extra annotations.</p>
+
+      <h4>Signature</h4>
+      <pre class="code-block sig"><span class="k">function</span> <span class="n">forge</span>&lt;S, A&gt;(
+  definition: { state: S; actions: A },
+  options?: { name?: string; persist?: <span class="k">boolean</span> | PersistConfig }
+): <span class="n">Store</span>&lt;S, A&gt;;</pre>
+
+      <h4>Parameters</h4>
+      <table class="ref-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>definition.state</code></td><td>Object</td><td>Initial state. Must be a plain object (or a value compatible with <code>structuredClone</code>).</td></tr>
+          <tr><td><code>definition.actions</code></td><td>Map&lt;string, fn&gt;</td><td>Map of action functions. Each receives state as its first argument and may take any number of additional arguments.</td></tr>
+          <tr><td><code>options.name</code></td><td>string</td><td>Override the auto-derived debug name. Visible in devtools and persisted storage keys.</td></tr>
+          <tr><td><code>options.persist</code></td><td>boolean | PersistConfig</td><td>Persist this store to <code>localStorage</code> (or a custom adapter). See <a href="#">Persistence</a>.</td></tr>
+        </tbody>
+      </table>
+
+      <h4>Returns</h4>
+      <p>A <code>Store&lt;S, A&gt;</code> object with <code>get()</code>, <code>set()</code>, <code>subscribe()</code>, <code>select()</code>, <code>reset()</code>, <code>toJSON()</code>, <code>fromJSON()</code>, and all your action methods at the top level.</p>
+
+      <h4>Example</h4>
+      <pre class="code-block"><span class="k">const</span> counter = <span class="n">forge</span>({
+  state: { count: <span class="num">0</span>, step: <span class="num">1</span> },
+  actions: {
+    <span class="n">inc</span>:     (s)              =&gt; ({ count: s.count + s.step }),
+    <span class="n">setStep</span>: (s, step: number) =&gt; ({ step }),
+  },
+}, { name: <span class="s">"counter"</span>, persist: <span class="k">true</span> });</pre>
+
+      <details class="ref-history">
+        <summary>Version history</summary>
+        <ul>
+          <li><strong>v3.4 (2026-04)</strong> — added <code>options.persist</code>.</li>
+          <li><strong>v3.0 (2025-11)</strong> — actions now take <code>state</code> as first argument (previously <code>this</code>).</li>
+          <li><strong>v2.2 (2025-04)</strong> — automatic debug name from call-site stack.</li>
+          <li><strong>v1.0 (2024-08)</strong> — introduced.</li>
+        </ul>
+      </details>
+    </article>
+
+    <!-- derive() -->
+    <article class="ref-block">
+      <div class="ref-head">
+        <span class="ref-kind">function</span>
+        <h2 id="derive">derive(inputs, fn)</h2>
+      </div>
+      <p class="ref-since">Available since v2.0</p>
+      <p>Creates a derived store from one or more input stores. <code>fn</code> runs only when at least one input has changed, and the result is shallow-compared before notifying subscribers — so identical outputs don't emit.</p>
+
+      <h4>Signature</h4>
+      <pre class="code-block sig"><span class="k">function</span> <span class="n">derive</span>&lt;Inputs <span class="k">extends</span> Store[], Out&gt;(
+  inputs: [...Inputs],
+  fn: (...states: { [K <span class="k">in</span> keyof Inputs]: StoreState&lt;Inputs[K]&gt; }) =&gt; Out
+): <span class="n">DerivedStore</span>&lt;Out&gt;;</pre>
+
+      <h4>Example</h4>
+      <pre class="code-block"><span class="k">const</span> visibleTodos = <span class="n">derive</span>([todos, filter], (t, f) =&gt;
+  f.mode === <span class="s">"done"</span> ? t.items.<span class="n">filter</span>(x =&gt; x.done) : t.items
+);</pre>
+
+      <div class="callout callout-warning">
+        <strong>Don't subscribe inside <code>fn</code>.</strong> A derive function must be pure and synchronous. Side effects (logging, fetching, subscribing) belong in an effect.
+      </div>
+    </article>
+
+    <!-- use() -->
+    <article class="ref-block">
+      <div class="ref-head">
+        <span class="ref-kind">function</span>
+        <h2 id="use">use(middleware)</h2>
+      </div>
+      <p class="ref-since">Available since v2.4</p>
+      <p>Installs an action-level middleware. Middleware wrap every committed action across every store. Use this for logging, devtools, persistence, time-travel.</p>
+
+      <pre class="code-block sig"><span class="k">function</span> <span class="n">use</span>(mw: (next: Dispatch) =&gt; Dispatch): () =&gt; <span class="k">void</span>;</pre>
+
+      <pre class="code-block"><span class="n">use</span>((next) =&gt; (action, args) =&gt; {
+  console.log(<span class="s">"→"</span>, action.name, args);
+  <span class="k">return</span> <span class="n">next</span>(action, args);
+});</pre>
+
+      <p>Calling <code>use()</code> returns a function that uninstalls the middleware. Middleware run in install order.</p>
+    </article>
+
+    <!-- asyncSlice() -->
+    <article class="ref-block">
+      <div class="ref-head">
+        <span class="ref-kind">helper</span>
+        <h2 id="asyncSlice">asyncSlice&lt;T&gt;(options?)</h2>
+      </div>
+      <p class="ref-since">Available since v3.0</p>
+      <p>Returns <code>{ status, data, error }</code> with the right types for async state. Designed to be spread into <code>state</code> alongside your own fields.</p>
+
+      <pre class="code-block"><span class="k">const</span> user = <span class="n">forge</span>({
+  state: { ...asyncSlice&lt;User&gt;(), lastFetch: <span class="num">0</span> },
+  actions: { /* … */ },
+});</pre>
+    </article>
+
+    <!-- listSlice -->
+    <article class="ref-block">
+      <div class="ref-head">
+        <span class="ref-kind">helper</span>
+        <h2 id="listSlice">listSlice&lt;T&gt;()</h2>
+      </div>
+      <p class="ref-since">Available since v3.1</p>
+      <p>Returns a state + actions pair for a keyed collection. The action set covers the common CRUD operations.</p>
+
+      <pre class="code-block sig">{ state: { items: T[] }, actions: (key: keyof T) =&gt; ListActions&lt;T&gt; }</pre>
+      <p>Generated actions: <code>add</code>, <code>remove</code>, <code>replace</code>, <code>update</code>, <code>clear</code>, <code>byId</code>, <code>has</code>, <code>count</code>.</p>
+    </article>
+
+    <article class="ref-block">
+      <div class="ref-head">
+        <span class="ref-kind">helper</span>
+        <h2 id="formSlice">formSlice&lt;T&gt;()</h2>
+      </div>
+      <p class="ref-since">Available since v3.2</p>
+      <p>Adds <code>values</code>, <code>errors</code>, <code>touched</code>, <code>submitting</code>, and matching actions. Pair with a validation function for typed form state.</p>
+    </article>
+
+    <article class="ref-block">
+      <div class="ref-head">
+        <span class="ref-kind">middleware</span>
+        <h2 id="devtools">devtools(options?)</h2>
+      </div>
+      <p class="ref-since">Available since v1.0</p>
+      <p>Installs the Runeforge browser-devtools middleware. Renders an action log with diffs, supports "jump to" time-travel, and exposes per-store snapshots.</p>
+      <pre class="code-block"><span class="n">devtools</span>({ name: <span class="s">"My App"</span>, maxHistory: <span class="num">200</span> });</pre>
+    </article>
+
+    <h2 id="react-adapter">React adapter (<code>@runeforge/react</code>)</h2>
+
+    <article class="ref-block">
+      <div class="ref-head">
+        <span class="ref-kind">hook</span>
+        <h2 id="useStore">useStore(store, selector?, equality?)</h2>
+      </div>
+      <p>Subscribes a component to a store. Returns the selected value. Triggers a re-render only when the selected value changes by the chosen equality function.</p>
+
+      <pre class="code-block sig"><span class="k">function</span> <span class="n">useStore</span>&lt;S, T = S&gt;(
+  store: Store&lt;S, <span class="k">any</span>&gt;,
+  selector?: (s: S) =&gt; T,
+  equality?: (a: T, b: T) =&gt; <span class="k">boolean</span>
+): T;</pre>
+    </article>
+
+    <article class="ref-block">
+      <div class="ref-head"><span class="ref-kind">hook</span><h2 id="useSnapshot">useSnapshot(store)</h2></div>
+      <p>Reads the current state once (no subscription). Useful for one-off reads outside the render cycle.</p>
+    </article>
+
+    <article class="ref-block">
+      <div class="ref-head"><span class="ref-kind">component</span><h2 id="Provider">&lt;Provider stores={[…]} /&gt; (optional)</h2></div>
+      <p>Only needed if you want SSR-safe per-request isolation. Most apps don't need this.</p>
+    </article>
+
+    <h2 id="errors">Error codes</h2>
+    <table class="ref-table">
+      <thead><tr><th>Code</th><th>Meaning</th><th>How to fix</th></tr></thead>
+      <tbody>
+        <tr><td>RF001</td><td>Action returned non-object.</td><td>Return a partial state object. To return identity, return <code>s</code>.</td></tr>
+        <tr><td>RF002</td><td>Mutation detected in action.</td><td>Use spread / map / filter. Don't assign to existing state.</td></tr>
+        <tr><td>RF005</td><td>derive() loop detected.</td><td>A derived store depends on itself transitively. Break the cycle.</td></tr>
+        <tr><td>RF009</td><td>Persist adapter rejected payload.</td><td>Check it's serializable; use <code>options.persist.serializer</code> for custom types.</td></tr>
+        <tr><td>RF014</td><td>useStore called outside React tree.</td><td>Use <code>store.get()</code> instead.</td></tr>
+        <tr><td>RF019</td><td>SSR hydration mismatch.</td><td>Pass server state into <code>store.fromJSON()</code> before render.</td></tr>
+      </tbody>
+    </table>
+
+    <nav class="page-pager">
+      <a class="pager-prev" href="guide-actions.html"><span class="pager-label">Previous</span><strong>← Actions &amp; selectors</strong></a>
+      <a class="pager-next" href="examples.html"><span class="pager-label">Next</span><strong>Examples →</strong></a>
+    </nav>
+  </main>
+
+  <aside class="page-toc">
+    <div class="ptoc-label">On this page</div>
+    <a href="#forge" class="ptoc-link">forge()</a>
+    <a href="#derive" class="ptoc-link">derive()</a>
+    <a href="#use" class="ptoc-link">use() middleware</a>
+    <a href="#asyncSlice" class="ptoc-link">asyncSlice()</a>
+    <a href="#listSlice" class="ptoc-link">listSlice()</a>
+    <a href="#formSlice" class="ptoc-link">formSlice()</a>
+    <a href="#devtools" class="ptoc-link">devtools()</a>
+    <a href="#react-adapter" class="ptoc-link">React adapter</a>
+    <a href="#useStore" class="ptoc-link ptoc-sub">useStore()</a>
+    <a href="#useSnapshot" class="ptoc-link ptoc-sub">useSnapshot()</a>
+    <a href="#Provider" class="ptoc-link ptoc-sub">&lt;Provider /&gt;</a>
+    <a href="#errors" class="ptoc-link">Error codes</a>
+  </aside>
+</div>
+
+<dialog id="searchDialog" class="search-dialog">
+  <input type="text" id="searchInput" placeholder="Search docs, API, examples…" />
+  <div class="search-hint">↑ ↓ to navigate · ↵ to open · esc to dismiss</div>
+  <ul class="search-results" id="searchResults"></ul>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>

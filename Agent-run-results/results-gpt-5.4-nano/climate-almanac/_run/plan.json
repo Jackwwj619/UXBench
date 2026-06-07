@@ -1,0 +1,182 @@
+{
+  "plan": {
+    "goal": "Critique and validate the end-to-end UX of the Climate Almanac data-explorer, focusing on the primary variable-to-chart-to-inspector interaction and the adjacent flows (sharing, downloading, and navigation).",
+    "summary": "Run begins on index.html and exercises the core loop: add/remove overlay variables, change region/smoothing/y-axis mode, and verify that hovering the chart updates the right-rail inspector consistently. Then validate secondary controls: annotations (pinned notes and close controls), zoom/reset, ordering via drag, and finally Share view and Download .csv. Complete coverage by repeating critical checks on mobile viewport.",
+    "assumptions": [
+      "The app is contained in a single HTML file (index.html) with all key flows accessible there; no other pages were prescanned.",
+      "Hovering the chart drives both the tooltip and the Inspector panel as stated in the visible text.",
+      "Share view and Download .csv are functional buttons in the top bar on index.html.",
+      "Variable selection uses checkboxes in the left rail and supports a drag-to-reorder interaction for the active layers."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Variable layer checkboxes (ux-8..ux-13): very small tap targets (13x13) and potential discoverability/activation issues on mobile",
+      "Share view button (ux-6) and Download .csv button (ux-7): risk of non-obvious behavior, blocked popups/downloads, or missing state serialization",
+      "Drag-to-reorder layers control (LAYERS DRAG TO REORDER): risk of broken drag handling or mismatch between visual order and exported/share state",
+      "Chart interaction: hover tooltip + Inspector sync (stated: hovering updates inspector values for the same year)",
+      "Zoom/Reset zoom and + Note interactions (ux-24, ux-25) and annotation close buttons (× on pins): risk of state loss or overlay persistence bugs",
+      "Annotations/pinned notes with dismiss (e.g., the 1945/1991/2015 cards): verify dismissal doesn’t break layout or inspector mapping"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Establish primary interaction loop (desktop)",
+        "objective": "Confirm that the variable selection and chart hover interaction work as designed and that the right-rail inspector reflects the hovered year consistently.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "With default selected layers, hover multiple distinct years on the chart and verify the tooltip year/value and Inspector values update in sync",
+          "Toggle variable checkboxes on/off one at a time (Surface temperature anomaly, Precipitation, Atmospheric CO₂, Global mean sea level, Arctic sea-ice extent, ENSO index) and validate the chart series visibility and legend/labels",
+          "Add up to 4 layers (as UI promises) and verify readability/scale handling remains stable"
+        ],
+        "exit_criteria": [
+          "Hovering across at least 3 different years updates tooltip and Inspector consistently",
+          "At least 3 variable toggles are validated with visible chart changes and no UI errors",
+          "A 4-layer overlay scenario is reached and remains interactive"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Validate configuration controls (region, smoothing, y-axis)",
+        "objective": "Ensure that dropdowns/radios correctly recompute chart rendering and that y-axis mode changes affect labeling/scale as expected.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Change REGION via the dropdown (Global → Northern Hemisphere → Southern Hemisphere → Tropics → Arctic) and verify chart updates without breaking hover/tooltips",
+          "Change SMOOTHING (No smoothing, 3-year, 10-year, 30-year normal) and verify the chart shape changes and Inspector hover still maps to the same year system",
+          "Toggle Y-AXIS between Dual axes and Single (z-scored) and verify axis/scale behavior is consistent with the labeling (e.g., absolute vs unit-less)"
+        ],
+        "exit_criteria": [
+          "All dropdown/radio options are exercised at least once",
+          "After each option change, hovering still updates the Inspector correctly",
+          "No visual overlap or missing series occurs after y-axis mode switches"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Layer ordering, zoom, notes, and annotations",
+        "objective": "Test stateful interactions that can change rendering order or add persistent UI elements, including error-prone dismissal and reset behaviors.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use drag-to-reorder in the LAYERS area to change layer order; verify chart legend/stack order and that hover values still correspond to the correct series",
+          "Use + Note (ux-25) to add at least one note; verify the note appears in Annotations area and remains visible after subsequent hover/setting changes",
+          "Use the × close control on pinned annotations (e.g., ux-18 shown) and verify the note is removed and layout remains intact",
+          "Test zoom controls: apply zoom (e.g., via chart interaction) then click Reset zoom (ux-24); verify chart returns to full range and hover/Inspector mapping works again"
+        ],
+        "exit_criteria": [
+          "At least one drag reorder is validated with correct hover/series association",
+          "A note can be added and dismissed without breaking the inspector or chart",
+          "Zoom then Reset zoom returns the chart to baseline and hover mapping remains correct"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Secondary actions: Share view and Download .csv (desktop)",
+        "objective": "Validate whether share/download reflect the current explorer state (selected layers, region, smoothing, y-axis, and ordering) and can be used without errors.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click Share view (ux-6) and verify the expected share UI/behavior appears (e.g., link/copy) and includes current configuration",
+          "Change the explorer state (e.g., toggle one variable and switch smoothing) then share again to confirm the shared state differs appropriately",
+          "Click Download .csv (ux-7) and verify the download starts and contains columns/rows consistent with currently selected variables and year range shown in the chart header"
+        ],
+        "exit_criteria": [
+          "Share view produces a usable output (link or copy) tied to the current configuration",
+          "At least one CSV download is generated and inspected for schema alignment with active layers"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile critical path validation",
+        "objective": "Re-run the highest-impact checks on a mobile viewport, emphasizing small tap targets and chart/side-rail interactions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Repeat variable toggle + hover sync validation (from Phase 1) to ensure interaction remains possible with small checkbox targets",
+          "Verify scroll/access to Inspector and Annotations panels and that chart hover (or equivalent touch interaction) updates values",
+          "Test Share view and Download .csv tap targets are reachable and actions succeed on mobile"
+        ],
+        "exit_criteria": [
+          "Core loop (select variable(s) → chart inspect → inspector updates) works on mobile",
+          "Share view and Download .csv can be triggered successfully on mobile without UI trapping"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages (only index.html from prescan)",
+      "features": "exercise most visible controls per key page: all variable checkboxes, REGION dropdown, SMOOTHING dropdown, Y-AXIS radios, drag-to-reorder, Reset zoom, + Note, annotation dismiss, Share view, and Download .csv",
+      "mobile": "repeat critical checks on mobile viewport for: variable toggles + chart hover/inspector sync, access to inspector/annotations, and Share/Download actions"
+    },
+    "notes": [
+      "Prescan shows only index.html, so navigation links (Datasets/Stories/Methods/About) are not assumed to open new pages; only validate their actual click behavior if they navigate or change content within the same page.",
+      "Given the prescan layout warnings, prioritize tap-target usability checks specifically for variable checkboxes and top-bar buttons on mobile."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Climate Almanac — multi-variable explorer",
+      "url": "file:///Users/timchef/UXBench/websites/climate-almanac/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Climate Almanac Explorer Datasets Stories Methods About Share view Download .csv VARIABLES Add up to four variables to overlay. Surface temperature anomaly °C vs 1951–1980 baseline · Berkeley Earth-style Precipitation mm/year · gridded gauge product Atmospheric CO₂ ppm · Mauna Loa-style monthly mean Global mean sea level mm vs 1993 satellite-era zero Arctic sea-ice extent million km² · September minimum ENSO index (ONI) °C · 3-month running mean of NINO 3.4 REGION Global Northern Hemisphere Southern Hemisphere Tropics (23°S–23°N) Arctic (60°N–90°N) SMOOTHING No smoothing (monthly/annual raw) 3-year running mean 10-year running mean 30-year normal Y-AXIS Dual axes Single (z-scored) LAYERS DRAG TO REORDER ≡ Surface temperature anomaly × ≡ Atmospheric CO₂ × SOURCES Berkeley Earth Surface Temperature v4 NOAA Global Monitoring Lab CO₂ CMIP6 reanalysis (synthetic) NSIDC Sea Ice Index Surface t",
+      "headings": [
+        "VARIABLES",
+        "REGION",
+        "SMOOTHING",
+        "Y-AXIS",
+        "LAYERS\nDRAG TO REORDER",
+        "SOURCES",
+        "Surface temperature anomaly & Atmospheric CO₂",
+        "Inspector",
+        "Annotations"
+      ],
+      "counts": {
+        "buttons": 9,
+        "links": 9,
+        "inputs": 10,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Explorer",
+        "clickable:a:Datasets",
+        "clickable:a:Stories",
+        "clickable:a:Methods",
+        "clickable:a:About",
+        "clickable:button:Share view",
+        "clickable:button:Download .csv",
+        "clickable:input:Surface temperature anomaly",
+        "clickable:input:Precipitation",
+        "clickable:input:Atmospheric CO₂",
+        "clickable:input:Global mean sea level",
+        "clickable:input:Arctic sea-ice extent",
+        "clickable:input:ENSO index (ONI)",
+        "selectable:select:Global Northern Hemisphere Southern Hemisphere Tropics (23°S–23°N) Arctic (60°N–90°N)",
+        "selectable:select:No smoothing (monthly/annual raw) 3-year running mean 10-year running mean 30-year normal",
+        "clickable:input:Dual axes"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,482 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the Tablerose restaurant reservation platform, focusing on the end-to-end booking flow, search and filtering interactions, and responsive layout issues.",
+    "summary": "The exploration will follow the primary user journey from discovery on the homepage through search, restaurant selection, and the multi-step checkout flow to confirmation. It will then validate adjacent features like filtering, restaurant detail tabs, and post-booking actions. Finally, it will assess mobile responsiveness, paying special attention to the numerous small tap targets flagged in the prescan.",
+    "assumptions": [
+      "The multi-page checkout flow (guest.html -> payment.html -> confirmation.html) can be traversed sequentially by interacting with the visible forms and buttons.",
+      "The site relies on client-side JavaScript for dynamic interactions like autocomplete, filtering, and tab switching.",
+      "Navigation links like 'My reservations' and 'Sign in' may not lead to dedicated pages but should be tested for behavior.",
+      "Disabled time slots (e.g., 17:00/21:30 for Bella Suora) and add-on selections will update the UI state visually."
+    ],
+    "target_pages": [
+      "index.html",
+      "restaurants.html",
+      "restaurant.html",
+      "guest.html",
+      "payment.html",
+      "confirmation.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets across all pages, especially navigation links and quick-pill suggestions on index.html.",
+      "Form validation and error recovery in the guest.html and payment.html forms.",
+      "State management of the booking widget across restaurant.html, guest.html, and payment.html (e.g., maintaining selected date/time/party size).",
+      "Filter interaction on restaurants.html (applying multiple filters, resetting, sorting).",
+      "Disabled time slots on restaurant.html (ensuring they are properly non-interactive and communicated)."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Homepage Discovery & Search",
+        "objective": "Validate the search entry points and homepage interactive elements.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Interact with the 5-field search card (city autocomplete, party size, date, time).",
+          "Click quick-pill suggestions (Pasta, Sushi, etc.) and verify they navigate to restaurants.html with expected context.",
+          "Scroll to 'Reserved most this week' and 'Editor guides', clicking through to results.",
+          "Check navigation links (Discover, Cities, For restaurants, Help, My reservations, Sign in)."
+        ],
+        "exit_criteria": [
+          "Search form successfully filled and submitted.",
+          "At least two quick-pills clicked and navigation verified.",
+          "All major homepage sections scrolled into view and interacted with."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Search Results & Filtering",
+        "objective": "Validate the filtering, sorting, and selection interactions on the results page.",
+        "target_pages": [
+          "restaurants.html"
+        ],
+        "key_checks": [
+          "Apply combinations of Cuisine, Price, Neighborhood, and Features filters.",
+          "Use the 'Reset filters' control.",
+          "Change sorting options (Relevance, Rating, Price, Distance).",
+          "Click the 'Edit' button in the summary bar.",
+          "Select a time slot from a restaurant row to proceed to detail."
+        ],
+        "exit_criteria": [
+          "Filters applied and cleared successfully.",
+          "Sort order changed and results updated.",
+          "Navigated to restaurant.html via a result row."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Restaurant Detail & Booking Initiation",
+        "objective": "Validate the detail page content, tabs, and booking widget.",
+        "target_pages": [
+          "restaurant.html"
+        ],
+        "key_checks": [
+          "Switch between Overview, Menu, Photos, and Reviews tabs.",
+          "Interact with the sticky booking card (change date, party size).",
+          "Verify disabled time slots (17:00, 21:30) are unclickable.",
+          "Select an active time slot to proceed to guest details.",
+          "Toggle the favorite heart icon."
+        ],
+        "exit_criteria": [
+          "All tabs viewed and content verified.",
+          "Booking widget state changed and an active time slot selected.",
+          "Navigation to guest.html triggered."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Checkout Flow & Form Validation",
+        "objective": "Complete the multi-step booking flow, testing form inputs and payment options.",
+        "target_pages": [
+          "guest.html",
+          "payment.html"
+        ],
+        "key_checks": [
+          "Fill out guest details (name, phone, email) and test validation by submitting empty/invalid data.",
+          "Select dietary needs and occasion checkboxes.",
+          "Enter special request text and verify character count.",
+          "On payment page, switch between Card, Apple Pay, and Google Pay.",
+          "Select add-ons (cake, rose, prosecco) and verify price updates.",
+          "Complete the hold process."
+        ],
+        "exit_criteria": [
+          "Guest form submitted successfully.",
+          "Payment method selected and add-ons toggled.",
+          "Navigation to confirmation.html triggered."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Confirmation & Post-Booking",
+        "objective": "Validate the confirmation screen and post-booking actions.",
+        "target_pages": [
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Verify booking details are displayed.",
+          "Click calendar add buttons (Apple, Google, Outlook).",
+          "Click 'Resend email'.",
+          "Click 'Modify' and 'Cancel' buttons.",
+          "Navigate back to discover via 'You might also like' or 'Back to discover'."
+        ],
+        "exit_criteria": [
+          "All confirmation actions attempted.",
+          "Post-booking navigation links verified."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile Responsiveness Check",
+        "objective": "Re-evaluate critical flows and tap targets on a mobile viewport.",
+        "target_pages": [
+          "index.html",
+          "restaurants.html",
+          "restaurant.html",
+          "guest.html"
+        ],
+        "key_checks": [
+          "Verify navigation and search form usability on mobile index.html.",
+          "Check filter rail behavior (collapse/expand) on restaurants.html.",
+          "Validate sticky booking card layout on restaurant.html.",
+          "Test form input scrolling and focus on guest.html.",
+          "Re-assess small tap targets identified in prescan (navigation, pills, filters)."
+        ],
+        "exit_criteria": [
+          "Key pages viewed in mobile viewport.",
+          "Critical interactions (search, filter, book form) completed on mobile.",
+          "Tap target issues documented with mobile context."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all 6 known HTML pages",
+      "features": "exercise all visible controls: search fields, filters, sort, tabs, booking widget, form inputs, payment methods, add-ons, and post-booking buttons",
+      "mobile": "repeat critical checks on mobile viewport, focusing on tap targets and form usability"
+    },
+    "notes": [
+      "Prescan flagged numerous small tap targets (below 44px) across all pages; Phase 6 should specifically validate if these cause usability issues on touch devices.",
+      "The 'undefined guest' text seen in confirmation.html prescan suggests a potential state-passing bug between guest.html and confirmation.html; verify if this reproduces during Phase 4/5.",
+      "Ensure disabled time slots on restaurant.html are tested for keyboard and screen reader accessibility."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Tablerose — find a table tonight",
+      "url": "file:///Users/timchef/UXBench/websites/tablerose/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tablerose Discover Cities For restaurants Help My reservations Sign in FIND A TABLE TONIGHT OR SIX MONTHS OUT Reserve dinner. No phone calls. Search 14,000 independent restaurants in 38 cities. Hold the table with a card; we charge nothing unless you no-show. WHERE PARTY 1 guest 2 guests 3 guests 4 guests 5 guests 6 guests 7 guests 8 guests 9+ (request) DATE TIME 5:30 pm 6:00 pm 6:30 pm 7:00 pm 7:30 pm 8:00 pm 8:30 pm 9:00 pm Find tables → TONIGHT IN PORTLAND 🍝 Pasta · 6 nearby 🍣 Sushi · 9 nearby 🌶️ Sichuan · 4 nearby 🍷 Wine bars · 12 nearby ☕ Brunch tomorrow · 22 nearby Reserved most this week See all in Portland → Bella Suora Italian · $$$ · Pearl District ★★★★★ 4.7 · 1k+ reviews 6:30 7:00 8:15 9:30 ✕ Tonari Japanese · $$ · Pearl District ★★★★½ 4.6 · 1k+ reviews 5:45 6:00 8:30 9:30 ✕ Field & Hearth New American · $$$ · Alberta Arts ★★★★★ 4.8 · 1k+ reviews 7:15 8:00 9:30 ✕ Lupinus & Rom",
+      "headings": [
+        "Reserve dinner. No phone calls.",
+        "Reserved most this week",
+        "Editor guides",
+        "Where to take a first date in Portland",
+        "Birthday dinners that won't ruin the budget",
+        "Quiet rooms for actual conversation",
+        "The best solo-dining counters",
+        "Search",
+        "Hold the table",
+        "Show up"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 23,
+        "inputs": 4,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tablerose",
+        "clickable:a:Discover",
+        "clickable:a:Cities",
+        "clickable:a:For restaurants",
+        "clickable:a:Help",
+        "clickable:a:My reservations",
+        "clickable:a:Sign in",
+        "typeable:input:WHERE",
+        "selectable:select:PARTY 1 guest 2 guests 3 guests 4 guests 5 guests 6 guests 7 guests 8 guests 9+ (request)",
+        "typeable:input:DATE",
+        "selectable:select:TIME 5:30 pm 6:00 pm 6:30 pm 7:00 pm 7:30 pm 8:00 pm 8:30 pm 9:00 pm",
+        "clickable:button:Find tables →",
+        "clickable:a:🍝 Pasta · 6 nearby",
+        "clickable:a:🍣 Sushi · 9 nearby",
+        "clickable:a:🌶️ Sichuan · 4 nearby",
+        "clickable:a:🍷 Wine bars · 12 nearby"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "confirmation.html",
+      "title": "Reserved! — Tablerose",
+      "url": "file:///Users/timchef/UXBench/websites/tablerose/confirmation.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tablerose 1. Time 2. Guest 3. Hold 4. Done Help You're booked. Bella Suora · at for undefined guest Confirmation TR-784521 📅 Add to calendar Pre-filled with address, party size, and a 4-hour reminder. Apple Google Outlook 📨 Confirmation sent Email and SMS to milena@email.com · (503)···0144. Resend email ✏️ Modify or cancel Free until 90 minutes before. After that you may be charged the no-show fee. Modify Cancel Before you go Arrive on time. Tables are held 15 minutes; after that we have to release them. Park smart. Street parking on NW Marshall fills by 6 pm Saturdays. The Pearl-13 lot ½ block north is $8/night. Dietary needs? The kitchen has been told you noted: none. Special request: \"no special request\" You might also like Lupinus & Roma Italian · $$$ · Mississippi Tonari Japanese · $$ · Pearl District Field & Hearth New American · $$$ · Alberta ← Back to discover",
+      "headings": [
+        "You're booked.",
+        "Add to calendar",
+        "Confirmation sent",
+        "Modify or cancel",
+        "Before you go",
+        "You might also like"
+      ],
+      "counts": {
+        "buttons": 6,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tablerose",
+        "clickable:a:Help",
+        "clickable:button:Apple",
+        "clickable:button:Google",
+        "clickable:button:Outlook",
+        "clickable:button:Resend email",
+        "clickable:button:Modify",
+        "clickable:button:Cancel",
+        "clickable:a:← Back to discover"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "guest.html",
+      "title": "Guest details — Tablerose",
+      "url": "file:///Users/timchef/UXBench/websites/tablerose/guest.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tablerose 1. Time 2. Guest 3. Hold 4. Done Help Who's coming? We share your name and party size with the restaurant. They'll only contact you about this reservation. First name Last name Phone Email Dietary needs (optional) Vegetarian Vegan Gluten-free Dairy-free Shellfish allergy Nut allergy Special request (optional) 0 / 240 Occasion (optional) 🎂 Birthday 💐 Anniversary 🌹 Date night 💼 Business 🥂 Celebration None Email me confirmation, a 4-hour reminder, and the menu the day-of. (No marketing emails.) ← Back Continue to hold → Your reservation Restaurant Bella Suora Date Sat, May 16 Time 7:00 pm Party 2 guests Cancel by 5:30 pm Sat Card hold may be required at next step. We don't charge for held tables.",
+      "headings": [
+        "Who's coming?",
+        "Your reservation"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 3,
+        "inputs": 18,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tablerose",
+        "clickable:a:Help",
+        "typeable:input:First name",
+        "typeable:input:Last name",
+        "typeable:input:Phone",
+        "typeable:input:Email",
+        "clickable:input:Vegetarian",
+        "clickable:input:Vegan",
+        "clickable:input:Gluten-free",
+        "clickable:input:Dairy-free",
+        "clickable:input:Shellfish allergy",
+        "clickable:input:Nut allergy",
+        "typeable:textarea:Special request (optional) 0 / 240",
+        "clickable:input:🎂 Birthday",
+        "clickable:input:💐 Anniversary",
+        "clickable:input:🌹 Date night"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "payment.html",
+      "title": "Hold the table — Tablerose",
+      "url": "file:///Users/timchef/UXBench/websites/tablerose/payment.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tablerose 1. Time 2. Guest 3. Hold 4. Done Help Hold the table A card hold is required for parties of 6 or more, or for peak-night reservations. You're not charged for the meal; we only charge a $50/seat fee if you no-show. $50 / seat no-show fee Card is authorized for $100 at booking. Released automatically if you show up or cancel by 5:30 pm Sat. Payment method Card 💳 Apple Pay Google Pay G Card number Expiry CVC Postal code Add anything? 🎂 Have the kitchen plate a slice of cake for \"Happy Birthday\" +$8 💐 Single rose on the table +$5 🥂 Glass of prosecco poured on arrival +$12 × seats By holding this table you agree to Tablerose's no-show policy and the restaurant's house policies. ← Back Hold the table Reservation Restaurant Bella Suora Date Sat, May 16 Time 7:00 pm Party 2 guests ADD-ONS No add-ons Add-ons total $0.00 Card hold (released) $100 Add-ons charged to your card the day-of. ",
+      "headings": [
+        "Hold the table",
+        "Add anything?",
+        "Reservation"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 4,
+        "inputs": 10,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tablerose",
+        "clickable:a:Help",
+        "clickable:input:Card 💳",
+        "clickable:input:Apple Pay",
+        "clickable:input:Google Pay G",
+        "typeable:input:Card number",
+        "typeable:input:Expiry",
+        "typeable:input:CVC",
+        "typeable:input:Postal code",
+        "clickable:input:🎂 Have the kitchen plate a slice of cake for \"Happy Birthday\" +$8",
+        "clickable:input:💐 Single rose on the table +$5",
+        "clickable:input:🥂 Glass of prosecco poured on arrival +$12 × seats",
+        "clickable:a:no-show policy",
+        "clickable:a:← Back",
+        "clickable:button:Hold the table"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "restaurant.html",
+      "title": "Restaurant — Tablerose",
+      "url": "file:///Users/timchef/UXBench/websites/tablerose/restaurant.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tablerose Discover Cities For restaurants Help My reservations Sign in ♡ ITALIAN · $$$ · PEARL DISTRICT Bella Suora ★★★★★ 4.7 · 1,284 reviews · Booked 47 times today Hand-rolled Roman pastas, a wood-burning oven you can see from every table, and the only carbonara in Portland that uses guanciale aged on premise. Counter seating welcomed; reservations strongly suggested. HOURS 5 pm – 10 pm · Tue – Sun PHONE 503·555·0118 ADDRESS 1142 NW Marshall, Portland DRESS Smart casual Overview Menu Photos Reviews What people are talking about Carbonara Wine list Counter seats Birthday Date night Wood-fired About Chef Lina Tassi opened Bella Suora in 2019 after twelve years in Roman trattorias. The room is loud, warm, and unapologetically pasta-first; the wood oven runs all service for the half-dozen dishes that earn it. Bar seats are first-come; tables are reservation-only. We grow our own herbs on t",
+      "headings": [
+        "Bella Suora",
+        "What people are talking about",
+        "About",
+        "Highlights",
+        "Sample menu",
+        "To start",
+        "Pasta",
+        "From the oven",
+        "Make a reservation"
+      ],
+      "counts": {
+        "buttons": 15,
+        "links": 8,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tablerose",
+        "clickable:a:Discover",
+        "clickable:a:Cities",
+        "clickable:a:For restaurants",
+        "clickable:a:Help",
+        "clickable:a:My reservations",
+        "clickable:a:Sign in",
+        "clickable:button:Save",
+        "clickable:button:Overview",
+        "clickable:button:Menu",
+        "clickable:button:Photos",
+        "clickable:button:Reviews",
+        "selectable:select:1 guest 2 guests 3 guests 4 guests 5 guests 6 guests 7 guests 8 guests",
+        "clickable:button:5:00 pm",
+        "clickable:button:5:30 pm",
+        "clickable:button:6:00 pm"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "restaurants.html",
+      "title": "Restaurants — Tablerose",
+      "url": "file:///Users/timchef/UXBench/websites/tablerose/restaurants.html",
+      "load_error": null,
+      "visible_text_excerpt": "Tablerose Discover Cities For restaurants Help My reservations Sign in Portland, OR · 2 guests · Sat, May 16 · 7:00 pm Edit FILTER Cuisine Italian (12) Japanese (9) Thai (5) Sichuan (4) Mediterranean (8) New American (14) Plant-based (6) BBQ & smoke (3) Price $ $$ $$$ $$$$ Neighborhood Pearl District Mississippi Ave Alberta Arts Division St Hawthorne Downtown Features Outdoor seating Counter / bar seats Kid-friendly Quiet (under 65 dB) Vegan menu Open after 10 pm Reset filters 10 restaurants Sort: Relevance Highest rated Price: low → high Price: high → low Nearest Bella Suora ★★★★★ 4.7 · 1,284 reviews · $$$ · Italian · Pearl District Hand-rolled Roman pastas, wood-burning oven you can see from every seat. The carbonara uses guanciale aged on premise. Wine list Counter seats Birthday AVAILABLE · SAT, MAY 16 6:00 am 6:30 am 7:00 am 8:15 am Tonari ★★★★½ 4.6 · 932 reviews · $$ · Japanese · P",
+      "headings": [
+        "FILTER",
+        "Bella Suora",
+        "Tonari",
+        "Field & Hearth",
+        "Lupinus & Roma",
+        "Old Pier Smokehouse",
+        "Saffron & Stone",
+        "Siam Floating Cart",
+        "Hot Numb Wok",
+        "Olivewood"
+      ],
+      "counts": {
+        "buttons": 31,
+        "links": 7,
+        "inputs": 25,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Tablerose",
+        "clickable:a:Discover",
+        "clickable:a:Cities",
+        "clickable:a:For restaurants",
+        "clickable:a:Help",
+        "clickable:a:My reservations",
+        "clickable:a:Sign in",
+        "clickable:button:Edit",
+        "clickable:input:Italian (12)",
+        "clickable:input:Japanese (9)",
+        "clickable:input:Thai (5)",
+        "clickable:input:Sichuan (4)",
+        "clickable:input:Mediterranean (8)",
+        "clickable:input:New American (14)",
+        "clickable:input:Plant-based (6)",
+        "clickable:input:BBQ & smoke (3)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

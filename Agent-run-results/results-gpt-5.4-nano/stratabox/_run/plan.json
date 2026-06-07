@@ -1,0 +1,188 @@
+{
+  "plan": {
+    "goal": "Critique the end-to-end UX of the stratabox marketing + interactive builder experience, with emphasis on the pricing section and adjacent flows (navigation, SDK tabs, integrations search, and key builder controls).",
+    "summary": "Run a full long-scroll exploration on index.html, validating sticky navigation anchors, the hero editor/live preview builder interactions, the SDK language tabs with copy behavior, and the integrations search/filter results. Then deep-dive on the pricing section to confirm plan navigation and CTAs, plus validate key mobile interactions and tap targets.",
+    "assumptions": [
+      "All relevant functionality (builder, tabs, search, pricing) is contained on the single page index.html via anchors and in-page widgets.",
+      "Pricing CTAs (“See full plans →”, “Start free”, “Book a demo”) are actionable and should lead to meaningful in-page changes or modals.",
+      "The SDK code tabs include a working copy-to-clipboard toast/feedback mechanism."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Hero live block builder: drag-and-drop reorder + add/delete blocks + type switcher + debounced auto-save status (risk: state inconsistency, broken DnD, unclear save feedback)",
+      "LIVE PREVIEW modes (web / mobile / email) toggle visibility while hero content blocks are swapped (risk: preview not syncing, confusing mode switching)",
+      "SDK language code tabs (JS / Python / Ruby / curl) + copy-to-clipboard toast (risk: copy fails silently, wrong language shown, missing feedback)",
+      "Integrations searchable grid (search input “Search 24 visible integrations…” + live count) (risk: filtering incorrect, count mismatch, keyboard/focus issues)",
+      "Sticky top nav anchor links (Product/Builder/SDKs/Integrations/Customers/Pricing) with small mobile tap targets (risk: hard to tap, anchor offset issues)",
+      "Pricing section CTAs (“See full plans →”, plus “Start free” and “Book a demo”) (risk: unclear hierarchy, CTAs not leading anywhere, missing plan differentiation on mobile)"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global navigation + anchor sanity",
+        "objective": "Verify sticky header behavior and anchor navigation to all major sections without losing context.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use top nav links (Product, Builder, SDKs, Integrations, Customers, Pricing) and confirm the page scrolls to the correct section headings.",
+          "Activate “Start free” and “Sign in” and verify whether they trigger a modal, navigate, or scroll (no dead-end).",
+          "On mobile viewport, attempt repeated tapping of small header links and confirm they are reliably clickable."
+        ],
+        "exit_criteria": [
+          "All anchor links land at the intended sections (visually confirmed in-page).",
+          "CTAs for “Start free” and “Sign in” produce a clear outcome (modal/navigation/notice).",
+          "No broken navigation or unexpected scroll-jumps on mobile."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Hero editor vs live preview builder interaction",
+        "objective": "Validate the core builder UX: adding, editing, deleting blocks, preview synchronization, and save feedback.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Interact with editor block inputs: “New section heading”, “Body paragraph…”, and image alt/name fields (ux-18/ux-21/ux-24) and confirm changes appear in the live preview.",
+          "Use add controls for each block type (e.g., “+ Paragraph”, “+ Heading”, “+ Image”, “+ Callout”) and confirm the new block appears in EDITOR and updates the preview.",
+          "Reorder blocks via drag-and-drop and verify both editor order and live preview order reflect the change.",
+          "Switch a block type using the type switcher (where available) and confirm content/controls update and preview stays consistent.",
+          "Delete a block and verify the editor and preview remove it cleanly.",
+          "Observe debounced auto-save status near “saved” while editing; confirm feedback appears at least once and ends in a stable saved state."
+        ],
+        "exit_criteria": [
+          "Editor edits propagate to live preview without noticeable lag or mismatch (including after reorder and type switch).",
+          "Add/delete actions are visually and functionally consistent.",
+          "Auto-save feedback is understandable and reaches a stable ‘saved’ state after interaction."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "SDK language tabs + copy feedback",
+        "objective": "Ensure SDK tab switching correctly updates code samples and copy actions provide reliable feedback.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch SDK tabs across JS → Python → Ruby → curl and confirm code content changes accordingly.",
+          "Click the copy button for a tab and confirm clipboard copy succeeds or at least shows a visible success/failure toast.",
+          "After switching tabs, click copy again and verify the toast corresponds to the currently visible language."
+        ],
+        "exit_criteria": [
+          "All tab switches update the displayed snippet accurately.",
+          "Copy-to-clipboard provides clear user feedback and operates on the active snippet."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Integrations grid search + live count",
+        "objective": "Validate search/filter logic, result count accuracy, and input usability.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the search input “Search 24 visible integrations…” (ux-38). Type a query matching by name and confirm the grid filters.",
+          "Type a query matching by category (if categories are indicated on cards) and confirm results update.",
+          "Clear the search and confirm the full set returns and the live count matches the number of visible cards.",
+          "On mobile viewport, focus the search input and verify soft keyboard usability and no layout overlap."
+        ],
+        "exit_criteria": [
+          "Search results and the displayed count remain consistent for multiple queries.",
+          "Clearing search restores the full grid without UI glitches.",
+          "Mobile search focus and typing work smoothly."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Pricing section deep-check + CTAs",
+        "objective": "Critically assess the pricing information architecture and confirm CTA pathways work.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Jump to Pricing via nav and verify pricing teaser/plan content is readable and scannable.",
+          "Activate “See full plans →” and confirm what happens (scroll, modal, new content section).",
+          "Use pricing-adjacent CTAs (“Start free” and “Book a demo” if present near pricing) and verify outcomes are coherent and not duplicated or confusing.",
+          "On mobile viewport, verify pricing CTA tap targets and layout alignment (no overlaps, no truncated buttons)."
+        ],
+        "exit_criteria": [
+          "Pricing section contains actionable pathways with no dead-end interactions.",
+          "CTA outcomes are clear and consistent across desktop and mobile.",
+          "Mobile pricing layout remains usable (no broken wrapping/truncation of buttons)."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (index.html only).",
+      "features": "Exercise: hero builder add/edit/delete/reorder/type switch + saved status; preview mode toggling (web/mobile/email if interactive); SDK tab switching + copy; integrations search filtering + live count; pricing CTAs (“See full plans →”, “Start free”, “Book a demo”).",
+      "mobile": "Repeat critical checks (builder edits + save feedback, SDK copy, integrations search, and pricing CTAs + header anchor tapping) on mobile viewport."
+    },
+    "notes": [
+      "Because console/network errors are empty in the prescan, focus validation on UX state consistency rather than technical failures.",
+      "Treat the hero builder as the highest-risk interactive system: collect evidence for each action (before/after order, preview sync, and save status changes).",
+      "Keep step budget realistic: prioritize interactions that change state (builder DnD/add/delete/type switch, SDK copy, integrations filter, pricing CTA)."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Stratabox — the structured content platform",
+      "url": "file:///Users/timchef/UXBench/websites/stratabox/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Stratabox Product Builder SDKs Integrations Customers Pricing Sign in Start free v8 · Stratabox Studio Structured content for every surface. A headless content platform where editors author with composable blocks, developers query a typed GraphQL+REST API, and your team ships content to web, mobile, kiosks, and email — from a single source of truth. Start free → Book a demo ✔ 50 GB asset CDN free ✔ SOC 2 Type II ✔ EU + US regions studio.stratabox.dev / articles / coastal-bloom EDITOR ● saved H1 Coastal Bloom Returns ¶ After a two-year hiatus the festival returns to the Pier 22 boardwalk… ▣ hero-coast-2026.jpg · 4096×2304 ★ Callout · Tickets on sale May 22 ¶ Organizers expect twelve thousand visitors over the weekend… ▦ Gallery · 8 images LIVE PREVIEW web · mobile · email Coastal Bloom Returns After a two-year hiatus the festival returns to the Pier 22 boardwalk… hero-coast-2026.jpg ★ Tic",
+      "headings": [
+        "Structured content\nfor every surface.",
+        "Coastal Bloom Returns",
+        "Built around composable blocks.",
+        "Composable schema",
+        "Real-time collaboration",
+        "Edge content API",
+        "Drag, drop, ship.",
+        "A field guide to coastal birds",
+        "One schema. Every SDK.",
+        "Plays well with your stack."
+      ],
+      "counts": {
+        "buttons": 15,
+        "links": 29,
+        "inputs": 11,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Stratabox",
+        "clickable:a:Product",
+        "clickable:a:Builder",
+        "clickable:a:SDKs",
+        "clickable:a:Integrations",
+        "clickable:a:Customers",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Start free",
+        "clickable:a:Start free →",
+        "clickable:a:Book a demo",
+        "clickable:button:+ Paragraph",
+        "clickable:button:+ Heading",
+        "clickable:button:+ Image",
+        "clickable:button:+ Callout",
+        "clickable:button:+ Quote"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

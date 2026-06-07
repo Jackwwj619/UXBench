@@ -1,0 +1,166 @@
+{
+  "plan": {
+    "goal": "Validate the UX of the Privacy Dashboard, focusing on the clarity of data controls, the effectiveness of the 'Privacy Checkup' flow, and the safety mechanisms around destructive actions (Delete Account/Data).",
+    "summary": "The run will proceed by first auditing the Overview dashboard for information hierarchy and mobile responsiveness. It will then drill down into specific activity categories (Search, Location) to test toggle states and detail views. Finally, it will simulate high-risk flows like Data Export and Account Deletion to verify confirmation modals and error handling.",
+    "assumptions": [
+      "The application is a Single Page Application (SPA) where sidebar navigation updates the main content area without full page reloads.",
+      "Destructive actions (Delete Account) rely on client-side JavaScript modals for confirmation as indicated by the prescan.",
+      "The 'Privacy Score' is a dynamic element that may update upon completing checkup items."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Delete Account button (Danger zone)",
+      "Toggle switches for Activity Saving (State persistence/visual feedback)",
+      "Export Data modal (Form validation)",
+      "Mobile sidebar navigation (Accessibility/Usability)"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard Overview & Responsiveness",
+        "objective": "Verify the initial layout, privacy score visibility, and mobile navigation integrity.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Check visual hierarchy of 'Saved items', 'Controls active', and 'Auto-delete' cards.",
+          "Switch to mobile viewport: Verify sidebar collapses into a hamburger menu or drawer.",
+          "Test tap targets for top-level nav items (noted as small in prescan).",
+          "Hover over 'Privacy score' to check for tooltips explaining the metric."
+        ],
+        "exit_criteria": [
+          "Mobile menu opens/closes correctly.",
+          "All dashboard cards are visible and legible on desktop and mobile."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Activity Controls & Toggles",
+        "objective": "Test the interaction design of privacy toggles and detailed history views.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Navigate to 'Activity history' via sidebar.",
+          "Interact with 'Web & App Activity' toggle: Verify immediate visual feedback (color change).",
+          "Click 'Manage' or 'Details' on Search/Location history: Validate the list view layout.",
+          "Test 'Delete' buttons on individual activity items (mock action).",
+          "Verify 'Auto-delete' settings modal opens and allows selection of timeframes."
+        ],
+        "exit_criteria": [
+          "Toggles provide clear On/Off state indication.",
+          "Detail views load without layout shift.",
+          "Mock delete actions trigger expected success/error toasts or modals."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Privacy Checkup Flow",
+        "objective": "Evaluate the guided experience for improving privacy settings.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Start' on the Privacy Checkup card.",
+          "Step through at least two recommendations (e.g., 'Review activity saving', 'Ad personalization').",
+          "Verify progress indicator updates as steps are completed.",
+          "Check if the 'Privacy score' on the dashboard updates after completion."
+        ],
+        "exit_criteria": [
+          "Checkup flow is linear and easy to follow.",
+          "Completion state is clearly communicated."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "High-Risk Actions & Safety",
+        "objective": "Ensure destructive paths have adequate friction and clarity.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Navigate to 'Settings' or 'Data controls' to find 'Delete Account'.",
+          "Trigger 'Delete Account': Verify the presence of a blocking modal.",
+          "Test the 'Cancel' vs 'Confirm' path in the modal.",
+          "Initiate 'Export Data': Check form fields for file format selection and email confirmation.",
+          "Verify warning colors (red/yellow) are used appropriately for these sections."
+        ],
+        "exit_criteria": [
+          "Cannot accidentally delete account without explicit multi-step confirmation.",
+          "Export form validates input before submission."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Full coverage of index.html states (Overview, History, Settings, Checkup).",
+      "features": "All toggles, modals, and sidebar navigation items exercised.",
+      "mobile": "Critical paths (Nav, Toggles, Modals) repeated on mobile viewport."
+    },
+    "notes": [
+      "Pay attention to the 'small_tap_target' warnings from the prescan during the mobile phase; document any misclicks.",
+      "Since this is a demo, network requests will be mocked; focus on UI feedback (spinners, toasts) rather than backend latency."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Account Privacy Dashboard",
+      "url": "file:///Users/timchef/UXBench/websites/privacy-dashboard/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Account Privacy Data controls Apps Devices Search Ctrl K Help A Alex A Alex Carter Personal account 74 Privacy score 3 recommendations open Overview Activity history Data controls Ad personalization App access Devices & locations Export data Settings ACCOUNT PRIVACY Privacy dashboard Review saved activity, manage controls, clear history, and prepare a portable copy of your account data. Privacy checkup Export data i This demo uses sample activity only. No real account data is read, stored, or transmitted. Saved items 204 Across search, browsing, location, voice, and app usage Controls active 4 of 6 Activity saving settings currently enabled Auto-delete 18 months Applies to activity categories that support retention limits Connected apps 7 2 apps have broad account permissions Privacy checkup Finish the remaining recommendations to improve this account profile. Start Review activity savin",
+      "headings": [
+        "Privacy dashboard",
+        "Privacy checkup",
+        "Activity by category",
+        "Search history",
+        "Browsing history",
+        "Location history",
+        "Voice activity",
+        "Recent activity",
+        "Recommendations",
+        "12 activity items"
+      ],
+      "counts": {
+        "buttons": 125,
+        "links": 5,
+        "inputs": 34,
+        "forms": 1,
+        "dialogs": 3
+      },
+      "top_interactables": [
+        "clickable:a:Account privacy home",
+        "clickable:a:Privacy",
+        "clickable:a:Data controls",
+        "clickable:a:Apps",
+        "clickable:a:Devices",
+        "clickable:button:Search privacy dashboard",
+        "clickable:button:Open help",
+        "clickable:button:Account menu",
+        "clickable:button:Overview",
+        "clickable:button:Activity history",
+        "clickable:button:Data controls",
+        "clickable:button:Ad personalization",
+        "clickable:button:App access",
+        "clickable:button:Devices & locations",
+        "clickable:button:Export data",
+        "clickable:button:Settings"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

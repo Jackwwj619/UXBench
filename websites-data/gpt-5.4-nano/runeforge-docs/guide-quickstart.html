@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quickstart — Runeforge</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="light">
+<header class="topnav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 32 32" width="22" height="22"><path d="M16 4 L 28 12 L 28 24 L 16 30 L 4 24 L 4 12 Z" fill="none" stroke="#7C3AED" stroke-width="2"/><path d="M16 10 L 22 14 L 22 20 L 16 22 L 10 20 L 10 14 Z" fill="#F59E0B" opacity="0.7"/></svg></span>
+      <span class="brand-name">Runeforge</span>
+      <span class="brand-version">v3.4</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="active">Docs</a><a href="api-reference.html">API</a><a href="examples.html">Examples</a><a href="#">Blog</a><a href="#">Community</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="search-trigger" id="searchTrigger"><span>Search docs</span><kbd>⌘K</kbd></button>
+      <select class="version-select"><option>v3.4 (latest)</option><option>v3.3</option><option>v3.2</option><option>v2 (legacy)</option></select>
+      <button class="icon-btn" id="themeToggle">☾</button>
+      <a href="#" class="icon-btn">★ 18.4k</a>
+    </div>
+  </div>
+</header>
+
+<div class="docs-layout">
+  <aside class="docs-toc">
+    <div class="toc-section">
+      <h4>Getting started</h4>
+      <a href="index.html" class="toc-item">Introduction</a>
+      <a href="guide-quickstart.html" class="toc-item active">Quickstart (5 min)</a>
+      <a href="#" class="toc-item">Why Runeforge?</a>
+      <a href="#" class="toc-item">Installation</a>
+      <a href="#" class="toc-item">Migration from Redux</a>
+    </div>
+    <div class="toc-section">
+      <h4>Core concepts</h4>
+      <a href="guide-stores.html" class="toc-item">Stores</a>
+      <a href="guide-actions.html" class="toc-item">Actions &amp; selectors</a>
+      <a href="#" class="toc-item">Subscriptions</a>
+      <a href="#" class="toc-item">Composition &amp; slicing</a>
+      <a href="#" class="toc-item">Async &amp; effects</a>
+      <a href="#" class="toc-item">Persistence</a>
+      <a href="#" class="toc-item">Devtools</a>
+    </div>
+    <div class="toc-section">
+      <h4>Framework adapters</h4>
+      <a href="#" class="toc-item">React</a><a href="#" class="toc-item">Solid</a><a href="#" class="toc-item">Svelte 5</a><a href="#" class="toc-item">Vue 3</a><a href="#" class="toc-item">Vanilla JS / web components</a>
+    </div>
+    <div class="toc-section">
+      <h4>Reference</h4>
+      <a href="api-reference.html" class="toc-item">API reference</a><a href="#" class="toc-item">Type definitions</a><a href="#" class="toc-item">Errors</a><a href="#" class="toc-item">Changelog</a>
+    </div>
+  </aside>
+
+  <main class="docs-main">
+    <nav class="breadcrumbs"><a href="index.html">Docs</a> <span>›</span> <a href="index.html">Getting started</a> <span>›</span> <span>Quickstart</span></nav>
+
+    <span class="page-eyebrow">Quickstart · 5 minutes</span>
+    <h1 id="quickstart">From zero to a working app.</h1>
+
+    <p class="lede">In the next five minutes you'll install Runeforge, build a counter, build a todo list, and wire up an async fetcher. By the end you'll have used 90% of the API.</p>
+
+    <div class="callout callout-info">
+      <strong>Prerequisites:</strong> Node 20+ (or Bun). The examples use React but everything maps 1:1 to Solid, Svelte, Vue, and vanilla JS.
+    </div>
+
+    <h2 id="step-1">Step 1 · Install</h2>
+    <p>Create a fresh app with whatever template you like. Then install Runeforge and the React adapter.</p>
+    <pre class="code-block"><span class="c"># inside your app directory</span>
+npm install runeforge @runeforge/react</pre>
+
+    <h2 id="step-2">Step 2 · A counter store</h2>
+    <p>The smallest useful store has one piece of state and one action. Both are inferred from the object you pass to <code>forge()</code>.</p>
+
+    <pre class="code-block"><span class="c">// stores/counter.ts</span>
+<span class="k">import</span> { forge } <span class="k">from</span> <span class="s">"runeforge"</span>;
+
+<span class="k">export const</span> counter = <span class="n">forge</span>({
+  state: { count: <span class="num">0</span> },
+  actions: {
+    <span class="n">increment</span>: (s) =&gt; ({ count: s.count + <span class="num">1</span> }),
+    <span class="n">decrement</span>: (s) =&gt; ({ count: s.count - <span class="num">1</span> }),
+    <span class="n">reset</span>:     ()  =&gt; ({ count: <span class="num">0</span> }),
+  },
+});</pre>
+
+    <p>Use it in a component with <code>useStore</code>:</p>
+
+    <pre class="code-block"><span class="c">// Counter.tsx</span>
+<span class="k">import</span> { useStore } <span class="k">from</span> <span class="s">"@runeforge/react"</span>;
+<span class="k">import</span> { counter } <span class="k">from</span> <span class="s">"./stores/counter"</span>;
+
+<span class="k">export function</span> <span class="n">Counter</span>() {
+  <span class="k">const</span> count = <span class="n">useStore</span>(counter, (s) =&gt; s.count);
+  <span class="k">return</span> (
+    &lt;div&gt;
+      &lt;h2&gt;{count}&lt;/h2&gt;
+      &lt;button onClick={counter.<span class="n">decrement</span>}&gt;-&lt;/button&gt;
+      &lt;button onClick={counter.<span class="n">increment</span>}&gt;+&lt;/button&gt;
+      &lt;button onClick={counter.<span class="n">reset</span>}&gt;reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+
+    <p>Notice three things:</p>
+    <ul>
+      <li>No provider. The store is just an import — it's already global.</li>
+      <li>The component subscribes to a <em>selector</em> (<code>s.count</code>), not the whole store. If another part of state changed, this component would not re-render.</li>
+      <li>Actions are called like ordinary methods. There's no <code>dispatch()</code>.</li>
+    </ul>
+
+    <h2 id="step-3">Step 3 · A todo list (and a derived store)</h2>
+    <p>For richer state, use a slice for <code>todos</code> and another for the <code>filter</code>. Then derive a third store that combines them.</p>
+
+    <pre class="code-block"><span class="c">// stores/todos.ts</span>
+<span class="k">import</span> { forge, derive } <span class="k">from</span> <span class="s">"runeforge"</span>;
+
+<span class="k">export const</span> todos = <span class="n">forge</span>({
+  state: { items: [] <span class="k">as</span> { id: number; text: string; done: boolean }[] },
+  actions: {
+    <span class="n">add</span>:    (s, text: string)         =&gt; ({ items: [...s.items, { id: Date.now(), text, done: false }] }),
+    <span class="n">toggle</span>: (s, id: number)           =&gt; ({ items: s.items.map(t =&gt; t.id === id ? { ...t, done: !t.done } : t) }),
+    <span class="n">remove</span>: (s, id: number)           =&gt; ({ items: s.items.filter(t =&gt; t.id !== id) }),
+    <span class="n">clear</span>:  (s)                        =&gt; ({ items: s.items.filter(t =&gt; !t.done) }),
+  },
+});
+
+<span class="k">export const</span> filter = <span class="n">forge</span>({
+  state: { mode: <span class="s">"all"</span> <span class="k">as</span> <span class="s">"all"</span> | <span class="s">"active"</span> | <span class="s">"done"</span> },
+  actions: {
+    <span class="n">setMode</span>: (s, mode) =&gt; ({ mode }),
+  },
+});
+
+<span class="c">// derive() runs only when its inputs change.</span>
+<span class="k">export const</span> visibleTodos = <span class="n">derive</span>([todos, filter], (t, f) =&gt; {
+  <span class="k">if</span> (f.mode === <span class="s">"all"</span>)    <span class="k">return</span> t.items;
+  <span class="k">if</span> (f.mode === <span class="s">"active"</span>) <span class="k">return</span> t.items.filter(x =&gt; !x.done);
+  <span class="k">return</span> t.items.filter(x =&gt; x.done);
+});</pre>
+
+    <p>In the component, you subscribe to the derived store the same way you subscribe to a regular one:</p>
+
+    <pre class="code-block"><span class="k">const</span> visible = <span class="n">useStore</span>(visibleTodos);
+<span class="k">return</span> visible.map(t =&gt; &lt;Todo key={t.id} todo={t} /&gt;);</pre>
+
+    <h2 id="step-4">Step 4 · Async (the easy way)</h2>
+    <p>Async work belongs in <em>effects</em>. Effects can read and write any store, await whatever they want, and report status into a status field. Runeforge ships an <code>asyncSlice()</code> helper that gives you a typed status object for free.</p>
+
+    <pre class="code-block"><span class="k">import</span> { forge, asyncSlice } <span class="k">from</span> <span class="s">"runeforge"</span>;
+
+<span class="k">export const</span> users = <span class="n">forge</span>({
+  state: { ...asyncSlice&lt;User[]&gt;() },
+  actions: {
+    <span class="k">async</span> <span class="n">load</span>(s) {
+      <span class="k">if</span> (s.status === <span class="s">"loading"</span>) <span class="k">return</span> s;
+      <span class="k">try</span> {
+        <span class="k">const</span> r = <span class="k">await</span> fetch(<span class="s">"/api/users"</span>);
+        <span class="k">const</span> data = <span class="k">await</span> r.json();
+        <span class="k">return</span> { status: <span class="s">"ready"</span>, data, error: <span class="k">null</span> };
+      } <span class="k">catch</span> (e) {
+        <span class="k">return</span> { status: <span class="s">"error"</span>, data: <span class="k">null</span>, error: e.message };
+      }
+    },
+  },
+});</pre>
+
+    <p>Inside the component:</p>
+
+    <pre class="code-block"><span class="k">const</span> { status, data, error } = <span class="n">useStore</span>(users);
+<span class="k">useEffect</span>(() =&gt; { users.<span class="n">load</span>(); }, []);
+
+<span class="k">if</span> (status === <span class="s">"loading"</span>) <span class="k">return</span> &lt;Spinner /&gt;;
+<span class="k">if</span> (status === <span class="s">"error"</span>)   <span class="k">return</span> &lt;Error msg={error} /&gt;;
+<span class="k">return</span> &lt;UserList users={data} /&gt;;</pre>
+
+    <h2 id="step-5">Step 5 · Devtools (optional, but you want this)</h2>
+    <p>Add the devtools middleware once. From then on, every action shows up in the Runeforge browser extension with a diff, a stack trace, and a "go back to here" button.</p>
+
+    <pre class="code-block"><span class="k">import</span> { devtools } <span class="k">from</span> <span class="s">"runeforge/devtools"</span>;
+<span class="n">devtools</span>({ name: <span class="s">"My App"</span> });</pre>
+
+    <h2 id="done">You're done.</h2>
+    <p>That's the whole library. Most apps never reach for the advanced features (atoms, snapshots, time-travel, persistence). When you need them, the patterns work the same way — they're built on the same three concepts.</p>
+
+    <div class="callout callout-success">
+      <strong>What now?</strong> Browse the <a href="api-reference.html">API reference</a> for exact signatures, or open <a href="examples.html">Examples</a> for full apps you can fork.
+    </div>
+
+    <nav class="page-pager">
+      <a class="pager-prev" href="index.html">
+        <span class="pager-label">Previous</span>
+        <strong>← Introduction</strong>
+      </a>
+      <a class="pager-next" href="guide-stores.html">
+        <span class="pager-label">Next</span>
+        <strong>Stores →</strong>
+      </a>
+    </nav>
+  </main>
+
+  <aside class="page-toc">
+    <div class="ptoc-label">On this page</div>
+    <a href="#quickstart" class="ptoc-link active">Quickstart</a>
+    <a href="#step-1" class="ptoc-link ptoc-sub">1 · Install</a>
+    <a href="#step-2" class="ptoc-link ptoc-sub">2 · A counter store</a>
+    <a href="#step-3" class="ptoc-link ptoc-sub">3 · Todo list &amp; derived store</a>
+    <a href="#step-4" class="ptoc-link ptoc-sub">4 · Async (the easy way)</a>
+    <a href="#step-5" class="ptoc-link ptoc-sub">5 · Devtools</a>
+    <a href="#done" class="ptoc-link ptoc-sub">You're done</a>
+    <hr/>
+    <a href="#" class="ptoc-meta">Edit this page on GitHub →</a>
+  </aside>
+</div>
+
+<dialog id="searchDialog" class="search-dialog">
+  <input type="text" id="searchInput" placeholder="Search docs, API, examples…" />
+  <div class="search-hint">↑ ↓ to navigate · ↵ to open · esc to dismiss</div>
+  <ul class="search-results" id="searchResults"></ul>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>

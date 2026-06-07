@@ -1,0 +1,224 @@
+{
+  "plan": {
+    "goal": "Evaluate the UX of the Lattice DB pricing model, specifically focusing on the usability and clarity of the two-dimensional matrix selector, add-on logic, and mobile responsiveness.",
+    "summary": "The run will start on the landing page to verify navigation and value proposition, then move to the pricing page for deep interaction with the 6x6 matrix. It will validate that clicking cells correctly updates the sticky quote card, highlights corresponding tiers, and handles 'Contact us' edge cases. Finally, it will audit the feature comparison table and FAQ before repeating critical matrix interactions on a mobile viewport to check for layout breakage.",
+    "assumptions": [
+      "The 'Docs', 'Customers', and 'Sign in' links are placeholders (#) or external and may not load internal content.",
+      "The pricing matrix relies entirely on client-side JavaScript (script.js) for state management; console errors during interaction are high-priority findings.",
+      "The 'sticky quote card' on the right side of the pricing page is the primary feedback mechanism for user selection."
+    ],
+    "target_pages": [
+      "index.html",
+      "pricing.html"
+    ],
+    "risk_hotspots": [
+      "pricing.html: The 6x6 matrix grid - ensuring click targets are large enough and state updates are instant.",
+      "pricing.html: Sticky quote card - verifying it doesn't obscure content on smaller desktop heights or mobile.",
+      "pricing.html: Add-on checkboxes - validating that percentage vs. flat fee calculations are clear in the final breakdown.",
+      "Mobile Viewport: The horizontal scrollability or stacking of the wide pricing matrix."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing Page & Navigation Audit",
+        "objective": "Verify initial load performance, visual hierarchy, and navigation integrity.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Validate 'See pricing' CTA leads to pricing.html.",
+          "Check hover states on all nav links.",
+          "Verify code snippet block is readable and properly formatted.",
+          "Confirm no layout shifts occur on load."
+        ],
+        "exit_criteria": [
+          "Successfully navigated to pricing.html via CTA.",
+          "No console errors on index.html load."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Pricing Matrix Core Interaction",
+        "objective": "Test the primary user flow: selecting a seat/volume combination and observing state changes.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Click various cells in the middle of the matrix (e.g., 6-15 seats, 50-250GB).",
+          "Verify the selected cell highlights visually (row/column highlight).",
+          "Confirm the 'Sticky Quote Card' updates with the correct price immediately.",
+          "Click a 'Contact us' cell (edge case) and verify appropriate messaging.",
+          "Check if the 'Tier' indicator below the matrix updates to match the selected cell's tier."
+        ],
+        "exit_criteria": [
+          "At least 5 different matrix cells interacted with.",
+          "Quote card updates verified for standard and 'Contact us' scenarios."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Add-ons & Calculation Transparency",
+        "objective": "Validate the secondary pricing controls and the transparency of the final cost.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Toggle 'How this is calculated' expansion in the quote card.",
+          "Select multiple add-ons (mix of % and flat fees).",
+          "Verify the 'Final monthly-fee breakdown' reflects these additions accurately.",
+          "Deselect add-ons to ensure price reverts correctly.",
+          "Check for any visual overlap between the quote card and the matrix when scrolling."
+        ],
+        "exit_criteria": [
+          "All 9 add-on types toggled at least once.",
+          "Price calculation logic appears consistent in the UI."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Content Depth & Support Info",
+        "objective": "Review the static content sections for clarity and accessibility.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Scan the 15-row feature comparison matrix for readability.",
+          "Expand/Collapse FAQ items to check for smooth animation and content visibility.",
+          "Verify footer links are present and styled correctly."
+        ],
+        "exit_criteria": [
+          "FAQ accordion functionality tested.",
+          "Feature matrix legibility confirmed."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Responsiveness & Recovery",
+        "objective": "Repeat critical path tests on mobile viewport to identify layout failures.",
+        "target_pages": [
+          "index.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE or Pixel 5 dimensions).",
+          "Check if the 6x6 matrix becomes horizontally scrollable or stacks poorly.",
+          "Verify the 'Sticky Quote Card' behavior on mobile (does it stick? does it block view?).",
+          "Test tap targets for matrix cells (prescan indicated small tap targets on desktop nav; check matrix cells specifically).",
+          "Re-run a basic selection flow (Phase 2) on mobile."
+        ],
+        "exit_criteria": [
+          "Critical pricing flow functional on mobile.",
+          "No horizontal layout breakage outside of intended scrolling areas."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of known HTML files (index.html, pricing.html)",
+      "features": "Interact with >80% of matrix cells, toggle all add-ons, expand all FAQs",
+      "mobile": "Full regression of Phase 2 and 3 on mobile viewport"
+    },
+    "notes": [
+      "Prescan flagged multiple 'small_tap_target' warnings on the nav bar; keep an eye out for similar issues on the matrix cells themselves, especially on mobile.",
+      "Since this is a local file demo, network requests will be minimal; focus heavily on DOM manipulation and CSS rendering performance."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Lattice DB — Analytics database",
+      "url": "file:///Users/timchef/UXBench/websites/lattice/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Lattice DB Platform Pricing Docs Customers Sign in Book demo The relational column-store for teams that want both axes priced honestly. Lattice DB combines a Postgres-compatible API with a Parquet-backed analytical engine. Mix transactional and analytical workloads without a separate warehouse. SELECT region, sum(revenue) AS r FROM orders JOIN customers USING (customer_id) WHERE order_date >= now() - interval '30 days' GROUP BY region ORDER BY r DESC; Postgres wire Drop in any pg client. We speak the protocol. Columnar under the hood Vectorized execution. Late materialization. Zone maps. Pay for the cell you live in Pricing on team size × data size. No phantom add-ons. See pricing Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "The relational column-store for teams that want both axes priced honestly.",
+        "Postgres wire",
+        "Columnar under the hood",
+        "Pay for the cell you live in"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 8,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Lattice DB",
+        "clickable:a:Platform",
+        "clickable:a:Pricing",
+        "clickable:a:Docs",
+        "clickable:a:Customers",
+        "clickable:a:Sign in",
+        "clickable:a:Book demo",
+        "clickable:a:See pricing"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "pricing.html",
+      "title": "Lattice DB — Pricing",
+      "url": "file:///Users/timchef/UXBench/websites/lattice/pricing.html",
+      "load_error": null,
+      "visible_text_excerpt": "Lattice DB Platform Pricing Docs Customers Sign in Book demo Pricing scales on two axes — pick a cell. Row by team size. Column by data volume. The number where they meet is what you'll pay each month. Up to 50 GB 50 – 250 GB 250 GB – 1 TB 1 – 5 TB 5 – 20 TB 20 TB+ Up to 5 seats $89 $169 $320 $659 $1,335 Contact us 6 – 15 seats $160 $304 $577 $1,185 $2,403 Contact us 16 – 40 seats $285 $541 $1,025 $2,108 $4,272 Contact us 41 – 100 seats $543 $1,032 $1,954 $4,017 $8,144 Contact us 101 – 300 seats $1,024 $1,945 $3,685 $7,574 $15,353 Contact us 301+ seats Contact us Contact us Contact us Contact us Contact us Contact us SELECTED CELL $304 Tier · Developer How we got this number ADD-ONS Continuous cross-region backups +15% HIPAA compliance pack +$400/mo SOC 2 reporting incl. Team+ PrivateLink / VPC peering +$120/mo Dedicated support engineer +$2,500/mo GPU acceleration pool (per GPU-hour) +$",
+      "headings": [
+        "Pricing scales on two axes — pick a cell.",
+        "What tier are you in?",
+        "Developer",
+        "Team",
+        "Scale",
+        "Enterprise",
+        "Feature matrix",
+        "FAQ"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 16,
+        "inputs": 9,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Lattice DB",
+        "clickable:a:Platform",
+        "clickable:a:Pricing",
+        "clickable:a:Docs",
+        "clickable:a:Customers",
+        "clickable:a:Sign in",
+        "clickable:a:Book demo",
+        "other:td:$89",
+        "other:td:$169",
+        "other:td:$320",
+        "other:td:$659",
+        "other:td:$1,335",
+        "other:td:Contact us",
+        "other:td:$160",
+        "other:td:$304",
+        "other:td:$577"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

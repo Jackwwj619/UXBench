@@ -1,0 +1,457 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the MeadowID identity dashboard’s primary settings/privacy flow (security/recovery) and adjacent security controls across all known pages, including key interactive states and mobile usability.",
+    "summary": "Start on index.html to validate the end-to-end “security check / recovery readiness” story and how it links into connected apps, active sessions, and passkeys. Then move through connected-apps.html, devices.html, passkeys.html, data-export.html, and freeze.html to validate core actions (search/filter/sort, revoke/end sessions, add/remove/reveal recovery factors, export flow, and freeze behavior). Repeat critical checks on mobile to confirm navigation, tap targets, and multi-step flows remain usable.",
+    "assumptions": [
+      "All pages are static HTML with client-side interactions (no backend); actions like Revoke/End all other sessions likely trigger in-page confirmation/dialog states.",
+      "Sidebar navigation is consistent across pages via the left rail links shown in the prescan (Overview, Connected apps, Active sessions, Passkeys & 2FA, Export your data, Freeze account, plus Profile/Billing placeholders).",
+      "The “Recovery readiness” items on the Overview page link to relevant pages or anchors (e.g., verify now, Configure, Add passkey, Open)."
+    ],
+    "target_pages": [
+      "index.html",
+      "connected-apps.html",
+      "devices.html",
+      "passkeys.html",
+      "data-export.html",
+      "freeze.html"
+    ],
+    "risk_hotspots": [
+      "index.html: 'Dismiss all' and 'Run security check' controls—validate whether they change alert list state and whether 'verify now'/'Configure' lead to the correct pages/sections.",
+      "connected-apps.html: Revoke button—validate confirmation behavior and whether revocation updates list/cards and any scope-chip highlighting.",
+      "connected-apps.html: Search apps input and category/sort controls—validate labels, empty states, and that filtering/sorting updates results.",
+      "devices.html: 'End all other sessions' button—validate confirmation and that the current session remains (only other sessions end).",
+      "passkeys.html: Remove / Re-pair / Reveal & download / Backup factors—validate sensitive flows (especially Reveal & download and confirmation), and recovery email verification inputs ('Send verification').",
+      "data-export.html: 4-step wizard (Pick categories → Format & filters → Schedule → Review)—validate required fields, draft/continue behaviors, and correct handling of privacy/security claims (link expires 48h) even if simulated.",
+      "freeze.html: Freeze switch and unfreeze requirements (password + passkey/backup code)—validate that freeze state changes the availability/behavior of other controls where applicable.",
+      "Mobile usability: prescan flags multiple small tap targets on nav tiles/alerts links; validate on mobile viewport that key actions remain tappable and not mis-tapped."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Overview security & navigation integrity",
+        "objective": "Validate the primary security/recovery narrative on index.html and confirm that key CTAs route to the correct adjacent flows with consistent state.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use sidebar links to navigate to Connected apps, Active sessions, Passkeys & 2FA, Export your data, Freeze account; confirm the correct active section styling/consistency after returning to Overview.",
+          "Click 'Run security check' and verify whether the 'Things to look at' alert list changes (e.g., refreshes, re-renders, or scrolls to results).",
+          "Interact with 'Dismiss all' and confirm whether it hides alerts and whether alerts can be restored (e.g., by running security check again).",
+          "Click 'Review' near the unfamiliar session and validate it routes to devices.html with the relevant session context.",
+          "Click 'Add passkey' near the SMS backup factor warning and validate it routes to passkeys.html.",
+          "Click 'Open' for 'Atlas Notes hasn't been used...' and validate it routes to connected-apps.html and highlights/filters to the relevant app category (if supported).",
+          "Click 'verify now' in recovery readiness and confirm whether it brings up the correct verification control on the passkeys page (or an in-page flow)."
+        ],
+        "exit_criteria": [
+          "All major CTAs on Overview have been clicked at least once and each lands on the correct target page/section without dead ends.",
+          "The alert dismissal and security check behaviors are observed and recorded (visible changes or documented lack of change).",
+          "Navigation consistency is confirmed: returning to Overview preserves or resets state predictably."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Connected apps: search/filter/sort and revoke safety",
+        "objective": "Validate the connected apps management experience: filtering/sorting/search correctness and the safety/clarity of revocation actions.",
+        "target_pages": [
+          "connected-apps.html"
+        ],
+        "key_checks": [
+          "Use 'Search apps…' input to search by app name (e.g., partial) and confirm results update live or on submit.",
+          "Change category filter ('All categories' and other visible categories) and confirm the result set updates.",
+          "Switch sort modes ('Recently used', 'Name A→Z', 'Date added') and validate ordering changes.",
+          "Verify scope chips display correctly and that sensitive scope chips (highlighted per prescan) are visually distinguishable.",
+          "Click 'Revoke' for at least one app card; validate confirmation dialog/text and that cancelling does not change state.",
+          "Confirm revocation path (if possible): after confirming, verify the card/list updates to reflect token removal or a 'revoked' state."
+        ],
+        "exit_criteria": [
+          "Search + category filter + sort each produce observable, correct changes in the app list.",
+          "Revoke flow has been tested for both cancel and confirm, with safe confirmation behavior."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Active sessions: session details and ending other sessions",
+        "objective": "Validate session management: discoverability of session detail interaction and the correctness/safety of 'End all other sessions'.",
+        "target_pages": [
+          "devices.html"
+        ],
+        "key_checks": [
+          "Use 'End all other sessions' and validate confirmation messaging and resulting UI state (only other sessions end; current session remains).",
+          "Click a session row and/or pin (as suggested by text: 'Click a pin or a row to see what it can do') to reveal session capabilities/details; verify expected content appears and is dismissible.",
+          "Use 'See all' if present and confirm it doesn’t break navigation or duplicate content."
+        ],
+        "exit_criteria": [
+          "At least one session detail interaction is tested and the relevant details panel/expansion is visible.",
+          "Ending other sessions produces observable UI change consistent with safety expectations."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Passkeys & recovery: add/remove/reveal and verification",
+        "objective": "Validate passkeys and recovery factor management, especially sensitive actions (Remove, Reveal & download) and recovery email verification.",
+        "target_pages": [
+          "passkeys.html"
+        ],
+        "key_checks": [
+          "Click '+ Add a passkey' and observe whether it initiates a multi-step flow, shows required steps, or at minimum gives a clear next action.",
+          "For each passkey card: click 'Remove' and validate confirmation; if confirmation proceeds, verify UI updates (count decreases or status changes).",
+          "Click 'Re-pair' (for the backup key) and validate what information is required and whether errors/guards appear.",
+          "Click 'Reveal & download' for 'Backup codes' and verify that it requires appropriate confirmation and that the revealed codes area is handled safely (no auto-persistent reveal without confirmation).",
+          "Test recovery email verification: type into the email input (e.g., current value) and click 'Send verification'; validate success/error feedback.",
+          "Remove/reorder backup factors where available (e.g., SMS 'Risky Remove') to ensure warnings are clear and actions are reversible/cancelable."
+        ],
+        "exit_criteria": [
+          "Sensitive flows (Remove and Reveal & download) have been tested for cancel/confirm and show safe confirmation and feedback.",
+          "Recovery email verification shows appropriate success/error UI and remains usable after the action."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Data export wizard: multi-step completeness and draft/continue",
+        "objective": "Validate the end-to-end export experience: category selection, format & filters, scheduling, and the review/request steps including draft behavior.",
+        "target_pages": [
+          "data-export.html"
+        ],
+        "key_checks": [
+          "Step 1 (Pick categories): select/deselect multiple categories and validate estimated size updates (if shown live).",
+          "Step 2 (Format & filters): interact with visible filter/format controls (from prescan: multiple inputs) and confirm they change the summary.",
+          "Step 3 (Schedule): set scheduling options (frequency/when) if available; validate constraints and time-based messaging (if simulated).",
+          "Use 'Save as draft' and verify the draft state is persisted in UI (e.g., a 'draft' confirmation or ability to continue).",
+          "Use 'Continue' through steps to 'Review & request' and validate the final request/validation messaging (e.g., link email expiry 48 hours is mentioned).",
+          "Use 'Back' to ensure step navigation preserves selections."
+        ],
+        "exit_criteria": [
+          "All wizard steps are reached, with selections preserved when moving Back/Continue.",
+          "Save as draft produces observable feedback and does not break the ability to complete the request."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Freeze account: freeze semantics and impact on system controls",
+        "objective": "Validate the freeze mechanism and its stated impact (blocking sign-ins, rejecting tokens, reversible unfreeze requirements).",
+        "target_pages": [
+          "freeze.html"
+        ],
+        "key_checks": [
+          "Find and toggle the 'Freeze switch' control (prescan shows 1 input); validate whether freeze enters an active/frozen state with clear labeling.",
+          "If freeze activates, validate that related controls elsewhere are disabled or show messaging (at least confirm within the freeze page that 'What freezing does' is reflected in UI).",
+          "Click 'Request deletion' (link present) and confirm it either routes safely or clearly indicates it’s not part of freezing.",
+          "Attempt to unfreeze (if flow exists) and validate that it requests the required factors (password + passkey or backup code) with clear guidance."
+        ],
+        "exit_criteria": [
+          "Freeze switch produces a clearly observable state change and explains next actions to unfreeze.",
+          "Unfreeze path is validated for required confirmation/inputs (or an explicit stub state if this is a demo)."
+        ]
+      },
+      {
+        "id": "phase-7",
+        "title": "Mobile regression sweep (critical paths only)",
+        "objective": "Ensure the core security flows and navigational CTAs remain usable on mobile viewport, addressing small tap target warnings flagged in prescan.",
+        "target_pages": [
+          "index.html",
+          "connected-apps.html",
+          "devices.html",
+          "passkeys.html"
+        ],
+        "key_checks": [
+          "On mobile viewport, repeat clicking each primary tile/CTA from Overview: 'Run security check', 'Dismiss all', 'Review', 'Add passkey', 'Open', 'verify now'.",
+          "On connected-apps: use search input and apply a category/sort change; confirm no controls become inaccessible due to tap targets.",
+          "On devices: tap 'End all other sessions' and confirm no accidental mis-taps; test session detail expansion via row/pin.",
+          "On passkeys: tap '+ Add a passkey', 'Reveal & download', and recovery email 'Send verification' and verify the flows remain legible and tappable.",
+          "Check that left rail navigation (or its mobile variant) works without trapping users or hiding content."
+        ],
+        "exit_criteria": [
+          "No critical actions become impossible to trigger on mobile.",
+          "Key multi-step/sensitive actions are still confirmable and provide visible feedback."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages: index.html, connected-apps.html, devices.html, passkeys.html, data-export.html, freeze.html.",
+      "features": "Exercise most visible controls per key page: Overview CTAs/alert controls; Connected apps search/filter/sort + at least one Revoke; Active sessions session detail + End all other sessions; Passkeys add/remove/re-pair/reveal + backup factors + recovery email verification; Export wizard across steps + draft/back/continue; Freeze switch + unfreeze requirement messaging.",
+      "mobile": "Repeat critical checks on mobile viewport for Overview CTAs, Connected apps search/filter/sort, Active sessions end-other-sessions + session detail, and Passkeys sensitive/recovery actions."
+    },
+    "notes": [
+      "Prescan flagged many 'small_tap_target' issues on the left rail and tiles; prioritize tap accuracy and confirmation dialogs during mobile phase.",
+      "Some sidebar items (Profile/Billing) show href='#' in prescan; treat them as non-core and only validate they do not break navigation flow."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "MeadowID — your identity dashboard",
+      "url": "file:///Users/timchef/UXBench/websites/meadowid/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MeadowID ◐ Overview ⇄ Connected apps ▢ Active sessions ⌘ Passkeys & 2FA ↓ Export your data ❄ Freeze account MORE ⚙ Profile ⚙ Billing JT Jamal Tarrant jamal@thirdpond.dev Overview A single view of every place your MeadowID is in use. Verified 9 minutes ago. Run security check Connected apps 14 2 added this month Active sessions 6 1 unfamiliar location Passkeys 3 All recently used Trust score 82/100 Recovery email not verified Things to look at Dismiss all ⚠ Session from Reykjavík, Iceland Signed in 2 days ago from a network you haven't used before (Síminn 4G). If this wasn't you, end it. Review 🔑 You're still using SMS as a backup factor Add a passkey or a hardware key so a stolen SIM can't lock you out. Add passkey 📦 Atlas Notes hasn't been used since Aug 2024 Apps that haven't checked in for 6+ months keep a token. Revoke if you don't recognize this. Open Latest sign-ins See all WHEN WH",
+      "headings": [
+        "Overview",
+        "Things to look at",
+        "Latest sign-ins",
+        "Recovery readiness"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 15,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:◐ Overview",
+        "clickable:a:⇄ Connected apps",
+        "clickable:a:▢ Active sessions",
+        "clickable:a:⌘ Passkeys & 2FA",
+        "clickable:a:↓ Export your data",
+        "clickable:a:❄ Freeze account",
+        "clickable:a:⚙ Profile",
+        "clickable:a:⚙ Billing",
+        "clickable:button:Run security check",
+        "clickable:a:Dismiss all",
+        "clickable:a:Review",
+        "clickable:a:Add passkey",
+        "clickable:a:Open",
+        "clickable:a:See all",
+        "clickable:a:Configure",
+        "clickable:a:verify now"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "connected-apps.html",
+      "title": "Connected apps — MeadowID",
+      "url": "file:///Users/timchef/UXBench/websites/meadowid/connected-apps.html",
+      "load_error": null,
+      "visible_text_excerpt": "MeadowID ◐ Overview ⇄ Connected apps ▢ Active sessions ⌘ Passkeys & 2FA ↓ Export your data ❄ Freeze account JT Jamal Tarrant jamal@thirdpond.dev Connected apps Anything that uses \"Sign in with MeadowID\" or holds an API token. Revoking removes their token immediately. All categories Productivity Developer tools Media Finance Sort: Recently used Sort: Name A→Z Sort: Date added FC Forge Coder Added Mar 12, 2025 · Last active 2 minutes ago profile email read:repos write:repos Bot tokens can act on your behalf without further prompts. Revoke LR Lumen Research Added Oct 04, 2024 · Last active yesterday profile email Read-only profile access. No data is written back. Revoke CA Climate Almanac Added Jan 09, 2025 · Last active 3 days ago profile Profile only — no payments connected. Revoke AN Aurora Network Added Aug 22, 2023 · Last active 4 days ago profile email contacts:read Contacts scope: Au",
+      "headings": [
+        "Connected apps"
+      ],
+      "counts": {
+        "buttons": 10,
+        "links": 6,
+        "inputs": 3,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:◐ Overview",
+        "clickable:a:⇄ Connected apps",
+        "clickable:a:▢ Active sessions",
+        "clickable:a:⌘ Passkeys & 2FA",
+        "clickable:a:↓ Export your data",
+        "clickable:a:❄ Freeze account",
+        "typeable:input:Search apps…",
+        "selectable:select:All categories Productivity Developer tools Media Finance",
+        "selectable:select:Sort: Recently used Sort: Name A→Z Sort: Date added",
+        "clickable:button:Revoke"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "data-export.html",
+      "title": "Export your data — MeadowID",
+      "url": "file:///Users/timchef/UXBench/websites/meadowid/data-export.html",
+      "load_error": null,
+      "visible_text_excerpt": "MeadowID ◐ Overview ⇄ Connected apps ▢ Active sessions ⌘ Passkeys & 2FA ↓ Export your data ❄ Freeze account JT Jamal Tarrant jamal@thirdpond.dev Export your data Build a downloadable archive of everything tied to your MeadowID. We email you a link when it's ready. Links expire after 48 hours. 1 Pick categories 2 Format & filters 3 Schedule 4 Review & request What should we include? Estimated size shown next to each item. Big categories (like uploaded media) can take a while. Account profile Name, email, recovery contacts. ~4 KB Connected apps & tokens 10 apps · ~12 KB Sign-in history Last 18 months · ~280 KB Passkey & 2FA metadata Public keys only — private keys never leave devices. ~6 KB Security audit log All security-impacting events · ~1.4 MB Billing & receipts Receipts, invoices, payment-method labels. ~84 KB Data held on your behalf by connected apps Where the app supports it. Some",
+      "headings": [
+        "Export your data",
+        "What should we include?",
+        "Format and filters",
+        "How often?",
+        "Review"
+      ],
+      "counts": {
+        "buttons": 3,
+        "links": 6,
+        "inputs": 16,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:◐ Overview",
+        "clickable:a:⇄ Connected apps",
+        "clickable:a:▢ Active sessions",
+        "clickable:a:⌘ Passkeys & 2FA",
+        "clickable:a:↓ Export your data",
+        "clickable:a:❄ Freeze account",
+        "clickable:input:Account profile Name, email, recovery contacts. ~4 KB",
+        "clickable:input:Connected apps & tokens 10 apps · ~12 KB",
+        "clickable:input:Sign-in history Last 18 months · ~280 KB",
+        "clickable:input:Passkey & 2FA metadata Public keys only — private keys never leave devices. ~6 KB",
+        "clickable:input:Security audit log All security-impacting events · ~1.4 MB",
+        "clickable:input:Billing & receipts Receipts, invoices, payment-method labels. ~84 KB",
+        "clickable:input:Data held on your behalf by connected apps Where the app supports it. Some apps may take up to 7 days. ~unknown",
+        "clickable:button:Back",
+        "clickable:button:Save as draft",
+        "clickable:button:Continue"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "devices.html",
+      "title": "Active sessions — MeadowID",
+      "url": "file:///Users/timchef/UXBench/websites/meadowid/devices.html",
+      "load_error": null,
+      "visible_text_excerpt": "MeadowID ◐ Overview ⇄ Connected apps ▢ Active sessions ⌘ Passkeys & 2FA ↓ Export your data ❄ Freeze account JT Jamal Tarrant jamal@thirdpond.dev Active sessions Every device currently signed in with your MeadowID. Click a pin or a row to see what it can do. End all other sessions Chrome on macOS · This device Berlin, DE · Started today at 14:02 · MeadowID Web Forge Coder CLI Berlin, DE · Token refreshes hourly MeadowID iOS · iPhone 14 Berlin, DE · Last active 20 min ago Safari on iOS · ⚠ unfamiliar Reykjavík, IS · 2 days ago · review Firefox on Linux New York, US · Lumen Research · 3 days ago Chrome on Android Singapore · OrbitRide · 11 days ago Chrome 124 on macOS Berlin, DE · 89.0.0.0 Started: Today 14:02 Last activity: moments ago App: MeadowID Web Factor: Passkey This is the session you are using right now. Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Active sessions",
+        "Chrome 124 on macOS"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 6,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:◐ Overview",
+        "clickable:a:⇄ Connected apps",
+        "clickable:a:▢ Active sessions",
+        "clickable:a:⌘ Passkeys & 2FA",
+        "clickable:a:↓ Export your data",
+        "clickable:a:❄ Freeze account",
+        "clickable:button:End all other sessions"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "freeze.html",
+      "title": "Freeze account — MeadowID",
+      "url": "file:///Users/timchef/UXBench/websites/meadowid/freeze.html",
+      "load_error": null,
+      "visible_text_excerpt": "MeadowID ◐ Overview ⇄ Connected apps ▢ Active sessions ⌘ Passkeys & 2FA ↓ Export your data ❄ Freeze account JT Jamal Tarrant jamal@thirdpond.dev Freeze account A freeze is the strongest, reversible version of \"stop everything.\" We use it for incidents. It is not the same as deleting your account. What freezing does Every connected app is signed out and rejected until you unfreeze. New tokens cannot be issued. Sign-ins are blocked from every device. You'll need your password and a passkey or backup code to unfreeze. Subscriptions, automatic backups, and recurring data exports are paused. Your data is not deleted. Nothing is shared with apps. You stay billed only if a free trial is converting. What freezing does not do It does not remove sessions on third-party servers that don't honor token revocation (extremely rare; we report these). It does not freeze accounts you opened with email/pas",
+      "headings": [
+        "Freeze account",
+        "What freezing does",
+        "What freezing does not do",
+        "Freeze switch",
+        "Need something more permanent?"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 7,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:◐ Overview",
+        "clickable:a:⇄ Connected apps",
+        "clickable:a:▢ Active sessions",
+        "clickable:a:⌘ Passkeys & 2FA",
+        "clickable:a:↓ Export your data",
+        "clickable:a:❄ Freeze account",
+        "clickable:a:Request deletion"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "passkeys.html",
+      "title": "Passkeys & 2FA — MeadowID",
+      "url": "file:///Users/timchef/UXBench/websites/meadowid/passkeys.html",
+      "load_error": null,
+      "visible_text_excerpt": "MeadowID ◐ Overview ⇄ Connected apps ▢ Active sessions ⌘ Passkeys & 2FA ↓ Export your data ❄ Freeze account JT Jamal Tarrant jamal@thirdpond.dev Passkeys & 2FA A passkey replaces your password on a device. Anything that has a passkey survives a password leak. + Add a passkey Your passkeys 3 active ⌘ iPhone 14 (iCloud Keychain) Created Mar 11, 2025 · Last used 20 min ago Active Remove ⌘ MacBook Pro (Touch ID) Created Mar 11, 2025 · Last used moments ago Active Remove 🗝 YubiKey 5C Nano \"studio\" Created Jun 02, 2024 · Last used 8 days ago Active Remove Backup factors 📱 SMS to +49 ••• ••• 8124 SMS is fragile against SIM-swap attacks. Prefer an authenticator app or a passkey. Risky Remove ⏱ Authenticator app (TOTP) Synced via 1Password · Added Apr 2023 Active Re-pair 📄 Backup codes 10 codes generated · 8 unused · last shown 14 days ago Hidden Reveal & download Recovery Recovery email Not veri",
+      "headings": [
+        "Passkeys & 2FA",
+        "Your passkeys",
+        "Backup factors",
+        "Recovery"
+      ],
+      "counts": {
+        "buttons": 7,
+        "links": 7,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:◐ Overview",
+        "clickable:a:⇄ Connected apps",
+        "clickable:a:▢ Active sessions",
+        "clickable:a:⌘ Passkeys & 2FA",
+        "clickable:a:↓ Export your data",
+        "clickable:a:❄ Freeze account",
+        "clickable:button:+ Add a passkey",
+        "clickable:button:Remove",
+        "clickable:button:Re-pair",
+        "clickable:button:Reveal & download",
+        "typeable:input:jamal.backup@thirdpond.dev",
+        "clickable:a:Send verification",
+        "typeable:input:Ines Tarrant (ines@thirdpond.dev)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "plan": {
+    "goal": "Critique the UX of the cloudflare-radar dashboard, validating primary navigation, filter interactions, chart states, and mobile responsiveness, while checking for layout issues and interaction consistency.",
+    "summary": "Explore the single-page dashboard in phases: validate top navigation and sidebar links, test filter and date-range controls, interact with key cards and charts, check mobile viewport for tap targets and responsiveness, and verify error-free console/network behavior. Prioritize core dashboard flows and layout warnings.",
+    "assumptions": [
+      "The site is a single-page app (SPA) with all content in index.html; interactions trigger JS-based state changes (no new page loads); layout warnings relate to mobile tap target sizes."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets (per layout warnings) on top navigation links (e.g., Overview, Traffic) in mobile view; filter/date-range inputs with potential JS validation issues; chart interactions (tooltips, drill-downs) that may fail to load data."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Top Navigation & Sidebar Validation",
+        "objective": "Verify that top navigation (Overview, Traffic, etc.) and sidebar links (Global Internet trends, HTTP requests) trigger expected UI state changes (e.g., active tab highlighting, content updates).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click top nav 'Overview' (verify active state, content matches Overview section)",
+          "Click top nav 'Traffic' (verify active state, content switches to Traffic cards)",
+          "Click sidebar 'Global Internet trends' (verify content updates to match the link's purpose)",
+          "Click sidebar 'HTTP requests' (verify Traffic section's HTTP requests card is highlighted/updated)"
+        ],
+        "exit_criteria": [
+          "All tested navigation links trigger visible UI state changes; no console errors from navigation clicks."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Filter & Date-Range Interactions",
+        "objective": "Validate that filter (Domain, IP, ASN) and date-range (Last 24 hours) inputs work, triggering data updates (e.g., card values, charts) without errors.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click date-range dropdown (Last 24 hours) → select a different range (e.g., Last 7 days) → verify card values (e.g., HTTP requests, Mitigated attacks) update",
+          "Type 'google.com' in the 'Domain, IP, ASN, or report' filter → click 'Add filter' → verify domain-specific data loads (e.g., Domain rankings card updates)",
+          "Click 'Reset' button → verify filters are cleared and data resets to default (Worldwide, Last 24 hours)"
+        ],
+        "exit_criteria": [
+          "Filter/date-range changes update card values/charts; no console errors from filter interactions."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Chart & Card Interactions",
+        "objective": "Test chart interactions (tooltips, 'Details' links, 'Inspect' buttons) to ensure data visualization and drill-downs work (e.g., tooltips show values, 'Details' opens expanded chart view).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over 'HTTP requests' card's chart → verify tooltip appears with detailed values",
+          "Click 'Details' on 'HTTP requests' card → verify expanded chart (e.g., hourly/daily trends) loads",
+          "Click 'Inspect' on 'Traffic by type' card → verify detailed breakdown (e.g., Desktop/Mobile percentages) appears",
+          "Click 'Learn more' on 'Internet traffic' card → verify modal or new section with detailed info loads"
+        ],
+        "exit_criteria": [
+          "Charts show tooltips on hover; 'Details'/'Inspect' links open expected detailed views; no console errors from chart interactions."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Viewport Validation",
+        "objective": "Replicate critical checks (navigation, filters, charts) in mobile viewport to verify responsiveness and fix layout warnings (small tap targets) by testing interactions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., 360x640) → test top navigation links (e.g., Overview, Traffic) for tapability (despite small targets) and state changes",
+          "Test filter input ('Domain, IP, ASN') in mobile → type 'facebook.com' → click 'Add filter' → verify data updates",
+          "Test chart tooltips in mobile → hover (or tap) over 'Median latency' chart → verify tooltip appears",
+          "Check that small tap targets (per layout warnings) are still functional (e.g., top nav 'Overview' link works despite size)"
+        ],
+        "exit_criteria": [
+          "Critical interactions (navigation, filters, charts) work in mobile view; no new layout warnings appear (existing ones are noted but functionality is confirmed)."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Edge Case & Recovery Testing",
+        "objective": "Test edge cases (e.g., invalid filter input, rapid navigation) and recovery (e.g., error states, reset after failure) to ensure robustness.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Type invalid text (e.g., '!@#$') in filter input → click 'Add filter' → verify error handling (e.g., warning message, no data corruption)",
+          "Rapidly click multiple navigation links (Overview → Traffic → Security) → verify UI stabilizes without crashes",
+          "Trigger a chart interaction (e.g., tooltip) during a filter update → verify no race condition errors",
+          "Click 'Share' or 'Export' buttons → verify modal/popup functionality (e.g., share options, export dialog)"
+        ],
+        "exit_criteria": [
+          "Edge cases (invalid input, rapid clicks) do not crash the app; recovery actions (Reset, error handling) work; console remains error-free."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% (only index.html, but explore all sections via JS interactions)",
+      "features": "Exercise all visible controls (navigation links, filters, date-range, chart interactions, share/export, theme toggle) across desktop and mobile views.",
+      "mobile": "Replicate critical checks (navigation, filters, charts) in mobile viewport; validate tap targets (despite size warnings) function as intended."
+    },
+    "notes": [
+      "Since it's a single-page app, all 'page' coverage is within index.html; focus on JS-driven state changes. Prioritize interactions with the highest user impact (navigation, filters, charts) to meet the exhaustive exploration depth."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Cloudflare Radar",
+      "url": "file:///Users/timchef/UXBench/websites/cloudflare-radar/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Radar Overview Traffic Security Connectivity Routing DNS Reports Search Radar / API EN GLOBAL VIEW Worldwide All locations and networks OVERVIEW Global Internet trends Latest reports TRAFFIC HTTP requests Traffic by type Domain rankings Internet outages BOTS Bot traffic AI crawlers SECURITY HTTP DDoS attacks Layer 3/4 attacks Attack map Email security CONNECTIVITY Quality Outages Speed 1.1.1.1 resolver ROUTING DNS TOOLS CLOUDFLARE RADAR Internet insights for every network Near real-time traffic, security, routing, DNS, connectivity, and adoption signals observed across Cloudflare's global network. Share Export LOCATION Worldwide LOOKUP DATE RANGE Last 24 hours Add filter Reset Data updated 2 minutes ago Scope Worldwide, all networks Comparison Previous period HTTP requests Details 42.8M +3.4% Mitigated attacks Details 8.7M +12.1% Median latency Details 37 ms -1.8% IPv6 traffic Details 36",
+      "headings": [
+        "Internet insights for every network",
+        "Internet traffic",
+        "Traffic by type",
+        "Protocol usage",
+        "Attacks and mitigations",
+        "Domain popularity",
+        "1.1.1.1 resolver",
+        "Quality and outages",
+        "BGP and AS Rank",
+        "Data Explorer"
+      ],
+      "counts": {
+        "buttons": 135,
+        "links": 39,
+        "inputs": 19,
+        "forms": 1,
+        "dialogs": 6
+      },
+      "top_interactables": [
+        "clickable:a:Cloudflare Radar home",
+        "clickable:a:Overview",
+        "clickable:a:Traffic",
+        "clickable:a:Security",
+        "clickable:a:Connectivity",
+        "clickable:a:Routing",
+        "clickable:a:DNS",
+        "clickable:a:Reports",
+        "clickable:button:Search Radar",
+        "clickable:button:API",
+        "clickable:button:EN",
+        "clickable:button:Toggle theme",
+        "clickable:button:Worldwide All locations and networks",
+        "typeable:input:Filter navigation",
+        "clickable:button:OVERVIEW",
+        "clickable:a:Global Internet trends"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

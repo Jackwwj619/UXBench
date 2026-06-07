@@ -1,0 +1,35 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full fleetatlas system, prioritizing the primary dashboard flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: False
+
+## Summary
+
+FleetAtlas’s Alerts and dashboard filtering flows are generally responsive: status/severity filters update KPIs and table rows immediately on mobile and desktop. However, the most critical actions in the Alerts Center—row-level “Assign” and “Details”—lack reliable interaction feedback and appear blocked or non-responsive, especially on mobile. Additionally, several accessibility and mobile ergonomics issues (missing labels, small tap targets, and horizontal overflow) undermine confidence and can make core actions harder to trigger.
+
+## Issues (4)
+
+### [HIGH] row-actions-assign-and-details-do — feedback
+- **Page**: `alerts.html; row action buttons 'Assign' (ux-35/ux-18/ux-36) and 'Details' (ux-48/ux-19/ux-37/ux-36); screenshots agentic-78-click-mobile.png, agentic-79-click-mobile.png; timeout logs mentioning aside.sidebar intercepts pointer events.`
+- **Problem**: Row actions ('Assign' and 'Details') do not produce a visible state change/confirmation after tapping/clicking, and in desktop runs the clicks time out due to pointer-event interception from a left sidebar overlay.
+- **Evidence**: On mobile, clicking a row 'Details' button (ux-36) resulted in changed=false and “No obvious URL or visible-text change was detected after the action” (screenshots: agentic-78-click-mobile.png). Clicking 'Assign' (ux-35) similarly produced changed=false (agentic-79-click-mobile.png). Across desktop attempts, both 'Assign' and 'Details' timed out with repeated logs showing '<aside class="sidebar">…</aside> intercepts pointer events' for the same buttons (timeouts for ux-18 Assign, ux-19 Details; failures list).
+- **Suggested fix**: Ensure Assign/Details open a clear, immediate UI state (drawer/modal/confirmation) with an explicit loading indicator and success/error toast. Remove or collapse the sidebar overlay so it can’t intercept row buttons when actions are focused; add robust click-region layering (z-index) and verify in mobile and desktop. If an action requires prerequisites, present inline validation errors rather than failing silently.
+
+### [HIGH] key-tappable-controls-are-too-small — mobile usability
+- **Page**: `alerts.html mobile DOM summary: layout_warnings include horizontal_overflow and small_tap_target for ux-47/ux-48 (Assign/Details).`
+- **Problem**: Key tappable controls are too small for mobile ergonomics and the page layout has horizontal overflow risk, increasing mis-taps and making actions hard to reach.
+- **Evidence**: Tooling flags small tap targets on mobile: 'Assign' ~55x24px and 'Details' ~57x26px (below 44px guidance) for ux-47/ux-48. There is also a horizontal overflow warning on mobile ('Page width 607px exceeds viewport 390px' in the mobile DOM summary), indicating content may be clipped or require awkward scrolling that can hinder interaction.
+- **Suggested fix**: Increase the tap target size for row actions to at least 44px height/width (add padding and/or convert to pill buttons). Prevent horizontal overflow by ensuring table columns wrap or become horizontally scrollable in a controlled way with sticky action column; verify that action buttons remain visible without sideways scrolling.
+
+### [MEDIUM] multiple-filter-select-controls-and-the — forms
+- **Page**: `alerts.html; layout_warnings in final_observation: missing_input_label for ux-9/ux-12/ux-13/ux-14/ux-15.`
+- **Problem**: Multiple filter/select controls and the org switcher are missing accessible labels, leaving ambiguity about what each control changes.
+- **Evidence**: Console/DOM warnings report 'missing_input_label' for multiple select fields on Alerts Center mobile/desktop, including targets: ux-9 (org select), ux-12 (time range select), ux-13 (severity select), ux-14 (type select), ux-15 (status select). The screenshot context shows “Aurora Logistics Group” and filter groups, but the tool explicitly flags missing aria-label/accessible name beyond visible text.
+- **Suggested fix**: Add explicit labels (aria-label or associated <label>) for every select/input, including org selector and all filter dropdowns. Ensure the accessible name matches the visible group purpose (e.g., 'Time range', 'Severity', 'Type', 'Status', 'Organization').
+
+### [MEDIUM] several-left-rail-items-appear-to — navigation
+- **Page**: `alerts.html; failures list and steps referencing Settings hash-only behavior; placeholder links with href="#" such as ux-3/ux-4/ux-5.`
+- **Problem**: Several left-rail items appear to be placeholder anchors (href="#"), and clicking Settings changes the URL hash without a visible settings panel/modal, which provides weak recovery/feedback.
+- **Evidence**: Desktop logs show Settings link clicks (href="#") repeatedly intercepted pointer events during Assign/Details attempts. Later, clicking ⚙️ Settings on Alerts Center resulted only in a hash change (alerts.html → alerts.html#) with “no visible settings overlay/panel appeared” (tool_result.changed=false in multiple steps). Placeholder nav links like “👤 Drivers” also produced no obvious state change (URL unchanged; alert center remained visible).
+- **Suggested fix**: Make Settings a real state change: open a modal/drawer with clear content and a close control, or provide an explicit inline settings area. For placeholder links, either implement navigation or remove the clickable affordance so users aren’t misled.

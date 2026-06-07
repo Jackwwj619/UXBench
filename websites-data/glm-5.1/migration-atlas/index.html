@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Migration Atlas — global animal tracking</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7a5320" d="M3 12c3-6 7-7 9-4 1 2 4 2 5 0 3 4 2 9-3 11s-12-2-11-7z"/></svg>
+    Migration Atlas
+  </div>
+  <nav>
+    <a href="index.html" class="active">Explore</a>
+    <a href="#" class="nav-soon" aria-disabled="true" title="Coming soon">Studies <span class="soon-pill">soon</span></a>
+    <a href="#" class="nav-soon" aria-disabled="true" title="Coming soon">Submit a track <span class="soon-pill">soon</span></a>
+    <a href="#" class="nav-soon" aria-disabled="true" title="Coming soon">Methods <span class="soon-pill">soon</span></a>
+    <a href="#" class="nav-soon" aria-disabled="true" title="Coming soon">About <span class="soon-pill">soon</span></a>
+  </nav>
+  <div class="topbar-actions">
+    <button id="cite-btn">Cite this view</button>
+    <button id="save-btn" class="primary">Save view</button>
+  </div>
+</header>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<main class="page">
+  <aside class="left">
+    <h2>Filters</h2>
+    <div class="block">
+      <h3>Species</h3>
+      <input type="search" id="species-search" placeholder="Filter species…" />
+      <ul class="species" id="species-list">
+        <li class="sp" data-key="osprey" data-color="#c75a3c"><label><input type="checkbox" checked /> <span class="sw" style="background:#c75a3c"></span> Western osprey (n=12)</label></li>
+        <li class="sp" data-key="caribou" data-color="#5b7a32"><label><input type="checkbox" checked /> <span class="sw" style="background:#5b7a32"></span> Boreal caribou (n=18)</label></li>
+        <li class="sp" data-key="turtle" data-color="#0a8ab3"><label><input type="checkbox" /> <span class="sw" style="background:#0a8ab3"></span> Leatherback sea turtle (n=9)</label></li>
+        <li class="sp" data-key="monarch" data-color="#d8861a"><label><input type="checkbox" checked /> <span class="sw" style="background:#d8861a"></span> Monarch butterfly (n=24, swarm aggregate)</label></li>
+        <li class="sp" data-key="bartailed" data-color="#5e3aa6"><label><input type="checkbox" /> <span class="sw" style="background:#5e3aa6"></span> Bar-tailed godwit (n=7)</label></li>
+        <li class="sp" data-key="whale" data-color="#1a5e8b"><label><input type="checkbox" /> <span class="sw" style="background:#1a5e8b"></span> Humpback whale (n=11)</label></li>
+        <li class="sp" data-key="albatross" data-color="#7d5c1c"><label><input type="checkbox" /> <span class="sw" style="background:#7d5c1c"></span> Wandering albatross (n=4)</label></li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3><label for="year-sel">Study year</label></h3>
+      <select id="year-sel" aria-label="Study year">
+        <option value="2024">2024 season</option>
+        <option value="2025" selected>2025 season</option>
+        <option value="2026">2026 season (in progress)</option>
+      </select>
+    </div>
+
+    <div class="block">
+      <h3>Display</h3>
+      <label class="row"><input type="checkbox" id="show-trail" checked /> <span>Show trail</span></label>
+      <label class="row"><input type="checkbox" id="show-dots" checked /> <span>Show monthly positions</span></label>
+      <label class="row"><input type="checkbox" id="show-stop" /> <span>Show stop-over polygons</span></label>
+    </div>
+
+    <div class="block">
+      <h3>Notes</h3>
+      <p class="hint">All individuals carry solar GPS loggers (model "PicaTag-12"). Fixes are taken every 4 hours and downsampled to monthly mean position.</p>
+    </div>
+  </aside>
+
+  <section class="atlas">
+    <div class="atlas-head">
+      <div>
+        <h1>Migration Atlas — 2025 season</h1>
+        <p class="hint">Use the month slider to play through the year. Click any trail or pin to inspect the individual.</p>
+      </div>
+      <div class="head-stats">
+        <div><span class="n" id="n-species">3</span><div class="lbl">species shown</div></div>
+        <div><span class="n" id="n-individuals">54</span><div class="lbl">individuals</div></div>
+        <div><span class="n" id="month-label">May</span><div class="lbl">current month</div></div>
+      </div>
+    </div>
+
+    <div class="map-wrap">
+      <svg id="map" viewBox="0 0 1000 540" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+
+    <div class="player">
+      <button id="play-btn" class="primary" aria-label="Play">▶</button>
+      <div class="slider-wrap">
+        <input id="month-slider" type="range" min="1" max="12" value="5" aria-label="Month" />
+        <div class="ticks">
+          <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+          <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+        </div>
+      </div>
+      <select id="speed" aria-label="Playback speed">
+        <option>0.5×</option>
+        <option selected>1×</option>
+        <option>2×</option>
+        <option>4×</option>
+      </select>
+    </div>
+  </section>
+
+  <aside class="right">
+    <h2 id="right-title">Individual</h2>
+    <div id="individual-card" class="hint">Click a trail, dot, or tag in the map to inspect that individual.</div>
+
+    <h2 style="margin-top: 22px;">Aggregate stats</h2>
+    <ul class="stats" id="agg-stats">
+      <li><span class="lbl">Active individuals</span><span class="val" id="agg-active">54</span></li>
+      <li><span class="lbl">Max range this month</span><span class="val" id="agg-range">2,140 km</span></li>
+      <li><span class="lbl">Fastest individual</span><span class="val" id="agg-fast">Godwit #G-44</span></li>
+      <li><span class="lbl">Stop-overs detected</span><span class="val" id="agg-stop">11</span></li>
+    </ul>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>Local demo for UXBench. Fictional product, not a real company. Tracks are synthetic and not derived from any real telemetry program.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

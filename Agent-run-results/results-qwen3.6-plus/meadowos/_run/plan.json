@@ -1,0 +1,151 @@
+{
+  "plan": {
+    "goal": "Validate the UX of the MeadowOS single-page marketing site, focusing on narrative flow, interactive download simulation, and mobile responsiveness.",
+    "summary": "The run will traverse the long-scroll landing page using both top navigation anchors and manual scrolling to verify content hierarchy. It will trigger the 'Download .iso' button to validate the fake progress modal and SHA256 verification state. Finally, it will switch to a mobile viewport to audit the reported small tap targets and layout stability.",
+    "assumptions": [
+      "The site is a Single Page Application (SPA) style long-scroll; all 'pages' (Story, Garden, Docs) are sections within index.html.",
+      "The 'Download' interaction is a client-side simulation (fake progress bar) as described in the prescan, not a real file transfer.",
+      "The 'Garden' section contains static informational cards for apps (Nextfile, Bramble, etc.) rather than live application interfaces."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Download Modal: Verify the progress bar increments smoothly and the final 'SHA256 verification passed' state renders correctly.",
+      "Mobile Navigation: The prescan flagged multiple nav links (<44px height); verify if they are clickable or obscured by touch targets on mobile.",
+      "Scroll Progress Bar: Ensure the top indicator accurately reflects scroll depth through the five chapters."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Desktop Narrative & Anchor Navigation",
+        "objective": "Verify smooth scrolling behavior and content visibility for the primary narrative sections.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Story', 'Garden', 'Docs', and 'Get the .iso' nav links to test anchor jumping.",
+          "Manually scroll through Chapters I-V to check for layout shifts or overlapping elements.",
+          "Verify the 'Read time' and chapter headings remain legible against the cream background."
+        ],
+        "exit_criteria": [
+          "All nav anchors successfully scroll to their respective sections.",
+          "No visual overlap between text and illustrations during scroll."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Interactive Download Flow",
+        "objective": "Test the primary conversion action and its feedback loop.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Locate and click the 'Download · meadowos-0.7.iso' button.",
+          "Observe the modal appearance and progress bar animation (0% to 100%).",
+          "Confirm the final state displays 'SHA256 verification passed'.",
+          "Close the modal and verify the background page remains interactive."
+        ],
+        "exit_criteria": [
+          "Modal opens without error.",
+          "Progress simulation completes fully.",
+          "Success message is visible."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Garden App Grid Inspection",
+        "objective": "Review the presentation of the ecosystem apps within the 'Garden' section.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Scroll to the 'Garden' section.",
+          "Inspect the 6-card grid (Nextfile, Bramble, Cottage, Smithy, Hearth, Postcard).",
+          "Check for hover states on cards (rotation/shadow effects mentioned in CSS).",
+          "Verify card text is readable and aligned."
+        ],
+        "exit_criteria": [
+          "All 6 app cards are visible and styled correctly.",
+          "Hover interactions function as expected."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Viewport & Accessibility Audit",
+        "objective": "Address prescan warnings regarding small tap targets and layout on narrow screens.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch viewport to mobile (e.g., iPhone SE or Pixel 5 dimensions).",
+          "Attempt to tap 'Story', 'Garden', and 'Docs' links; note if they are difficult to hit.",
+          "Check if the hamburger menu (if present) or nav collapses gracefully.",
+          "Verify the 'Download' button is full-width or easily tappable.",
+          "Check text readability for the long-form prose on small screens."
+        ],
+        "exit_criteria": [
+          "Navigation is usable despite small target warnings.",
+          "Content reflows correctly without horizontal scroll.",
+          "Download CTA is prominent and accessible."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of index.html sections (Hero, Story Ch I-V, Garden, Download, Footer)",
+      "features": "Nav anchors, Scroll progress bar, Download modal simulation, Card hover states",
+      "mobile": "Full pass on mobile viewport focusing on touch targets and text scaling"
+    },
+    "notes": [
+      "Since this is a local file system path, network errors are not expected, but console JS errors should be monitored during the modal interaction.",
+      "Pay attention to the 'Manifesto' section near the footer to ensure the numbered list formats correctly on mobile."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "MeadowOS — Bring your data home",
+      "url": "file:///Users/timchef/UXBench/websites/meadowos/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "MeadowOS Story Garden Docs Get the .iso Read time · ~6 min Plant your data in a meadow. A small, friendly operating system for your own server. Run the apps you love. Tend them like a garden. A small home for your photos, your notes, your mail, your files. Not in someone else's cloud. I. The Cloud is Someone Else's House. You moved into a place you don't own. You hung your photographs on rented walls. The landlord raised the rent — three times last year. They walked into your bedroom and rearranged the furniture. They told you when guests could visit and which windows you could open. When you complained, they sent you a 47-page Terms of Service in a font designed to discourage you from reading it. This is the situation we are in. Our memories live on disks that we cannot point to on a map. Our notes are subject to deprecations. Our address books vanish in mergers. We accept it because th",
+      "headings": [
+        "Plant your data\nin a meadow.",
+        "The Cloud is Someone Else's House.",
+        "A Patch of Land.",
+        "What Grows Here.",
+        "Nextfile",
+        "Bramble",
+        "Cottage",
+        "Smithy",
+        "Hearth",
+        "Postcard"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 6,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Story",
+        "clickable:a:Garden",
+        "clickable:a:Docs",
+        "clickable:a:Get the .iso",
+        "clickable:button:Download · meadowos-0.7.iso · 1.2 GB",
+        "clickable:a:GitHub",
+        "clickable:a:Matrix room"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

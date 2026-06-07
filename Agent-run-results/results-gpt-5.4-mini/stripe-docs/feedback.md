@@ -1,0 +1,47 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full stripe-docs system, prioritizing the primary docs/tutorial flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: False
+
+## Summary
+
+The docs clone is generally coherent and well-structured, with clear cross-links, search, and good instructional framing around hosted vs embedded Checkout. The biggest UX risks are touch-target sizing on mobile, several controls that feel inert or unconfirmed after taps, and an outbound docs/dashboard link pattern that sometimes fails to provide visible feedback. Coverage is substantial but not complete; a few secondary links and some lower-priority navigation surfaces were still untested, so the findings below focus on issues repeatedly evidenced across the explored primary flow.
+
+## Issues (6)
+
+### [HIGH] several-prominent-outbound-links-behave-like — feedback
+- **Page**: `customization.html / embedded.html header links and official-docs cards`
+- **Problem**: Several prominent outbound links behave like dead ends from the user’s point of view because clicking them produces no visible page change, URL change, or other confirmation. That makes it hard to trust whether the user is navigating to Stripe’s live docs or dashboard, especially for the Branding/official-docs actions.
+- **Evidence**: On customization.html, clicking the top-right Branding link produced “no visible page change or feedback.” The session also notes that clicking the “Appearance guide” external link produced no visible change in URL or page content, and the embedded page’s Branding link likewise gave no obvious URL change or visible confirmation.
+- **Suggested fix**: Provide immediate navigation feedback for outbound links: open in a clearly different destination state, show a loading/launch indicator, or make external navigation explicit with stronger affordance and a visible active transition.
+
+### [HIGH] a-significant-number-of-interactive-elements — mobile usability
+- **Page**: `index.html, embedded.html, customization.html header/nav/code controls`
+- **Problem**: A significant number of interactive elements are below comfortable mobile tap-size guidance, including header links, copy buttons, section links, and some yes/no controls. Even when they work, they are easy to miss or mis-tap in a dense docs layout.
+- **Evidence**: Layout warnings repeatedly flagged small tap targets such as the home link (62x28), Stripe Checkout link (106x23), multiple Copy buttons (65x44), Yes/No buttons (55x44 and 50x44), and several official/customization guide links (e.g. 207x26, 149x26). The trajectory also notes “low-severity tap-target warnings” across desktop and mobile views.
+- **Suggested fix**: Increase hit areas to at least 44x44px wherever possible, add padding around inline links/buttons, and reduce the number of tightly packed controls in the top bar and code blocks on mobile.
+
+### [MEDIUM] several-interactive-controls-appear-visually-clickable — feedback
+- **Page**: `embedded.html code language tabs, customization.html appearance presets, embedded.html preview button`
+- **Problem**: Several interactive controls appear visually clickable but do not provide obvious confirmation when activated, creating uncertainty about whether they are working or just inert UI. This was especially noticeable for some language tabs, preset buttons, and preview actions.
+- **Evidence**: Clicking the Node language tab on embedded.html produced no visible text or state change. Clicking the Slate preset on customization.html initially produced no obvious visible-text or URL change, and the embedded “Preview embedded mount” control also produced no immediate URL or page-state change. By contrast, the Copy button did provide clear feedback, showing that the bar for feedback was achievable in the same interface.
+- **Suggested fix**: Add explicit pressed/selected states, brief status text, or preview refresh cues for language tabs, presets, and demo controls so users can tell the action was received even when the visible output change is small.
+
+### [MEDIUM] the-navigation-is-functional-but-some — navigation
+- **Page**: `embedded.html mobile Open navigation / Close navigation`
+- **Problem**: The navigation is functional, but some transitions rely on subtle state changes that are easy to miss, and the layout can make it hard to tell whether a navigation action happened when the destination looks similar to the source. This is most noticeable with the mobile menu/drawer interactions.
+- **Evidence**: Clicking the mobile menu control on embedded.html did not visibly change state or URL, yet the drawer was already present with a Close button and highlighted current item. In contrast, tapping the drawer link did navigate correctly to customization.html. Desktop top-nav transitions did preserve orientation, but the mobile open-navigation affordance itself was less trustworthy.
+- **Suggested fix**: Make drawer open/close state more explicit with stronger visual transitions, a clearer active state on the trigger, and immediate feedback when the menu opens or closes.
+
+### [MEDIUM] the-page-presents-a-very-dense — visual hierarchy
+- **Page**: `index.html and customization.html overall layout`
+- **Problem**: The page presents a very dense, multi-column docs layout with many competing links and small utility controls, which can make the main tutorial path harder to scan on smaller screens. Supporting links and code actions are visually prominent enough that the core learning path competes with a lot of secondary affordances.
+- **Evidence**: The trajectory repeatedly describes a “dense multi-column docs layout with a left nav, central tutorial, and right rail,” and on mobile the page still showed compact header controls, a visible drawer, official references, and multiple code/preset controls. The final mobile screenshot also shows a lot of content packed into a narrow viewport.
+- **Suggested fix**: Strengthen hierarchy by emphasizing the step-by-step tutorial content, collapsing less essential reference surfaces earlier on mobile, and grouping utility actions into clearly secondary zones.
+
+### [LOW] a-few-controls-and-headings-strongly — trust
+- **Page**: `customization.html demo area and preset controls`
+- **Problem**: A few controls and headings strongly imply live behavior, but the surrounding experience sometimes makes it hard to distinguish a real interaction from a purely presentational one. The result is a slight trust gap around what is interactive versus what is explanatory content.
+- **Evidence**: The customization page explicitly reassures users that “every visible control is wired up,” yet multiple taps produced no obvious visible change, and the session recorded 75% of actions as unchanged. At the same time, other controls like Copy and mobile presets did show real feedback, so the inconsistency is what makes the experience feel uncertain rather than outright broken.
+- **Suggested fix**: Differentiate clearly between explanatory text, demo controls, and truly actionable controls, and ensure every actionable item gives at least minimal state feedback on click.

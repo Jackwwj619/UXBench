@@ -1,0 +1,69 @@
+{
+  "summary": "AeroIQ provides a strong desktop observability experience with comprehensive triage data and interactive error breakdowns, but its mobile implementation suffers from severe responsiveness issues and inaccessible tap targets. Several critical interactive controls, such as alert filters and the notification bell, are non-functional, creating trust gaps and blocking user goals. Additionally, missing form labels across the app pose significant accessibility barriers.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "the-layout-does-not-adapt-to",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "endpoint-detail.html, alerts.html (layout_warnings: horizontal_overflow)",
+      "problem": "The layout does not adapt to mobile viewports, causing severe horizontal overflow and rendering the app unusable on phones.",
+      "evidence": "On the endpoint detail page, the page width is 617px while the viewport is only 390px. The same horizontal overflow (699px width vs 390px viewport) occurs on the alerts page, caused by tightly packed top bar controls and filter bars that do not wrap or collapse.",
+      "suggested_fix": "Implement a responsive layout that stacks KPIs vertically, collapses the left rail into a hamburger menu, and wraps or horizontally scrolls the filter bar and environment tabs."
+    },
+    {
+      "id": "primary-navigation-items-in-the-left",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "index.html, endpoint-detail.html (layout_warnings: small_tap_target for ux-1 to ux-8, ux-10 to ux-12)",
+      "problem": "Primary navigation items in the left rail have critically narrow tap targets, making mobile navigation frustrating and error-prone.",
+      "evidence": "Left rail navigation links (Dashboard, Endpoints, Alerts, etc.) are only 39px wide on mobile, failing the 44px minimum mobile tap target guidance. Environment tabs (Production, Staging, Dev) also have insufficient heights (28px).",
+      "suggested_fix": "Increase the tap target size of navigation items to at least 44x44px. On mobile, consider converting the left rail to a full-screen hamburger menu with larger, stacked touch targets."
+    },
+    {
+      "id": "the-alert-filter-dropdowns-for-rules",
+      "severity": "high",
+      "area": "goal completion",
+      "page_hint": "alerts.html (ux-13, ux-14)",
+      "problem": "The alert filter dropdowns for 'Rules' and 'Assignees' do not filter the alert list, failing the core user goal of triaging alerts.",
+      "evidence": "Selecting 'Error rate > 5%' from the 'All rules' dropdown and 'Sofia Vetrov' from the 'All assignees' dropdown resulted in no visible change to the alert table, with the tool confirming 'No obvious URL or visible-text change was detected'.",
+      "suggested_fix": "Implement client-side or server-side filtering logic so that selecting a rule or assignee immediately updates the visible alert rows."
+    },
+    {
+      "id": "clicking-the-alert-bell-icon-8",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "index.html (ux-19)",
+      "problem": "Clicking the alert bell icon (🔔 8) provides no visual feedback or dropdown, confusing users who expect a summary popup.",
+      "evidence": "Clicking the 🔔 8 button on the dashboard produced no visible change or dropdown. While an 'Active Alerts' panel exists on the page, the bell icon itself lacks interaction feedback.",
+      "suggested_fix": "Either open a notification dropdown summarizing the 8 alerts when the bell is clicked, or provide a tooltip/visual indicator that the panel below serves as the alert center."
+    },
+    {
+      "id": "several-left-rail-navigation-links-settings",
+      "severity": "medium",
+      "area": "navigation",
+      "page_hint": "alerts.html, endpoint-detail.html (⚙️ Settings, 📜 Logs, 🔌 Integrations)",
+      "problem": "Several left rail navigation links (Settings, Logs, Integrations) are dead-end placeholders that only append '#' to the URL, misleading users.",
+      "evidence": "Clicking the ⚙️ Settings link only appends '#' to the URL (alerts.html -> alerts.html#) with no visible content change. Logs and Integrations also point to '#'.",
+      "suggested_fix": "If these features are not yet available, disable the links visually (grayed out) and add a tooltip indicating 'Coming soon', or remove them from the navigation entirely until implemented."
+    },
+    {
+      "id": "the-organization-switcher-and-several-filter",
+      "severity": "medium",
+      "area": "accessibility",
+      "page_hint": "index.html, alerts.html, endpoint-detail.html (ux-9, filter selects)",
+      "problem": "The organization switcher and several filter dropdowns lack associated labels, making them inaccessible to screen reader users.",
+      "evidence": "The 'Acme Cloud Org' select element (ux-9) and alert filter selects (severity, rules, assignees) are flagged with 'missing_input_label' severity medium, having no label, aria-label, or placeholder.",
+      "suggested_fix": "Add visible <label> elements or aria-label attributes to all select and input elements (e.g., aria-label=\"Organization\", aria-label=\"Filter by severity\")."
+    },
+    {
+      "id": "clicking-the-staging-or-dev-environment",
+      "severity": "low",
+      "area": "feedback",
+      "page_hint": "services.html, endpoint-detail.html (ux-11, ux-12)",
+      "problem": "Clicking the Staging or Dev environment tabs does not update the active state or data, leaving the user unsure if the switch occurred.",
+      "evidence": "Clicking the 'Staging' tab on the Service Map and the 'Dev' tab on the endpoint detail page produced no visible text, active state, or URL change.",
+      "suggested_fix": "Implement an active state style (e.g., bold text, highlighted background) for the selected environment tab and ensure the data refreshes to reflect the selected environment."
+    }
+  ]
+}

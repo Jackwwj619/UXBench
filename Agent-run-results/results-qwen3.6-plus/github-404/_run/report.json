@@ -1,0 +1,293 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/github-404/index.html",
+  "site": {
+    "name": "github-404",
+    "site_dir": "/Users/timchef/UXBench/websites/github-404",
+    "start_page": "index.html",
+    "page_type": "error page",
+    "html_files": [
+      "index.html"
+    ],
+    "css_files": [
+      "style.css"
+    ],
+    "js_files": [
+      "app.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/github-404/README.md",
+    "summary": "github-404-clone Clone of the GitHub 404 error page. Pages | File | Purpose | | --- | --- | | `index.html` | 404 page: top GitHub nav bar, centered error message (\"This is not the web page you are looking for.\"), Octocat illustration, links to home / search / contact support | | `style.css` | Dark background, illustration styling, buttons | | `app.js` | Illustration hover / parallax effect, (optional) fake search suggestions |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full github-404 system, prioritizing the primary error page flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The GitHub 404 error page provides a robust recovery flow with functional mock search, detailed FAQ accordions, and a comprehensive system status view. However, the mobile experience is severely compromised by undersized tap targets across navigation and forms, and critical interactive elements (support cards) appear broken or unresponsive. Additionally, form validation lacks immediate feedback, leading to potential user confusion during submission attempts.",
+  "exploration_plan": {
+    "goal": "Evaluate the UX, accessibility, and interactive behavior of the GitHub 404 error page clone, focusing on recovery paths (search/navigation) and visual feedback mechanisms.",
+    "summary": "The exploration will focus on the single-page application structure of `index.html`. It will validate the functionality of the search input and scope buttons, test the Octocat parallax/hover effects described in the JS file, and audit the navigation links. A significant portion of the run will address the prescan-identified mobile tap target issues by verifying layout responsiveness.",
+    "assumptions": [
+      "Navigation links (Search, Support, Status) use placeholder '#' hrefs and will not lead to external pages.",
+      "The 'fake search suggestions' mentioned in app.js may require specific input triggers or may be subtle UI updates.",
+      "The site is a static clone, so form submissions will likely result in no-op actions or console logs rather than server responses."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "ux-1 (GitHub Logo): Identified as having an empty accessible label and small tap target.",
+      "ux-6 to ux-9 (Search/Scope Buttons): High density of small tap targets (<44px) in the central action area.",
+      "Octocat Illustration: Potential performance or distraction issues if the parallax effect is too aggressive or breaks on resize.",
+      "Search Input: Lack of visible form submission feedback if the backend is mocked."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Core Layout & Visuals",
+        "objective": "Validate the initial render, dark mode styling, and the presence/clarity of the error message.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify H1 '404' and subtext 'This is not the web page you are looking for' are visible and legible.",
+          "Check contrast ratios of text against the dark background.",
+          "Confirm the Octocat illustration loads correctly without layout shift."
+        ],
+        "exit_criteria": [
+          "Error state is clearly communicated visually.",
+          "No immediate console errors on load."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Recovery Flow: Search & Scoping",
+        "objective": "Test the primary user action: searching for content from the error page.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Focus the 'Search GitHub' input (ux-5) and verify focus ring visibility.",
+          "Type a query and observe any 'fake search suggestions' triggered by app.js.",
+          "Click the 'Search' button (ux-6) and verify behavior (e.g., console log or mock redirect).",
+          "Toggle scope buttons ('Code', 'Repositories', 'People') to check for active state styling changes."
+        ],
+        "exit_criteria": [
+          "Input accepts text.",
+          "Scope buttons provide visual feedback when clicked/hovered.",
+          "Search action triggers a predictable response (even if mocked)."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Interactive Elements & Micro-interactions",
+        "objective": "Validate the JavaScript-driven effects and secondary navigation.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over the Octocat illustration to trigger/observe the parallax or hover effect.",
+          "Click top nav links (Search, Support, Status) to confirm they are clickable (even if dead links).",
+          "Click footer links ('contact support', 'GitHub Status').",
+          "Inspect the GitHub Logo (ux-1) for accessibility labels (aria-label) since prescan flagged it as empty."
+        ],
+        "exit_criteria": [
+          "Illustration responds to mouse movement.",
+          "All links have cursor pointer states.",
+          "Accessibility tree inspection reveals if ux-1 has an implicit or explicit label."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Touch Targets",
+        "objective": "Address the high volume of 'small_tap_target' warnings from the prescan.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE or Pixel 5).",
+          "Verify if the top nav collapses into a hamburger menu or remains horizontal.",
+          "Attempt to tap the 'Search', 'Support', and 'Status' links to check for overlap or mis-clicks.",
+          "Verify the search input and buttons stack or resize appropriately for narrow screens.",
+          "Check if the Octocat illustration scales down or obscures text on mobile."
+        ],
+        "exit_criteria": [
+          "Layout does not break horizontally.",
+          "Critical actions (Search) remain usable despite small target sizes noted in prescan.",
+          "Text remains readable without zooming."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of known HTML files (index.html)",
+      "features": "Exercise all 11 interactables identified in prescan, specifically the search bar and scope toggles.",
+      "mobile": "Full pass on mobile viewport to validate touch target usability vs. desktop hover states."
+    },
+    "notes": [
+      "Since this is a clone, expect 'dead' links. Focus on the *affordance* of the links rather than their destination.",
+      "Pay close attention to the 'app.js' behavior; if the parallax effect causes motion sickness or lag, note it as a UX defect.",
+      "The prescan flagged 'ux-1' (Logo) as having an empty label. Verify if screen readers announce it as 'Link' or 'Image'."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Navigate the site or submit forms on a mobile device.",
+      "problem": "Critical navigation links and form buttons have tap targets significantly smaller than the recommended 44px minimum, making them difficult to activate accurately on touch screens.",
+      "evidence": "Layout warnings and measurements confirm 'Search' (61x25px), 'Support' (68x25px), 'Status' (59x25px), and the 'Subscribe' button (102x38px) all fall below the 44px height guideline. The GitHub logo is also small at 32x32px.",
+      "why_it_matters": "Users on mobile devices will experience frequent mis-taps or frustration when trying to navigate or subscribe to updates, leading to a high error rate and perceived poor quality.",
+      "suggestion": "Increase the padding or height of all navigation links and primary action buttons to ensure a minimum tap target size of 44x44px.",
+      "source_hint": "index.html: nav links, Subscribe button"
+    },
+    {
+      "severity": "high",
+      "ux_area": "affordance",
+      "user_goal": "Access specific support topics via the category cards.",
+      "problem": "The 'GitHub Pages' support category card appears visually interactive but fails to respond to clicks, resulting in a timeout error and no state change.",
+      "evidence": "Steps 48-49 failed with 'Locator.click: Timeout 4000ms exceeded' for target ux-6 ('GitHub Pages'). The element is visible in the viewport but does not trigger navigation or expansion, unlike other working elements.",
+      "why_it_matters": "This creates a 'dead end' interaction where users expect content to load but receive no feedback, causing confusion and blocking access to relevant help resources.",
+      "suggestion": "Ensure all visually distinct cards have attached event listeners and provide clear hover/active states. If the feature is incomplete, remove the visual affordance or add a 'Coming Soon' indicator.",
+      "source_hint": "index.html: GitHub Pages card (ux-6)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "forms",
+      "user_goal": "Subscribe to status updates.",
+      "problem": "The 'Subscribe' button provides no immediate feedback when clicked with an empty email field, creating ambiguity about whether the action was registered.",
+      "evidence": "In step 43, clicking 'Subscribe' without input resulted in 'no visible feedback, error state, or confirmation message.' Validation only seems to occur implicitly or upon successful entry later.",
+      "why_it_matters": "Lack of inline validation or error messages leaves users guessing if they made a mistake or if the system is unresponsive, increasing cognitive load and abandonment risk.",
+      "suggestion": "Implement client-side validation that highlights the empty email field and displays a clear error message (e.g., 'Please enter a valid email address') when the button is clicked.",
+      "source_hint": "index.html: Subscribe form"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "accessibility",
+      "user_goal": "Navigate using assistive technologies.",
+      "problem": "The GitHub logo link, which serves as a primary navigation home button, lacks an accessible label.",
+      "evidence": "Layout warnings identify an 'empty interactive label' for the logo (ux-1). Screen readers would likely announce this as 'Link' or 'Graphic' rather than 'GitHub Home'.",
+      "why_it_matters": "Users relying on screen readers cannot identify the purpose of the link, violating accessibility standards and hindering navigation for visually impaired users.",
+      "suggestion": "Add an aria-label='GitHub Home' or visually hidden text inside the anchor tag to provide context for assistive technologies.",
+      "source_hint": "index.html: GitHub Logo (ux-1)"
+    },
+    {
+      "severity": "low",
+      "ux_area": "feedback",
+      "user_goal": "Understand the scope of the search results.",
+      "problem": "The mock search results display realistic metadata but lack clear indication that they are simulated examples rather than live database queries.",
+      "evidence": "Step 7 notes the UI transitions to a search result view with '1 result for octocat' and realistic file paths. While functional, there is no explicit 'Demo Mode' or 'Mock Data' disclaimer.",
+      "why_it_matters": "Users might mistakenly believe they have found a real repository or code snippet, leading to confusion when attempting to interact with the results further (e.g., clicking links that don't work).",
+      "suggestion": "Add a subtle banner or note indicating 'These are example results for demonstration purposes' to manage user expectations.",
+      "source_hint": "index.html: Search results area"
+    }
+  ],
+  "coverage": {
+    "status": "near_complete",
+    "confidence": "high",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 96,
+    "action_success_rate_percent": 96,
+    "unchanged_action_percent": 57,
+    "known_pages": [
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 32,
+      "mobile": 17
+    },
+    "action_counts": {
+      "click": 31,
+      "open_page": 4,
+      "reload": 1,
+      "scroll": 7,
+      "select_option": 1,
+      "type_text": 4,
+      "wait": 1
+    },
+    "total_actions": 49,
+    "successful_actions": 47,
+    "failed_actions": 2,
+    "unchanged_actions": 28,
+    "observed_feature_count": 27,
+    "exercised_feature_count": 26,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|a|||search|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Search"
+      }
+    ],
+    "gaps": [
+      "2 browser action(s) failed and should be retried or analyzed.",
+      "57% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-01-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-02-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-03-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-04-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-06-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-18-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-19-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-20-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-22-wait-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-24-reload-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-27-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-30-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-31-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-32-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/mobile-phase-33-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-34-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-35-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-36-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-37-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-38-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-39-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-40-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-41-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-42-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-43-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-44-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-45-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-46-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-47-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-48-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-49-click-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run/screenshots/agentic-50-click-mobile.png"
+  ],
+  "trace_entries": 49,
+  "run_dir": "/Users/timchef/UXBench/results-qwen3.6-plus/github-404/_run",
+  "claude_fix": null
+}

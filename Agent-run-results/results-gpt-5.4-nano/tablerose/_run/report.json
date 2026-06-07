@@ -1,0 +1,690 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/tablerose/index.html",
+  "site": {
+    "name": "tablerose",
+    "site_dir": "/Users/timchef/UXBench/websites/tablerose",
+    "start_page": "index.html",
+    "page_type": "checkout/booking",
+    "html_files": [
+      "confirmation.html",
+      "guest.html",
+      "index.html",
+      "payment.html",
+      "restaurant.html",
+      "restaurants.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/tablerose/README.md",
+    "summary": "tablerose-clone Fictional restaurant reservation platform \"Tablerose\" multi-page booking flow. Pages | File | Purpose | | --- | --- | | `index.html` | Discovery: hero with 5-field search card (city autocomplete / party / date / time); 5 quick-pill suggestions; 6-card \"reserved most this week\" trending grid; 4-card editor guides; 3-step \"how it works\" | | `restaurants.html` | Results: top reservation summary bar with Edit; left filter rail (8 cuisines, 4 price tiers, 6 neighborhoods, 6 features); 10-row results list with photo / name / stars / blurb / tags / per-row time slots (slots within ±30min of search are highlighted, others muted); sort dropdown (relevance / rating / price / distance) | | `restaurant.html` | Detail: split hero (photo / info with stars / dress / hours); 4 tabs (Overview with about, highlights table; Menu with 3 sections; Photos with 9 swatches; Reviews with rating bars + 3 reviews); right-side sticky booking card (date / party / 10 time slots — 30min near target highlighted, 17:00/21:30 disabled for Bella Suora); SVG mini-map; favorite heart toggle |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full tablerose system, prioritizing the primary checkout/booking flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "Tablerose’s core booking journey largely works: selecting times from results/detail carries context into guest details, and the flow reaches payment and confirmation with clear trust/policy messaging. However, guest-to-payment progression on guest.html appears unreliable—primary CTA clicks often don’t produce visible state changes or navigation, and Help is effectively a no-op (hash only). On mobile, multiple important controls have small tap targets and at least one unlabeled select, creating avoidable friction around party selection and reservation completion.",
+  "exploration_plan": {
+    "goal": "End-to-end exploration and UX critique of Tablerose’s restaurant discovery-to-booking checkout flow, including key recovery/edge states across desktop and mobile.",
+    "summary": "Start at index.html and drive the primary booking path by using the search card to reach restaurants.html, then open restaurant.html from a highlighted result and complete the 4-step booking through guest.html, payment.html, and confirmation.html. In parallel, validate adjacent navigation/editor-guide paths, filtering/sorting behaviors, and critical disabled/required-card-holder rules shown in the prescan. Repeat critical booking and review interactions on mobile viewport to catch tap-target and layout issues.",
+    "assumptions": [
+      "Navigation flows are implemented as separate HTML pages: index.html -> restaurants.html -> restaurant.html -> guest.html -> payment.html -> confirmation.html.",
+      "The date/time highlighting on restaurants.html is based on closeness to the search input time (±30 minutes), and some time slots may be disabled on restaurant.html.",
+      "A card hold requirement exists on payment.html for parties of 6+ or peak-night reservations, and the UI communicates a $50/seat no-show fee and a $100 authorization hold.",
+      "Certain inline controls (top nav links, restaurant cards, booking tabs, etc.) have small tap targets or missing labels per prescan, making them high risk on mobile."
+    ],
+    "target_pages": [
+      "index.html",
+      "restaurants.html",
+      "restaurant.html",
+      "guest.html",
+      "payment.html",
+      "confirmation.html"
+    ],
+    "risk_hotspots": [
+      "index.html: small tap targets in top navigation and quick suggestion pills; validate usability on mobile (ux-1..ux-7, ux-13..ux-17).",
+      "restaurants.html: filter rail controls (cuisine, price, neighborhood, features) + sort dropdown + 'Edit' reservation summary bar; validate correctness and reset behavior.",
+      "restaurant.html: right-side sticky booking card with date/party/time slots; validate disabled slots and highlighted near-target slots.",
+      "restaurant.html: favorite heart toggle and 4 tabs (Overview/Menu/Photos/Reviews); validate tab switching and state persistence.",
+      "guest.html: guest details form with many diet/occasion fields; validate validation, character counter for special request, and required/optional fields before continuing.",
+      "payment.html: card input fields + payment method toggles (Apple Pay/Google Pay) + add-on selectors affecting seats-based totals; validate agreement links and 'Hold the table' action behavior.",
+      "confirmation.html: modify/cancel recovery path and add-to-calendar links; validate that reservation details render correctly (no 'undefined' values)."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Discover & Search Entry (index.html)",
+        "objective": "Validate the primary discovery/search entry points, including quick suggestions and hero search form fields, then confirm navigation into results.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use WHERE (city/neighborhood) input (ux-8) and DATE (ux-10) plus PARTY selector to run a search via 'Find tables →' button.",
+          "Click at least one trending quick suggestion pill (e.g., '🍝 Pasta · 6 nearby', '🍣 Sushi · 9 nearby') and confirm it routes to restaurants.html with coherent parameters.",
+          "Select a time value in the TIME row (5:30 pm..9:00 pm visible) and ensure it impacts subsequent highlighting on restaurants.html.",
+          "Exercise top navigation links (Tablerose/Discover/Cities/For restaurants/Help) to ensure they don’t trap the flow; confirm they route as expected or scroll appropriately.",
+          "Mobile check: ensure tap targets for header links and quick pills are usable; confirm search card is not overlapped."
+        ],
+        "exit_criteria": [
+          "A successful navigation to restaurants.html occurs from both: (1) the search card and (2) at least one quick suggestion click.",
+          "Chosen DATE/TIME/PARTY selections visibly carry forward (e.g., results page summary bar reflects the selection)."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Results Discovery & Filtering (restaurants.html)",
+        "objective": "Validate results list rendering, time-slot highlighting logic (±30min), and filter/sort interactions with reset behavior.",
+        "target_pages": [
+          "restaurants.html"
+        ],
+        "key_checks": [
+          "Use the 'Edit' control on the top reservation summary bar to ensure it allows returning to adjust search parameters.",
+          "Toggle multiple filters: one Cuisine, one Price tier, one Neighborhood, and one Feature; verify counts update and results list changes accordingly.",
+          "Use 'Reset filters' and verify all filters clear to defaults.",
+          "Use sort dropdown (Relevance/Highest rated/Price low-high/Price high-low/Nearest) and verify ordering changes.",
+          "Open restaurant.html from at least one listing; prefer a listing whose per-row time slots show both enabled and visually muted/disabled states relative to the search time.",
+          "Mobile check: validate filter rail usability (small tap targets risk) and that the results list remains readable without clipping."
+        ],
+        "exit_criteria": [
+          "At least one successful navigation from restaurants.html to restaurant.html using a result listing.",
+          "Filter/sort/reset operations visibly affect the results list without breaking layout or leaving the page in an inconsistent state."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Restaurant Detail & Booking Slot Selection (restaurant.html)",
+        "objective": "Validate core detail-to-booking transition: tabs, favorite heart, sticky booking card interactions, and handling disabled vs highlighted time slots.",
+        "target_pages": [
+          "restaurant.html"
+        ],
+        "key_checks": [
+          "Click the favorite heart toggle (♡) and confirm it visually changes state (and if applicable persists on return).",
+          "Switch through the 4 tabs (Overview, Menu, Photos, Reviews) and confirm each tab renders its content area correctly.",
+          "In the sticky booking card, set or confirm PARTY and choose a time slot that is highlighted as near target (±30min) and then verify navigation readiness.",
+          "Attempt selecting a disabled time slot example (prescan notes 17:00 and 21:30 disabled for Bella Suora) and confirm the UI prevents selection with an appropriate disabled state.",
+          "Validate that the mini-map SVG is non-interactive/doesn’t break layout; ensure it doesn’t block booking card controls.",
+          "Mobile check: confirm sticky booking card remains reachable without covering primary content or causing accidental tap misfires."
+        ],
+        "exit_criteria": [
+          "A time slot is selected successfully from the sticky booking card and leads onward to guest.html (or directly to the next step per flow).",
+          "Disabled slots cannot be selected; highlighted slots are selectable and lead to booking steps."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Guest Details Form (guest.html)",
+        "objective": "Validate the multi-field guest information capture, optional dietary and request inputs, occasion selection, and continuation into payment.",
+        "target_pages": [
+          "guest.html"
+        ],
+        "key_checks": [
+          "Fill First name and Last name; ensure required/format expectations are respected.",
+          "Add Phone and Email; verify that email/phone fields do not clear unexpectedly and that form submission is possible with valid data.",
+          "Toggle at least two dietary inputs (e.g., Vegetarian + Gluten-free) and confirm selections render as expected.",
+          "Add a Special request in the textarea and verify the character counter (0 / 240) updates and limits are enforced.",
+          "Select an occasion chip (e.g., 🎂 Birthday) and verify it appears in the summary.",
+          "Proceed to the next step and confirm the reservation summary (Restaurant/Date/Time/Party) persists correctly.",
+          "Mobile check: validate small-tap targets for diet/occasion controls and that keyboard focus is clear."
+        ],
+        "exit_criteria": [
+          "Guest form submits successfully and transitions to payment.html with correct reservation summary and selections."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Card Hold & Add-ons (payment.html)",
+        "objective": "Validate payment hold messaging, payment method UI, add-on pricing calculation, and final submit into confirmation.",
+        "target_pages": [
+          "payment.html"
+        ],
+        "key_checks": [
+          "Verify the card hold explanation and fee terms are visible: $50/seat no-show fee and $100 card authorization (released if cancel by stated time).",
+          "Select a payment method option (Card, Apple Pay, Google Pay) and ensure the UI updates appropriately (even if actual payment is mocked).",
+          "Enter Card number, Expiry, CVC, and Postal code; confirm field masking/formatting and no broken validation indicators.",
+          "Toggle at least one add-on option (e.g., 🎂 Happy Birthday +$8 or 🥂 prosecco +$12 × seats) and confirm the add-ons total updates correctly.",
+          "Open the no-show policy link (agreement) and verify it doesn’t break flow (back works).",
+          "Complete by clicking 'Hold the table' and confirm navigation to confirmation.html."
+        ],
+        "exit_criteria": [
+          "Payment step completes successfully and confirmation.html loads with a consistent reservation/ref details.",
+          "Add-ons total reflects selected items and seat multiplication behavior."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Confirmation & Recovery (confirmation.html)",
+        "objective": "Validate that booking success states render correctly and that modify/cancel/help recovery paths work without losing reservation details.",
+        "target_pages": [
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Verify reservation identifiers and summary (e.g., TR-784521, date/time/party) render without 'undefined' placeholders.",
+          "Use 'Add to calendar' options (Apple/Google/Outlook) and confirm they trigger expected UI actions (or safe no-op in this environment).",
+          "Click 'Modify' and ensure the flow returns to an editable booking step without losing core info.",
+          "Click 'Cancel' and confirm messaging/behavior is consistent (may lead to discover or allow rebooking).",
+          "Check 'Resend email' to ensure the action is available and doesn’t error in the UI.",
+          "Mobile check: confirm confirmation actions remain reachable and not overlapped."
+        ],
+        "exit_criteria": [
+          "Confirmation page actions (calendar, resend email, modify/cancel) can be triggered and the UI stays coherent.",
+          "Reservation details on confirmation are fully populated."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages: index.html, restaurants.html, restaurant.html, guest.html, payment.html, confirmation.html.",
+      "features": "exercise most visible controls per key page: search card inputs + quick pills; filters/sort/reset on results; tabs + favorite toggle + sticky booking card time selection on restaurant detail; guest form diet/occasion/special request; payment card inputs/add-ons; confirmation calendar/modification/cancellation/resend actions.",
+      "mobile": "repeat the critical booking path (index -> restaurants -> restaurant -> guest -> payment -> confirmation) and verify reachability of sticky booking card + main action buttons; also validate header/quick-pill tap targets flagged as small in prescan."
+    },
+    "notes": [
+      "Execution should favor one complete booking run plus one alternate attempt that triggers a disabled time slot state on restaurant.html to validate error prevention.",
+      "The prescan excerpt shows 'for undefined guest' on confirmation; include an explicit check that guest name/party fields are not undefined after a full run."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Proceed from Guest details to Payment after filling required info.",
+      "problem": "The primary CTA (“Continue to hold →”) frequently fails to navigate or provide immediate, actionable feedback when clicked, even after interacting with dietary/consent fields.",
+      "evidence": "Multiple steps report no progression: clicking “Continue to hold →” on guest.html produced after_url unchanged / remained on guest.html (e.g., steps-07-12, 13-18, 19-24, 31-36, 43-48, 67-72 mobile). Inline messaging near Dietary needs (“Please fill out this field.”) is visible, but CTA clicks still did not trigger navigation or clear updated validation state.",
+      "why_it_matters": "Users can become stuck at the single most critical step (booking submission). If feedback doesn’t clearly explain what changed and why the CTA is blocked/enabled, users may abandon or repeatedly click.",
+      "suggestion": "Make the blocking rule unambiguous: disable the CTA with a clear label (e.g., “Select dietary needs to continue” or “Agree to email for confirmation”), and on click show an inline summary of missing/invalid fields. Ensure state updates are visually confirmed (e.g., validation hint clears when satisfied) and verify submission results consistently navigate to payment.html.",
+      "source_hint": "guest.html / “Continue to hold →” (multiple: steps-07-12, 19-24, 31-36, 43-48, recent mobile agentic-77/78/79 sequences)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Get help/guidance when form progression is blocked.",
+      "problem": "The Help link on guest.html doesn’t appear to open guidance or provide a modal/overlay; instead it only changes the URL hash.",
+      "evidence": "Step-19-24: clicking Help changed only the URL to add a hash (guest.html#), and “no modal/dialog appears” in the captured state (dialogs: 0). Similar lack of visible help feedback is reported earlier on guest.html (steps-07-12, steps-13-18/37-42).",
+      "why_it_matters": "When users are blocked, a non-functional Help link undermines trust and increases frustration. It also removes an important recovery path for confusion/errors.",
+      "suggestion": "Implement Help as a visible overlay/modal or inline expanded guidance with the exact missing requirement(s) and how to fix them. At minimum, scroll to the relevant field and announce it visually/a11y-wise.",
+      "source_hint": "guest.html / Help link (step-19-24; also steps-07-12, 37-42)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "accessibility",
+      "user_goal": "Select party size and continue booking.",
+      "problem": "The party size control lacks a visible/accessible label, which can harm screen reader comprehension and reduce clarity for all users.",
+      "evidence": "Medium accessibility issue flagged: “party selector is a <select> with no visible label/aria-label/placeholder” (ux-13 DOM warning: missing_input_label). On mobile restaurant.html the party select shows as unlabeled (“Party 1 guest 2 guests ... 8 guests” appears but no explicit label).",
+      "why_it_matters": "Reservation flows rely on selecting correct party size. Missing labels create avoidable cognitive/a11y load and can cause incorrect inputs or inability to operate the control for assistive tech users.",
+      "suggestion": "Add an explicit label such as “Party size” for the select and ensure aria-label/aria-labelledby is present. Also visually associate the label with the select on both desktop and mobile.",
+      "source_hint": "restaurant.html / party size select (ux-13; also noted in steps-13-18 and steps-67-72 / mobile screenshots)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap key navigation and time-slot controls accurately on mobile.",
+      "problem": "Many interactive elements on mobile appear to have small tap targets and the layout may overflow horizontally, increasing mis-taps and frustration during booking.",
+      "evidence": "Mobile layout warnings (count 16 on guest.html; 17 on restaurant.html): horizontal overflow (scroll_width 396px > viewport 390px) and small tap targets below 44px for key controls—examples include “My reservations” (102x16), “Sign in” (86x36), and booking time buttons (~96x29–31). Also “Tablerose” link is below guidance in recent logs.",
+      "why_it_matters": "Booking is time-sensitive and accuracy-critical. Small tap targets and overflow can lead to selecting wrong times/sections or not triggering actions, especially on smaller screens.",
+      "suggestion": "Increase mobile hit areas to meet ≥44px minimums (padding around links/buttons), reduce header density, and fix horizontal overflow by reflowing rather than forcing wider content.",
+      "source_hint": "mobile viewport warnings on guest.html and restaurant.html (agentic-79/80 and mobile sections; layout_warning_count 16–17; small_tap_target items)"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 23,
+    "action_success_rate_percent": 100,
+    "unchanged_action_percent": 48,
+    "known_pages": [
+      "confirmation.html",
+      "guest.html",
+      "index.html",
+      "payment.html",
+      "restaurant.html",
+      "restaurants.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "restaurants.html",
+      "restaurant.html",
+      "guest.html",
+      "payment.html",
+      "confirmation.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "check": 7,
+      "click": 57,
+      "open_page": 1,
+      "type_text": 9,
+      "uncheck": 5
+    },
+    "total_actions": 79,
+    "successful_actions": 79,
+    "failed_actions": 0,
+    "unchanged_actions": 38,
+    "observed_feature_count": 140,
+    "exercised_feature_count": 32,
+    "unexplored_features": [
+      {
+        "signature": "confirmation.html|clickable|a|||tablerose|index.html",
+        "page": "confirmation.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Tablerose"
+      },
+      {
+        "signature": "confirmation.html|clickable|button|||google|",
+        "page": "confirmation.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Google"
+      },
+      {
+        "signature": "confirmation.html|clickable|button|||outlook|",
+        "page": "confirmation.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Outlook"
+      },
+      {
+        "signature": "confirmation.html|clickable|button|||resend email|",
+        "page": "confirmation.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Resend email"
+      },
+      {
+        "signature": "guest.html|clickable|a|||tablerose|index.html",
+        "page": "guest.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Tablerose"
+      },
+      {
+        "signature": "guest.html|clickable|input||checkbox|dairy-free|",
+        "page": "guest.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Dairy-free"
+      },
+      {
+        "signature": "guest.html|clickable|input||checkbox|vegan|",
+        "page": "guest.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Vegan"
+      },
+      {
+        "signature": "guest.html|clickable|input||radio|none|",
+        "page": "guest.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "None"
+      },
+      {
+        "signature": "guest.html|clickable|input||radio|🌹 date night|",
+        "page": "guest.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "🌹 Date night"
+      },
+      {
+        "signature": "guest.html|clickable|input||radio|💼 business|",
+        "page": "guest.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "💼 Business"
+      },
+      {
+        "signature": "guest.html|clickable|input||radio|🥂 celebration|",
+        "page": "guest.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "🥂 Celebration"
+      },
+      {
+        "signature": "guest.html|typeable|textarea|||special request (optional) 62 / 240|",
+        "page": "guest.html",
+        "viewport": "mobile",
+        "kind": "typeable",
+        "tag": "textarea",
+        "label": "Special request (optional) 62 / 240"
+      },
+      {
+        "signature": "index.html|clickable|a|||bella suora italian · $$$ · pearl district ★★★★★ 4.7 · 1k+ reviews 6:30 7:00 8:1|restaurant.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Bella Suora Italian · $$$ · Pearl District ★★★★★ 4.7 · 1k+ reviews 6:30 7:00 8:15 9:30 ✕"
+      },
+      {
+        "signature": "index.html|clickable|a|||birthday 9 spots · big tables, great cake birthday dinners that won't ruin the b|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Birthday 9 spots · big tables, great cake Birthday dinners that won't ruin the budget"
+      },
+      {
+        "signature": "index.html|clickable|a|||cities|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Cities"
+      },
+      {
+        "signature": "index.html|clickable|a|||date night 14 spots · low-light, walk-in ok where to take a first date in portla|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Date Night 14 spots · low-light, walk-in OK Where to take a first date in Portland"
+      },
+      {
+        "signature": "index.html|clickable|a|||discover|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Discover"
+      },
+      {
+        "signature": "index.html|clickable|a|||field & hearth new american · $$$ · alberta arts ★★★★★ 4.8 · 1k+ reviews 7:15 8:|restaurant.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Field & Hearth New American · $$$ · Alberta Arts ★★★★★ 4.8 · 1k+ reviews 7:15 8:00 9:30 ✕"
+      },
+      {
+        "signature": "index.html|clickable|a|||for restaurants|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "For restaurants"
+      },
+      {
+        "signature": "index.html|clickable|a|||help|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Help"
+      },
+      {
+        "signature": "index.html|clickable|a|||lupinus & roma italian · $$$ · mississippi ave ★★★★½ 4.5 · 1k+ reviews 6:00 6:30|restaurant.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Lupinus & Roma Italian · $$$ · Mississippi Ave ★★★★½ 4.5 · 1k+ reviews 6:00 6:30 9:00 9:30 ✕"
+      },
+      {
+        "signature": "index.html|clickable|a|||my reservations|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "My reservations"
+      },
+      {
+        "signature": "index.html|clickable|a|||old pier smokehouse bbq · $$ · hawthorne ★★★★ 4.3 · 1k+ reviews 5:30 7:30 9:30 ✕|restaurant.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Old Pier Smokehouse BBQ · $$ · Hawthorne ★★★★ 4.3 · 1k+ reviews 5:30 7:30 9:30 ✕"
+      },
+      {
+        "signature": "index.html|clickable|a|||quiet 6 spots · under 65 db quiet rooms for actual conversation|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Quiet 6 spots · under 65 dB Quiet rooms for actual conversation"
+      },
+      {
+        "signature": "index.html|clickable|a|||saffron & stone mediterranean · $$$ · division st ★★★★½ 4.6 · 1k+ reviews 6:00 7|restaurant.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Saffron & Stone Mediterranean · $$$ · Division St ★★★★½ 4.6 · 1k+ reviews 6:00 7:00 8:00 9:30 ✕"
+      },
+      {
+        "signature": "index.html|clickable|a|||sign in|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sign in"
+      },
+      {
+        "signature": "index.html|clickable|a|||solo 11 spots · counter seats welcomed the best solo-dining counters|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Solo 11 spots · counter seats welcomed The best solo-dining counters"
+      },
+      {
+        "signature": "index.html|clickable|a|||tablerose|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Tablerose"
+      },
+      {
+        "signature": "index.html|clickable|a|||tonari japanese · $$ · pearl district ★★★★½ 4.6 · 1k+ reviews 5:45 6:00 8:30 9:3|restaurant.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Tonari Japanese · $$ · Pearl District ★★★★½ 4.6 · 1k+ reviews 5:45 6:00 8:30 9:30 ✕"
+      },
+      {
+        "signature": "index.html|clickable|a|||☕ brunch tomorrow · 22 nearby|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "☕ Brunch tomorrow · 22 nearby"
+      },
+      {
+        "signature": "index.html|clickable|a|||🌶️ sichuan · 4 nearby|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🌶️ Sichuan · 4 nearby"
+      },
+      {
+        "signature": "index.html|clickable|a|||🍝 pasta · 6 nearby|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🍝 Pasta · 6 nearby"
+      },
+      {
+        "signature": "index.html|clickable|a|||🍣 sushi · 9 nearby|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🍣 Sushi · 9 nearby"
+      },
+      {
+        "signature": "index.html|clickable|a|||🍷 wine bars · 12 nearby|restaurants.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🍷 Wine bars · 12 nearby"
+      },
+      {
+        "signature": "index.html|selectable|select|||party 1 guest 2 guests 3 guests 4 guests 5 guests 6 guests 7 guests 8 guests 9+ |",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "PARTY 1 guest 2 guests 3 guests 4 guests 5 guests 6 guests 7 guests 8 guests 9+ (request)"
+      },
+      {
+        "signature": "index.html|selectable|select|||time 5:30 pm 6:00 pm 6:30 pm 7:00 pm 7:30 pm 8:00 pm 8:30 pm 9:00 pm|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "TIME 5:30 pm 6:00 pm 6:30 pm 7:00 pm 7:30 pm 8:00 pm 8:30 pm 9:00 pm"
+      },
+      {
+        "signature": "index.html|typeable|input||date|date|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "DATE"
+      },
+      {
+        "signature": "index.html|typeable|input|||where|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "WHERE"
+      },
+      {
+        "signature": "payment.html|clickable|a|||help|#",
+        "page": "payment.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Help"
+      },
+      {
+        "signature": "payment.html|clickable|a|||no-show policy|#",
+        "page": "payment.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "no-show policy"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 23% of visible interactive feature signatures.",
+      "48% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-05-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-06-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-18-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-23-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-25-uncheck-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-27-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-29-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-30-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-32-uncheck-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-33-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-36-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-37-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-41-uncheck-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-44-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-46-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-48-uncheck-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-52-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-54-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-55-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-56-uncheck-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-57-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-62-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-74-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-nano/tablerose/_run",
+  "claude_fix": null
+}

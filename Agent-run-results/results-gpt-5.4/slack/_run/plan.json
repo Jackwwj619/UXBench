@@ -1,0 +1,715 @@
+{
+  "plan": {
+    "goal": "Explore the full Slack marketing/pricing site with emphasis on the pricing decision flow, then validate adjacent acquisition, sales-contact, sign-in, and supporting content paths across desktop and mobile.",
+    "summary": "Start from the homepage and pricing entry points to understand how a visitor is pushed toward plan selection, sales contact, or free signup. Then exercise the highest-value stateful pages: pricing toggles/filters, get-started, sign-in, and contact form flows including likely success and validation states. After the primary conversion paths are covered, sweep supporting product, enterprise, solutions, resources, about, and trust pages to confirm navigation consistency, anchor behavior, and CTA routing, with a final mobile-focused pass on the most critical interactions.",
+    "assumptions": [
+      "This is a static multi-page marketing clone with no backend integrations visible in prescan, so form submissions and auth are likely local/demo behaviors.",
+      "The primary user journey is pricing evaluation leading to either 'Get started free' or 'Talk to sales', supported by homepage and feature/enterprise content.",
+      "Pricing contains meaningful interactive state via a billing-period toggle and feature-category controls that deserve deeper validation than mostly informational pages.",
+      "Several pages expose hidden or alternate states through the DOM/headings (for example 'Thank you!' on contact, 'Check your email' on get-started, and 'Reset your password' on sign-in), so state transitions should be intentionally triggered.",
+      "Mobile risk is elevated because the prescan already found repeated small tap targets in header and text-link CTAs."
+    ],
+    "target_pages": [
+      "index.html",
+      "pricing.html",
+      "get-started.html",
+      "contact.html",
+      "signin.html",
+      "features.html",
+      "enterprise.html",
+      "solutions.html",
+      "resources.html",
+      "trust.html",
+      "about.html"
+    ],
+    "risk_hotspots": [
+      "pricing.html: billing period toggle may fail to update prices, labels, or savings messaging consistently across all four plan cards",
+      "pricing.html: feature-category buttons (All / Productivity / AI and likely others) may not correctly filter or may desync with the comparison table",
+      "pricing.html: repeated plan CTAs and 'Contact sales' routing should send users to the expected pages without ambiguity",
+      "contact.html: required fields, select controls, consent checkbox, submit behavior, and transition to visible 'Thank you!' state",
+      "get-started.html: work email form submission and transition to visible 'Check your email' state; alternate provider buttons should be inspected for clear behavior",
+      "signin.html: standard sign-in form, forgot-password recovery path to visible 'Reset your password' state, and account-creation link",
+      "features.html: in-page category navigation and deep links from homepage anchors (#channels, #ai, #integrations) should land at the correct sections",
+      "global header/navigation across all pages: consistency of nav items and CTA destinations",
+      "mobile header and text links: many controls were flagged as undersized tap targets and should be checked for usability at mobile viewport"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Map the primary acquisition and pricing funnel",
+        "objective": "Validate how homepage and top navigation direct users into pricing, free signup, and sales-contact paths.",
+        "target_pages": [
+          "index.html",
+          "pricing.html",
+          "get-started.html",
+          "contact.html"
+        ],
+        "key_checks": [
+          "From index.html, verify header CTAs and hero CTAs route distinctly to get-started.html and contact.html",
+          "Use the homepage 'See pricing' CTA and top-nav 'Pricing' link to confirm both reach pricing.html cleanly",
+          "Check whether homepage feature teaser links land on the intended sections of features.html via anchors",
+          "Confirm pricing page presents clear differentiation among Free, Pro, Business+, and Enterprise+ before any interaction",
+          "Follow at least one self-serve CTA from pricing to get-started.html and one sales CTA to contact.html"
+        ],
+        "exit_criteria": [
+          "Evidence captured for the main paths: Home -> Pricing, Home/Pricing -> Get Started, and Home/Pricing/Enterprise -> Contact Sales",
+          "CTA routing from homepage and pricing is confirmed or issues are documented",
+          "Anchor-based handoff from homepage to features sections is sampled and verified"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Stress the pricing page states",
+        "objective": "Deeply validate the main pricing decision surface, including interactive controls and comparison content.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Toggle billing period and verify visible pricing, savings copy, and plan-card consistency update together",
+          "Exercise feature-category buttons such as All, Productivity, and AI to see whether the comparison table content changes meaningfully and predictably",
+          "Inspect plan CTAs on each pricing column for correct destination and labeling consistency",
+          "Review FAQ expand/collapse behavior if interactive, or at minimum verify FAQ discoverability and readability",
+          "Scroll through the comparison table to ensure feature rows remain understandable and not visually broken"
+        ],
+        "exit_criteria": [
+          "Both billing states are observed and compared",
+          "Most visible pricing controls have been exercised at least once",
+          "At least one issue or confirmation note exists for pricing interactivity, CTA consistency, and table usability"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Validate form and recovery flows",
+        "objective": "Exercise the site's stateful forms and recovery paths to ensure users can progress, recover, or receive clear feedback.",
+        "target_pages": [
+          "get-started.html",
+          "signin.html",
+          "contact.html"
+        ],
+        "key_checks": [
+          "On get-started.html, try submitting with empty/invalid email and then with a plausible valid email to observe validation and the 'Check your email' state",
+          "Inspect behavior of 'Continue with Google', 'Continue with Microsoft', and 'Continue with Apple' buttons for clarity and consistency",
+          "On signin.html, test empty/partial credentials, standard sign-in submission, and 'Forgot your password?' to reach the reset flow",
+          "Verify 'Create an account' from signin routes into get-started.html or equivalent account-creation path",
+          "On contact.html, test required field handling, company size and country selects, optional job title/message inputs, consent checkbox, and successful submit to the visible thank-you state"
+        ],
+        "exit_criteria": [
+          "At least one successful end state is reached on each of get-started, sign-in recovery, and contact form pages where supported",
+          "Required-field validation behavior is documented for contact and get-started/sign-in forms",
+          "Provider buttons and alternate recovery/account-creation links are checked for clear navigation"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Sweep supporting product and trust content",
+        "objective": "Cover adjacent pages that influence pricing decisions and ensure navigation, CTA hierarchy, and cross-linking are coherent.",
+        "target_pages": [
+          "features.html",
+          "enterprise.html",
+          "solutions.html",
+          "resources.html",
+          "trust.html",
+          "about.html"
+        ],
+        "key_checks": [
+          "On features.html, use category navigation (Collaboration, Project Management, Integrations, Intelligence) and verify section jumps/content grouping",
+          "Confirm homepage deep links into features sections (channels, AI, integrations) land where expected",
+          "On enterprise.html, verify 'Watch demo', 'Talk to sales'/'Contact sales', and 'Compare plans' routes support enterprise decision-making",
+          "On solutions.html, sample multiple 'Learn more' links to see whether they provide meaningful navigation or all collapse to the same page",
+          "On resources.html, test the resource cards and end-of-page CTAs for sensible routing",
+          "On trust.html and about.html, confirm trust-building content is readable and supporting CTAs connect back into enterprise/contact/get-started flows"
+        ],
+        "exit_criteria": [
+          "All remaining known HTML pages are visited at least once",
+          "Key internal link patterns and major CTAs on support pages are sampled and documented",
+          "Navigation consistency and any dead-end or repetitive-link issues are identified"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Repeat critical checks on mobile",
+        "objective": "Re-run the highest-risk journeys on a mobile viewport, focusing on tap-target usability, layout stability, and conversion flow continuity.",
+        "target_pages": [
+          "index.html",
+          "pricing.html",
+          "get-started.html",
+          "contact.html",
+          "signin.html",
+          "features.html"
+        ],
+        "key_checks": [
+          "Verify header navigation/branding/CTAs remain reachable and not overlapped or clipped on mobile",
+          "Retest homepage hero CTAs, pricing entry, and one anchored feature link on mobile",
+          "Retest pricing billing toggle and at least one feature-category button on mobile for touch usability",
+          "Retest get-started, sign-in, and contact form completion on mobile, paying attention to field spacing, select usability, and submit controls",
+          "Check previously flagged small tap targets in nav and inline text links for practical usability problems"
+        ],
+        "exit_criteria": [
+          "Critical conversion flows are exercised end-to-end on mobile: home -> pricing, pricing -> get started, and contact form submission",
+          "At least one concrete mobile usability finding is recorded if issues appear, especially around tap target size",
+          "No major mobile-only blocker remains untested on the core pages"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 11 known HTML pages, with repeated passes on index.html, pricing.html, get-started.html, contact.html, signin.html, and features.html.",
+      "features": "Exercise most visible controls on pricing, all visible form flows on get-started/signin/contact, top-level nav and CTA routes, and key in-page/anchor navigation on features and homepage.",
+      "mobile": "Repeat the critical conversion and navigation checks on mobile viewport for the homepage, pricing interactions, and all form pages, with explicit attention to the prescan's small tap target warnings."
+    },
+    "notes": [
+      "Do not spend time looking for account dashboards, authenticated product areas, or backend-dependent checkout because none were present in prescan.",
+      "If multiple links on solutions/resources/about footers route to the same destination page, treat that as a UX/content architecture finding rather than a navigation failure unless the labeling is misleading.",
+      "Because the run budget is 80 steps, prioritize deep interaction on pricing and forms over exhaustive clicking of every repeated footer link."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Slack – Where Work Happens",
+      "url": "file:///Users/timchef/UXBench/websites/slack/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Talk to sales Get started free Made for people. Built for productivity. Slack is the AI-powered platform for work. Connect your people, tools and customers — all in one place. Get started free Talk to sales Slack is free to try for as long as you'd like Acme Corp # general # engineering # design # marketing # random # general Sarah Chen 10:32 AM The new AI features are live! Check out the daily recaps. Alex Rivera 10:34 AM Amazing work team! Deployment went smoothly. Slackbot 10:35 AM Here's your daily recap: 3 channels need attention, 2 action items pending. Trusted by companies all over the world Airbnb NASA Uber Target HubSpot Shopify CHANNELS Organise your work around topics, teams and projects Channels bring order and clarity to work. Create them for every project, topic or team. Messages, files and context stay together, making it",
+      "headings": [
+        "Made for people.\nBuilt for productivity.",
+        "Organise your work around topics, teams and projects",
+        "Work smarter with AI built into every conversation",
+        "Automate routine work with Workflow Builder",
+        "Connect 2,600+ apps to your workspace",
+        "See what Slack can do for your team"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 42,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Talk to sales",
+        "clickable:a:Get started free",
+        "clickable:a:Learn more about Channels on the Features page",
+        "clickable:a:Explore AI features on the Features page",
+        "clickable:a:See Workflow Builder",
+        "clickable:a:Browse integrations on the Features page",
+        "clickable:a:See pricing"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "about.html",
+      "title": "About – Slack",
+      "url": "file:///Users/timchef/UXBench/websites/slack/about.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Talk to sales Get started free About Slack Slack is where work happens. We're on a mission to make people's working lives simpler, more pleasant and more productive. Our Mission We believe that work should be simpler, more pleasant and more productive. Slack brings all your communication together in one place — it's real-time messaging, archiving and search for modern teams. Our Story Founded in 2013, Slack has grown from a small team's internal tool to the platform used by millions of people every day. In 2021, Slack joined Salesforce to bring even more powerful collaboration to teams worldwide. By the Numbers 750K+ Companies use Slack daily 150+ Countries represented 2,600+ Apps in the marketplace Careers We're always looking for talented people who want to make work better for everyone. Join our team and help shape the future of work",
+      "headings": [
+        "About Slack",
+        "Our Mission",
+        "Our Story",
+        "By the Numbers",
+        "Careers"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 23,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Talk to sales",
+        "clickable:a:Get started free",
+        "clickable:a:View open positions",
+        "clickable:a:Engineering",
+        "clickable:a:Sales",
+        "clickable:a:IT",
+        "clickable:a:Help Centre"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "contact.html",
+      "title": "Contact Sales – Slack",
+      "url": "file:///Users/timchef/UXBench/websites/slack/contact.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Get started free Talk to sales Interested in Slack for your team? Fill out the form and our sales team will be in touch. 1 Tell us about your team Share your needs and we'll find the right plan. 2 Get a personalised demo See how Slack works for teams like yours. 3 Start your journey We'll help you get set up and running fast. First name * Last name * Work email * Company name * Job title Company size * Select... 1–50 employees 51–200 employees 201–500 employees 501–1,000 employees 1,001–5,000 employees 5,001+ employees Country * Select... United States United Kingdom Germany France Japan Australia Canada Other What would you like to discuss? I agree to receive communications from Slack. I can unsubscribe at any time. Submit By submitting this form, you agree to our Privacy Policy. PRODUCT Features Enterprise Pricing SOLUTIONS Engineerin",
+      "headings": [
+        "Talk to sales",
+        "Thank you!"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 23,
+        "inputs": 9,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Get started free",
+        "typeable:input:First name *",
+        "typeable:input:Last name *",
+        "typeable:input:Work email *",
+        "typeable:input:Company name *",
+        "typeable:input:Job title",
+        "selectable:select:Company size *",
+        "selectable:select:Country *",
+        "typeable:textarea:What would you like to discuss?",
+        "clickable:input:I agree to receive communications from Slack. I can unsubscribe at any time."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "enterprise.html",
+      "title": "Slack Enterprise – Security, Scale & AI",
+      "url": "file:///Users/timchef/UXBench/websites/slack/enterprise.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Talk to sales Get started free Secure. Scaleable. Silo-free. The only open platform designed to host, connect and orchestrate work across every app and AI agent your enterprise relies on. Talk to sales Watch demo Enterprise-grade Security Built with the security and compliance tools that large organisations demand. GDPR, HIPAA, SOC 2 compliant. Data encryption at rest and in transit Enterprise Key Management (EKM) Native data loss prevention Anomaly event response Information barriers Scale Without Limits Unlimited workspaces, granular admin controls and tools designed for organisations of any size. Unlimited workspaces Granular roles and permissions SCIM provisioning with guest support Custom terms of service Domain claiming AI-Powered Productivity Enterprise-grade AI with Slackbot, enterprise search across connected apps, and AI workf",
+      "headings": [
+        "Secure. Scaleable. Silo-free.",
+        "Enterprise-grade Security",
+        "Scale Without Limits",
+        "AI-Powered Productivity",
+        "Connect your entire tech stack",
+        "Compliance you can count on",
+        "Ready to transform how your enterprise works?"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 26,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Talk to sales",
+        "clickable:a:Get started free",
+        "clickable:a:Watch demo",
+        "clickable:a:Contact sales",
+        "clickable:a:Compare plans",
+        "clickable:a:Engineering"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "features.html",
+      "title": "Slack Features – Team Collaboration Tools",
+      "url": "file:///Users/timchef/UXBench/websites/slack/features.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Talk to sales Get started free One platform for your entire workday All the features of Slack work together so you can too. Collaboration Project Management Integrations Intelligence Collaboration Bring people, projects, knowledge and culture under one roof. # Channels Collaborate in real time with transparent conversations. Create channels around teams, projects or anything else. SC Slack Connect Turn partners into team members and break down boundaries, with secure collaboration right in Slack. H Huddles Work together in real time through audio and video meetings, including screen sharing. C Clips Share audio ideas or screen recordings with clips — all without leaving Slack. M Messaging Chat with your team in real time. Share files, react with emojis, and keep conversations organised. E Enterprise Scale securely with features designed",
+      "headings": [
+        "One platform for your entire workday",
+        "Collaboration",
+        "Channels",
+        "Slack Connect",
+        "Huddles",
+        "Clips",
+        "Messaging",
+        "Enterprise",
+        "Project Management",
+        "Templates"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 40,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Talk to sales",
+        "clickable:a:Get started free",
+        "clickable:a:Collaboration",
+        "clickable:a:Project Management",
+        "clickable:a:Integrations",
+        "clickable:a:Intelligence",
+        "clickable:a:See plans & pricing",
+        "clickable:a:Channels"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "get-started.html",
+      "title": "Get Started – Slack",
+      "url": "file:///Users/timchef/UXBench/websites/slack/get-started.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Create your Slack workspace Get started for free — no credit card required. Work email Continue OR Continue with Google Continue with Microsoft Continue with Apple Already have a workspace? Sign in",
+      "headings": [
+        "Create your Slack workspace",
+        "Check your email"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 5,
+        "inputs": 1,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "typeable:input:Work email",
+        "clickable:button:Continue",
+        "clickable:button:Continue with Google",
+        "clickable:button:Continue with Microsoft",
+        "clickable:button:Continue with Apple",
+        "clickable:a:Sign in"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "pricing.html",
+      "title": "Slack Pricing – Free, Pro, Business+, Enterprise+",
+      "url": "file:///Users/timchef/UXBench/websites/slack/pricing.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Talk to sales Get started free Choose a plan that's built for your business. Or start with the basics for free, and upgrade at any time. Monthly Annual Save up to 18% Free A simpler way to chat and collaborate $0 Free forever Get started free 90 days of message history Up to 10 app integrations 1:1 huddles (audio/video) 1:1 Slack Connect messages Basic AI Thread & channel summaries Huddle notes Slackbot AI agent AI search Daily recaps SAML-based SSO SCIM provisioning Data loss prevention Pro Drive productivity in one place 50% off for 3 months* $8.75 $4.38 per user/month, billed monthly Get started free Unlimited message history Unlimited app integrations Group huddles (audio/video) Group Slack Connect (250 orgs) Basic AI Thread & channel summaries Huddle notes Slackbot AI agent AI search Daily recaps SAML-based SSO SCIM provisioning Da",
+      "headings": [
+        "Choose a plan that's built for your business.",
+        "Free",
+        "Pro",
+        "Business+",
+        "Enterprise+",
+        "Compare all features",
+        "Frequently asked questions",
+        "Whatever work you do, you can do it in Slack"
+      ],
+      "counts": {
+        "buttons": 13,
+        "links": 28,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Talk to sales",
+        "clickable:a:Get started free",
+        "clickable:button:Toggle billing period",
+        "clickable:a:Contact sales",
+        "clickable:button:All",
+        "clickable:button:Productivity",
+        "clickable:button:AI"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "resources.html",
+      "title": "Resources – Slack",
+      "url": "file:///Users/timchef/UXBench/websites/slack/resources.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Talk to sales Get started free Resources Everything you need to get the most out of Slack. ? Help Centre Find answers to common questions, troubleshoot issues and learn how to use every Slack feature. N What's New Stay up to date with the latest Slack features, improvements and announcements. </> Developers Build apps, integrations and workflows with the Slack API. Access documentation and SDKs. C Community Connect with other Slack users, share tips and get inspired by how others use Slack. B Blog Read about productivity tips, team collaboration best practices and Slack product updates. P Partners Explore our partner ecosystem and find certified consultants to help your team succeed. Ready to get started? Try Slack free — no credit card required. Get started free Talk to sales PRODUCT Features Enterprise Pricing SOLUTIONS Engineering Sa",
+      "headings": [
+        "Resources",
+        "Help Centre",
+        "What's New",
+        "Developers",
+        "Community",
+        "Blog",
+        "Partners",
+        "Ready to get started?"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 30,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Talk to sales",
+        "clickable:a:Get started free",
+        "clickable:a:? Help Centre Find answers to common questions, troubleshoot issues and learn how to use every Slack feature.",
+        "clickable:a:N What's New Stay up to date with the latest Slack features, improvements and announcements.",
+        "clickable:a:</> Developers Build apps, integrations and workflows with the Slack API. Access documentation and SDKs.",
+        "clickable:a:C Community Connect with other Slack users, share tips and get inspired by how others use Slack.",
+        "clickable:a:B Blog Read about productivity tips, team collaboration best practices and Slack product updates.",
+        "clickable:a:P Partners Explore our partner ecosystem and find certified consultants to help your team succeed."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "signin.html",
+      "title": "Sign In – Slack",
+      "url": "file:///Users/timchef/UXBench/websites/slack/signin.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Sign in to Slack We suggest using the email address you use at work. Email address Password Sign in OR Sign in with Google Sign in with Microsoft New to Slack? Create an account Forgot your password?",
+      "headings": [
+        "Sign in to Slack",
+        "Welcome back!",
+        "Reset your password"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 5,
+        "inputs": 3,
+        "forms": 2,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "typeable:input:Email address",
+        "typeable:input:Password",
+        "clickable:button:Sign in",
+        "clickable:button:Sign in with Google",
+        "clickable:button:Sign in with Microsoft",
+        "clickable:a:Create an account",
+        "clickable:a:Forgot your password?"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "solutions.html",
+      "title": "Slack Solutions – For Every Team and Industry",
+      "url": "file:///Users/timchef/UXBench/websites/slack/solutions.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Talk to sales Get started free Solutions for every team No matter your department or industry, Slack has the tools to help your team work better together. By Department Eng Engineering Ship faster with integrated dev tools, automated workflows and real-time collaboration across your engineering org. Learn more › IT IT Streamline IT operations, automate service requests and manage incidents — all from one platform. Learn more › CS Customer Service Resolve issues faster by connecting support agents with the right experts and information in real time. Learn more › Sa Sales Close deals faster with Salesforce integration, real-time deal updates and cross-team collaboration. Learn more › PM Project Management Keep projects on track with channels, lists, canvases and automated status updates. Learn more › Mk Marketing Coordinate campaigns, sha",
+      "headings": [
+        "Solutions for every team",
+        "By Department",
+        "Engineering",
+        "IT",
+        "Customer Service",
+        "Sales",
+        "Project Management",
+        "Marketing",
+        "Human Resources",
+        "Security"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 40,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Talk to sales",
+        "clickable:a:Get started free",
+        "clickable:a:Learn more about Engineering solutions",
+        "clickable:a:Learn more about IT solutions",
+        "clickable:a:Learn more about Customer Service solutions",
+        "clickable:a:Learn more about Sales solutions",
+        "clickable:a:Learn more about Project Management solutions",
+        "clickable:a:Learn more about Marketing solutions",
+        "clickable:a:Learn more about Human Resources solutions",
+        "clickable:a:Learn more about Security solutions"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "trust.html",
+      "title": "Trust & Security – Slack",
+      "url": "file:///Users/timchef/UXBench/websites/slack/trust.html",
+      "load_error": null,
+      "visible_text_excerpt": "slack Features Solutions Enterprise Pricing Sign in Talk to sales Get started free Trust & Security Security isn't just a feature — it's the foundation of everything we build. Data Encryption All data is encrypted in transit using TLS 1.2+ and at rest using AES-256. Your conversations and files are protected at every layer. Compliance Certifications Slack maintains SOC 2 Type II, SOC 3, ISO 27001, ISO 27017, ISO 27018, and CSA certifications. We also support HIPAA and FedRAMP compliance. Enterprise Key Management Control your own encryption keys with Slack EKM, powered by AWS KMS. Revoke access to data at any time with full audit trails. Data Loss Prevention Native DLP scans messages and files in Slack Connect to prevent sharing of confidential, malicious or personally identifiable content. Identity & Access SAML-based SSO, SCIM provisioning, two-factor authentication, session management",
+      "headings": [
+        "Trust & Security",
+        "Data Encryption",
+        "Compliance Certifications",
+        "Enterprise Key Management",
+        "Data Loss Prevention",
+        "Identity & Access",
+        "Privacy Principles",
+        "Privacy & Terms",
+        "Security questions?"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 24,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:slack",
+        "clickable:a:Features",
+        "clickable:a:Solutions",
+        "clickable:a:Enterprise",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Talk to sales",
+        "clickable:a:Get started free",
+        "clickable:a:Contact sales",
+        "clickable:a:Learn about Enterprise",
+        "clickable:a:Engineering",
+        "clickable:a:Sales",
+        "clickable:a:IT"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the Cloudflare Radar single-page dashboard, validating navigation, filtering, data widget interactions, and mobile responsiveness.",
+    "summary": "The run will first map out the global navigation (sidebar, top nav, settings) to understand routing within the SPA. Next, it will exercise the global data filters (location, date range, lookup) to ensure state changes propagate. It will then deep-dive into widget-level controls like tabs and dropdowns on the charts. Finally, it will run targeted mobile checks to evaluate the usability of the dense layout and small tap targets flagged in the prescan.",
+    "assumptions": [
+      "The application is a pure SPA on index.html; navigation links likely scroll to sections or filter data rather than loading new HTML files.",
+      "Data visualizations (charts) are controlled by surrounding DOM elements (tabs, dropdowns) which can be interacted with, even if the canvas/SVG itself is opaque to the agent."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Mobile usability of top navigation links due to small tap targets (height < 44px).",
+      "Visibility and accessibility of the 6 dialogs (likely search, share, or filter modals).",
+      "Coordination between the global filter bar (Location, Date Range) and the individual widget data displays."
+    ],
+    "phases": [
+      {
+        "id": "phase-1-navigation",
+        "title": "Global & Sidebar Navigation",
+        "objective": "Verify that top header links and sidebar navigation correctly update the view or scroll position.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click top nav links (Traffic, Security, etc.) and observe view changes.",
+          "Use the 'Filter navigation' input in the sidebar to search for a category.",
+          "Toggle global settings: Theme and Language (EN)."
+        ],
+        "exit_criteria": [
+          "Top navigation and sidebar interactions are fully mapped and visually verified."
+        ]
+      },
+      {
+        "id": "phase-2-global-filters",
+        "title": "Global Data Filtering",
+        "objective": "Test the primary dashboard controls for manipulating data scope.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open and select options in the 'Location' and 'Date Range' dropdowns.",
+          "Interact with the 'Add filter' button and any resulting dialog/popover.",
+          "Type into the 'Domain, IP, ASN, or report' lookup input.",
+          "Click the 'Reset' button to clear filters."
+        ],
+        "exit_criteria": [
+          "All global filter controls have been interacted with and their UI state changes observed."
+        ]
+      },
+      {
+        "id": "phase-3-widget-interactions",
+        "title": "Data Widget Controls",
+        "objective": "Explore the interactive elements within specific data cards on the dashboard.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Details' buttons on the top summary metrics.",
+          "Switch tabs within the 'Internet traffic' card (HTTP requests, Bytes, Latency, Anomalies).",
+          "Interact with 'Share', 'Copy link', and 'Export' buttons to trigger dialogs or clipboard actions.",
+          "Click 'View all' or similar expanders on list-based widgets (e.g., Domain rankings)."
+        ],
+        "exit_criteria": [
+          "A representative sample of card-level interactions (tabs, dialogs, expanders) has been successfully exercised."
+        ]
+      },
+      {
+        "id": "phase-4-mobile-validation",
+        "title": "Mobile Responsive Checks",
+        "objective": "Evaluate the usability of the dense dashboard UI on a mobile viewport.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport.",
+          "Attempt to open and use the main navigation (likely collapsed behind a hamburger menu).",
+          "Interact with the previously flagged small tap targets (e.g., top nav links if visible, or filter dropdowns) to assess touch usability.",
+          "Verify that chart widgets stack or resize appropriately without horizontal scrolling."
+        ],
+        "exit_criteria": [
+          "Core navigation and filtering flows have been proven functional (or documented as flawed) on a mobile viewport."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Thoroughly test index.html as it acts as the sole application shell.",
+      "features": "Exercise navigation, global filters, widget tabs, and modals (share/export/search).",
+      "mobile": "Validate layout adaptation, navigation menu functionality, and target size accessibility."
+    },
+    "notes": [
+      "Given the high number of buttons (135), prioritize interactions that alter layout or open dialogs over exhaustive clicking of every single chart data point."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Cloudflare Radar",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/cloudflare-radar/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Radar Overview Traffic Security Connectivity Routing DNS Reports Search Radar / API EN GLOBAL VIEW Worldwide All locations and networks OVERVIEW Global Internet trends Latest reports TRAFFIC HTTP requests Traffic by type Domain rankings Internet outages BOTS Bot traffic AI crawlers SECURITY HTTP DDoS attacks Layer 3/4 attacks Attack map Email security CONNECTIVITY Quality Outages Speed 1.1.1.1 resolver ROUTING DNS TOOLS CLOUDFLARE RADAR Internet insights for every network Near real-time traffic, security, routing, DNS, connectivity, and adoption signals observed across Cloudflare's global network. Share Export LOCATION Worldwide LOOKUP DATE RANGE Last 24 hours Add filter Reset Data updated 2 minutes ago Scope Worldwide, all networks Comparison Previous period HTTP requests Details 42.8M +3.4% Mitigated attacks Details 8.7M +12.1% Median latency Details 37 ms -1.8% IPv6 traffic Details 36",
+      "headings": [
+        "Internet insights for every network",
+        "Internet traffic",
+        "Traffic by type",
+        "Protocol usage",
+        "Attacks and mitigations",
+        "Domain popularity",
+        "1.1.1.1 resolver",
+        "Quality and outages",
+        "BGP and AS Rank",
+        "Data Explorer"
+      ],
+      "counts": {
+        "buttons": 135,
+        "links": 39,
+        "inputs": 19,
+        "forms": 1,
+        "dialogs": 6
+      },
+      "top_interactables": [
+        "clickable:a:Cloudflare Radar home",
+        "clickable:a:Overview",
+        "clickable:a:Traffic",
+        "clickable:a:Security",
+        "clickable:a:Connectivity",
+        "clickable:a:Routing",
+        "clickable:a:DNS",
+        "clickable:a:Reports",
+        "clickable:button:Search Radar",
+        "clickable:button:API",
+        "clickable:button:EN",
+        "clickable:button:Toggle theme",
+        "clickable:button:Worldwide All locations and networks",
+        "typeable:input:Filter navigation",
+        "clickable:button:OVERVIEW",
+        "clickable:a:Global Internet trends"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

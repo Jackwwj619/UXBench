@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My applications — CivicPort</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+Pro:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="portal-home">
+<header class="civic-bar"><div class="brand"><svg width="32" height="32" viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#14517A"/><path d="M10 22 L18 10 L26 22 Z" fill="#C5A572"/></svg><strong>CivicPort</strong></div>
+<nav><a href="apply.html">Apply</a><a href="my-applications.html" class="current">My applications</a><a href="fees.html">Fees</a><a href="#" id="helpLink">Help</a></nav></header>
+<main class="portal">
+<h1>My applications</h1>
+<p class="lede">Click any row to see status, inspector notes, and next steps.</p>
+<table class="apps-tbl apps-tbl-clickable" role="table">
+<thead><tr><th scope="col">App ID</th><th scope="col">Type</th><th scope="col">Address</th><th scope="col">Submitted</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+<tbody>
+<tr tabindex="0" role="link" aria-label="Application AB-2026-PERM-7042, Kitchen renovation, 148 Coppergate St., Approved" data-app="AB-2026-PERM-7042"><td>AB-2026-PERM-7042</td><td>Kitchen renovation</td><td>148 Coppergate St.</td><td>Apr 12, 2026</td><td><span class="badge ok">Approved</span></td><td><a href="#" class="row-action" data-app="AB-2026-PERM-7042">View details →</a></td></tr>
+<tr tabindex="0" role="link" aria-label="Application AB-2025-PERM-9981, Roof replacement, 148 Coppergate St., Approved" data-app="AB-2025-PERM-9981"><td>AB-2025-PERM-9981</td><td>Roof replacement</td><td>148 Coppergate St.</td><td>Nov 3, 2025</td><td><span class="badge ok">Approved</span></td><td><a href="#" class="row-action" data-app="AB-2025-PERM-9981">View details →</a></td></tr>
+<tr tabindex="0" role="link" aria-label="Application AB-2025-PERM-6601, Bathroom remodel, 22 Foundry Lane, Inspector follow-up needed" data-app="AB-2025-PERM-6601"><td>AB-2025-PERM-6601</td><td>Bathroom remodel</td><td>22 Foundry Lane</td><td>Aug 19, 2025</td><td><span class="badge warn">Inspector follow-up</span></td><td><a href="#" class="row-action" data-app="AB-2025-PERM-6601">View details →</a></td></tr>
+</tbody></table>
+<p class="note">Need to start a new application? <a href="apply.html" style="color:var(--civic);font-weight:600;text-decoration:underline">Apply for a permit</a>.</p>
+</main>
+<dialog id="appDetailsDialog" aria-labelledby="appDetailsTitle">
+  <h3 id="appDetailsTitle">Application details</h3>
+  <div id="appDetailsBody"></div>
+  <div class="dlg-row"><button class="btn-secondary" type="button" onclick="document.getElementById('appDetailsDialog').close()">Close</button></div>
+</dialog>
+<dialog id="helpDialog" aria-labelledby="helpTitle">
+  <h3 id="helpTitle">CivicPort Help</h3>
+  <p><strong>Need a hand?</strong> Most permit questions are answered below.</p>
+  <ul style="font-size:14px;color:var(--slate);padding-left:18px;line-height:1.8">
+    <li><strong>Status &amp; next steps:</strong> See <a href="my-applications.html" style="color:var(--civic)">My applications</a>.</li>
+    <li><strong>Fee schedule:</strong> See the <a href="fees.html" style="color:var(--civic)">Fees</a> page for full pricing.</li>
+    <li><strong>Phone:</strong> 555-242-PERM, Mon–Fri 8am–4pm.</li>
+    <li><strong>In person:</strong> 123 Civic Plaza, Avalon Bay (Mondays by appointment).</li>
+    <li><strong>Email:</strong> permits@avalonbay.gov (we reply within 1 business day).</li>
+  </ul>
+  <div class="dlg-row"><button class="btn-primary" type="button" onclick="document.getElementById('helpDialog').close()">Got it</button></div>
+</dialog>
+<script>
+(function(){
+  const data = {
+    "AB-2026-PERM-7042": {type:"Kitchen renovation", addr:"148 Coppergate St.", submitted:"Apr 12, 2026", status:"Approved", notes:"Permit issued Apr 19, 2026. No further action needed. Print permit before work begins."},
+    "AB-2025-PERM-9981": {type:"Roof replacement", addr:"148 Coppergate St.", submitted:"Nov 3, 2025", status:"Approved", notes:"Inspection passed Nov 28, 2025. Final certificate on file."},
+    "AB-2025-PERM-6601": {type:"Bathroom remodel", addr:"22 Foundry Lane", submitted:"Aug 19, 2025", status:"Inspector follow-up", notes:"Inspector requested updated venting diagram. Reply by Sep 12 to avoid delay."}
+  };
+  function openDetails(id){
+    const d = data[id]; if(!d) return;
+    document.getElementById("appDetailsTitle").textContent = id + " — " + d.type;
+    document.getElementById("appDetailsBody").innerHTML =
+      `<dl style="display:grid;grid-template-columns:130px 1fr;gap:6px 12px;font-size:14px;margin:6px 0 0">
+        <dt style="color:var(--slate)">Address</dt><dd style="margin:0">${d.addr}</dd>
+        <dt style="color:var(--slate)">Submitted</dt><dd style="margin:0">${d.submitted}</dd>
+        <dt style="color:var(--slate)">Status</dt><dd style="margin:0"><strong>${d.status}</strong></dd>
+        <dt style="color:var(--slate)">Notes</dt><dd style="margin:0">${d.notes}</dd>
+      </dl>`;
+    document.getElementById("appDetailsDialog").showModal();
+  }
+  document.querySelectorAll("tr[data-app]").forEach(tr => {
+    tr.addEventListener("click", () => openDetails(tr.dataset.app));
+    tr.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openDetails(tr.dataset.app); }});
+  });
+  document.querySelectorAll(".row-action").forEach(a => a.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); openDetails(a.dataset.app); }));
+  const help = document.getElementById("helpLink");
+  if(help) help.addEventListener("click", e => { e.preventDefault(); document.getElementById("helpDialog").showModal(); });
+})();
+</script>
+<footer class="civic-foot"><p class="disclaimer">Local demo for UXBench. Fictional product, not a real company.</p></footer>
+</body>
+</html>

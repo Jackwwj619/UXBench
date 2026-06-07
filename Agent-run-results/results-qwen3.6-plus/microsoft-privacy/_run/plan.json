@@ -1,0 +1,341 @@
+{
+  "plan": {
+    "goal": "Autonomously explore and critique the UX of the Microsoft Privacy dashboard, focusing on data visibility, control mechanisms (toggles/deletion), and feedback loops across desktop and mobile viewports.",
+    "summary": "The run will proceed from the main Privacy Dashboard to exercise the three available sub-pages: Browse History, Ad Settings, and Download Data. It will validate critical user flows including filtering activity logs, toggling privacy settings with visual feedback, and navigating the multi-step data download wizard. Special attention will be paid to modal confirmations for destructive actions and mobile tap-target accessibility given the prescan warnings.",
+    "assumptions": [
+      "The 'Privacy Checkup' and other placeholder links (#) on the index page are non-functional or out of scope for this specific file set.",
+      "The 'Saving.../Saved' state changes on toggles are simulated via client-side JS as indicated in the site summary.",
+      "Destructive actions (Clear All) trigger modals that must be interacted with to complete the flow."
+    ],
+    "target_pages": [
+      "index.html",
+      "browse-history.html",
+      "ad-settings.html",
+      "download-data.html"
+    ],
+    "risk_hotspots": [
+      "index.html: Global toggle list (verify 'Saving...' vs 'Saved' state feedback)",
+      "browse-history.html: 'Clear all' button (verify modal confirmation and cancellation path)",
+      "ad-settings.html: Master toggle dependency (verify if sub-toggles disable when master is off)",
+      "download-data.html: Multi-step form validation (ensure step progression logic works)"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard Overview & Global Controls",
+        "objective": "Validate the landing page structure, navigation integrity, and global privacy toggles.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify top-level navigation links (Home, Devices, etc.) are clickable.",
+          "Interact with at least two global privacy setting toggles to observe 'Saving...' -> 'Saved' transition.",
+          "Check responsiveness of the activity data card grid."
+        ],
+        "exit_criteria": [
+          "Global toggles show state change feedback.",
+          "No broken links in the primary header/nav."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Activity Management (Browse History)",
+        "objective": "Test the detailed view for browsing activity, including filtering and deletion workflows.",
+        "target_pages": [
+          "browse-history.html"
+        ],
+        "key_checks": [
+          "Navigate from Index 'Manage browse activity' link.",
+          "Use 'Time range' and 'Device' filters to verify table updates.",
+          "Click 'Clear all browse history' to trigger the confirmation modal.",
+          "Cancel the modal action to ensure data remains intact.",
+          "Attempt to delete a single row item."
+        ],
+        "exit_criteria": [
+          "Filters apply correctly to the activity table.",
+          "Modal appears and blocks interaction until resolved.",
+          "Cancellation returns user to the list view safely."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Ad Preferences & Dependencies",
+        "objective": "Explore the hierarchy of ad settings and test master/sub-toggle dependencies.",
+        "target_pages": [
+          "ad-settings.html"
+        ],
+        "key_checks": [
+          "Toggle the master 'See ads that interest you' switch.",
+          "Observe if sub-service toggles (Bing, LinkedIn, Xbox) become disabled or visually dimmed.",
+          "Re-enable master toggle and verify sub-toggles restore interactivity.",
+          "Check individual service toggles for independent state persistence."
+        ],
+        "exit_criteria": [
+          "Master toggle clearly controls the enabled/disabled state of child inputs.",
+          "Visual hierarchy distinguishes between active and inactive settings."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Data Export Wizard",
+        "objective": "Walk through the 'Download your data' multi-step process to check form continuity.",
+        "target_pages": [
+          "download-data.html"
+        ],
+        "key_checks": [
+          "Select specific data categories (e.g., only 'Browse activity').",
+          "Proceed through steps 1-4 (Include, Time range, Delivery, Confirm).",
+          "Verify breadcrumb or step indicator updates correctly.",
+          "Test 'Back' navigation between steps if available."
+        ],
+        "exit_criteria": [
+          "User can progress through all 4 steps without error.",
+          "Selections made in Step 1 persist or are summarized in later steps."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Viewport Validation",
+        "objective": "Repeat critical checks on mobile viewport to address prescan tap-target warnings.",
+        "target_pages": [
+          "index.html",
+          "browse-history.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE/Pixel 5).",
+          "Verify hamburger menu or nav collapse behavior.",
+          "Attempt to tap 'Manage browse activity' and global toggles (check for overlap/mis-clicks).",
+          "Verify table readability in Browse History (horizontal scroll vs stacking)."
+        ],
+        "exit_criteria": [
+          "All primary controls are tappable without zooming.",
+          "Content reflows legibly without horizontal overflow issues."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 HTML files provided in the site directory.",
+      "features": "Exercise all visible toggles, filters, modals, and wizard steps.",
+      "mobile": "Perform full pass on Index and Browse History pages in mobile viewport."
+    },
+    "notes": [
+      "Prescan indicates small tap targets (<44px) in the global header; prioritize checking these in Phase 5.",
+      "The 'Search history', 'Location', and other cards on Index.html do not have dedicated HTML files in the prescan; treat their 'Manage' links as dead ends or placeholders unless they reveal hidden DOM content.",
+      "Focus heavily on the 'Saving...' state simulation in Phase 1 as it's a key UX feedback mechanism mentioned in the summary."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Privacy dashboard | Microsoft account",
+      "url": "file:///Users/timchef/UXBench/websites/microsoft-privacy/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Microsoft Support Software Devices Gaming Sign out Microsoft account Home Devices Subscriptions Payments & billing Privacy Security Rewards Order history Jack Wilson jack@outlook.com JW Privacy dashboard Review and manage the data Microsoft saves to make your experience better. You can view your activity, change privacy settings, or download a copy of your data at any time. Take the Privacy Checkup Download your data Privacy Statement Help with privacy Your activity data Some products and services save activity to your Microsoft account so it can sync across your devices. You can view and clear that data here. Browse history Microsoft Edge syncs the websites you visit so you can pick up where you left off across devices. 847 entries in the last 30 days Manage browse activity b Search history Bing remembers your searches to give you faster, more personal results next time you search. 312 ",
+      "headings": [
+        "Privacy dashboard",
+        "Your activity data",
+        "Browse history",
+        "Search history",
+        "Location activity",
+        "Voice activity",
+        "Media activity",
+        "App and service activity",
+        "Xbox & gaming activity",
+        "Ad settings"
+      ],
+      "counts": {
+        "buttons": 3,
+        "links": 42,
+        "inputs": 6,
+        "forms": 0,
+        "dialogs": 2
+      },
+      "top_interactables": [
+        "clickable:a:Microsoft",
+        "clickable:a:Support",
+        "clickable:a:Software",
+        "clickable:a:Devices",
+        "clickable:a:Gaming",
+        "clickable:a:Sign out",
+        "clickable:a:Home",
+        "clickable:a:Subscriptions",
+        "clickable:a:Payments & billing",
+        "clickable:a:Privacy",
+        "clickable:a:Security",
+        "clickable:a:Rewards",
+        "clickable:a:Order history",
+        "clickable:a:Take the Privacy Checkup",
+        "clickable:a:Download your data"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "ad-settings.html",
+      "title": "Ad settings | Privacy dashboard | Microsoft account",
+      "url": "file:///Users/timchef/UXBench/websites/microsoft-privacy/ad-settings.html",
+      "load_error": null,
+      "visible_text_excerpt": "Microsoft Support Software Devices Gaming Sign out Microsoft account Home Devices Subscriptions Payments & billing Privacy Security Jack Wilson jack@outlook.com JW Privacy dashboard›Ad settings Ad settings You’ll see ads from Microsoft no matter what — these controls decide whether those ads are personalized using your activity. Turning personalization off does not reduce how many ads you see. See ads that interest you Use information from your Microsoft account — like search and browse history, age, gender, region, and the apps and websites you visit — to make ads more relevant. Personalization by service Apply personalization separately on each Microsoft service. M Microsoft consumer apps Outlook.com, Microsoft Start, Skype, Solitaire b Bing & Microsoft Edge Search ads, sponsored answers, native ads in Edge in LinkedIn Manage LinkedIn ad preferences with your professional profile. X Xb",
+      "headings": [
+        "Ad settings",
+        "Personalization by service",
+        "Microsoft consumer apps",
+        "Bing & Microsoft Edge",
+        "LinkedIn",
+        "Xbox",
+        "Ad topics"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 18,
+        "inputs": 13,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Microsoft",
+        "clickable:a:Support",
+        "clickable:a:Software",
+        "clickable:a:Devices",
+        "clickable:a:Gaming",
+        "clickable:a:Sign out",
+        "clickable:a:Home",
+        "clickable:a:Subscriptions",
+        "clickable:a:Payments & billing",
+        "clickable:a:Privacy",
+        "clickable:a:Security",
+        "clickable:a:Privacy dashboard",
+        "clickable:input:Technology News, devices, software",
+        "clickable:input:Travel Asia, city breaks, hotels",
+        "clickable:input:Productivity Office apps, note-taking"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "browse-history.html",
+      "title": "Browse history | Privacy dashboard | Microsoft account",
+      "url": "file:///Users/timchef/UXBench/websites/microsoft-privacy/browse-history.html",
+      "load_error": null,
+      "visible_text_excerpt": "Microsoft Support Software Devices Gaming Sign out Microsoft account Home Devices Subscriptions Payments & billing Privacy Security Jack Wilson jack@outlook.com JW Privacy dashboard›Browse history Browse history Microsoft Edge syncs the sites you visit on signed-in devices so you can pick up where you left off. Items more than 90 days old are automatically removed. Browse history saving is currently On. Change this setting ⓘ This page shows browse activity from the last 30 days across all devices where you’re signed in to Microsoft Edge. Time range Last 24 hours Last 7 days Last 30 days Last 90 days Device All devices Surface Pro 9 MacBook Pro iPhone Edge Clear all browse history WHEN PAGE DEVICE Today, 09:42 Microsoft Learn — Azure quickstart learn.microsoft.com/azure/quickstart Surface Pro 9 🗑 Today, 09:38 GitHub · pull request #2418 github.com/anthropics/claude-code/pull/2418 Surface ",
+      "headings": [
+        "Browse history",
+        "Clear all browse history?"
+      ],
+      "counts": {
+        "buttons": 15,
+        "links": 19,
+        "inputs": 3,
+        "forms": 0,
+        "dialogs": 2
+      },
+      "top_interactables": [
+        "clickable:a:Microsoft",
+        "clickable:a:Support",
+        "clickable:a:Software",
+        "clickable:a:Devices",
+        "clickable:a:Gaming",
+        "clickable:a:Sign out",
+        "clickable:a:Home",
+        "clickable:a:Subscriptions",
+        "clickable:a:Payments & billing",
+        "clickable:a:Privacy",
+        "clickable:a:Security",
+        "clickable:a:Privacy dashboard",
+        "clickable:a:Change this setting",
+        "selectable:select:Time range",
+        "selectable:select:Device"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "download-data.html",
+      "title": "Download your data | Privacy dashboard | Microsoft account",
+      "url": "file:///Users/timchef/UXBench/websites/microsoft-privacy/download-data.html",
+      "load_error": null,
+      "visible_text_excerpt": "Microsoft Support Software Devices Gaming Sign out Microsoft account Home Devices Subscriptions Payments & billing Privacy Security Jack Wilson jack@outlook.com JW Privacy dashboard›Download your data Download your data Get a copy of the data Microsoft has saved for your account. We’ll package it as a downloadable archive and email you when it’s ready — usually within a few hours, but it can take up to 30 days. ⓘ This won’t delete any data. To remove activity instead, go back to the privacy dashboard. 1 · What to include Choose which categories of data should be in your archive. You can include everything or pick specific items. Account profile Name, contact info, sign-in history Browse activity Edge sync history Search activity Bing search history Location history Places associated with your account Voice recordings Saved samples used to improve recognition Media activity Movies, TV, mu",
+      "headings": [
+        "Download your data",
+        "1 · What to include",
+        "2 · Time range",
+        "3 · How to deliver it",
+        "4 · Confirm"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 22,
+        "inputs": 16,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Microsoft",
+        "clickable:a:Support",
+        "clickable:a:Software",
+        "clickable:a:Devices",
+        "clickable:a:Gaming",
+        "clickable:a:Sign out",
+        "clickable:a:Home",
+        "clickable:a:Subscriptions",
+        "clickable:a:Payments & billing",
+        "clickable:a:Privacy",
+        "clickable:a:Security",
+        "clickable:a:Privacy dashboard",
+        "clickable:a:privacy dashboard",
+        "clickable:input:Account profile Name, contact info, sign-in history",
+        "clickable:input:Browse activity Edge sync history"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

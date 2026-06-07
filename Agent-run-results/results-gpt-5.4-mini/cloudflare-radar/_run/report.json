@@ -1,0 +1,669 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/cloudflare-radar/index.html",
+  "site": {
+    "name": "cloudflare-radar",
+    "site_dir": "/Users/timchef/UXBench/websites/cloudflare-radar",
+    "start_page": "index.html",
+    "page_type": "dashboard",
+    "html_files": [
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/cloudflare-radar/README.md",
+    "summary": "cloudflare-radar-clone Clone of the Cloudflare Radar global internet insights dashboard (single-page app). Pages | File | Purpose | | --- | --- | | `index.html` | Single-page dashboard: top Cloudflare nav + global time / region filters; main area is a grid of cards — global traffic trends, top browsers, device types, protocol distribution, attack trends, Outage Center, Top domains, Top ASNs, etc.; each card has a chart + tooltip + \"View more\" entry | | `styles.css` | Card grid, chart palette, tooltip, filter bar, dark header | | `script.js` | Chart rendering (SVG / canvas), filter coordination, time-range switching, tab switching, tooltips |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full cloudflare-radar system, prioritizing the primary dashboard flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The dashboard’s core content is coherent, but several recovery and mobile interaction paths are fragile. The biggest UX issue is the Radar API overlay: it blocks the dashboard and the visible close affordance could not be reached reliably, while endpoint rows also gave no clear selection feedback. Mobile navigation is readable but many header and sidebar targets are below recommended tap sizes, which likely contributes to the interaction failures observed. Coverage is still partial, so a few sections such as analysis and some report pathways remain untested.",
+  "exploration_plan": {
+    "goal": "Explore the single-page Cloudflare Radar dashboard end-to-end, validating the primary overview flow, key section navigation, filter and search controls, card interactions, and mobile usability issues.",
+    "summary": "Start with the Overview dashboard and validate the main global filters, search, share/export, and summary cards because these are the primary entry points visible in the prescan. Then sweep the in-page section navigation for Traffic, Security, Connectivity, Routing, DNS, and Reports, focusing on tabs, tooltips, and \"View more\"/detail actions exposed in the cards. Finish with mobile viewport checks on the same critical controls, paying special attention to the small tap targets already flagged by the prescan.",
+    "assumptions": [
+      "The site is a single-page app with section anchors rather than separate HTML pages, so coverage is measured by sections and states within index.html.",
+      "The visible controls listed in the prescan represent the main interactive surface; additional hidden dialogs or chart states may exist but should not be assumed beyond what is exposed.",
+      "The six dialogs reported in the DOM summary are likely tied to cards, filters, or menus on the dashboard and should be discovered through normal exploration rather than forced."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Top navigation links (Overview, Traffic, Security, Connectivity, Routing, DNS, Reports) because they are small tap targets on mobile and drive the main IA.",
+      "Global filter strip on the dashboard: Location, Lookup search, Date range, Add filter, Reset, and Comparison scope because these can alter most of the page state.",
+      "Search Radar and API/theme/language controls in the header because they are small on mobile and may open overlays or change persistent settings.",
+      "Interactive metric cards and chart controls (Details, tabs like Hourly/Daily/Weekly, Inspect, Copy link, Share, Learn more, Open query, View in Data Explorer) because they are likely to expose deeper states and tooltips.",
+      "Sidebar section links such as Bot traffic, AI crawlers, HTTP DDoS attacks, Layer 3/4 attacks, Attack map, Quality, and Outages because they likely jump to sub-sections or filtered views and may have inconsistent anchor behavior."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline dashboard and global controls",
+        "objective": "Validate the initial Overview experience and the global controls that affect most content.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the default landing state shows the Overview dashboard with the global summary cards and first chart row visible.",
+          "Exercise Location, Lookup, and Date range controls to confirm they are interactive and update the displayed scope/state.",
+          "Test Add filter and Reset to verify filter application and recovery behavior.",
+          "Open Share and Export from the main header area to see whether they present dialogs, menus, or download actions.",
+          "Check that the comparison/scope indicators update or remain consistent after filter changes."
+        ],
+        "exit_criteria": [
+          "Global filters have been changed at least once and then reset.",
+          "Share/Export behavior has been observed.",
+          "No obvious broken state remains after applying and clearing filters."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Primary overview content and chart controls",
+        "objective": "Validate the dashboard’s core cards, chart toggles, and card-level actions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Inspect each top summary card for value, trend, and detail affordance: HTTP requests, Mitigated attacks, Median latency, and IPv6 traffic.",
+          "Interact with the Internet traffic card tabs such as HTTP requests, Bytes, Latency, Anomalies, and time granularity controls like Hourly/Daily/Weekly.",
+          "Exercise card actions including Copy link, Learn more, Share, Open query, and any overflow/menu controls visible on the traffic cards.",
+          "Hover or focus on chart elements to verify tooltips or data point labels appear and are readable.",
+          "Verify the Traffic by type card’s Inspect action and the displayed mix values (Desktop/Mobile, Human/Bot, IPv6) update or at least remain coherent."
+        ],
+        "exit_criteria": [
+          "At least one chart tab/state change has been validated.",
+          "At least one tooltip or hover/focus data state has been observed.",
+          "Card actions have been tested on at least two different cards."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Section navigation sweep",
+        "objective": "Validate the in-page navigation and adjacent section entry points for the major Radar categories.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the top nav and sidebar links to jump to Traffic, Security, Connectivity, Routing, DNS, and Reports anchors.",
+          "Confirm section headings and anchor targets load the expected content without layout breaks or lost state.",
+          "Test subsection links under Traffic (HTTP requests, Traffic by type, Domain rankings, Internet outages) and Security (HTTP DDoS attacks, Layer 3/4 attacks, Attack map, Email security) for anchor fidelity.",
+          "Check that navigating between sections preserves readability and that the active section/selection is understandable.",
+          "Verify the sidebar and top nav remain usable after deep-link jumps."
+        ],
+        "exit_criteria": [
+          "All major section anchors have been visited at least once.",
+          "At least one subsection link in Traffic and Security has been validated.",
+          "Navigation does not trap the user or break the visible state."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Search, lookup, and discovery paths",
+        "objective": "Validate discovery-oriented controls that support finding data or reports.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the Filter navigation input to see whether sidebar filtering works and whether results narrow or remain stable.",
+          "Use the Domain, IP, ASN, or report lookup field to check search affordance, submission behavior, and empty/error handling if applicable.",
+          "Inspect Search Radar and API header controls to determine whether they open search, API info, or navigation surfaces.",
+          "Visit or trigger Latest reports and Global Internet trends entry points to confirm report discovery flow from the overview page.",
+          "If any dialogs appear from search or lookup, verify close/dismiss behavior and whether focus returns appropriately."
+        ],
+        "exit_criteria": [
+          "Both search inputs have been exercised.",
+          "At least one discovery path to reports or search has been confirmed.",
+          "Any opened overlay/dialog can be dismissed cleanly."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile viewport validation",
+        "objective": "Repeat the highest-risk interactions on mobile and assess tap-target and layout quality.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Re-check the top nav, Search Radar, API, language, and theme controls in mobile viewport for tapability.",
+          "Validate the global filter strip and at least one major chart/card action on mobile.",
+          "Open at least one section anchor from the sidebar or header to confirm the navigation remains usable in narrower layouts.",
+          "Confirm that critical content remains readable and that no key controls overlap or become inaccessible.",
+          "Pay attention to the small tap targets already flagged in the prescan, especially header controls and compact nav items."
+        ],
+        "exit_criteria": [
+          "Critical dashboard actions have been repeated in mobile viewport.",
+          "The known small tap targets have been exercised and their usability noted.",
+          "No major responsive breakage or content loss is observed."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit the single known HTML page, index.html, and cover all major section anchors and visible control states.",
+      "features": "Exercise the global filters, search/lookup inputs, header controls, section navigation, chart tabs, tooltip behavior, card actions, and at least one deep-link/report entry point per major dashboard area.",
+      "mobile": "Repeat the main navigation, filter, search, and one chart/card interaction on mobile viewport, with extra attention to the small tap targets flagged by the prescan."
+    },
+    "notes": [
+      "Because this is a single-page dashboard, phase success should be judged by state coverage rather than page count.",
+      "Prioritize interactions that reveal whether charts, anchors, and overlays are stable under repeated state changes."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Close the API overlay and return to the dashboard",
+      "problem": "The blocking Radar API modal is hard to dismiss reliably, so users can get stuck with the underlying dashboard dimmed and inaccessible.",
+      "evidence": "Multiple attempts to click the visible 'Close drawer' / close control timed out because the button was reported outside the viewport; the recent mobile step also failed to find `ux-unknown-close-modal`, and the final mobile observation still shows the Radar API dialog open over the page.",
+      "why_it_matters": "If a modal cannot be dismissed easily, users lose access to the main dashboard and may have to refresh or abandon the task.",
+      "suggestion": "Make the close control always reachable within the viewport, support Esc-to-close, and verify the modal can be dismissed from both desktop and mobile without scrolling.",
+      "source_hint": "index.html / modalLayer / #closeDrawer"
+    },
+    {
+      "severity": "high",
+      "ux_area": "affordance",
+      "user_goal": "Understand what happens when selecting an API endpoint",
+      "problem": "API endpoint rows look interactive but did not provide any visible selection, expansion, or preview feedback when clicked.",
+      "evidence": "The API drawer shows three clearly labeled endpoint cards, but attempts to click an endpoint row timed out and the observations note no highlight, expansion, or changed state; the final mobile screenshot shows the rows visually present but unselected.",
+      "why_it_matters": "Without feedback, users cannot tell whether the rows are actionable, whether a selection was registered, or what to do next.",
+      "suggestion": "Add unmistakable row affordances such as hover/pressed states, selection highlighting, and a small detail preview or linked panel update when an endpoint is chosen.",
+      "source_hint": "index.html / Radar API modal"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap header controls and navigate comfortably on a phone",
+      "problem": "Several core header and navigation targets are below mobile tap-target guidance, making precise touch interaction harder.",
+      "evidence": "Layout warnings repeatedly flagged small targets such as Open navigation (38x38), Search Radar (38x38), API (48x38), Toggle theme (38x38), and many sidebar links at 263x32-34px; the mobile steps also recorded failures on navigation and modal controls.",
+      "why_it_matters": "Small targets increase mis-taps and can make essential controls feel unreliable on mobile, especially for first-time users.",
+      "suggestion": "Increase touch hit areas to at least 44x44px, add more spacing between adjacent controls, and ensure the mobile header uses larger, easier-to-hit buttons.",
+      "source_hint": "index.html / top nav and sidebar"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Jump between dashboard sections on mobile",
+      "problem": "Sidebar links are visible but often sit outside the viewport or are difficult to reach, so some in-page jumps could not be verified on mobile.",
+      "evidence": "The Domain rankings mobile click failed because the element was outside the viewport, and several other mobile navigation attempts timed out similarly; meanwhile, desktop in-page jumps like Connectivity and Routing did work and preserved orientation.",
+      "why_it_matters": "If section links can’t be tapped easily on mobile, users cannot reliably explore the dashboard’s deeper content.",
+      "suggestion": "Provide a mobile-friendly sticky navigation pattern or a collapsible menu that keeps key section links within reach and visible after scroll state changes.",
+      "source_hint": "index.html / #domain-rankings / sidebar nav"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "Know whether a section or card interaction succeeded",
+      "problem": "Some interactions change the page state without making that change very obvious, while others appear to do nothing.",
+      "evidence": "Successful in-page links like Bot traffic and Routing clearly scrolled and highlighted the active section, but other targets such as AI crawlers and the report card `href=\"#\"` produced little or no visible state change; the report card click only changed the URL fragment to `#` and did not open a detail view.",
+      "why_it_matters": "Inconsistent feedback makes users unsure whether they clicked the right thing or whether the control is broken.",
+      "suggestion": "Make every clickable dashboard item either navigate clearly or look explicitly disabled/placeholder, and add stronger confirmation states for successful section jumps and card launches.",
+      "source_hint": "index.html / report cards and sidebar links"
+    },
+    {
+      "severity": "low",
+      "ux_area": "visual hierarchy",
+      "user_goal": "Scan the dashboard and understand what is primary versus secondary",
+      "problem": "The top bar and dense control rows compete for attention, especially on mobile where the interface is compressed.",
+      "evidence": "The mobile observation shows a crowded header with Radar logo, search, API, theme toggle, and a long nav list; the layout warnings and repeated interaction failures suggest the compact presentation reduces discoverability and ease of use.",
+      "why_it_matters": "When too many controls share the same visual weight, users spend more effort finding the next action and are more likely to miss important entry points.",
+      "suggestion": "Strengthen hierarchy by separating primary navigation from utility actions, reducing header density, and grouping secondary actions into clearer menus on smaller screens.",
+      "source_hint": "index.html / header"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "confidence": "low",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 14,
+    "action_success_rate_percent": 38,
+    "unchanged_action_percent": 24,
+    "known_pages": [
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 65,
+      "open_page": 8,
+      "press_key": 3,
+      "scroll": 1,
+      "select_option": 1,
+      "type_text": 1
+    },
+    "total_actions": 79,
+    "successful_actions": 30,
+    "failed_actions": 49,
+    "unchanged_actions": 19,
+    "observed_feature_count": 116,
+    "exercised_feature_count": 16,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|a|||analysis global outages and network resilience routing and availability|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Analysis Global outages and network resilience Routing and availability"
+      },
+      {
+        "signature": "index.html|clickable|a|||brief ai bot traffic and crawler behavior automated traffic insights|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Brief AI bot traffic and crawler behavior Automated traffic insights"
+      },
+      {
+        "signature": "index.html|clickable|a|||cloudflare radar home|#overview",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Cloudflare Radar home"
+      },
+      {
+        "signature": "index.html|clickable|a|||connectivity|#connectivity",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Connectivity"
+      },
+      {
+        "signature": "index.html|clickable|a|||dns|#dns",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "DNS"
+      },
+      {
+        "signature": "index.html|clickable|a|||email security|#security",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Email security"
+      },
+      {
+        "signature": "index.html|clickable|a|||global internet trends|#overview",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Global Internet trends"
+      },
+      {
+        "signature": "index.html|clickable|a|||http requests|#traffic",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "HTTP requests"
+      },
+      {
+        "signature": "index.html|clickable|a|||internet outages|#outages",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Internet outages"
+      },
+      {
+        "signature": "index.html|clickable|a|||layer 3/4 attacks|#security",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Layer 3/4 attacks"
+      },
+      {
+        "signature": "index.html|clickable|a|||outages|#outages",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Outages"
+      },
+      {
+        "signature": "index.html|clickable|a|||overview|#overview",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Overview"
+      },
+      {
+        "signature": "index.html|clickable|a|||quality|#connectivity",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Quality"
+      },
+      {
+        "signature": "index.html|clickable|a|||reports|#reports",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Reports"
+      },
+      {
+        "signature": "index.html|clickable|a|||security|#security",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Security"
+      },
+      {
+        "signature": "index.html|clickable|a|||traffic by type|#traffic-type",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Traffic by type"
+      },
+      {
+        "signature": "index.html|clickable|a|||traffic|#traffic",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Traffic"
+      },
+      {
+        "signature": "index.html|clickable|a|||year in review internet services and ranking movement domains, categories, traff|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Year in Review Internet services and ranking movement Domains, categories, traffic"
+      },
+      {
+        "signature": "index.html|clickable|button||submit|run query|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Run query"
+      },
+      {
+        "signature": "index.html|clickable|button|||03:45 utc availability drop regional isp cluster|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "03:45 UTC Availability drop Regional ISP cluster"
+      },
+      {
+        "signature": "index.html|clickable|button|||08:31 utc routing change observed several transit providers|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "08:31 UTC Routing change observed Several transit providers"
+      },
+      {
+        "signature": "index.html|clickable|button|||1 google.com +1|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "1 google.com +1"
+      },
+      {
+        "signature": "index.html|clickable|button|||11:02 utc elevated ddos activity retail and media zones|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "11:02 UTC Elevated DDoS activity Retail and media zones"
+      },
+      {
+        "signature": "index.html|clickable|button|||14:18 utc traffic anomaly south asia mobile networks|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "14:18 UTC Traffic anomaly South Asia mobile networks"
+      },
+      {
+        "signature": "index.html|clickable|button|||2 facebook.com 0|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "2 facebook.com 0"
+      },
+      {
+        "signature": "index.html|clickable|button|||3 youtube.com -1|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "3 youtube.com -1"
+      },
+      {
+        "signature": "index.html|clickable|button|||4 tiktok.com +3|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "4 tiktok.com +3"
+      },
+      {
+        "signature": "index.html|clickable|button|||5 chatgpt.com +5|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "5 chatgpt.com +5"
+      },
+      {
+        "signature": "index.html|clickable|button|||a records 58%|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "A records 58%"
+      },
+      {
+        "signature": "index.html|clickable|button|||aaaa records 24%|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "AAAA records 24%"
+      },
+      {
+        "signature": "index.html|clickable|button|||add filter|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Add filter"
+      },
+      {
+        "signature": "index.html|clickable|button|||ai|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "AI"
+      },
+      {
+        "signature": "index.html|clickable|button|||all|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "All"
+      },
+      {
+        "signature": "index.html|clickable|button|||anomalies|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Anomalies"
+      },
+      {
+        "signature": "index.html|clickable|button|||apac attack cluster|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "APAC attack cluster"
+      },
+      {
+        "signature": "index.html|clickable|button|||apply filters|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Apply filters"
+      },
+      {
+        "signature": "index.html|clickable|button|||archive|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Archive"
+      },
+      {
+        "signature": "index.html|clickable|button|||bots|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "BOTS"
+      },
+      {
+        "signature": "index.html|clickable|button|||brazil connectivity|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Brazil connectivity"
+      },
+      {
+        "signature": "index.html|clickable|button|||bytes|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Bytes"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 14% of visible interactive feature signatures.",
+      "49 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-01-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-03-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-05-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-13-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-17-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-25-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-27-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-30-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-34-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-35-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-36-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-37-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-41-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-59-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-62-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-mini/cloudflare-radar/_run",
+  "claude_fix": null
+}

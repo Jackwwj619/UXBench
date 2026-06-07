@@ -1,0 +1,184 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the single-page Lumen Research chat interface, validating the core research-thread workflow, citation-to-sources behavior, thread switching, composing/follow-up actions, and responsive usability on both desktop and mobile.",
+    "summary": "The run should center on index.html because the prescan only revealed one HTML page and a rich single-page research assistant interface. Start by validating the default thread and the three-column desktop experience, then exercise adjacent in-page flows: switching threads, changing modes/sorts/tabs, using follow-up prompts and composer controls, and testing export/share/new-thread actions for visible outcomes or failure states. Finish by repeating the most important reading and input tasks on mobile, where the left-rail tap targets already show risk.",
+    "assumptions": [
+      "All visible thread titles in the left rail likely swap in-page conversation content rather than navigate to separate HTML pages.",
+      "Citation chips embedded in assistant responses are expected to highlight, scroll to, or jump to matching source cards in the right rail, as described in the prescan summary.",
+      "Share thread, Export as PDF, attachment, and New thread may be local-demo placeholders; if so, capture the exact behavior rather than assuming backend functionality.",
+      "Because only index.html was found, exhaustive coverage means broad state and control coverage within this single page."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "index.html: inline citation chips [1], [2], [3], [4] — hover/click mapping to the correct source card, scroll behavior, and highlight persistence",
+      "index.html: left rail thread list — many items appear small for mobile tap use and may truncate labels",
+      "index.html: top mode selector ('Mode: Balanced / Quick scan / Deep dive / Compare arguments') — unlabeled select warning and potential mismatch with answer content",
+      "index.html: composer area (textarea, attachment button, Ask button, lower mode selector) — submission behavior, empty-state handling, and consistency with top mode control",
+      "index.html: Sources panel controls (All/Papers/Books/Web/Preprints and Sort selector) — filtering/sorting correctness and state clarity",
+      "index.html: Share thread / Export as PDF — high-value actions that may be nonfunctional or unclear in a local fixture",
+      "index.html: New thread — potential reset/data-loss risk if clicked during an active thread",
+      "index.html mobile layout — three-column desktop structure may collapse poorly; verify access to thread history, conversation, and sources"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline desktop thread comprehension",
+        "objective": "Establish how the default desktop thread is structured and whether the three primary regions support the main read-and-evaluate workflow clearly.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the selected thread in the left rail matches the center conversation title ('Deep work scheduling literature').",
+          "Read through the active conversation and verify long-form content, lists, and any embedded table/list styling render cleanly.",
+          "Inspect the Sources panel count ('Sources 8') against visible source cards and note whether cards appear complete, scannable, and tied to the answer.",
+          "Check whether primary controls at the top of the conversation (Share thread, Export as PDF, mode selector) remain understandable and reachable without confusion."
+        ],
+        "exit_criteria": [
+          "A clear baseline understanding of the default thread, visible sources, and top-level controls is documented.",
+          "Any obvious content/layout mismatches across left rail, conversation, and sources are identified."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Citation and sources linkage validation",
+        "objective": "Deeply validate the most distinctive interaction in the prescan: inline citations connected to source cards.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over multiple citation chips in the assistant response and verify the matching source card highlights in the right rail.",
+          "Confirm hover behavior also scrolls the corresponding source into view when needed, without disorienting jumps.",
+          "Click citation chips and verify jump/scroll lands on the correct source card, not just the panel generally.",
+          "Test more than one citation-to-source pair to ensure numbering consistency across the answer.",
+          "Assess whether returning to reading after a citation jump is easy or whether context is lost."
+        ],
+        "exit_criteria": [
+          "At least 3-4 citation chips have been tested for correct source mapping and visible feedback.",
+          "The runner has evidence on whether citation hover and click behaviors are accurate, helpful, and stable."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Thread switching and adjacent reading states",
+        "objective": "Verify that alternate research threads and source browsing controls create coherent in-page state changes without breaking context.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open several different left-rail thread entries from different sections (Today, Last 7 Days, Earlier) and confirm the center title/content and right-rail sources update together.",
+          "Check whether the active thread state is visually clear after switching.",
+          "Use the Sources tabs (All, Papers, Books, Web, Preprints) and verify the visible source list changes appropriately and remains understandable.",
+          "Change the source sort control (Relevance/Date/Cited in this answer if available) and verify ordering changes are reflected in visible cards.",
+          "Return to the original thread and confirm state recovery is intuitive."
+        ],
+        "exit_criteria": [
+          "Multiple thread switches have been exercised with evidence of whether state updates correctly.",
+          "At least two source tabs and at least one alternate sort option have been tested."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Composer, follow-up prompts, and action controls",
+        "objective": "Exercise the main input workflow plus high-value adjacent actions, including visible recovery or placeholder states.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use one or more suggested follow-up buttons (for example, 'Find papers since 2020 directly comparing the two schedules') and observe whether they populate/send a prompt and generate a meaningful thread update.",
+          "Type a custom follow-up into the textarea and submit with Ask; verify message placement, response rendering, and any loading/disabled states.",
+          "Compare behavior of the lower composer mode selector (Balanced/Quick scan/Deep dive) with the top mode selector and note whether both affect output consistently or create ambiguity.",
+          "Click the attachment button and record whether a file picker, placeholder, or no-op occurs.",
+          "Test Share thread and Export as PDF for visible outcomes, downloads, dialogs, or silent failures.",
+          "Try New thread and observe whether it resets the interface, starts a blank conversation, or risks losing prior context without warning."
+        ],
+        "exit_criteria": [
+          "At least one suggested prompt and one manual prompt submission have been attempted.",
+          "Each high-value action control (attachment, Share thread, Export as PDF, New thread) has documented behavior, even if that behavior is a placeholder or no-op."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile critical-path and responsiveness checks",
+        "objective": "Repeat the most important tasks on a mobile viewport and specifically probe likely navigation and tap-target issues.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify how the three-column layout collapses on mobile and whether thread history, conversation, and sources all remain reachable.",
+          "Re-test left-rail/thread navigation or any mobile equivalent, focusing on the known small tap targets.",
+          "Open a thread, read the answer, and test at least one citation-to-source interaction on mobile.",
+          "Use the composer to enter and submit a follow-up on mobile, checking keyboard overlap, visibility of the Ask button, and control crowding.",
+          "Check usability of top actions and selectors on mobile, especially the unlabeled/ambiguous mode controls and source filters."
+        ],
+        "exit_criteria": [
+          "The primary mobile flow from opening a thread to reading sources to asking a follow-up has been exercised.",
+          "Any mobile-specific layout, access, or tap-size issues are captured with concrete evidence."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit the only known HTML page (index.html) and cover its major in-page states by switching several threads and source views.",
+      "features": "Exercise nearly all visible controls on index.html: thread links, New thread, citation chips, source tabs, sort selector, top and composer mode selectors, suggested prompts, textarea, attachment, Ask, Share thread, and Export as PDF.",
+      "mobile": "Repeat the critical reading and follow-up workflow on mobile, including thread access, citation/source linkage, and message composition/submission."
+    },
+    "notes": [
+      "Do not assume hidden pages, authentication, or backend persistence; treat this as a local demo unless the UI clearly proves otherwise.",
+      "Because exhaustive depth is requested with only one page available, prioritize state transitions and interaction integrity over repeated passive reading.",
+      "Capture whether controls are true actions, placeholders, or dead ends; that distinction is important UX evidence for this fixture."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Lumen Research — research assistant",
+      "url": "file:///Users/timchef/UXBench/websites/lumen-research/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Lumen + New thread TODAY Deep work scheduling literature EV battery recycling policy in Norway Trace prevalence of seal influenza H10N7 LAST 7 DAYS Comparative grad-school stipends in CS Microclimate effects of urban rooftop gardens Late-Holocene shoreline shifts, NW Europe Why does ringing happen in step responses EARLIER Survey: open-source funding models 2024 Caffeine half-life in slow metabolizers Building codes vs wildfire defensible space PA Priya Anand Researcher · Pro Deep work scheduling literature Share thread Export as PDF Mode: Balanced Mode: Quick scan Mode: Deep dive Mode: Compare arguments Hi — I'm planning a 6-week study on whether \"two 90-minute deep-work blocks before noon\" actually outperform afternoon-heavy schedules for software engineers. What does the existing literature say about this? L Short version: there's strong general support for protected morning blocks in",
+      "headings": [
+        "Deep work scheduling literature",
+        "Sources 8"
+      ],
+      "counts": {
+        "buttons": 14,
+        "links": 10,
+        "inputs": 4,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:+ New thread",
+        "clickable:a:Deep work scheduling literature",
+        "clickable:a:EV battery recycling policy in Norway",
+        "clickable:a:Trace prevalence of seal influenza H10N7",
+        "clickable:a:Comparative grad-school stipends in CS",
+        "clickable:a:Microclimate effects of urban rooftop gardens",
+        "clickable:a:Late-Holocene shoreline shifts, NW Europe",
+        "clickable:a:Why does ringing happen in step responses",
+        "clickable:a:Survey: open-source funding models 2024",
+        "clickable:a:Caffeine half-life in slow metabolizers",
+        "clickable:a:Building codes vs wildfire defensible space",
+        "clickable:button:Share thread",
+        "clickable:button:Export as PDF",
+        "selectable:select:Mode: Balanced Mode: Quick scan Mode: Deep dive Mode: Compare arguments",
+        "clickable:button:📎",
+        "typeable:textarea:Ask a follow-up, or paste a paper to summarize…"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

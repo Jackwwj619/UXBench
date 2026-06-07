@@ -1,0 +1,660 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/moonlight-tickets/index.html",
+  "site": {
+    "name": "moonlight-tickets",
+    "site_dir": "/Users/timchef/UXBench/websites/moonlight-tickets",
+    "start_page": "index.html",
+    "page_type": "checkout/booking",
+    "html_files": [
+      "checkout.html",
+      "confirmation.html",
+      "event.html",
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/moonlight-tickets/README.md",
+    "summary": "moonlight-tickets-clone Fictional independent live-music ticketing platform \"MoonlightTickets\". Dark after-dark theme. Pages | File | Purpose | | --- | --- | | `index.html` | Discovery page: \"Tonight\" 4 large cards + 4-axis filters (date / genre / venue / price) + \"This week\" 12-event grid of fictional shows | | `event.html` | Event detail: title, time, venue, doors; favorite / share; artist bio + 3 audio clips; 3 tier cards (Early Bird / Standard / VIP with stepper -/+, VIP shows a \"SELLING FAST\" badge); right-side sticky order summary with fee preview; venue GA sketch SVG; accessibility notes; 3 related events | | `checkout.html` | Top 10-minute reservation countdown (<1m red pulse); collapsible cart; one accordion attendee form per ticket (First / Last / Email / e-delivery toggle, VIP adds \"Name for signed poster\", non-first ticket includes Copy buyer info); 3 payment methods + card-number formatting; promo (DOORS5 / TONIGHT10); right-side detailed fee breakdown (subtotal + $3.50 service × n + $2 facility × n + 3% + $0.30 processing + promo discount); Cancel second-confirmation |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full moonlight-tickets system, prioritizing the primary checkout/booking flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The checkout flow demonstrates strong visual hierarchy and real-time fee transparency, but suffers from critical accessibility barriers and mobile usability issues. The primary friction point is the multi-ticket attendee form, where collapsed accordions hide required fields and controls (like 'Copy buyer info'), leading to user confusion and interaction failures. Additionally, payment method selectors and checkboxes have tap targets significantly below the 44px standard, making the interface difficult to use on touch devices.",
+  "exploration_plan": {
+    "goal": "Autonomously explore and critique the UX of the full moonlight-tickets system, prioritizing the primary checkout/booking flow plus adjacent pages, states, and recovery paths.",
+    "summary": "The run will proceed from the discovery page (index.html) through event selection (event.html), ticket configuration, and the complex checkout process (checkout.html), ending at confirmation. It will specifically validate the 4-axis filtering logic, the dynamic pricing/fee calculations in the sticky order summary, and the attendee form behaviors (copying info, VIP fields). Finally, it will repeat critical path checks on mobile to address known tap-target risks.",
+    "assumptions": [
+      "The 'Continue to checkout' button on event.html transitions directly to checkout.html with cart state preserved.",
+      "Promo codes DOORS5 and TONIGHT10 are valid and trigger immediate fee recalculation.",
+      "The 10-minute reservation countdown on checkout.html is a visual timer that does not actually expire during the test session."
+    ],
+    "target_pages": [
+      "index.html",
+      "event.html",
+      "checkout.html",
+      "confirmation.html"
+    ],
+    "risk_hotspots": [
+      "checkout.html: Fee breakdown accuracy (service + facility + processing + promo)",
+      "checkout.html: Attendee form 'Copy buyer info' functionality for multi-ticket orders",
+      "checkout.html: VIP tier specific fields (Signed poster name) appearing/disappearing",
+      "index.html & event.html: Small tap targets (<44px) identified in prescan layout warnings",
+      "event.html: Sticky order summary synchronization with ticket stepper changes"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Discovery & Filtering",
+        "objective": "Validate the homepage layout, navigation, and the 4-axis filtering system (Date, Genre, Venue, Price).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify visibility of 'Tonight' cards vs 'This week' grid.",
+          "Interact with all 4 filter dropdowns to ensure options load.",
+          "Apply a combined filter (e.g., Genre: Jazz + Venue: Coppergate Hall) and verify results update.",
+          "Check navigation links (Calendar, Venues, Artists) for validity or placeholder behavior."
+        ],
+        "exit_criteria": [
+          "Filters applied and results visibly changed.",
+          "At least one event card clicked to transition to event.html."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Event Detail & Ticket Selection",
+        "objective": "Explore the event page, audio clips, and ticket tier selection logic.",
+        "target_pages": [
+          "event.html"
+        ],
+        "key_checks": [
+          "Play/pause audio clips to check media controls.",
+          "Select 'VIP' tier and verify 'SELLING FAST' badge and price point ($52).",
+          "Use stepper to increase quantity to 2 tickets.",
+          "Verify sticky 'Your Order' summary updates subtotal and fees dynamically.",
+          "Click 'Continue to checkout'."
+        ],
+        "exit_criteria": [
+          "2 VIP tickets selected.",
+          "Order summary reflects correct base price.",
+          "Transitioned to checkout.html."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Checkout Flow & Form Logic",
+        "objective": "Complete the attendee and payment forms, testing edge cases like VIP fields and data copying.",
+        "target_pages": [
+          "checkout.html"
+        ],
+        "key_checks": [
+          "Verify 10-minute countdown timer is visible.",
+          "Fill Buyer Info (First/Last/Email).",
+          "Expand Attendee 2 form; use 'Copy buyer info' and verify fields populate.",
+          "Locate and fill 'Name for signed poster' field (specific to VIP tickets).",
+          "Enter invalid promo code, then valid code (DOORS5) and verify fee reduction in breakdown.",
+          "Select Payment Method and enter dummy card details (checking formatting)."
+        ],
+        "exit_criteria": [
+          "All required fields filled.",
+          "Promo discount applied in fee breakdown.",
+          "Ready to submit order."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Confirmation & Recovery",
+        "objective": "Submit the order and verify the success state, then test cancellation/recovery.",
+        "target_pages": [
+          "confirmation.html",
+          "checkout.html"
+        ],
+        "key_checks": [
+          "Submit order and verify redirect to confirmation.html.",
+          "Validate order details on confirmation page match checkout inputs.",
+          "Return to checkout.html (via back nav or new session).",
+          "Test 'Cancel' button and verify second-confirmation dialog appears."
+        ],
+        "exit_criteria": [
+          "Confirmation page viewed.",
+          "Cancellation flow interrupted or confirmed."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Responsiveness Check",
+        "objective": "Repeat critical path interactions on mobile viewport to assess touch usability.",
+        "target_pages": [
+          "index.html",
+          "event.html",
+          "checkout.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport.",
+          "Re-test filtering on index.html (check for overlap/usability).",
+          "Re-test ticket stepper on event.html (ensure buttons are tappable).",
+          "Re-test checkout form inputs (verify keyboard triggers and layout stacking).",
+          "Specifically target previously identified small tap targets (nav links) to document difficulty."
+        ],
+        "exit_criteria": [
+          "Critical flows completed on mobile viewport.",
+          "Usability issues noted for small tap targets."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 HTML files (index, event, checkout, confirmation).",
+      "features": "Exercise filters, audio players, ticket steppers, promo codes, copy-info logic, and payment form.",
+      "mobile": "Repeat Phase 1, 2, and 3 key interactions on mobile viewport."
+    },
+    "notes": [
+      "Prescan identified multiple 'small_tap_target' warnings on index.html nav items; prioritize documenting these in Phase 5.",
+      "The README mentions a 'Cancel second-confirmation'; ensure this modal/dialog is triggered in Phase 4.",
+      "Fee breakdown includes specific line items (Service $3.50, Facility $2, Processing 3% + $0.30); visually verify these math components in Phase 3."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "forms",
+      "user_goal": "Complete checkout for multiple tickets efficiently.",
+      "problem": "Multi-ticket attendee forms are collapsed by default, hiding input fields and efficiency tools like 'Copy buyer info'. Users attempting to interact with these hidden elements encounter errors or confusion because the parent accordion must be expanded first.",
+      "evidence": "Agent logs show repeated 'Locator.click: Timeout' failures for 'Copy buyer info' (ux-10) and Ticket 2 inputs (ux-6, ux-7) because they were 'not visible'. Screenshots confirm Ticket 2/3 sections are collapsed headers only.",
+      "why_it_matters": "This creates a high-friction experience for group bookings. Users may not realize they need to expand each ticket section individually, leading to abandonment or errors when trying to paste data into invisible fields.",
+      "suggestion": "Auto-expand all attendee sections upon entering checkout if >1 ticket is in the cart, or provide a prominent 'Expand All' control. Ensure 'Copy buyer info' is visible or clearly indicates it requires expansion of the target section.",
+      "source_hint": "checkout.html: Ticket 2 accordion header / Copy buyer info button"
+    },
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Select payment method and agree to terms on a mobile device.",
+      "problem": "Critical interactive elements, including payment method radio buttons and checkboxes, have tap targets far smaller than the recommended 44x44px minimum.",
+      "evidence": "Layout warnings identify 'Credit / debit' (ux-7), 'Apple-Pay-like' (ux-8), and 'Email this ticket...' (ux-5) checkboxes/radios as having heights of only 13px. The 'terms' link (ux-19) is 32x15px.",
+      "why_it_matters": "On mobile devices, users will struggle to accurately select their payment method or agree to terms without zooming in, leading to frustration and potential mis-clicks (e.g., selecting the wrong payment type).",
+      "suggestion": "Increase the clickable area of radio buttons and checkboxes to at least 44x44px by adding padding to the label container or using larger custom UI controls.",
+      "source_hint": "checkout.html: Payment method radios (ux-7, ux-8, ux-9) and Checkbox (ux-5)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Know if entered payment details are valid before submitting.",
+      "problem": "Payment input fields lack immediate visual validation feedback (e.g., green checkmarks or border color changes) upon successful entry of valid data formats.",
+      "evidence": "After typing valid dummy data into 'Card number' (ux-11), 'Expiry' (ux-12), and 'CVC' (ux-13), the agent noted 'Visual feedback is minimal... lacks explicit validation indicators'. Fields only show focus states or error states.",
+      "why_it_matters": "Without positive confirmation, users may hesitate or re-enter data unnecessarily, unsure if the system accepted the format correctly until they hit 'Place order' and potentially face a delay or error.",
+      "suggestion": "Implement inline validation that displays a subtle success indicator (e.g., a green check icon inside the input) when a field passes format validation on blur or after a short debounce.",
+      "source_hint": "checkout.html: Payment input fields (ux-11, ux-12, ux-13)"
+    },
+    {
+      "severity": "low",
+      "ux_area": "trust",
+      "user_goal": "Feel confident that the site is secure and professional.",
+      "problem": "Persistent network errors for font assets (Inter, Space Grotesk) suggest broken resource links or configuration issues, which can degrade the visual polish and perceived reliability of the platform.",
+      "evidence": "Console logs show multiple 'net::ERR_ABORTED' errors for woff2 font files from fonts.gstatic.com across several steps.",
+      "why_it_matters": "While the layout falls back gracefully, missing custom fonts can make the site look generic or unfinished. In a transactional context, technical glitches can subtly erode user trust in the platform's stability.",
+      "suggestion": "Verify the Google Fonts API links or host fonts locally to ensure consistent loading and eliminate console errors.",
+      "source_hint": "Global: Network tab / Console errors"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "confidence": "low",
+    "page_coverage_percent": 75,
+    "feature_coverage_percent": 31,
+    "action_success_rate_percent": 68,
+    "unchanged_action_percent": 4,
+    "known_pages": [
+      "checkout.html",
+      "confirmation.html",
+      "event.html",
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "event.html",
+      "checkout.html"
+    ],
+    "unvisited_pages": [
+      "confirmation.html"
+    ],
+    "observed_viewports": [
+      "desktop"
+    ],
+    "viewport_steps": {
+      "desktop": 80
+    },
+    "action_counts": {
+      "click": 48,
+      "go_back": 1,
+      "open_page": 9,
+      "type_text": 22
+    },
+    "total_actions": 80,
+    "successful_actions": 54,
+    "failed_actions": 26,
+    "unchanged_actions": 3,
+    "observed_feature_count": 65,
+    "exercised_feature_count": 20,
+    "unexplored_features": [
+      {
+        "signature": "checkout.html|clickable|a|||moonlighttickets|index.html",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "MoonlightTickets"
+      },
+      {
+        "signature": "checkout.html|clickable|a|||terms|#",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "terms"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $115.68|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $115.68"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $59.36|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $59.36"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $82.52|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $82.52"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||yes, cancel|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Yes, cancel"
+      },
+      {
+        "signature": "checkout.html|clickable|input||checkbox|checkbox|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "checkbox"
+      },
+      {
+        "signature": "checkout.html|clickable|input||checkbox|email this ticket directly to the attendee|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Email this ticket directly to the attendee"
+      },
+      {
+        "signature": "checkout.html|clickable|input||radio|apple-pay-like|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Apple-Pay-like"
+      },
+      {
+        "signature": "checkout.html|clickable|input||radio|credit / debit|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Credit / debit"
+      },
+      {
+        "signature": "checkout.html|clickable|input||radio|google-pay-like|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Google-Pay-like"
+      },
+      {
+        "signature": "checkout.html|typeable|input||email|email|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "email"
+      },
+      {
+        "signature": "checkout.html|typeable|input|||name for signed poster|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Name for signed poster"
+      },
+      {
+        "signature": "event.html|clickable|a|||halcyon dial velvet pier · tonight · 11:00 pm|event.html?e=e3",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Halcyon Dial Velvet Pier · Tonight · 11:00 PM"
+      },
+      {
+        "signature": "event.html|clickable|a|||moonlighttickets|index.html",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "MoonlightTickets"
+      },
+      {
+        "signature": "event.html|clickable|a|||northern brushfires halo room · tonight · 10:00 pm|event.html?e=e2",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Northern Brushfires Halo Room · Tonight · 10:00 PM"
+      },
+      {
+        "signature": "event.html|clickable|a|||telegraph bay coppergate hall · tonight · 8:30 pm|event.html?e=e4",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Telegraph Bay Coppergate Hall · Tonight · 8:30 PM"
+      },
+      {
+        "signature": "event.html|clickable|a|||→|#",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "→"
+      },
+      {
+        "signature": "event.html|clickable|button|||↗|",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "↗"
+      },
+      {
+        "signature": "event.html|clickable|button|||♡|",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "♡"
+      },
+      {
+        "signature": "index.html|clickable|a|||artists|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Artists"
+      },
+      {
+        "signature": "index.html|clickable|a|||calendar|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Calendar"
+      },
+      {
+        "signature": "index.html|clickable|a|||electronic cendrillon (dj set) velvet pier · fri · may 16 from $35|event.html?e=e9",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Electronic Cendrillon (DJ set) Velvet Pier · Fri · May 16 from $35"
+      },
+      {
+        "signature": "index.html|clickable|a|||electronic halcyon dial velvet pier · tonight · 11:00 pm from $28|event.html?e=e3",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "ELECTRONIC Halcyon Dial Velvet Pier · Tonight · 11:00 PM from $28"
+      },
+      {
+        "signature": "index.html|clickable|a|||experimental foxglove bio (live a/v) the foundry · sat · may 17 from $28|event.html?e=e11",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Experimental Foxglove Bio (live A/V) The Foundry · Sat · May 17 from $28"
+      },
+      {
+        "signature": "index.html|clickable|a|||experimental pale cartography halo room · wed · may 14 from $25|event.html?e=e6",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Experimental Pale Cartography Halo Room · Wed · May 14 from $25"
+      },
+      {
+        "signature": "index.html|clickable|a|||folk borrowed owls coppergate hall · fri · may 16 from $24|event.html?e=e8",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Folk Borrowed Owls Coppergate Hall · Fri · May 16 from $24"
+      },
+      {
+        "signature": "index.html|clickable|a|||folk marisol & the verses the foundry · tue · may 13 from $22|event.html?e=e5",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Folk Marisol & the Verses The Foundry · Tue · May 13 from $22"
+      },
+      {
+        "signature": "index.html|clickable|a|||folk northern brushfires halo room · tonight · 10:00 pm from $18|event.html?e=e2",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "FOLK Northern Brushfires Halo Room · Tonight · 10:00 PM from $18"
+      },
+      {
+        "signature": "index.html|clickable|a|||folk quanta gospel choir the foundry · tue · may 20 from $24|event.html?e=e14",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Folk Quanta Gospel Choir The Foundry · Tue · May 20 from $24"
+      },
+      {
+        "signature": "index.html|clickable|a|||hip-hop bracken six coppergate hall · sun · may 18 from $26|event.html?e=e12",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Hip-hop Bracken Six Coppergate Hall · Sun · May 18 from $26"
+      },
+      {
+        "signature": "index.html|clickable|a|||indie rock coast static velvet pier · thu · may 15 from $30|event.html?e=e7",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Indie rock Coast Static Velvet Pier · Thu · May 15 from $30"
+      },
+      {
+        "signature": "index.html|clickable|a|||indie rock northbank confederation halo room · mon · may 19 from $20|event.html?e=e13",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Indie rock Northbank Confederation Halo Room · Mon · May 19 from $20"
+      },
+      {
+        "signature": "index.html|clickable|a|||jazz telegraph bay coppergate hall · tonight · 8:30 pm from $34|event.html?e=e4",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "JAZZ Telegraph Bay Coppergate Hall · Tonight · 8:30 PM from $34"
+      },
+      {
+        "signature": "index.html|clickable|a|||jazz tide engine trio halo room · sat · may 17 from $38|event.html?e=e10",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Jazz Tide Engine Trio Halo Room · Sat · May 17 from $38"
+      },
+      {
+        "signature": "index.html|clickable|a|||moonlighttickets|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "MoonlightTickets"
+      },
+      {
+        "signature": "index.html|clickable|a|||sell tickets|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sell tickets"
+      },
+      {
+        "signature": "index.html|clickable|a|||sign in|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sign in"
+      },
+      {
+        "signature": "index.html|clickable|a|||this week|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "This Week"
+      },
+      {
+        "signature": "index.html|clickable|a|||tonight|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Tonight"
+      }
+    ],
+    "gaps": [
+      "Only visited 3 of 4 HTML page(s); unvisited: confirmation.html.",
+      "Mobile viewport was under-exercised: 0/16 required mobile actions.",
+      "Only directly exercised 31% of visible interactive feature signatures.",
+      "26 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-04-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-14-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-15-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-21-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-23-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-24-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-25-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-26-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-28-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-34-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-36-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-37-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-38-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-42-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-43-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-51-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-58-go_back-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-61-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-62-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-63-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-64-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-65-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-66-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-67-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-68-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-69-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-70-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-71-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-72-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-73-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-74-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-75-click-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-76-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-77-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-78-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-79-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run/screenshots/agentic-80-type_text-desktop.png"
+  ],
+  "trace_entries": 80,
+  "run_dir": "/Users/timchef/UXBench/results-qwen3.6-plus/moonlight-tickets/_run",
+  "claude_fix": null
+}

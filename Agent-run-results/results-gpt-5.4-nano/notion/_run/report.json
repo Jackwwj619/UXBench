@@ -1,0 +1,651 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/notion/index.html",
+  "site": {
+    "name": "notion",
+    "site_dir": "/Users/timchef/UXBench/websites/notion",
+    "start_page": "index.html",
+    "page_type": "landing",
+    "html_files": [
+      "index.html",
+      "pricing.html",
+      "projects.html",
+      "templates-projects.html",
+      "wikis.html"
+    ],
+    "css_files": [
+      "pages.css",
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/notion/README.md",
+    "summary": "notion-clone Clone of the Notion marketing funnel: home + product sub-pages + templates + pricing. Pages | File | Purpose | | --- | --- | | `index.html` | Home: top nav (Product / Download / Solutions / Resources / Pricing / Request demo / Log in / Get Notion free), hero section (product positioning + CTA + main screenshot), modular product intros (Docs / Wikis / Projects / AI), customer logo wall, customer stories, multi-column footer | | `projects.html` | Project management sub-page: feature highlights, view-switching screenshots (Board / Timeline / Calendar), case studies, CTA | | `wikis.html` | Wiki sub-page: knowledge-base examples, permissions / search / template features, CTA |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full notion system, prioritizing the primary landing flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "Across the Notion marketing funnel, the primary conversion CTAs reliably open a signup/demo modal with clear form structure and inline validation (e.g., Pricing mobile shows both field errors while the dialog remains on-screen). However, modal dismissal is inconsistent: multiple attempts to close via the “×” control and via backdrop/ESC produced no observable dismissal/unblocking, suggesting a trust-breaking interaction trap risk. On mobile, several critical controls (including the close “×” and header links) appear to have small tap targets and even horizontal overflow, increasing the likelihood of mis-taps and accessibility friction.",
+  "exploration_plan": {
+    "goal": "Autonomously explore and critique the UX of the Notion marketing funnel across its primary landing flow and adjacent product pages, emphasizing interactive controls, conversions (free/demo), and mobile usability.",
+    "summary": "Start on index.html and validate the global navigation and primary conversion actions (Get Notion free, Request a demo) plus in-page CTAs (e.g., See pricing plans). Then traverse each adjacent top-nav page (Projects, Wikis, Templates, Pricing) and exercise their key interactive elements (view switches, FAQ toggles, buttons/links). Finish by repeating the critical flows on mobile viewport and sanity-checking any modal/dialog behavior from demo/signup CTAs.",
+    "assumptions": [
+      "The site is a static marketing funnel using local HTML files with client-side JS interactions (evidenced by multiple href='javascript:void(0)' and prescan indicating dialogs/forms).",
+      "Global nav links route to the five known pages: index.html, projects.html, wikis.html, templates-projects.html, pricing.html.",
+      "At least some CTAs (Request a demo / Get Notion free) open an in-page dialog or trigger a form flow, since the prescan counts dialogs and forms on pages."
+    ],
+    "target_pages": [
+      "index.html",
+      "pricing.html",
+      "projects.html",
+      "templates-projects.html",
+      "wikis.html"
+    ],
+    "risk_hotspots": [
+      "index.html: 'Request a demo' and 'Get Notion free' use href='javascript:void(0)'—risk of non-functional click, missing dialog close/reset, or focus traps (mobile especially).",
+      "pricing.html: yearly/monthly toggle ('Toggle yearly pricing')—risk of pricing cards not updating, wrong selection persistence, or broken CTA bindings after toggling.",
+      "pricing.html: FAQ accordion buttons (e.g., 'How does Notion AI use my data?', 'What are your accepted payment methods?', 'What is a block?')—risk of multiple-open behavior or missing accessibility/state updates.",
+      "templates-projects.html: FAQ buttons list (multiple questions as discrete buttons)—risk of overlapping UI, scroll-jump issues, or incorrect answer panel association.",
+      "projects.html: view-switching screenshots mentioned in prescan (Board/Timeline/Calendar) though not listed as explicit interactables—risk of controls being images/buttons with weak tap targets.",
+      "Cross-site: top nav items and footer links—prescan flags many 'small_tap_target' warnings, so mobile hit-area usability is a likely issue."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Index landing: navigation + primary conversion paths",
+        "objective": "Validate the core landing-page UX: top navigation routing, primary CTAs, and key in-page links to adjacent product pages and pricing.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click top-nav items: Projects, Wikis, Templates, Pricing; confirm correct page loads and active state/scroll position.",
+          "Trigger 'Request a demo' (href javascript:void(0)); verify a dialog/form appears (or clear feedback if not available) and can be dismissed/closed.",
+          "Trigger 'Get Notion free' (href javascript:void(0)); verify dialog/form or navigation response; confirm any entered/returned state is consistent.",
+          "Use in-page CTA 'See pricing plans →' to navigate to pricing.html and confirm scroll/anchor behavior.",
+          "Click 'Knowledge Base' in the lower page section to verify routing to wikis.html."
+        ],
+        "exit_criteria": [
+          "All five top-nav routes successfully load their target pages without errors.",
+          "At least one 'Request a demo' interaction and one 'Get Notion free' interaction are validated end-to-end (dialog appears, is dismissible, no broken state).",
+          "In-page CTAs/links correctly navigate to their intended adjacent pages (pricing and wikis)."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Product subpages: Projects + Wikis feature comprehension and CTAs",
+        "objective": "Exercise the primary content sections and interactive elements on each subpage, focusing on conversion CTAs and any feature toggles/search/permissions UI mentioned in headings.",
+        "target_pages": [
+          "projects.html",
+          "wikis.html"
+        ],
+        "key_checks": [
+          "Projects page: locate and interact with the view-switching controls for project views (Board / Timeline / Calendar) if present; confirm screenshot/content swaps.",
+          "Projects page: find 'Get Notion free' or other CTA links/buttons on the page and validate their behavior (dialog/form or routing consistent with index).",
+          "Wikis page: scan for any interactive elements tied to 'Search that actually works', 'Drag and drop organization', 'Synced Blocks' and 'Verification'—attempt the most obvious UI controls and confirm they respond.",
+          "Wikis page: click Knowledge Base/Projects CTAs in-page (e.g., links leading to other sections) and ensure routing works."
+        ],
+        "exit_criteria": [
+          "Projects page view-switching (Board/Timeline/Calendar) is confirmed working or clearly absent (no dead controls).",
+          "Both Projects and Wikis pages have at least one CTA/button tested for functional response.",
+          "Any visible interactive feature demos on Projects/Wikis respond with correct UI state changes (no stuck overlays)."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Templates + Pricing: FAQ/toggles and conversion clarity",
+        "objective": "Validate the heaviest interaction areas: pricing billing toggle, FAQ accordions, and templates-page FAQ buttons; confirm CTAs align with selected plan context.",
+        "target_pages": [
+          "templates-projects.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Templates page: click each visible FAQ/button (e.g., 'Is Notion good for project management?', 'Can I manage Agile projects in Notion?', etc.); verify the corresponding answer panel/section expands and collapses correctly.",
+          "Templates page: click 'Request a demo' and 'Get Notion free' CTAs on-page; ensure behavior matches index (dialog/form lifecycle).",
+          "Pricing page: toggle yearly/monthly pricing ('Toggle yearly pricing') and verify plan card prices update correctly and persist when scrolling.",
+          "Pricing page: click each FAQ accordion button ('How does Notion AI use my data?', 'What are your accepted payment methods?', 'What is a block?', 'How is pricing calculated...'); verify accordion state updates and no multiple sections conflict unexpectedly.",
+          "Pricing page: click 'Sign up' and 'Get started' for at least two plan tiers; verify correct CTA response (including whether a plan-specific context is passed to the signup/demo flow).",
+          "Pricing page: test 'Contact Sales' path to confirm form/dialog appears and can be dismissed."
+        ],
+        "exit_criteria": [
+          "All visible FAQ buttons on templates-projects.html show correct expanded/collapsed content associations.",
+          "Pricing yearly/monthly toggle updates pricing UI reliably without stale values.",
+          "At least two plan CTAs and Contact Sales are validated as functional with appropriate dialog/page response."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile regression: hit-targets + critical flow re-check",
+        "objective": "Repeat the most important actions on mobile viewport to catch tap-target and responsive layout issues flagged by prescan (many controls below 44px).",
+        "target_pages": [
+          "index.html",
+          "pricing.html",
+          "projects.html"
+        ],
+        "key_checks": [
+          "On mobile viewport, tap the top-nav items (Projects/Wikis/Templates/Pricing) and confirm the tap targets register and navigation works.",
+          "On mobile, tap 'Request a demo' and 'Get Notion free' on index; verify dialogs/forms open, remain usable, and close reliably.",
+          "On mobile, toggle yearly pricing and open at least one pricing FAQ accordion; confirm accordion and toggle remain usable and readable.",
+          "On mobile, test at least one plan CTA ('Sign up' or 'Get started') to ensure it’s reachable and functional."
+        ],
+        "exit_criteria": [
+          "No critical CTA (demo/free/signup) fails on mobile; dialogs are operable and dismissible.",
+          "Key toggles (pricing billing + FAQ) work reliably on mobile.",
+          "Tap targets are confirmed workable for navigation and CTAs despite 'small_tap_target' warnings."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages (index.html, projects.html, wikis.html, templates-projects.html, pricing.html)",
+      "features": "exercise most visible controls per key page: index CTAs (Request a demo, Get Notion free, See pricing plans), Projects view switching (Board/Timeline/Calendar), Wikis interactive feature demos (search/drag/drop/blocks/verification as available), Templates FAQ buttons, Pricing billing toggle + FAQ accordions + plan CTAs",
+      "mobile": "repeat critical checks (navigation, demo/free, pricing toggle, at least one FAQ and one plan CTA) on mobile viewport"
+    },
+    "notes": [
+      "Prescan indicates multiple dialogs/forms but not their exact fields; when dialogs open, validate: keyboard/tap focus usability, close behavior, and that re-opening does not create broken/duplicated UI.",
+      "Many nav and CTA elements may have small hit areas; mobile phase should record whether any intended taps miss or require precision."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Dismiss the signup/confirmation modal to return to the page and continue browsing",
+      "problem": "The modal close control (“×”) does not reliably dismiss the overlay, leaving users stuck with an apparent unresponsive blocking layer.",
+      "evidence": "On mobile pricing, clicking the modal close target (ux-19, 14x24) resulted in no detectable UI change (after_url unchanged; changed=false; action produced no visible-text change). Earlier desktop attempts also failed: “Clicking the modal Close (×) button … produced no visible change (no URL change and no obvious UI change detected)” and “Click failed for Close × … element is not visible” for multiple close targets (ux-15/ux-22/ux-24).",
+      "why_it_matters": "If users can’t dismiss the modal, they can’t proceed with the next step (browse plans, FAQ, other CTAs), which undermines conversion and creates a 'broken' feeling during critical moments.",
+      "suggestion": "Ensure the active modal overlay dismisses deterministically from the “×” button across states (validation error vs success). Add/verify backdrop click and Esc behavior consistently, and provide visible state change (overlay removal + focus restoration to the element that opened the modal).",
+      "source_hint": "pricing.html mobile close control ux-19; screenshot: /Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-77-click-mobile.png"
+    },
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Use the “Get Notion free” CTA and not be blocked by an open overlay",
+      "problem": "The modal overlay can intercept interactions with underlying CTAs, and dismissal/unblocking was not confirmed after failed close attempts.",
+      "evidence": "A key failure on index.html: clicking “Get Notion free” timed out because “the active modal overlay (#demoModal) intercepts pointer events.” Subsequent close attempts also timed out because the Close button was not visible (e.g., “element is not visible”).",
+      "why_it_matters": "When a conversion modal blocks the rest of the page, any inability to dismiss it prevents users from trying alternatives and increases abandonment.",
+      "suggestion": "Verify pointer-event blocking only applies while modal is open, and that dismissal properly removes overlay and restores interaction. Add a visual/semantic backdrop role and ensure the overlay’s pointer-event behavior is toggled off on close.",
+      "source_hint": "index.html: Get Notion free click failed; modal overlay id #demoModal"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap accurate targets on mobile without frustration",
+      "problem": "Important tap targets are smaller than mobile guidance, increasing mis-taps—especially problematic for tiny close (“×”) and header navigation.",
+      "evidence": "Layout warnings flag multiple small targets on mobile: “Close” ux-19 is 14x24; “Toggle menu” ux-2 is 36x32; header links like “Notion” (94x29) and “Knowledge Base / Projects / Templates / Pricing” are 342x22 (below typical 44px guidance). Horizontal overflow is also detected (scroll_width 399px > viewport 390px).",
+      "why_it_matters": "Small targets make it harder to dismiss overlays (high-impact) and navigate (users may tap the wrong link or fail to reach the intended section). Horizontal overflow can further reduce interaction reliability.",
+      "suggestion": "Increase minimum hit area for the close button and nav items on mobile (at least ~44px height). Fix/avoid horizontal overflow on mobile layouts so CTA and modal controls remain reachable and tappable.",
+      "source_hint": "pricing.html mobile layout warnings (ux-19 ux-2 ux-1 ux-15..ux-18); screenshot shows the tiny “×” at top-right"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Know whether an action (Continue/Submit) succeeded or what changed",
+      "problem": "Many primary actions produce no obvious observable state change (tool changed=false), making it hard for users to know whether submission succeeded, advanced, or needs correction beyond the already-visible validation state.",
+      "evidence": "On mobile pricing, tapping “Continue” (ux-22) resulted in no detectable visible change (changed=false). Earlier desktop attempts to “Continue” and close also showed “no obvious URL or visible-text change detected” even when success messaging screenshots were present during other steps (e.g., “Account created! Check your email.”).",
+      "why_it_matters": "In conversion modals, unclear outcomes increase anxiety and retries; combined with unreliable dismissal, this can quickly become a dead-end.",
+      "suggestion": "After Continue/Submit, ensure the modal visibly transitions (loading state + success confirmation or updated validation). If blocked by validation, keep errors prominent and scroll/focus the first invalid field.",
+      "source_hint": "pricing.html mobile: Continue ux-22 produced changed=false; screenshot shows validation errors under fields"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 45,
+    "action_success_rate_percent": 87,
+    "unchanged_action_percent": 61,
+    "known_pages": [
+      "index.html",
+      "pricing.html",
+      "projects.html",
+      "templates-projects.html",
+      "wikis.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "projects.html",
+      "wikis.html",
+      "pricing.html",
+      "templates-projects.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 67,
+      "open_page": 1,
+      "press_key": 2,
+      "reload": 1,
+      "scroll": 2,
+      "type_text": 6
+    },
+    "total_actions": 79,
+    "successful_actions": 69,
+    "failed_actions": 10,
+    "unchanged_actions": 48,
+    "observed_feature_count": 85,
+    "exercised_feature_count": 38,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|a|||notion|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Notion"
+      },
+      {
+        "signature": "index.html|clickable|a|||see pricing plans →|pricing.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "See pricing plans →"
+      },
+      {
+        "signature": "index.html|clickable|a|||templates|templates-projects.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Templates"
+      },
+      {
+        "signature": "index.html|clickable|a|||wikis|wikis.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Wikis"
+      },
+      {
+        "signature": "index.html|clickable|button||submit|submit request|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Submit request"
+      },
+      {
+        "signature": "index.html|typeable|input||email|work email *|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Work email *"
+      },
+      {
+        "signature": "index.html|typeable|input||text|company name *|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Company name *"
+      },
+      {
+        "signature": "index.html|typeable|input||text|team size|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Team size"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||knowledge base|wikis.html",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Knowledge Base"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||notion|index.html",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Notion"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||pricing|pricing.html",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pricing"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||projects|projects.html",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Projects"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||request a demo|javascript:void(0)",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Request a demo"
+      },
+      {
+        "signature": "pricing.html|clickable|a|||wikis|wikis.html",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Wikis"
+      },
+      {
+        "signature": "pricing.html|clickable|button|||how do refunds work?|",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "How do refunds work?"
+      },
+      {
+        "signature": "pricing.html|clickable|button|||toggle menu|",
+        "page": "pricing.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Toggle menu"
+      },
+      {
+        "signature": "pricing.html|typeable|input||text|company name *|",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Company name *"
+      },
+      {
+        "signature": "pricing.html|typeable|input||text|full name *|",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Full name *"
+      },
+      {
+        "signature": "pricing.html|typeable|input||text|team size|",
+        "page": "pricing.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Team size"
+      },
+      {
+        "signature": "projects.html|clickable|a|||knowledge base|wikis.html",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Knowledge Base"
+      },
+      {
+        "signature": "projects.html|clickable|a|||notion|index.html",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Notion"
+      },
+      {
+        "signature": "projects.html|clickable|a|||pricing|pricing.html",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pricing"
+      },
+      {
+        "signature": "projects.html|clickable|a|||projects|projects.html",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Projects"
+      },
+      {
+        "signature": "projects.html|clickable|a|||request a demo|javascript:void(0)",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Request a demo"
+      },
+      {
+        "signature": "projects.html|clickable|a|||templates|templates-projects.html",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Templates"
+      },
+      {
+        "signature": "projects.html|clickable|a|||wikis centralize all your knowledge in notion instead of a clunky, disorganized |wikis.html",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Wikis Centralize all your knowledge in Notion instead of a clunky, disorganized workspace."
+      },
+      {
+        "signature": "projects.html|clickable|button||submit|continue|",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Continue"
+      },
+      {
+        "signature": "projects.html|typeable|input||email|work email *|",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Work email *"
+      },
+      {
+        "signature": "projects.html|typeable|input||text|full name *|",
+        "page": "projects.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Full name *"
+      },
+      {
+        "signature": "templates-projects.html|clickable|a|||knowledge base|wikis.html",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Knowledge Base"
+      },
+      {
+        "signature": "templates-projects.html|clickable|a|||notion|index.html",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Notion"
+      },
+      {
+        "signature": "templates-projects.html|clickable|a|||pricing|pricing.html",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pricing"
+      },
+      {
+        "signature": "templates-projects.html|clickable|a|||projects|projects.html",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Projects"
+      },
+      {
+        "signature": "templates-projects.html|clickable|a|||request a demo|javascript:void(0)",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Request a demo"
+      },
+      {
+        "signature": "templates-projects.html|clickable|a|||templates|templates-projects.html",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Templates"
+      },
+      {
+        "signature": "templates-projects.html|clickable|a|||wikis|wikis.html",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Wikis"
+      },
+      {
+        "signature": "templates-projects.html|clickable|button|||can i manage agile projects in notion?|",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Can I manage Agile projects in Notion?"
+      },
+      {
+        "signature": "templates-projects.html|clickable|button|||does notion support templates for different industries?|",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Does Notion support templates for different industries?"
+      },
+      {
+        "signature": "templates-projects.html|clickable|button|||is notion good for project management?|",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Is Notion good for project management?"
+      },
+      {
+        "signature": "templates-projects.html|clickable|button|||what does \"composable project management\" mean?|",
+        "page": "templates-projects.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "What does \"composable project management\" mean?"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 45% of visible interactive feature signatures.",
+      "10 browser action(s) failed and should be retried or analyzed.",
+      "61% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-17-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-18-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-21-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-23-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-27-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-31-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-33-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-47-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-55-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-58-reload-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-62-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-76-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-nano/notion/_run",
+  "claude_fix": null
+}

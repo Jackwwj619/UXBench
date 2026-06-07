@@ -1,0 +1,741 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/booking/index.html",
+  "site": {
+    "name": "booking",
+    "site_dir": "/Users/timchef/UXBench/websites/booking",
+    "start_page": "index.html",
+    "page_type": "checkout/booking",
+    "html_files": [
+      "airport-taxis.html",
+      "attractions.html",
+      "car-rentals.html",
+      "confirmation.html",
+      "deals.html",
+      "flights.html",
+      "help.html",
+      "hotel-detail-granbell.html",
+      "hotel-detail.html",
+      "index.html",
+      "list-property.html",
+      "my-trips.html",
+      "register.html",
+      "reservation.html",
+      "reviews.html",
+      "room-selection.html",
+      "shinjuku.html",
+      "signin.html",
+      "tokyo.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/booking/README.md",
+    "summary": "booking-clone Clone of the Booking.com hotel booking funnel (home → city list → area filters → detail → room → booking → confirmation), plus other business-line and supporting pages. Pages | File | Purpose | | --- | --- | | `index.html` | Home: search bar (destination / check-in & out dates / guests), recommended destinations, recent searches, Genius membership prompt, business-line entries in the footer | | `tokyo.html` | Tokyo hotel list: left filter panel (price, stars, rating, amenities, area), right-hand hotel cards (price, rating, review count, distance, free-cancellation tag), sort bar, map entry | | `shinjuku.html` | Shinjuku-area hotel list, same structure as above, pre-filtered to Shinjuku |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full booking system, prioritizing the primary checkout/booking flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The Booking checkout flow is mostly navigable and preserves trip context through list → hotel detail → room selection → reservation. However, the final step on mobile shows strong gating but provides unclear feedback: selecting arrival time and “booking for” did not produce an obvious user-facing state change, and the primary “Complete booking” CTA could not be clicked because it remained disabled. There are also recurring mobile accessibility/tap-target issues (missing labels and very small touch targets) that can compound confidence and completion friction.",
+  "exploration_plan": {
+    "goal": "Critique and validate the UX of the full Booking.com-style booking funnel (search → city list/filters → hotel detail → room selection → reservation details → confirmation) and verify key adjacent flows and recovery points across desktop and mobile.",
+    "summary": "Start from index.html, perform a hotel search, validate navigation into the Tokyo/Shinjuku list pages and their filter UX, then open a specific hotel detail and progress through room selection into reservation details and confirmation. In parallel, validate adjacent business-line entry points (flights, car rentals, attractions, airport taxis) plus supporting pages (deals, help, my-trips, register, signin) for consistency, discoverability, and critical error/empty states. Repeat the most failure-prone parts (search controls, filter selection, guest/details form, and final confirmation) on mobile viewport.",
+    "assumptions": [
+      "The site is a static Booking.com clone where navigation between HTML pages represents the funnel states (no real network calls).",
+      "The primary booking path likely uses tokyo.html/shinjuku.html → hotel-detail.html → room-selection.html → reservation.html → confirmation.html.",
+      "Desktop and mobile variants are supported by responsive layout on each of the listed HTML files."
+    ],
+    "target_pages": [
+      "index.html",
+      "tokyo.html",
+      "shinjuku.html",
+      "hotel-detail.html",
+      "room-selection.html",
+      "reservation.html",
+      "confirmation.html",
+      "reviews.html",
+      "deals.html",
+      "my-trips.html",
+      "help.html",
+      "signin.html",
+      "register.html",
+      "list-property.html",
+      "flights.html",
+      "car-rentals.html",
+      "attractions.html",
+      "airport-taxis.html",
+      "hotel-detail-granbell.html"
+    ],
+    "risk_hotspots": [
+      "index.html: top search bar controls (destination/check-in-check-out/guests) and the Search button leading to tokyo.html—risk of unclear default state and missing validation feedback.",
+      "tokyo.html and shinjuku.html: left filter panels (budget, popular filters, neighbourhood, distance, review score) and empty state messaging (“No properties match your filters”)—risk of non-intuitive filter interactions.",
+      "hotel-detail.html and hotel-detail-granbell.html: availability/Reserve CTA placement—risk of unclear how to proceed to room-selection (broken affordance or missing required preconditions).",
+      "room-selection.html: “Continue to booking details” and change-selection path—risk of losing context/summary accuracy (dates, guests, cancellation/payment rules).",
+      "reservation.html: form completeness for required fields (first/last name, email, country/phone, booking-for choice) and cancellation/payment schedule comprehension—risk of confusing required vs optional, and inadequate validation messaging.",
+      "my-trips.html and confirmation.html: cancellation/modify/rebook links—risk of mismatched booking reference or inconsistent state recovery.",
+      "signin.html/register.html: authentication entry points from header—risk of navigation loops and missing explanation for where sign-in is required in the funnel."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Homepage search & entry-point validation",
+        "objective": "Validate the primary way users start the journey from index.html: search control clarity, button behavior, and discoverability of major categories and support links.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the three top inputs: type/select a destination, adjust check-in/check-out dates, and change guest count; confirm the resulting Search action is enabled/works as expected.",
+          "Click Search and verify navigation to the expected list view (tokyo.html) without losing the chosen dates/guests conceptually.",
+          "Use header/category links visible on index.html (Flights, Car rentals, Attractions, Airport taxis, List your property, Register, Sign in) and confirm each routes to its corresponding HTML page."
+        ],
+        "exit_criteria": [
+          "Successful search action demonstrates consistent state handoff (destination + dates + guests) to a city list page.",
+          "All visible header/category entry points from index.html reliably navigate to their mapped pages."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "City list filtering & map/sort affordances",
+        "objective": "Validate the browsing experience on tokyo.html and shinjuku.html, focusing on filter comprehension, selection feedback, sorting, and empty-results handling.",
+        "target_pages": [
+          "tokyo.html",
+          "shinjuku.html"
+        ],
+        "key_checks": [
+          "On tokyo.html, interact with at least: budget filter, star rating, one popular filter (e.g., Free cancellation or No prepayment), and one neighbourhood/property-type filter; confirm the UI reflects selected state.",
+          "Verify sorting control behavior (e.g., change “Price (lowest first)” vs other visible sort modes) and that hotel cards update accordingly (even if mocked).",
+          "On both pages, check “Show on map” (if present via map entry/card) for basic navigation/behavior; ensure no dead-end interactions.",
+          "Trigger/validate the “No properties match your filters” empty state and ensure it provides a recovery path (e.g., reset/adjust filters) rather than a dead-end."
+        ],
+        "exit_criteria": [
+          "At least one meaningful filter combination is applied and visibly reflected in results.",
+          "Empty state is reachable and recoverable with clear user guidance.",
+          "Sorting does not break layout or trap the user."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Hotel detail → room selection progression",
+        "objective": "Validate the user’s ability to understand hotel content and confidently proceed from hotel detail to selecting a room and booking details.",
+        "target_pages": [
+          "hotel-detail.html",
+          "hotel-detail-granbell.html",
+          "reviews.html"
+        ],
+        "key_checks": [
+          "From hotel-detail.html (Park Hyatt Tokyo), click “Reserve” and confirm navigation to room-selection.html (or equivalent step) while preserving dates/guest selection context.",
+          "Use “← Back to results” and verify it returns to the appropriate list context without losing the user’s filtered/browsing state conceptually.",
+          "Validate guest trust modules: location rating pill, review count link (e.g., 3,847 reviews) and navigation to reviews.html; confirm reviews filtering controls are usable (e.g., Most recent / Most relevant / Couples).",
+          "Repeat Reserve/CTA progression from hotel-detail-granbell.html to ensure multiple hotel details behave consistently."
+        ],
+        "exit_criteria": [
+          "Reserve action leads forward to room selection with consistent trip summary.",
+          "Back navigation and review entry work without confusing jumps."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Room selection summary & booking details entry",
+        "objective": "Validate the critical step that confirms the user’s chosen room and then gathers required booking details accurately.",
+        "target_pages": [
+          "room-selection.html",
+          "reservation.html"
+        ],
+        "key_checks": [
+          "On room-selection.html, verify the selected room, dates (check-in/out), duration, and price summary (total + key tax/VAT/city tax lines) are readable and match the values shown in the funnel’s later confirmation.",
+          "Use “Change your selection” and confirm the user can return to the original selection without losing critical trip context.",
+          "On reservation.html, complete the required fields: first name, last name, email, country/region, phone number, and booking-for choice (main guest vs someone else).",
+          "Verify required-field guidance (“Almost done! Just fill in the * required info”) is clear and that missing inputs trigger sensible inline validation/disable behavior (or at least visually indicate requiredness).",
+          "Confirm understanding sections: payment schedule (“pay at the property / no prepayment”), cancellation policy comprehension, and “special requests” textarea placeholder/wording."
+        ],
+        "exit_criteria": [
+          "A fully completed reservation submission action (or the next-step navigation) succeeds to confirmation.html.",
+          "Price and policy info remain consistent from room-selection through reservation."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Confirmation, trip management, and support/recovery",
+        "objective": "Validate end-of-flow clarity, post-booking navigation, and recovery/access to support and account-related pages.",
+        "target_pages": [
+          "confirmation.html",
+          "my-trips.html",
+          "help.html",
+          "signin.html",
+          "register.html"
+        ],
+        "key_checks": [
+          "On confirmation.html, verify confirmation number visibility, hotel/address and room details, cancellation/payment important info readability, and presence of a clear next action (e.g., Manage your booking / My trips).",
+          "Navigate to my-trips.html and validate each tab/state (Upcoming/Completed/Cancelled) and primary actions (View details, Cancel booking, Modify dates, Write a review, Book again) are reachable.",
+          "Use help.html “Popular topics” (cancel a booking, payment & refunds, change a booking, Genius, transport bookings) and verify topic links/CTAs are usable (chat/call buttons).",
+          "From header, validate signin.html and register.html navigation; ensure there is an obvious path for users returning to the booking funnel after sign-in (or at least no broken funnel links)."
+        ],
+        "exit_criteria": [
+          "Confirmation provides all essential booking details and a plausible path to trip management/support.",
+          "Help topics are discoverable and actionable.",
+          "Auth pages load cleanly and do not create navigation dead-ends."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Adjacent business-line pages (consistency checks)",
+        "objective": "Validate the alternative booking business lines for basic search/booking CTA behavior and consistent header navigation.",
+        "target_pages": [
+          "flights.html",
+          "car-rentals.html",
+          "attractions.html",
+          "airport-taxis.html",
+          "deals.html",
+          "list-property.html"
+        ],
+        "key_checks": [
+          "Flights: select trip type (Round trip/One way), use origin/destination/date/1 adult, click Search; validate results section presence.",
+          "Car rentals: use pick-up/drop-off and date inputs, click Search; validate the “View deal” CTA is present and leads to a plausible continuation.",
+          "Attractions: use the top search controls (destination/date range), click Search and confirm “Book now” CTAs exist for attractions.",
+          "Airport taxis: fill pick-up, drop-off, date/time, passengers; click Search; validate the list includes “Book” CTAs.",
+          "Deals: click “Sign in to unlock deals” and “View deal” entries; ensure they route without breaking layout.",
+          "List your property: click “Get started now” and validate informational sections and header navigation."
+        ],
+        "exit_criteria": [
+          "Each adjacent page supports its primary input-to-CTA loop (Search/Book) without dead ends.",
+          "Header navigation between business lines remains consistent."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages listed in the prescan (run should end having loaded every file in the site's html_files list).",
+      "features": "Exercise most visible controls per key page: index search inputs + Search; tokyo/shinjuku filter groups + sort + empty state; hotel-detail Reserve + back to results + reviews entry; room-selection Continue to booking details + change selection; reservation required form fields + special requests + policy comprehension; confirmation/manage trip navigation; help topics + chat/call buttons; and each business-line page’s primary search/booking CTA.",
+      "mobile": "Repeat critical checks on mobile viewport for: index.html search controls + Search; tokyo/shinjuku filter selection + empty state; hotel-detail Reserve; reservation form required-field completion; confirmation to my-trips navigation."
+    },
+    "notes": [
+      "Use the most 'funnel-shaped' path for coverage: index.html → tokyo.html/shinjuku.html → hotel-detail.html → room-selection.html → reservation.html → confirmation.html.",
+      "Prioritize validation of required-field guidance and price/policy consistency across room-selection → reservation → confirmation, since these are the highest-risk UX points.",
+      "Also validate “small tap target” warnings noted on header/auth/support links by checking usability on mobile in phase-1 and phase-5."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Complete booking submission on the final step.",
+      "problem": "Primary CTA remains disabled after interacting with required-looking inputs; users receive insufficient, ambiguous feedback about what exactly is still missing or whether selections actually applied.",
+      "evidence": "On reservation.html (mobile), “Complete booking” is rendered disabled and the automation repeatedly timed out clicking it because the button was not enabled (locator resolved to <button disabled ...> with “Complete booking”). Additionally, selecting the arrival-time dropdown did not update the control value (tool notes and screenshots show “Please select …” still present after selecting an option), and tapping radio “I'm booking for someone else” was reported as no detectable visible change (changed=false) even though the page continues to say “Almost done! Just fill in the * required info.”",
+      "why_it_matters": "When users cannot progress and the UI doesn’t clearly confirm selections, they may repeatedly retry or abandon checkout—especially on mobile where precision and feedback matter for trust and completion.",
+      "suggestion": "After each required selection (arrival time, booking-for radio), explicitly update the dropdown/radio displayed value (not just a hidden state), and show a clear remaining-items summary tied to the CTA (e.g., “Complete booking available once Phone number and arrival time are set” with per-field completion indicators). Ensure the disabled CTA tooltip/banner states the exact missing field(s) and clears immediately when satisfied.",
+      "source_hint": "reservation.html / mobile screenshots: agentic-77-select_option-mobile.png, agentic-78-select_option-mobile.png; disabled CTA click failure: ux-21 (“Complete booking”)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "forms",
+      "user_goal": "Provide required arrival-time information and see that it’s been accepted.",
+      "problem": "Arrival-time selection lacks clear confirmation in the UI on mobile; users may believe they selected a value but the page continues to show “Please select” while also showing a green readiness message.",
+      "evidence": "In the mobile reservation screenshots, the page shows “Your arrival time ✓ Your room will be ready for check-in at 15:00” while the dropdown field still displays “Please select” along with options (tool reflection: selecting arrival time did not provide the expected user-facing change; screenshot shows “Please select …”). Two selection attempts (agentic-77 and agentic-78) reported no obvious visible-text change after selecting an option.",
+      "why_it_matters": "Conflicting cues (green readiness vs. dropdown still saying “Please select”) increase cognitive load and reduce trust in form state—directly impacting checkout completion.",
+      "suggestion": "Make the arrival-time control display the chosen option label after selection (replace “Please select” with the selected time). If the green message reflects a separate default (“15:00”), clarify why (e.g., “Default estimated arrival time: 15:00—change if needed”) and keep the dropdown in sync with the underlying value.",
+      "source_hint": "reservation.html (mobile): agentic-77-select_option-mobile.png, agentic-78-select_option-mobile.png; visible section text “Your arrival time” and “Please select”"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "accessibility",
+      "user_goal": "Successfully interact with form controls using touch and assistive technologies.",
+      "problem": "Repeated accessibility issues include missing labels/ARIA for select inputs and multiple very small tap targets on mobile, increasing interaction errors during a high-stakes flow.",
+      "evidence": "Tool output flags missing input labels for the arrival-time select (missing_input_label for ux-20). Mobile tap-target guidance warnings show multiple controls below recommended size, including radio buttons/checkboxes and small nav links (e.g., “I'm the main guest” 13x13px as small tap target; “JPY” 60x34px; horizontal overflow present with page width 814px > viewport 390px).",
+      "why_it_matters": "In checkout, form mistakes or mis-taps can trigger additional validation steps and CTA lockouts; missing labels also harm screen-reader usability and can cause confusion about which field is being edited.",
+      "suggestion": "Ensure every input/select has an accessible name (label or aria-label) and that tap targets for radios/checkboxes meet minimum sizes (or add padding/spacing). Resolve horizontal overflow and provide a comfortable, scroll-safe layout so key controls remain reachable without awkward gestures.",
+      "source_hint": "reservation.html (mobile): layout warnings in final_observation (missing_input_label ux-20; small_tap_target ux-14/ux-15/ux-17/ux-18/ux-19; horizontal_overflow width 814px vs 390px)"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 9,
+    "action_success_rate_percent": 96,
+    "unchanged_action_percent": 9,
+    "known_pages": [
+      "airport-taxis.html",
+      "attractions.html",
+      "car-rentals.html",
+      "confirmation.html",
+      "deals.html",
+      "flights.html",
+      "help.html",
+      "hotel-detail-granbell.html",
+      "hotel-detail.html",
+      "index.html",
+      "list-property.html",
+      "my-trips.html",
+      "register.html",
+      "reservation.html",
+      "reviews.html",
+      "room-selection.html",
+      "shinjuku.html",
+      "signin.html",
+      "tokyo.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "tokyo.html",
+      "hotel-detail.html",
+      "room-selection.html",
+      "reservation.html",
+      "my-trips.html",
+      "confirmation.html",
+      "deals.html",
+      "attractions.html",
+      "shinjuku.html",
+      "signin.html",
+      "help.html",
+      "flights.html",
+      "car-rentals.html",
+      "reviews.html",
+      "hotel-detail-granbell.html",
+      "register.html",
+      "airport-taxis.html",
+      "list-property.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "check": 2,
+      "click": 57,
+      "open_page": 5,
+      "screenshot_pair": 1,
+      "scroll": 1,
+      "select_option": 5,
+      "type_text": 8
+    },
+    "total_actions": 79,
+    "successful_actions": 76,
+    "failed_actions": 3,
+    "unchanged_actions": 7,
+    "observed_feature_count": 508,
+    "exercised_feature_count": 45,
+    "unexplored_features": [
+      {
+        "signature": "airport-taxis.html|clickable|a|||airport taxis|airport-taxis.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Airport taxis"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||attractions|attractions.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Attractions"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||booking.com|index.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Booking.com"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||car rentals|car-rentals.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Car rentals"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||customer service|help.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Customer Service"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||deals|deals.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Deals"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||extranet login|#",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Extranet login"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||flights|flights.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Flights"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||genius loyalty program|#",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Genius loyalty program"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||list your property|#",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "List your property"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||manage your trips|#",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Manage your trips"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||privacy & cookies|#",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Privacy & cookies"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||sign in|signin.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sign in"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||stays|index.html",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Stays"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|a|||terms & conditions|#",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Terms & conditions"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|button|||jpy|",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "JPY"
+      },
+      {
+        "signature": "airport-taxis.html|clickable|button|||search|",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Search"
+      },
+      {
+        "signature": "airport-taxis.html|typeable|input||text|2 passengers|",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "2 passengers"
+      },
+      {
+        "signature": "airport-taxis.html|typeable|input||text|drop-off location|",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Drop-off location"
+      },
+      {
+        "signature": "airport-taxis.html|typeable|input||text|jul 15, 15:00|",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Jul 15, 15:00"
+      },
+      {
+        "signature": "airport-taxis.html|typeable|input||text|pick-up location|",
+        "page": "airport-taxis.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Pick-up location"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||attractions|attractions.html",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Attractions"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||booking.com|index.html",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Booking.com"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||car rentals|car-rentals.html",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Car rentals"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||contact customer service|#",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Contact Customer Service"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||deals|deals.html",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Deals"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||extranet login|#",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Extranet login"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||flights|flights.html",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Flights"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||genius loyalty program|#",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Genius loyalty program"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||list your property|#",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "List your property"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||manage your trips|#",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Manage your trips"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||privacy & cookies|#",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Privacy & cookies"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||sign in|signin.html",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sign in"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||stays|index.html",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Stays"
+      },
+      {
+        "signature": "attractions.html|clickable|a|||terms & conditions|#",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Terms & conditions"
+      },
+      {
+        "signature": "attractions.html|clickable|button|||book now|",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Book now"
+      },
+      {
+        "signature": "attractions.html|clickable|button|||jpy|",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "JPY"
+      },
+      {
+        "signature": "attractions.html|typeable|input||text|jul 15 — jul 18|",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Jul 15 — Jul 18"
+      },
+      {
+        "signature": "attractions.html|typeable|input||text|where are you going?|",
+        "page": "attractions.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Where are you going?"
+      },
+      {
+        "signature": "car-rentals.html|clickable|a|||attractions|attractions.html",
+        "page": "car-rentals.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Attractions"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 9% of visible interactive feature signatures.",
+      "3 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-06-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-07-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-08-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-09-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-12-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-13-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-16-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-29-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-34-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-47-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-48-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-50-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-52-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-54-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-56-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-58-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-59-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-62-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-63-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-63-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-76-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-77-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-78-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run/screenshots/agentic-80-check-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-nano/booking/_run",
+  "claude_fix": null
+}

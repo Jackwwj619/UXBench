@@ -1,0 +1,173 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the FRED UNRATE data visualization page, focusing on chart interactions, time-range/frequency toggles, data views, graph editing tools, and responsive mobile behavior.",
+    "summary": "The exploration will proceed by first validating the primary data visualization flow, including chart hover states and time-range toggles. Next, it will test adjacent flows like switching to the data table view and interacting with the graph editing tools (Edit Line, Add Line, Format). It will then validate metadata, download actions, and search functionality. Finally, it will repeat critical checks on a mobile viewport to assess responsive layout and tap target issues identified in the prescan.",
+    "assumptions": [
+      "The site is a single-page application clone with all interactions contained within index.html.",
+      "Graph editing tools (Edit Line, Add Line, Format) and download actions will trigger UI state changes or modals rather than actual backend processes.",
+      "The maintenance notice banner can be dismissed and is not a blocking overlay for the main content.",
+      "Time-range toggles (1Y, 5Y, 10Y, Max) and frequency toggles dynamically update the chart visualization."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Time-range (1Y/5Y/10Y/Max) and frequency toggles: ensuring they correctly update the chart without visual glitches.",
+      "Graph editing panel (EDIT LINE/ADD LINE/FORMAT): complex UI controls that may have broken state management or layout issues when opened.",
+      "From/To date inputs: manual date entry might break the chart or result in invalid state handling.",
+      "Mobile tap targets: multiple small tap targets identified in the prescan (e.g., breadcrumb links, nav items) pose usability risks on touch devices."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Primary Chart Interaction",
+        "objective": "Validate the core data visualization flow, including initial load, hover tooltips, recession shading, and time-range toggles.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Dismiss the maintenance notice banner",
+          "Hover over the chart to trigger and validate the tooltip displaying date and value",
+          "Click the recession shading link to verify its behavior",
+          "Click each time-range toggle (1Y, 5Y, 10Y, Max) and verify the chart updates accordingly",
+          "Test the From/To date inputs by typing custom dates and verifying chart response"
+        ],
+        "exit_criteria": [
+          "Tooltip successfully appears on chart hover",
+          "All 4 time-range toggles clicked and chart re-renders without errors",
+          "Custom date entry attempted"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Data Table & Graph Editing",
+        "objective": "Validate adjacent flows for viewing data in tabular format and using the graph editing/customization tools.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'View as data table' tab and verify data renders in a table format",
+          "Switch back to 'Chart' tab",
+          "Click 'EDIT LINE' tab, interact with the search input and formula input",
+          "Click 'ADD LINE' tab and observe UI changes",
+          "Click 'FORMAT' tab and observe UI changes",
+          "Click 'Download Chart' and other action buttons (Share, Fullscreen)"
+        ],
+        "exit_criteria": [
+          "Data table view successfully toggled and visible",
+          "All three graph editing tabs (Edit Line, Add Line, Format) opened and interacted with",
+          "Download/Share actions triggered without console errors"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Metadata, Search & Navigation",
+        "objective": "Validate the metadata block, search functionality, and navigation elements.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Scroll to metadata block and verify Source, Release, Units, Frequency, and Notes are visible",
+          "Type a query into the 'Search FRED Data' input and submit",
+          "Click breadcrumb links (Home, Categories, etc.)",
+          "Click top navigation links (RELEASE CALENDAR, NEWS, BLOG)",
+          "Scroll to 'Related Data and Content' and 'Data Suggestions' sections, click a suggestion"
+        ],
+        "exit_criteria": [
+          "Metadata block fully visible and readable",
+          "Search input accepts text and submission is attempted",
+          "At least 3 navigation/breadcrumb links clicked"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Tap Targets",
+        "objective": "Repeat critical checks on a mobile viewport to validate responsive layout and assess the severity of small tap target warnings.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport and verify chart scales correctly",
+          "Check if the metadata block stacks below the chart as indicated by the summary",
+          "Attempt to tap the time-range toggles (1Y, 5Y, 10Y, Max) to evaluate tap target spacing",
+          "Attempt to tap breadcrumb links to evaluate small tap target severity",
+          "Test the main 'Search FRED Data' input on mobile"
+        ],
+        "exit_criteria": [
+          "Mobile viewport renders without horizontal scrolling or broken layout",
+          "Chart interactions (toggling time ranges) work on mobile",
+          "Small tap target risks assessed via actual interaction attempts"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of known HTML pages (index.html)",
+      "features": "Exercise all time-range toggles, frequency toggles, chart/table views, graph edit tabs, search, and key navigation links",
+      "mobile": "Verify chart scaling, metadata stacking, and evaluate all prescan-flagged small tap targets on mobile viewport"
+    },
+    "notes": [
+      "Prescan flagged 10 small tap target warnings, mostly on navigation and breadcrumbs; mobile phase must specifically test these for real-world usability impact.",
+      "The 'Edit Graph' panel contains multiple inputs (search, formula) that should be tested for focus and layout stability."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Unemployment Rate (UNRATE) | FRED | St. Louis Fed",
+      "url": "file:///Users/timchef/UXBench/websites/fred-unrate/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "FRED, ALFRED, and FRED Account will undergo scheduled maintenance on May 15, 2026 starting at 5PM Central Time. Connection to these websites and some of their features may be unavailable. Thank you for your patience and we apologize for any inconvenience. Close Skip to main content FEDERAL RESERVE BANK OF ST. LOUIS FRED Search FRED Data RELEASE CALENDAR TOOLS NEWS BLOG ABOUT Home > Categories > Population, Employment, & Labor Markets > Current Population Survey (Household Survey) > Unemployment Rate Unemployment Rate (UNRATE) Observations Apr 2026: 4.3 Updated: May 8, 2026 8:30 AM CDT Next Release Date: Jun 5, 2026 Units: Percent, Seasonally Adjusted Frequency: Monthly 1Y 5Y 10Y Max From to To Edit Graph Download Chart FRED Unemployment Rate Chart View as data table 0.0 2.5 5.0 7.5 10.0 12.5 15.0 1950 1955 1960 1965 1970 1975 1980 1985 1990 1995 2000 2005 2010 2015 2020 2025 Percent Line",
+      "headings": [
+        "Unemployment Rate (UNRATE)",
+        "Chart",
+        "Notes",
+        "Release Tables",
+        "Related Data and Content",
+        "Data Suggestions Based On Your Search",
+        "Content Suggestions",
+        "Other Formats",
+        "Related Categories",
+        "Releases"
+      ],
+      "counts": {
+        "buttons": 65,
+        "links": 73,
+        "inputs": 14,
+        "forms": 2,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:Close maintenance notice",
+        "clickable:a:Skip to main content",
+        "clickable:a:FRED home",
+        "typeable:input:Search FRED Data",
+        "clickable:button:Search",
+        "clickable:button:Explore FRED apps",
+        "clickable:button:Open account menu",
+        "clickable:a:RELEASE CALENDAR",
+        "clickable:button:TOOLS",
+        "clickable:a:NEWS",
+        "clickable:a:BLOG",
+        "clickable:button:ABOUT",
+        "clickable:a:Home",
+        "clickable:a:Categories",
+        "clickable:a:Population, Employment, & Labor Markets",
+        "clickable:a:Current Population Survey (Household Survey)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

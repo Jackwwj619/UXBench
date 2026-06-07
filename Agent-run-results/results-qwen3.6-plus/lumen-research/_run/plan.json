@@ -1,0 +1,156 @@
+{
+  "plan": {
+    "goal": "Evaluate the UX of the Lumen Research chatbot interface, focusing on the core conversation flow, citation/source interaction mechanics, and responsive layout stability.",
+    "summary": "The exploration will proceed by first validating the primary 'Ask' loop and response rendering. It will then stress-test the unique 'citation-to-source' linking mechanism (hover/click) and the right-rail filtering controls. Finally, it will assess mobile responsiveness, specifically targeting the identified small tap targets in the left navigation rail.",
+    "assumptions": [
+      "The application is a single-page local fixture (`index.html`) where state changes (new threads, mode switches) are handled via JavaScript without full page reloads.",
+      "The 'Sources' panel content updates dynamically based on the active conversation turn or selected filters.",
+      "The 'Mode' dropdowns control the persona or depth of the AI response generation."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Citation Chips ([1], [2]): Interaction logic for highlighting corresponding sources in the right rail.",
+      "Left Rail Navigation: Identified small tap targets (<44px height) posing mobile usability risks.",
+      "Mode Selectors: Ambiguity between the top-right global mode and the bottom-right input-area mode.",
+      "Input Area: Textarea expansion behavior and attachment button functionality."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Core Conversation & Input Loop",
+        "objective": "Validate the primary user journey: composing queries, submitting them, and receiving formatted responses.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Submit a new query via the textarea and 'Ask' button to verify response generation.",
+          "Test the 'Quick scan' vs 'Deep dive' modes in the bottom-right selector to observe response differences.",
+          "Verify the 'Attach' (paperclip) button state and any resulting file picker or UI change.",
+          "Check if suggested follow-up buttons (e.g., 'Power analysis...') correctly inject text into the input field."
+        ],
+        "exit_criteria": [
+          "Successful submission of at least one new message.",
+          "Visible change in UI or response style when toggling input modes."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Citation & Source Mechanics",
+        "objective": "Stress-test the unique value proposition: the link between inline citations and the source panel.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over inline citation chips (e.g., `[1]`, `[4]`) to verify the corresponding source highlights in the right rail.",
+          "Click a citation chip to test scroll-to-source behavior.",
+          "Interact with Right Rail filters ('All', 'Papers', 'Books') to ensure the list updates correctly.",
+          "Change the 'Sort: Relevance' dropdown to check for re-ordering of sources."
+        ],
+        "exit_criteria": [
+          "Confirmed visual feedback (highlight/scroll) on citation interaction.",
+          "Source list correctly filters/sorts based on right-rail controls."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Thread Management & Global Controls",
+        "objective": "Explore adjacent flows involving history management and export features.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click '+ New thread' to verify canvas clearing and state reset.",
+          "Navigate to a previous thread from the Left Rail (e.g., 'EV battery recycling...') to check state restoration.",
+          "Test 'Share thread' and 'Export as PDF' buttons for modal triggers or download behaviors.",
+          "Toggle the top-right 'Mode: Balanced' selector to see if it affects the whole session context."
+        ],
+        "exit_criteria": [
+          "New thread starts with a clean slate.",
+          "Old threads load their respective history and sources accurately."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Accessibility",
+        "objective": "Validate layout integrity on mobile viewports, focusing on known layout warnings.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE/Pixel 5).",
+          "Attempt to tap Left Rail items (identified as <44px height) to assess touch target difficulty.",
+          "Check for overlap between the fixed header/footer and the main conversation content.",
+          "Verify if the three-column layout collapses gracefully (e.g., into tabs or drawers) or breaks."
+        ],
+        "exit_criteria": [
+          "Documentation of specific tap-target failures in the left rail.",
+          "Confirmation that core chat functionality remains accessible despite layout shifts."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of `index.html` interactive states (since it is a SPA).",
+      "features": "Exercise all 14 buttons, 4 inputs, and both select dropdowns visible in the prescan.",
+      "mobile": "Repeat Phase 1 and Phase 2 checks on a narrow viewport (<600px width)."
+    },
+    "notes": [
+      "The prescan flagged multiple 'small_tap_target' warnings in the left sidebar; prioritize these in the mobile phase.",
+      "There are two 'Mode' selectors (top right and bottom right); clarify if they serve different functions (global vs. per-message).",
+      "Since this is a local demo, network errors are not expected, but console JS errors during state transitions should be monitored."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Lumen Research — research assistant",
+      "url": "file:///Users/timchef/UXBench/websites/lumen-research/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Lumen + New thread TODAY Deep work scheduling literature EV battery recycling policy in Norway Trace prevalence of seal influenza H10N7 LAST 7 DAYS Comparative grad-school stipends in CS Microclimate effects of urban rooftop gardens Late-Holocene shoreline shifts, NW Europe Why does ringing happen in step responses EARLIER Survey: open-source funding models 2024 Caffeine half-life in slow metabolizers Building codes vs wildfire defensible space PA Priya Anand Researcher · Pro Deep work scheduling literature Share thread Export as PDF Mode: Balanced Mode: Quick scan Mode: Deep dive Mode: Compare arguments Hi — I'm planning a 6-week study on whether \"two 90-minute deep-work blocks before noon\" actually outperform afternoon-heavy schedules for software engineers. What does the existing literature say about this? L Short version: there's strong general support for protected morning blocks in",
+      "headings": [
+        "Deep work scheduling literature",
+        "Sources 8"
+      ],
+      "counts": {
+        "buttons": 14,
+        "links": 10,
+        "inputs": 4,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:+ New thread",
+        "clickable:a:Deep work scheduling literature",
+        "clickable:a:EV battery recycling policy in Norway",
+        "clickable:a:Trace prevalence of seal influenza H10N7",
+        "clickable:a:Comparative grad-school stipends in CS",
+        "clickable:a:Microclimate effects of urban rooftop gardens",
+        "clickable:a:Late-Holocene shoreline shifts, NW Europe",
+        "clickable:a:Why does ringing happen in step responses",
+        "clickable:a:Survey: open-source funding models 2024",
+        "clickable:a:Caffeine half-life in slow metabolizers",
+        "clickable:a:Building codes vs wildfire defensible space",
+        "clickable:button:Share thread",
+        "clickable:button:Export as PDF",
+        "selectable:select:Mode: Balanced Mode: Quick scan Mode: Deep dive Mode: Compare arguments",
+        "clickable:button:📎",
+        "typeable:textarea:Ask a follow-up, or paste a paper to summarize…"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

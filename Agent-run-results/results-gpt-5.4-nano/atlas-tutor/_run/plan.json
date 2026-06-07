@@ -1,0 +1,173 @@
+{
+  "plan": {
+    "goal": "Critique and validate the end-to-end UX of the Atlas Tutor chat + practice experience with emphasis on the primary settings/privacy flow and adjacent recovery/feedback paths, on both desktop and mobile viewports.",
+    "summary": "Start from index.html’s existing chat state and validate core interactions: subject navigation, chat history/search, head-tools (Steps/Practice/more), composer send flows, and inline feedback/share/copy controls. Then exercise the right-rail practice problem panel including Hint/Solve/Submit/Correct transitions and progress updates. Finally, validate settings/privacy entry points via the ⚙ control, confirming any dialogs/pages, state persistence, and mobile usability.",
+    "assumptions": [
+      "The only known HTML page in the prescan is index.html; settings/privacy likely appears as an in-page dialog or panel launched from the ⚙ button on index.html.",
+      "Practice problems and progress are interactive and update within the same page (no separate HTML pages discovered).",
+      "All key UI elements observed (search, subjects nav, Steps/Practice toggle, composer, and practice panel) are functional and can be exercised during the run."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "index.html → ⚙ settings control (ux-4): unclear whether it opens a dialog/panel; needs validation for settings/privacy flow presence and correct focus/escape behavior",
+      "index.html → composer send affordances (Cmd+Enter to send; attach 📎; mic 🎤; send arrow →): risk of broken keyboard/microphone/attachment flows or unclear send state",
+      "index.html → chat item feedback/tool buttons (👍/👎, Share, Copy, ↻ Try again): risk these are only decorative or fail to update conversation state",
+      "index.html → right rail practice panel: Solve→Submit→Correct 3-state toggle (including Hint button behavior) and difficulty pills; risk of state desync and progress bar not updating",
+      "index.html → mobile tap targets: multiple small controls flagged (e.g., ⚙ 22x21, ▶ Practice/⌥ Steps widths < guideline, 👍/👎 32x29) likely to impact usability"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline & navigation sanity (left rail + head tools)",
+        "objective": "Confirm the primary structure works: subject navigation, chat history grouping, and the sticky head/tools don’t break scrolling or state.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click a Subject in the left rail (e.g., Mathematics / Programming / Physics / Statistics / Linear algebra) and verify the conversation/practice context changes or filters as expected",
+          "Use Search chats… input to filter existing history; verify results update without losing chat state",
+          "Use sticky head-tools: ⌥ Steps, ▶ Practice, and ⋯; verify each changes the UI (steps mode, practice focus, or menu) and returns cleanly",
+          "Click a left-rail chat thread under Today / Last 7 days / Earlier and verify the conversation content updates to the selected thread"
+        ],
+        "exit_criteria": [
+          "At least one subject click, one history thread switch, and one search action are completed with visible state changes",
+          "All three head-tools (⌥ Steps / ▶ Practice / ⋯) are validated for correct toggling and non-breaking layout"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Chat interaction & recovery (composer + response tools)",
+        "objective": "Validate message sending, composer controls, and response tool affordances including failure recovery (Try again).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Send a short message using Cmd+Enter and verify a new assistant reply appears in the conversation viewport",
+          "Test suggestion chips (e.g., the visible suggestions row) by clicking at least one and ensuring it pre-fills or sends as designed",
+          "Validate composer controls: click attach 📎 and ensure any file input/modal opens (or confirm graceful no-op); click mic 🎤 and ensure permission/state handling is reasonable",
+          "After receiving a reply, use 👍 and 👎 on the assistant message and confirm any visual/recorded state change",
+          "Use Share ⤴ and Copy 📋 on the assistant message; verify expected share/copy behavior (or clear messaging if unsupported)",
+          "Use ↻ Try again and confirm it triggers a new attempt/reply rather than doing nothing"
+        ],
+        "exit_criteria": [
+          "At least one successful message send (Cmd+Enter) and one recovery action (↻ Try again) are completed with visible conversation updates",
+          "Composer attach and mic interactions are validated for either successful behavior or clear, non-breaking failure handling"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Practice problems flow + progress correctness",
+        "objective": "Exercise the right-rail practice panel: hinting, 3-state problem lifecycle (Solve→Submit→Correct), and ensure progress bar updates in sync with completed problems.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "For multiple problems, click Hint and verify the hint reveals/retracts appropriately (and does not break Solve/Sumbit states)",
+          "For at least one problem per difficulty tier visible (EASY/Medium/Hard), run the full lifecycle: Solve → Submit → Correct (or equivalent), verifying buttons and status labels change per state",
+          "If incorrect submission is supported, submit an incorrect answer once and verify the UI provides feedback and allows retry",
+          "After completing practice items, verify Your progress card’s progress bar increases and stays consistent when switching problems or chat threads"
+        ],
+        "exit_criteria": [
+          "At least 3 practice problems completed across the panel with clear state transitions",
+          "Progress bar reflects completed items without regression during navigation within the page"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Settings/privacy flow via ⚙ + state persistence",
+        "objective": "Validate the primary settings/privacy entry point and confirm it behaves correctly (open/close, navigation, persistence, and accessibility), then re-check key flows after returning.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click ⚙ and verify a settings/privacy interface opens (dialog/panel/page section) with expected options or at minimum clear privacy-related controls",
+          "Test closing behavior (close button and Escape if applicable) and verify focus returns to the chat",
+          "If settings include toggles/checkboxes, change at least one and refresh/reload (or navigate threads) to confirm persistence if intended",
+          "Re-run a critical chat action after closing (send a message or toggle ▶ Practice) to ensure no UI is stuck in the wrong mode"
+        ],
+        "exit_criteria": [
+          "⚙ settings/privacy UI is opened and closed successfully with no broken layout or trapped focus",
+          "At least one setting interaction is completed and its effect/persistence is validated"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile viewport critical path checks",
+        "objective": "Repeat the most risk-prone interactions on mobile: tapping small controls, composer send, practice lifecycle, and settings/privacy access.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify three-column layout collapses acceptably (rails become usable) and critical controls remain reachable",
+          "Tap ⚙ (small target) reliably; confirm settings/privacy opens and closes properly",
+          "Use composer: click into textarea and send a message; verify keyboard interactions and send button affordance on mobile",
+          "Complete at least one practice problem through Solve→Submit→Correct on mobile and confirm progress update",
+          "Tap 👍/👎 and Copy/Share once to ensure touch targets respond"
+        ],
+        "exit_criteria": [
+          "No blocking issues on mobile for settings/privacy, message sending, and at least one practice lifecycle",
+          "Touch interactions register (no accidental taps; no unresponsive controls)"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (index.html).",
+      "features": "Exercise most visible controls per key page: subject clicks, chat thread switching, search, ⌥ Steps/▶ Practice/⋯ head tools, composer (textarea, Cmd+Enter, attach, mic, send), message tools (👍/👎/Share/Copy/Try again), and practice panel (Hint + Solve→Submit→Correct across multiple problems).",
+      "mobile": "Repeat critical checks on mobile: ⚙ settings/privacy opening/closing, composer send, practice lifecycle completion, and feedback/copy/share touch responsiveness."
+    },
+    "notes": [
+      "Prescan only identifies index.html; settings/privacy likely manifests in-page via the ⚙ button, so prioritize validating that UI rather than searching for additional HTML pages.",
+      "Given small tap target warnings, spend extra steps on mobile for ⚙, ▶ Practice/⌥ Steps, and the 👍/👎/Copy controls to determine whether usability issues are purely theoretical or actually problematic."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Atlas Tutor — math & CS tutor",
+      "url": "file:///Users/timchef/UXBench/websites/atlas-tutor/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Atlas Tutor + New chat 🔍 SUBJECTS 𝒙 Mathematics 12 {} Programming 7 ⚛ Physics 3 ∮ Statistics 4 ∇ Linear algebra 5 TODAY Chain rule — when both functions move Big-O of recursive Fibonacci L'Hôpital's rule — when can we apply it? LAST 7 DAYS Eigenvalues of a 3 × 3 matrix Bayes' theorem — disease testing Binary search — off-by-one bugs Why does e^x derive to itself? Markov chain steady state EARLIER Proof by induction — sum 1..n Tail recursion vs. loop Series convergence tests cheatsheet Probability of repeat birthdays SA Selene Aiyer Atlas Plus · 14 days streak ⚙ Chain rule — when both functions move Calculus · single variable · last reply 12:08 PT · Atlas-3 model ⌥ Steps ▶ Practice ⋯ SA I keep getting tangled up when I have to differentiate sin(x²). Why doesn't it just become cos(x²)? Walk me through it like I'm just learning the chain rule. A Great question — this is the most common chai",
+      "headings": [
+        "Chain rule — when both functions move",
+        "Chain rule"
+      ],
+      "counts": {
+        "buttons": 40,
+        "links": 5,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Atlas Tutor",
+        "clickable:button:+ New chat",
+        "typeable:input:Search chats…",
+        "clickable:button:⚙",
+        "clickable:button:⌥ Steps",
+        "clickable:button:▶ Practice",
+        "clickable:button:⋯",
+        "clickable:button:👍",
+        "clickable:button:👎",
+        "clickable:button:⤴ Share",
+        "clickable:button:📋 Copy",
+        "clickable:button:↻ Try again"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

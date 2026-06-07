@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webhooks — WeaveAPI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="webhooks">
+<aside class="left-nav" id="leftNav"></aside>
+<main class="docs-center">
+  <header class="doc-top"><input class="search" placeholder="Search docs…" id="docSearch" aria-label="Search documentation" autocomplete="off"><button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">🌙</button></header>
+  <div id="searchResults" class="search-results" hidden></div>
+  <article class="content">
+    <h1>Webhooks</h1>
+    <p class="lede">WeaveAPI sends HTTP POST callbacks to your endpoint when interesting events happen. Each event is signed; verify before processing.</p>
+
+    <h2 id="events">Event types</h2>
+    <table class="attr-table">
+      <thead><tr><th>Event</th><th>Description</th></tr></thead><tbody>
+      <tr><td><code>charge.succeeded</code></td><td>A charge transitioned to <code>succeeded</code></td></tr>
+      <tr><td><code>charge.failed</code></td><td>A charge transitioned to <code>failed</code></td></tr>
+      <tr><td><code>charge.refunded</code></td><td>Full or partial refund applied</td></tr>
+      <tr><td><code>charge.disputed</code></td><td>Buyer opened a dispute</td></tr>
+      <tr><td><code>charge.dispute.closed</code></td><td>Dispute resolved (won or lost)</td></tr>
+      <tr><td><code>customer.created</code></td><td>New customer record</td></tr>
+      <tr><td><code>customer.updated</code></td><td>Customer attributes changed</td></tr>
+      <tr><td><code>customer.deleted</code></td><td>Customer was deleted</td></tr>
+      <tr><td><code>payment_method.attached</code></td><td>PM linked to a customer</td></tr>
+      <tr><td><code>payment_method.detached</code></td><td>PM unlinked</td></tr>
+      <tr><td><code>invoice.created</code></td><td>New invoice generated</td></tr>
+      <tr><td><code>invoice.finalized</code></td><td>Invoice is no longer draft</td></tr>
+      <tr><td><code>invoice.paid</code></td><td>Invoice transitioned to paid</td></tr>
+      <tr><td><code>invoice.payment_failed</code></td><td>Charge attempt failed for invoice</td></tr>
+      <tr><td><code>subscription.created</code></td><td>New subscription</td></tr>
+      <tr><td><code>subscription.updated</code></td><td>Plan / quantity / proration change</td></tr>
+      <tr><td><code>subscription.canceled</code></td><td>Subscription ended</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="signing">Verifying signatures</h2>
+    <p>Each webhook includes a <code>WeaveAPI-Signature</code> header: <code>t=&lt;unix-ts&gt;,v1=&lt;HMAC-SHA256&gt;</code>. Recompute the HMAC over <code>"&lt;t&gt;.&lt;body&gt;"</code> using your webhook signing secret and constant-time compare.</p>
+    <pre class="code-block" data-lang-block data-snippet="webhook-verify"><code></code><button class="copy">Copy</button></pre>
+
+    <h2 id="retries">Retries</h2>
+    <p>We retry non-2xx responses with exponential backoff for up to 72 hours (max 24 attempts). Respond with <code>200</code> as soon as the event is enqueued — don't block on heavy work in the request handler.</p>
+  </article>
+</main>
+<aside class="right-panel" id="rightPanel">
+  <h4>On this page</h4>
+  <ul class="anchors"><li><a href="#events">Event types</a></li><li><a href="#signing">Verifying signatures</a></li><li><a href="#retries">Retries</a></li></ul>
+</aside>
+<script src="script.js"></script>
+<script>setupDocs("webhooks");</script>
+</body>
+</html>

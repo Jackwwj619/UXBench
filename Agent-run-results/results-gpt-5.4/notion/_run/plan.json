@@ -1,0 +1,417 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the Notion marketing funnel clone by validating the home-page conversion path, top-nav product sub-pages, pricing interactions, template/wiki/project cross-links, and key CTA/recovery behaviors on desktop and mobile.",
+    "summary": "Start on the home page and treat it as the primary funnel: confirm that the hero, repeated CTAs, and cross-links into product areas and pricing are coherent and usable. Then branch into adjacent product pages (Projects, Wikis, Templates) to verify page-specific content, internal recommendation links, and return paths through the shared navigation. Reserve deeper validation for Pricing because it contains the richest interaction set in prescan, including a yearly billing toggle and FAQ accordions; finish by repeating the most critical navigation and CTA checks on mobile where multiple tap-target warnings were already detected.",
+    "assumptions": [
+      "This is a static marketing-site clone with 5 known HTML pages and a shared top navigation across pages.",
+      "Primary conversion actions appear to be 'Get Notion free' and 'Request a demo', but prescan only confirms these as visible controls, not successful external submissions.",
+      "Pricing contains the most meaningful state changes observed in prescan via the yearly pricing toggle and FAQ expand/collapse buttons.",
+      "Some pages include forms/dialogs per DOM counts, but their triggers and exact purposes were not identified in prescan, so exploration should only validate them if encountered naturally.",
+      "Cross-linking between product pages exists through shared nav and visible recommendation links like 'Knowledge Base' and product promo cards."
+    ],
+    "target_pages": [
+      "index.html",
+      "projects.html",
+      "wikis.html",
+      "templates-projects.html",
+      "pricing.html"
+    ],
+    "risk_hotspots": [
+      "index.html hero CTAs ('Get Notion free', 'Request a demo') use javascript:void(0), so primary conversion controls may be non-navigating or rely on dialogs/state changes.",
+      "pricing.html yearly pricing toggle may fail to update prices/plans consistently across Free/Plus/Business/Enterprise cards.",
+      "pricing.html FAQ accordion buttons may have broken expand/collapse behavior, poor focus handling, or content clipping.",
+      "Shared top navigation on all pages has multiple small tap targets already flagged in prescan, especially risky on mobile.",
+      "Cross-links from index.html and product pages to Pricing/Wikis/Knowledge Base-style destinations may create weak orientation or inconsistent labels.",
+      "templates-projects.html and pricing.html both include FAQ sections and CTA blocks; repeated components should be checked for consistency.",
+      "projects.html page mentions view-switching screenshots/content in README summary, so any board/timeline/calendar switching control should be tested if visible.",
+      "Any modal/dialog surfaced by CTA interactions is high risk because prescan detected dialogs on pages but did not expose their triggers."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Map the home-page funnel",
+        "objective": "Validate the primary landing experience, message hierarchy, major CTAs, and outbound paths from the home page.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm shared top nav destinations from home: Projects, Wikis, Templates, Pricing, and logo back-to-home behavior.",
+          "Test hero CTAs 'Get Notion free' and 'Request a demo' to determine whether they navigate, open dialogs, or do nothing.",
+          "Scroll the full page to inspect section sequencing from hero through product intros, customer proof, pricing teaser, and footer.",
+          "Use visible cross-links such as 'See pricing plans →' and 'Knowledge Base' to confirm downstream navigation works.",
+          "Check whether repeated CTA labels behave consistently wherever they reappear on the page.",
+          "If any dialog/form appears from CTA use, validate open, close, and recoverability without assuming successful submission."
+        ],
+        "exit_criteria": [
+          "All major home navigation targets have been followed at least once or confirmed reachable.",
+          "Behavior of both primary CTAs is documented.",
+          "Full-page scroll confirms presence and usability of key sections and footer navigation."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Explore adjacent product pages",
+        "objective": "Validate the three adjacent product/content pages for clarity, internal linking, and consistency with the home-page promise.",
+        "target_pages": [
+          "projects.html",
+          "wikis.html",
+          "templates-projects.html"
+        ],
+        "key_checks": [
+          "Open each page from the shared nav rather than direct URL first to verify nav consistency.",
+          "On projects.html, inspect feature sections and test any visible control related to view switching, especially Board/Timeline/Calendar if present.",
+          "On wikis.html, verify the page-specific content flow around organization, search, drag-and-drop, linking, and knowledge-base positioning.",
+          "On templates-projects.html, inspect category blocks (Roadmaps & Calendars, Issue Tracking, Planning & Goals, Ticketing) and confirm prominent CTA behavior.",
+          "Use visible recommendation links such as 'Knowledge Base' or product promo links to confirm cross-navigation between adjacent product areas.",
+          "Check that top nav persists and highlights orientation reasonably when moving across these pages."
+        ],
+        "exit_criteria": [
+          "Each adjacent page has been loaded and scrolled enough to verify its major sections and CTA block.",
+          "At least one internal cross-link between adjacent product areas has been exercised where visible.",
+          "Any page-specific interactive control encountered has been tested for basic state change."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Deep validation of pricing interactions",
+        "objective": "Exercise the highest-risk interaction page by verifying pricing state changes, plan CTAs, FAQ behavior, and lower-funnel pathways.",
+        "target_pages": [
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Toggle Monthly/Yearly pricing and verify visible price changes and labeling consistency across all plan cards.",
+          "Inspect all four plan tiers (Free, Plus, Business, Enterprise) for clear differentiation and CTA availability.",
+          "Test representative plan CTAs such as 'Sign up', 'Get started', and 'Contact Sales' to see whether they navigate, open dialogs, or remain inert.",
+          "Expand multiple FAQ items including 'How does Notion AI use my data?', 'What are your accepted payment methods?', 'What is a block?', and 'How is pricing calculated for the paid plans?'",
+          "Check whether FAQ accordions can both open and close cleanly and whether content remains readable without overlap.",
+          "Validate bottom-of-page CTA sections ('Get started with Notion', 'Request a demo') for consistency with header CTA behavior."
+        ],
+        "exit_criteria": [
+          "Yearly billing toggle behavior is confirmed with before/after evidence.",
+          "At least one CTA per pricing outcome type has been exercised.",
+          "Several FAQ items have been expanded/collapsed successfully or failures have been documented."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Recovery paths and shared-component consistency",
+        "objective": "Verify that users can recover orientation and continue browsing after branching into deeper pages or non-navigating CTAs.",
+        "target_pages": [
+          "index.html",
+          "projects.html",
+          "wikis.html",
+          "templates-projects.html",
+          "pricing.html"
+        ],
+        "key_checks": [
+          "Use the Notion logo/home link from at least one non-home page to confirm reliable return to index.html.",
+          "Compare shared header CTA behavior across at least two pages to detect inconsistencies.",
+          "Check whether footer or lower-page links duplicate top-nav destinations and whether duplicates behave consistently.",
+          "If CTA clicks do not navigate, confirm the user can continue browsing without dead ends or trapped states.",
+          "Document any broken expectation where a label suggests navigation but only changes local state, or vice versa."
+        ],
+        "exit_criteria": [
+          "A clear return-to-home recovery path has been validated.",
+          "Shared header behavior has been compared across multiple pages.",
+          "Any dead-end or inconsistent CTA pattern has been captured."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile-focused critical path check",
+        "objective": "Repeat the most important funnel and navigation checks on mobile, with special attention to tap-target size and responsive usability.",
+        "target_pages": [
+          "index.html",
+          "pricing.html",
+          "projects.html"
+        ],
+        "key_checks": [
+          "Open the site in mobile viewport and verify the top navigation remains accessible and usable.",
+          "Re-test the home hero CTAs and at least one downstream link from the home page on mobile.",
+          "Check whether the small tap targets flagged in prescan make nav items, CTA links, or recommendation links hard to tap.",
+          "On pricing.html mobile, re-test the yearly pricing toggle and one FAQ accordion for layout or clipping issues.",
+          "On one adjacent page such as projects.html, verify that page sections, images/cards, and shared CTAs stack/read correctly."
+        ],
+        "exit_criteria": [
+          "Critical home-to-pricing/product navigation has been repeated on mobile.",
+          "At least one concrete mobile tap-target or responsive layout finding is confirmed or ruled out.",
+          "One high-risk interactive control on mobile has been exercised successfully or documented as problematic."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 5 known HTML pages, with full-page scroll coverage on each and deeper interaction coverage on index.html and pricing.html.",
+      "features": "Exercise the shared top navigation everywhere; test both primary CTAs where visible; use at least one cross-link on each adjacent product page; validate pricing toggle and multiple FAQ accordions; test any page-specific switching control if visibly present.",
+      "mobile": "Repeat critical checks on mobile for index.html, pricing.html, and at least one adjacent product page, focusing on nav access, CTA usability, tap-target risk, and interactive controls."
+    },
+    "notes": [
+      "Prioritize observable behavior over assumed backend outcomes because several key CTAs use javascript:void(0).",
+      "If dialogs/forms appear unexpectedly, validate opening, closing, and basic field usability, but do not invent submission success criteria not present in the UI.",
+      "Use the generous step budget to capture consistency issues across repeated components rather than over-investing in static content review."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Notion – The AI workspace that works for you",
+      "url": "file:///Users/timchef/UXBench/websites/notion/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Notion Projects Wikis Templates Pricing Request a demo Get Notion free Triage product feedback Respond to emails Weekly reporting Review PRs Answer questions Research competitors Meet the night shift. Notion agents keep work moving 24/7. They capture knowledge, answer questions, and push projects forward—all while you sleep. Get Notion free Request a demo Trusted by 98% of the Forbes Cloud 100 OpenAI Figma Ramp Cursor Vercel Nvidia Volvo L'Oréal Discord 1Password Affirm Riot Games Clay Remote Toyota OpenAI Figma Ramp Cursor Vercel Nvidia Volvo L'Oréal Discord 1Password Affirm Riot Games Clay Remote Toyota Keep work moving 24/7. CUSTOM AGENTS Automate repetitive work for your team. → Triage feedback Resolve tickets Security alerts Q&A AGENTS Answers questions instantly using knowledge you already have. See what Custom Agents can do 📬 Triage product feedback → 💬 Resolve support tickets in ",
+      "headings": [
+        "Meet the night shift.",
+        "Keep work moving 24/7.",
+        "Automate repetitive work for your team.",
+        "Ask your on-demand assistants.",
+        "You assign the tasks. Notion Agent does the work.",
+        "One search for everything.",
+        "Perfect notes, every time.",
+        "Bring all your work together.",
+        "Simple and powerful.",
+        "One source of truth for teams and agents."
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 20,
+        "inputs": 5,
+        "forms": 2,
+        "dialogs": 2
+      },
+      "top_interactables": [
+        "clickable:a:Notion",
+        "clickable:a:Projects",
+        "clickable:a:Wikis",
+        "clickable:a:Templates",
+        "clickable:a:Pricing",
+        "clickable:a:Request a demo",
+        "clickable:a:Get Notion free",
+        "clickable:a:See pricing plans →",
+        "clickable:a:Knowledge Base"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "pricing.html",
+      "title": "Notion Pricing – Free, Plus, Business, & Enterprise",
+      "url": "file:///Users/timchef/UXBench/websites/notion/pricing.html",
+      "load_error": null,
+      "visible_text_excerpt": "Notion Projects Wikis Templates Pricing Request a demo Get Notion free One tool to run your company. Trusted by teams at OpenAI Figma Volvo Ramp Cursor Monthly Yearly Save up to 20% Free $0 per member / month For individuals to organize personal projects and life. Sign up Includes: Trial of Notion AI Basic forms Basic sites Notion Calendar Notion Mail (Syncs with Gmail) Databases with subtasks, dependencies, custom properties Plus $10 per member / month For small teams and professionals to work together. Get started Everything in Free, and: Trial of Notion AI Custom forms Custom sites Unlimited charts Unlimited collaborative blocks Unlimited file uploads Basic integrations Business $20 per member / month For growing businesses to streamline teamwork. Get started Everything in Plus, and: Notion Agent AI Meeting Notes Enterprise Search SAML SSO Granular database permissions Verify any page",
+      "headings": [
+        "One tool to run your company.",
+        "Free",
+        "Plus",
+        "Business",
+        "Enterprise",
+        "Plans and features",
+        "Questions & answers",
+        "Get started with Notion",
+        "Request a demo"
+      ],
+      "counts": {
+        "buttons": 12,
+        "links": 15,
+        "inputs": 5,
+        "forms": 2,
+        "dialogs": 2
+      },
+      "top_interactables": [
+        "clickable:a:Notion",
+        "clickable:a:Projects",
+        "clickable:a:Wikis",
+        "clickable:a:Templates",
+        "clickable:a:Pricing",
+        "clickable:a:Request a demo",
+        "clickable:a:Get Notion free",
+        "clickable:div:Toggle yearly pricing",
+        "clickable:a:Sign up",
+        "clickable:a:Get started",
+        "clickable:a:Contact Sales",
+        "clickable:button:How does Notion AI use my data?",
+        "clickable:button:What are your accepted payment methods?",
+        "clickable:button:What is a block?",
+        "clickable:button:How is pricing calculated for the paid plans?"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "projects.html",
+      "title": "Notion Projects – Manage projects from beginning to end",
+      "url": "file:///Users/timchef/UXBench/websites/notion/projects.html",
+      "load_error": null,
+      "visible_text_excerpt": "Notion Projects Wikis Templates Pricing Request a demo Get Notion free PROJECTS Manage projects from beginning to end With Notion's connected workspace, get your projects to the finish line faster and with less context switching. Get Notion free Trusted by teams of 100 to 1000+ OpenAI Volvo Ramp Cursor Figma Nvidia Infinitely configurable, so you can work the way you want Capture every detail in a database Track all your important information in one place, so nothing slips through the cracks. Combine multiple data sources and prevent information silos. View projects as a timeline for a bird's eye view See the bigger picture of how projects fit together, so you can resolve dependencies and hit your deadlines. Visualize progress with charts Create a dashboard with charts from as many sources as you want. Choose the exact info you want to track Create your own priority labels, status tags, ",
+      "headings": [
+        "Manage projects from beginning to end",
+        "Infinitely configurable, so you can work the way you want",
+        "Capture every detail in a database",
+        "View projects as a timeline for a bird's eye view",
+        "Visualize progress with charts",
+        "Choose the exact info you want to track",
+        "Automate your team workflows",
+        "Filter and sort info to see what you need",
+        "Capture requests with forms",
+        "Control who can see and edit"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 14,
+        "inputs": 5,
+        "forms": 2,
+        "dialogs": 2
+      },
+      "top_interactables": [
+        "clickable:a:Notion",
+        "clickable:a:Projects",
+        "clickable:a:Wikis",
+        "clickable:a:Templates",
+        "clickable:a:Pricing",
+        "clickable:a:Request a demo",
+        "clickable:a:Get Notion free",
+        "clickable:a:Wikis Centralize all your knowledge in Notion instead of a clunky, disorganized workspace.",
+        "clickable:a:Knowledge Base"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "templates-projects.html",
+      "title": "Notion Templates for Project Management",
+      "url": "file:///Users/timchef/UXBench/websites/notion/templates-projects.html",
+      "load_error": null,
+      "visible_text_excerpt": "Notion Projects Wikis Templates Pricing Request a demo Get Notion free Project Management templates for every team Use Notion's composable templates to plan, execute, and ship work your way. Start fast with project plans, timelines, sprints, status reports, and more. Get Notion free Roadmaps & Calendars 3,795 templates Issue Tracking 596 templates Planning & Goals 4,195 templates Ticketing 478 templates BACKLOG User auth flow Payment gateway IN PROGRESS Dashboard UI DONE Setup CI/CD Sprint Planning Board by Notion Q1 MVP Q2 Beta Q3 GA Q4 Scale Product Roadmap by Milana Revenue $2M ARR 10k MAU NPS > 60 OKR Tracker by Lou Attal Studio Design Frontend Backend QA Project Timeline by Immi ISSUE STATUS PRIORITY Login 500 error Critical P0 CSS overflow bug Open P2 Typo on pricing Fixed P3 Bug Tracker by Niche Studio Mon, May 11 YESTERDAY Shipped auth module Fixed nav regression TODAY Review PR ",
+      "headings": [
+        "Project Management templates for every team",
+        "Roadmaps & Calendars",
+        "Issue Tracking",
+        "Planning & Goals",
+        "Ticketing",
+        "FAQs",
+        "Get started with Notion",
+        "Request a demo"
+      ],
+      "counts": {
+        "buttons": 10,
+        "links": 14,
+        "inputs": 5,
+        "forms": 2,
+        "dialogs": 2
+      },
+      "top_interactables": [
+        "clickable:a:Notion",
+        "clickable:a:Projects",
+        "clickable:a:Wikis",
+        "clickable:a:Templates",
+        "clickable:a:Pricing",
+        "clickable:a:Request a demo",
+        "clickable:a:Get Notion free",
+        "clickable:button:Is Notion good for project management?",
+        "clickable:button:What project management templates should I start with?",
+        "clickable:button:Can I manage Agile projects in Notion?",
+        "clickable:button:What does \"composable project management\" mean?",
+        "clickable:button:Does Notion support templates for different industries?",
+        "clickable:a:Knowledge Base"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "wikis.html",
+      "title": "Notion Wikis – The wiki that redefines 'wiki'",
+      "url": "file:///Users/timchef/UXBench/websites/notion/wikis.html",
+      "load_error": null,
+      "visible_text_excerpt": "Notion Projects Wikis Templates Pricing Request a demo Get Notion free WIKIS The wiki that redefines 'wiki'. It's hard to move fast if you've got a clunky and disorganized workspace. Centralize all your knowledge in Notion instead. Get Notion free Company home Brand guidelines IT Hub Employee onboarding The new default for knowledge and documentation OpenAI Figma Volvo Nvidia Find, edit, browse. We craft an experience you'll love. Every team's files, at a glance Notion's sidebar keeps your workspace organized no matter how fast you grow. Search that actually works Powerful filters let anyone find data and decisions across teams in seconds. Beautiful out of the box Pick the perfect emoji and cover image for every page to reflect your company's brand. Drag and drop organization Everyone can contribute to your knowledge base. No need to be tech-savvy just to update a page. Link to other pag",
+      "headings": [
+        "The wiki that redefines 'wiki'.",
+        "Find, edit, browse. We craft an experience you'll love.",
+        "Every team's files, at a glance",
+        "Search that actually works",
+        "Beautiful out of the box",
+        "Drag and drop organization",
+        "Link to other pages easily",
+        "Waste less time answering questions & updating docs.",
+        "Synced Blocks — Keep content updated, automatically.",
+        "Verification"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 14,
+        "inputs": 5,
+        "forms": 2,
+        "dialogs": 2
+      },
+      "top_interactables": [
+        "clickable:a:Notion",
+        "clickable:a:Projects",
+        "clickable:a:Wikis",
+        "clickable:a:Templates",
+        "clickable:a:Pricing",
+        "clickable:a:Request a demo",
+        "clickable:a:Get Notion free",
+        "clickable:a:Projects Manage any type of project, no matter the team or size.",
+        "clickable:a:Knowledge Base"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

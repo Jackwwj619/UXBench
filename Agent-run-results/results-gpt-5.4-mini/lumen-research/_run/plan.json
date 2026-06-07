@@ -1,0 +1,201 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the single-page Lumen Research research-thread interface, validating the main chat workflow, citation/source linking behavior, thread management actions, mode and sort controls, suggested prompts, and mobile usability issues.",
+    "summary": "The run should start with the active research thread on index.html and verify the primary chat experience end-to-end: reading the assistant answer, interacting with inline citations, and checking how the Sources rail responds. Then it should cover adjacent flows available on the page, including switching conversation threads, changing mode and sort settings, using follow-up prompts, attaching content, and trying share/export actions. Because this site is a single HTML page, coverage should focus on state changes, interaction quality, and mobile responsiveness rather than page navigation.",
+    "assumptions": [
+      "index.html is the only HTML page in the site, so exploration depth comes from states and controls rather than cross-page navigation.",
+      "The current thread shown in the prescan is the primary demo state and should be treated as the main happy path for validation.",
+      "The visible citation chips, source cards, and toolbar controls are functional and worth verifying for both desktop and mobile viewport behavior.",
+      "Share thread and Export as PDF may be mock or partial actions in this local demo, so the run should validate affordances and any resulting state changes without assuming external services."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Inline citation chips in the assistant answer: hover/click behavior should highlight and jump to matching source cards.",
+      "Sources rail cards and Sort dropdown: risk of incorrect source ordering, filtering, or broken source anchors.",
+      "Mode selector near the top of the conversation: likely important for answer style and may alter assistant output/state.",
+      "Left thread list and + New thread: risk of lost context, broken thread switching, or unreadable/untappable items on mobile.",
+      "Follow-up textarea and Ask button: risk of input labeling/accessibility issues and submit-state problems.",
+      "Attach button, Share thread, and Export as PDF: higher-risk utility actions that often fail or expose incomplete implementation.",
+      "Mobile tap targets in the left rail and top controls: prescan already flagged several items below 44px guidance."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Establish the primary thread flow",
+        "objective": "Validate the baseline research-thread experience from the current conversation state, including readability, answer structure, and source linkage expectations.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Read the current assistant answer and confirm the numbered inline citations are visible and correspond to the Sources rail.",
+          "Hover each visible citation chip in the answer and confirm the matching source card is highlighted or brought into view on the right.",
+          "Click at least one citation chip and confirm it jumps to the correct source entry without breaking the thread layout.",
+          "Inspect the assistant response for preserved rich text formatting such as numbered lists and emphasized phrases."
+        ],
+        "exit_criteria": [
+          "At least two citation chips have been tested with hover and click behavior.",
+          "The source rail visibly reacts to citation interaction.",
+          "The current thread content remains stable and readable after citation actions."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Exercise thread and conversation controls",
+        "objective": "Validate conversation-level actions and state changes around thread management and mode selection.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click + New thread and confirm whether a new blank thread is created, a confirmation appears, or the UI returns to a fresh state.",
+          "Switch among the visible mode options, especially Balanced, Quick scan, and Deep dive, and observe whether the answer style or available suggestions change.",
+          "Test the suggested prompt buttons under the composer, especially the one about directly comparing schedules and the one about negative results.",
+          "Use the textarea to enter a short follow-up and submit with Ask, checking whether the new message appears and whether the mode selector influences the response."
+        ],
+        "exit_criteria": [
+          "Thread creation behavior is understood and any state reset is observed.",
+          "At least two mode states are exercised.",
+          "At least one suggested prompt and one manual follow-up submission are tested."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Validate Sources rail sorting and filtering",
+        "objective": "Check whether the sources panel supports its visible controls and whether source cards remain coherent under different views.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Change the Sort dropdown from Relevance to Date and Cited in this answer, verifying whether the source list reorders as expected.",
+          "Use the All tab and any adjacent category tabs visible in the Sources rail to check filtering behavior.",
+          "Confirm that source titles, metadata, and relevance scores remain aligned after sorting/filtering.",
+          "Verify that clicking a source card or its citation anchor leads to a stable focus state rather than layout jumps or dead links."
+        ],
+        "exit_criteria": [
+          "Each visible sort option has been exercised at least once.",
+          "At least one source-filter/tab interaction has been tested.",
+          "Source list behavior remains consistent across changes."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Test share, export, and attach utilities",
+        "objective": "Validate the utility actions around collaboration and content import, focusing on visible outcomes and failure handling.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click Share thread and observe whether a share dialog, copy state, or browser-native response appears.",
+          "Click Export as PDF and verify whether a download, print flow, or mock export state is triggered.",
+          "Use the attach button to see whether file attachment or paste/import affordances open, even if no file is chosen.",
+          "Check whether these actions preserve the current thread state and do not disrupt the conversation or sources rail."
+        ],
+        "exit_criteria": [
+          "Share and export actions have been triggered and their visible outcomes recorded.",
+          "Attach control behavior is confirmed.",
+          "No destructive state loss occurs after utility actions."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Switch threads and inspect adjacent history items",
+        "objective": "Verify navigation between recent threads and the stability of the left rail history list, including mobile implications.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open at least one other thread from Today and one from the older history sections, if available.",
+          "Confirm that the active thread title and conversation content change appropriately after switching.",
+          "Return to the original deep work thread and verify that its source rail and citations still behave correctly.",
+          "Check whether long thread names truncate cleanly and remain recognizable."
+        ],
+        "exit_criteria": [
+          "At least two non-current threads have been opened and one return path has been verified.",
+          "Thread list truncation and active-state styling have been observed.",
+          "Original thread state is recoverable after switching."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Repeat critical checks on mobile viewport",
+        "objective": "Re-run the most important interactions on mobile and confirm touch usability, layout integrity, and the prescanned tap-target risks.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify that the three-column layout adapts without obscuring the conversation or sources.",
+          "Test the smallest, most important touch targets: + New thread, one left-rail thread item, mode selector, Ask button, and one citation chip.",
+          "Confirm whether the flagged small tap targets are still usable or whether they feel cramped on mobile.",
+          "Ensure the composer, source rail, and current answer remain readable without excessive horizontal scrolling."
+        ],
+        "exit_criteria": [
+          "Core interactions have been repeated in a mobile viewport.",
+          "At least one mobile usability issue or confirmation has been recorded for the flagged tap targets.",
+          "No critical content becomes inaccessible on mobile."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages; this site currently exposes only index.html, so coverage should focus on all interactive states within that single page.",
+      "features": "Exercise the main chat thread, citation hover/click behavior, thread switching, mode changes, sort/filter controls, suggested prompts, follow-up submission, attachment, share, and export controls.",
+      "mobile": "Repeat the highest-value checks on mobile viewport, prioritizing the left-rail thread items, mode selector, Ask button, and citation/source-link behavior."
+    },
+    "notes": [
+      "Prescan found no console or network errors, so prioritize interaction coverage and usability issues rather than debugging failures.",
+      "Accessibility attention should focus on the unlabeled select noted in the prescan and the small tap targets in the left rail and header."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Lumen Research — research assistant",
+      "url": "file:///Users/timchef/UXBench/websites/lumen-research/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Lumen + New thread TODAY Deep work scheduling literature EV battery recycling policy in Norway Trace prevalence of seal influenza H10N7 LAST 7 DAYS Comparative grad-school stipends in CS Microclimate effects of urban rooftop gardens Late-Holocene shoreline shifts, NW Europe Why does ringing happen in step responses EARLIER Survey: open-source funding models 2024 Caffeine half-life in slow metabolizers Building codes vs wildfire defensible space PA Priya Anand Researcher · Pro Deep work scheduling literature Share thread Export as PDF Mode: Balanced Mode: Quick scan Mode: Deep dive Mode: Compare arguments Hi — I'm planning a 6-week study on whether \"two 90-minute deep-work blocks before noon\" actually outperform afternoon-heavy schedules for software engineers. What does the existing literature say about this? L Short version: there's strong general support for protected morning blocks in",
+      "headings": [
+        "Deep work scheduling literature",
+        "Sources 8"
+      ],
+      "counts": {
+        "buttons": 14,
+        "links": 10,
+        "inputs": 4,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:+ New thread",
+        "clickable:a:Deep work scheduling literature",
+        "clickable:a:EV battery recycling policy in Norway",
+        "clickable:a:Trace prevalence of seal influenza H10N7",
+        "clickable:a:Comparative grad-school stipends in CS",
+        "clickable:a:Microclimate effects of urban rooftop gardens",
+        "clickable:a:Late-Holocene shoreline shifts, NW Europe",
+        "clickable:a:Why does ringing happen in step responses",
+        "clickable:a:Survey: open-source funding models 2024",
+        "clickable:a:Caffeine half-life in slow metabolizers",
+        "clickable:a:Building codes vs wildfire defensible space",
+        "clickable:button:Share thread",
+        "clickable:button:Export as PDF",
+        "selectable:select:Mode: Balanced Mode: Quick scan Mode: Deep dive Mode: Compare arguments",
+        "clickable:button:📎",
+        "typeable:textarea:Ask a follow-up, or paste a paper to summarize…"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

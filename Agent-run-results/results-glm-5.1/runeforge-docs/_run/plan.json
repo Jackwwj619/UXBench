@@ -1,0 +1,461 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the UX of the Runeforge documentation site, validating navigation, interactive controls, code components, and responsive behavior across all known pages.",
+    "summary": "The exploration will proceed through four phases: validating global controls and the landing page, testing the core documentation flows, interacting with the examples and API reference, and finally verifying responsive mobile behavior and accessibility. The run will focus on interactive elements like the search dialog, version selector, theme toggle, and code tab/copy components, while paying special attention to the small tap targets and missing input labels flagged in the prescan.",
+    "assumptions": [
+      "The site is a static documentation site with no backend; version switching and search will alter the DOM or UI state but won't fetch new pages.",
+      "The ⌘K search trigger opens a modal dialog as indicated by the dialog count in the DOM.",
+      "Code tabs (npm/pnpm/yarn/bun and framework adapters) and copy buttons are fully functional interactive JavaScript components.",
+      "Links pointing to '#' (e.g., Blog, Community, Subscriptions) are placeholder anchors and will not navigate to new content."
+    ],
+    "target_pages": [
+      "index.html",
+      "guide-quickstart.html",
+      "guide-stores.html",
+      "guide-actions.html",
+      "api-reference.html",
+      "examples.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets across the topbar (Docs, API, Examples, Blog, Community, Search, Theme toggle, GitHub stars) and left TOC, which will severely impact mobile UX.",
+      "Missing input label on the version selector dropdown and potentially the search input, affecting screen reader accessibility.",
+      "Code tab switching and copy-to-clipboard functionality, which are critical for developer experience and often fail on static sites without proper JS focus/state management.",
+      "Examples page filter input and category buttons, ensuring they correctly filter the 12 examples without layout shift."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global Controls & Landing Page",
+        "objective": "Validate the functionality of universal site controls and the main landing page interactions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open and close the ⌘K search dialog, verify input focus and overlay behavior",
+          "Interact with the version selector dropdown, check for accessibility (missing label) and visual feedback",
+          "Toggle the theme switcher (☾) and verify if the theme persists or applies correctly to code blocks",
+          "Click the code-tab variants (npm/pnpm/yarn/bun and Vanilla/React/Solid/Svelte/Vue) and verify content swaps",
+          "Test the copy button on code blocks and verify success feedback",
+          "Click placeholder links (Blog, Community) and verify they do not cause errors"
+        ],
+        "exit_criteria": [
+          "Search dialog has been opened and closed",
+          "Theme toggle has been clicked at least once",
+          "Version selector has been interacted with",
+          "All code tabs on index.html have been clicked and copy buttons tested"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Core Documentation Flow",
+        "objective": "Navigate through the primary getting-started and core-concepts guides, validating TOC navigation, pagers, and callouts.",
+        "target_pages": [
+          "guide-quickstart.html",
+          "guide-stores.html",
+          "guide-actions.html"
+        ],
+        "key_checks": [
+          "Navigate to Quickstart via left TOC, verify step-by-step layout and code blocks",
+          "Check info/success callout rendering and visibility on guide-quickstart.html",
+          "Navigate to Stores and Actions pages, verify right-side on-this-page TOC anchor links work",
+          "Test prev/next pager at the bottom of the pages",
+          "Verify immutability warning callout on guide-stores.html"
+        ],
+        "exit_criteria": [
+          "All three guide pages have been visited",
+          "Right-side TOC links have been clicked",
+          "Prev/next pagers have been used to navigate between at least two pages"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Examples & API Reference",
+        "objective": "Validate the interactive filtering on the Examples page and the complex layout/scrolling of the API reference.",
+        "target_pages": [
+          "examples.html",
+          "api-reference.html"
+        ],
+        "key_checks": [
+          "Type into the 'Filter 12 examples…' input on examples.html and verify list filters correctly",
+          "Click category buttons (All, Beginner, Intermediate, Advanced) and verify active state and filtering",
+          "Navigate to api-reference.html and verify the left-side API TOC links scroll to correct headings",
+          "Check rendering of API signatures and code blocks on api-reference.html"
+        ],
+        "exit_criteria": [
+          "Examples filter input and category buttons have been exercised",
+          "API reference page has been scrolled and TOC links clicked"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Viewport & Accessibility Validation",
+        "objective": "Re-test critical flows on a mobile viewport to validate responsive layout and assess tap target severity.",
+        "target_pages": [
+          "index.html",
+          "examples.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport and verify left TOC collapses into a hamburger menu or similar pattern",
+          "Attempt to tap topbar links (Docs, API, Examples) to evaluate small tap target risk",
+          "Test ⌘K search and version selector on mobile for usability",
+          "Verify examples page filter and buttons are usable on mobile",
+          "Check if code blocks horizontal scroll works correctly on mobile"
+        ],
+        "exit_criteria": [
+          "Mobile viewport has been activated",
+          "Primary navigation and search have been tested on mobile",
+          "Small tap target issue has been visually confirmed on mobile"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit 100% of known HTML pages (6/6)",
+      "features": "exercise all interactive controls: search, theme toggle, version select, code tabs, copy buttons, example filters, category buttons, TOC links, pagers",
+      "mobile": "validate navigation, search, code scrolling, and tap targets on mobile viewport for index and examples pages"
+    },
+    "notes": [
+      "Pay close attention to the version selector (ux-8) which is missing an ARIA label; verify if it announces correctly or is silent.",
+      "Many topbar links (ux-2 through ux-6) are well below the 44px mobile tap target guideline; capture evidence of this during the mobile phase.",
+      "Since Blog and Community links point to '#', ensure the exploration doesn't get stuck trying to validate them as full pages."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Runeforge — predictable state for JavaScript",
+      "url": "file:///Users/timchef/UXBench/websites/runeforge-docs/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Runeforge v3.4 Docs API Examples Blog Community Search docs ⌘K v3.4 (latest) v3.3 v3.2 v2 (legacy) ☾ ★ 18.4k GETTING STARTED Introduction Quickstart (5 min) Why Runeforge? Installation Migration from Redux CORE CONCEPTS Stores Actions & selectors Subscriptions Composition & slicing Async & effects Persistence Devtools FRAMEWORK ADAPTERS React Solid Svelte 5 Vue 3 Vanilla JS / web components PATTERNS Form state Optimistic updates Server data & cache Undo / redo Routing-aware state REFERENCE API reference Type definitions Errors Changelog Docs › Introduction Getting started Predictable state, one rune at a time. Runeforge is a 4 kB state-management library for JavaScript apps. It gives you a single API — forge() — that works the same in vanilla JS, React, Solid, Svelte, and Vue. There are no providers, no boilerplate, no proxies. Just stores, actions, and subscriptions. Brand new? The 5-mi",
+      "headings": [
+        "Predictable state, one rune at a time.",
+        "Install",
+        "Hello, store.",
+        "Three things to remember",
+        "Stores hold state",
+        "Actions describe changes",
+        "Selectors keep components tiny",
+        "Why another state library?",
+        "Next steps"
+      ],
+      "counts": {
+        "buttons": 13,
+        "links": 53,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Runeforge v3.4",
+        "clickable:a:Docs",
+        "clickable:a:API",
+        "clickable:a:Examples",
+        "clickable:a:Blog",
+        "clickable:a:Community",
+        "clickable:button:Search docs ⌘K",
+        "selectable:select:v3.4 (latest) v3.3 v3.2 v2 (legacy)",
+        "clickable:button:☾",
+        "clickable:a:★ 18.4k",
+        "clickable:a:Introduction",
+        "clickable:a:Quickstart (5 min)",
+        "clickable:a:Why Runeforge?",
+        "clickable:a:Installation",
+        "clickable:a:Migration from Redux",
+        "clickable:a:Stores"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "api-reference.html",
+      "title": "API reference — Runeforge",
+      "url": "file:///Users/timchef/UXBench/websites/runeforge-docs/api-reference.html",
+      "load_error": null,
+      "visible_text_excerpt": "Runeforge v3.4 Docs API Examples Blog Community Search docs ⌘K v3.4 (latest) v3.3 v3.2 v2 (legacy) ☾ ★ 18.4k REFERENCE Overview forge() derive() use() · middleware asyncSlice() listSlice() formSlice() devtools() REACT ADAPTER useStore() useSnapshot() <Provider /> (optional) ERRORS RF001 — RF019 OTHER Docs home Quickstart Examples Docs › API reference Reference · v3.4 API reference. Every public symbol in runeforge and @runeforge/react. Re-export-only modules (runeforge/devtools, runeforge/utils) are linked at the bottom. FUNCTION forge(definition, options?) Available since v1.0 · Updated in v3.0 (action signature) Creates a store from a definition object. The shape of definition.state and definition.actions is inferred — TypeScript users get full autocomplete and type-checking with no extra annotations. SIGNATURE function forge<S, A>( definition: { state: S; actions: A }, options?: { nam",
+      "headings": [
+        "API reference.",
+        "forge(definition, options?)",
+        "derive(inputs, fn)",
+        "use(middleware)",
+        "asyncSlice<T>(options?)",
+        "listSlice<T>()",
+        "formSlice<T>()",
+        "devtools(options?)",
+        "React adapter (@runeforge/react)",
+        "useStore(store, selector?, equality?)"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 38,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Runeforge v3.4",
+        "clickable:a:Docs",
+        "clickable:a:API",
+        "clickable:a:Examples",
+        "clickable:a:Blog",
+        "clickable:a:Community",
+        "clickable:button:Search docs ⌘K",
+        "selectable:select:v3.4 (latest) v3.3 v3.2 v2 (legacy)",
+        "clickable:button:☾",
+        "clickable:a:★ 18.4k",
+        "clickable:a:Overview",
+        "clickable:a:forge()",
+        "clickable:a:derive()",
+        "clickable:a:use() · middleware",
+        "clickable:a:asyncSlice()",
+        "clickable:a:listSlice()"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "examples.html",
+      "title": "Examples — Runeforge",
+      "url": "file:///Users/timchef/UXBench/websites/runeforge-docs/examples.html",
+      "load_error": null,
+      "visible_text_excerpt": "Runeforge v3.4 Docs API Examples Blog Community Search docs ⌘K v3.4 (latest) ☾ ★ 18.4k Docs › Examples Examples Apps you can fork. Self-contained example apps. Every one of them is under 500 lines and uses just the public API. Clone the repo, npm i, npm dev — that's the whole setup. All (12) Beginner Intermediate Advanced SSR beginner Counter (the canonical hello-world) The smallest possible Runeforge app. Single store, three actions, one component. React 34 LOC beginner Todo list with persistence Add / toggle / delete todos. State persists to localStorage with one option. React 88 LOC beginner Async fetcher with retry asyncSlice() pattern. Loads users with exponential-backoff retry on failure. Vue 3 110 LOC intermediate Multi-step form (typed) Uses formSlice() to manage values, errors, touched state, and submission. React 210 LOC intermediate Optimistic comments Show comments instantly,",
+      "headings": [
+        "Apps you can fork.",
+        "Counter (the canonical hello-world)",
+        "Todo list with persistence",
+        "Async fetcher with retry",
+        "Multi-step form (typed)",
+        "Optimistic comments",
+        "Realtime presence",
+        "Routing-aware state",
+        "Undo / redo with snapshots",
+        "Server-side rendered shop"
+      ],
+      "counts": {
+        "buttons": 7,
+        "links": 8,
+        "inputs": 3,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Runeforge v3.4",
+        "clickable:a:Docs",
+        "clickable:a:API",
+        "clickable:a:Examples",
+        "clickable:a:Blog",
+        "clickable:a:Community",
+        "clickable:button:Search docs ⌘K",
+        "selectable:select:v3.4 (latest)",
+        "clickable:button:☾",
+        "clickable:a:★ 18.4k",
+        "typeable:input:Filter 12 examples…",
+        "clickable:button:All (12)",
+        "clickable:button:Beginner",
+        "clickable:button:Intermediate",
+        "clickable:button:Advanced"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "guide-actions.html",
+      "title": "Actions & selectors — Runeforge",
+      "url": "file:///Users/timchef/UXBench/websites/runeforge-docs/guide-actions.html",
+      "load_error": null,
+      "visible_text_excerpt": "Runeforge v3.4 Docs API Examples Blog Community Search docs ⌘K v3.4 (latest) v3.3 v3.2 v2 (legacy) ☾ ★ 18.4k GETTING STARTED Introduction Quickstart (5 min) Why Runeforge? Installation Migration from Redux CORE CONCEPTS Stores Actions & selectors Subscriptions Composition & slicing Async & effects Persistence Devtools REFERENCE API reference Docs › Core concepts › Actions & selectors Core concept Actions & selectors. Actions describe how state changes. Selectors describe how state is read. Together they give you a one-way data flow without the ceremony of Redux. Actions An action is a function on a store. It receives the current state and any arguments you pass, and returns the next state — or a partial of it. const cart = forge({ state: { items: [] as Item[], coupon: null as string | null }, actions: { add: (s, item: Item) => ({ items: [...s.items, item] }), remove: (s, id: number) => (",
+      "headings": [
+        "Actions & selectors.",
+        "Actions",
+        "Rules of thumb",
+        "Selectors",
+        "Composing selectors",
+        "Reusable action creators",
+        "Action middleware"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 32,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Runeforge v3.4",
+        "clickable:a:Docs",
+        "clickable:a:API",
+        "clickable:a:Examples",
+        "clickable:a:Blog",
+        "clickable:a:Community",
+        "clickable:button:Search docs ⌘K",
+        "selectable:select:v3.4 (latest) v3.3 v3.2 v2 (legacy)",
+        "clickable:button:☾",
+        "clickable:a:★ 18.4k",
+        "clickable:a:Introduction",
+        "clickable:a:Quickstart (5 min)",
+        "clickable:a:Why Runeforge?",
+        "clickable:a:Installation",
+        "clickable:a:Migration from Redux",
+        "clickable:a:Stores"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "guide-quickstart.html",
+      "title": "Quickstart — Runeforge",
+      "url": "file:///Users/timchef/UXBench/websites/runeforge-docs/guide-quickstart.html",
+      "load_error": null,
+      "visible_text_excerpt": "Runeforge v3.4 Docs API Examples Blog Community Search docs ⌘K v3.4 (latest) v3.3 v3.2 v2 (legacy) ☾ ★ 18.4k GETTING STARTED Introduction Quickstart (5 min) Why Runeforge? Installation Migration from Redux CORE CONCEPTS Stores Actions & selectors Subscriptions Composition & slicing Async & effects Persistence Devtools FRAMEWORK ADAPTERS React Solid Svelte 5 Vue 3 Vanilla JS / web components REFERENCE API reference Type definitions Errors Changelog Docs › Getting started › Quickstart Quickstart · 5 minutes From zero to a working app. In the next five minutes you'll install Runeforge, build a counter, build a todo list, and wire up an async fetcher. By the end you'll have used 90% of the API. Prerequisites: Node 20+ (or Bun). The examples use React but everything maps 1:1 to Solid, Svelte, Vue, and vanilla JS. Step 1 · Install Create a fresh app with whatever template you like. Then instal",
+      "headings": [
+        "From zero to a working app.",
+        "Step 1 · Install",
+        "Step 2 · A counter store",
+        "Step 3 · A todo list (and a derived store)",
+        "Step 4 · Async (the easy way)",
+        "Step 5 · Devtools (optional, but you want this)",
+        "You're done."
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 42,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Runeforge v3.4",
+        "clickable:a:Docs",
+        "clickable:a:API",
+        "clickable:a:Examples",
+        "clickable:a:Blog",
+        "clickable:a:Community",
+        "clickable:button:Search docs ⌘K",
+        "selectable:select:v3.4 (latest) v3.3 v3.2 v2 (legacy)",
+        "clickable:button:☾",
+        "clickable:a:★ 18.4k",
+        "clickable:a:Introduction",
+        "clickable:a:Quickstart (5 min)",
+        "clickable:a:Why Runeforge?",
+        "clickable:a:Installation",
+        "clickable:a:Migration from Redux",
+        "clickable:a:Stores"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "guide-stores.html",
+      "title": "Stores — Runeforge",
+      "url": "file:///Users/timchef/UXBench/websites/runeforge-docs/guide-stores.html",
+      "load_error": null,
+      "visible_text_excerpt": "Runeforge v3.4 Docs API Examples Blog Community Search docs ⌘K v3.4 (latest) v3.3 v3.2 v2 (legacy) ☾ ★ 18.4k GETTING STARTED Introduction Quickstart (5 min) Why Runeforge? Installation Migration from Redux CORE CONCEPTS Stores Actions & selectors Subscriptions Composition & slicing Async & effects Persistence Devtools REFERENCE API reference Type definitions Errors Changelog Docs › Core concepts › Stores Core concept Stores. A store is the unit of state in Runeforge. It owns a single piece of state, exposes actions to update it, and notifies subscribers when it changes. Stores are framework-agnostic — they have no knowledge of React, Solid, or any UI library. Creating a store Use forge() to create one. The shape of the object you pass is the API of the store. import { forge } from \"runeforge\"; const session = forge({ state: { user: null as User | null, expiresAt: 0 }, actions: { login: (",
+      "headings": [
+        "Stores.",
+        "Creating a store",
+        "Reading and subscribing",
+        "Composing stores",
+        "Slicing a store",
+        "Server-side rendering & serialization",
+        "Testing stores"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 34,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:a:Runeforge v3.4",
+        "clickable:a:Docs",
+        "clickable:a:API",
+        "clickable:a:Examples",
+        "clickable:a:Blog",
+        "clickable:a:Community",
+        "clickable:button:Search docs ⌘K",
+        "selectable:select:v3.4 (latest) v3.3 v3.2 v2 (legacy)",
+        "clickable:button:☾",
+        "clickable:a:★ 18.4k",
+        "clickable:a:Introduction",
+        "clickable:a:Quickstart (5 min)",
+        "clickable:a:Why Runeforge?",
+        "clickable:a:Installation",
+        "clickable:a:Migration from Redux",
+        "clickable:a:Stores"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

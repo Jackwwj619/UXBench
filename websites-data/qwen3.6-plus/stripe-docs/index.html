@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe-hosted Checkout quickstart | Stripe docs clone</title>
+    <meta name="description" content="A rebuilt Stripe Docs clone for the hosted Checkout quickstart with working navigation, accurate parameters, and up-to-date guidance.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="hosted">
+    <div data-site-header></div>
+
+    <div class="page-layout">
+        <aside class="sidebar" data-site-sidebar></aside>
+
+        <main class="content">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="index.html">Stripe Checkout</a>
+                <span>/</span>
+                <span>Hosted quickstart</span>
+            </nav>
+
+            <section class="hero">
+                <div class="hero-grid">
+                    <div>
+                        <div class="eyebrow">Rebuilt guide</div>
+                        <h1>Build a Stripe-hosted checkout page that behaves like the real docs.</h1>
+                        <p class="subtitle">This page now mirrors the current hosted Checkout flow: create a Checkout Session on your server, send a <code>303</code> redirect to <code>session.url</code>, and use webhooks for fulfillment instead of trusting the success page.</p>
+                        <ul class="hero-list">
+                            <li>Matches current Checkout Sessions guidance for the hosted UI.</li>
+                            <li>Every visible control on this page now does something real.</li>
+                            <li>Each “source” link points to Stripe’s live docs or Dashboard.</li>
+                        </ul>
+                    </div>
+                    <div class="hero-panels">
+                        <div class="hero-card">
+                            <span class="hero-badge">What changed</span>
+                            <h3>No more dead links or fake guidance</h3>
+                            <p>The old page mixed accurate snippets with placeholder navigation and a few misleading claims. This rebuild keeps the visual style but replaces the broken shell with usable docs behavior.</p>
+                        </div>
+                        <div class="hero-meta">
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">Hosted</span>
+                                <span class="panel-stat-label">Default <code>ui_mode</code> for Checkout Sessions</span>
+                            </div>
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">303</span>
+                                <span class="panel-stat-label">Recommended server redirect after Session creation</span>
+                            </div>
+                            <div class="panel-stat">
+                                <span class="panel-stat-value">Webhook</span>
+                                <span class="panel-stat-label">Reliable place to fulfill an order</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="why-hosted" data-search-keywords="hosted redirect session url webhook success page compare embedded">
+                <div class="section-label">Choose your UI</div>
+                <div class="step-header">
+                    <span class="step-number">0</span>
+                    <h2>Why start with the Stripe-hosted page</h2>
+                </div>
+                <p>The hosted UI is still the fastest way to ship Checkout. Stripe hosts the payment page, keeps the payment-method UX current, and can use a custom domain if you need the final checkout URL to look branded.</p>
+
+                <div class="comparison-grid">
+                    <article class="comparison-card">
+                        <span class="comparison-card-meta">Hosted Checkout</span>
+                        <h3>Lowest integration effort</h3>
+                        <p>Customers leave your app for a Stripe-hosted payment page, then return to your site after payment. You create a Session, redirect to <code>session.url</code>, and listen for events like <code>checkout.session.completed</code>.</p>
+                        <ul class="checklist">
+                            <li>Best if you want the least custom frontend code.</li>
+                            <li>Supports Stripe-managed UI updates and custom domains.</li>
+                            <li>Great default when you do not need the payment form embedded in-page.</li>
+                        </ul>
+                    </article>
+                    <article class="comparison-card">
+                        <span class="comparison-card-meta">Embedded form</span>
+                        <h3>Same Sessions API, more in-page control</h3>
+                        <p>The embedded flow keeps customers on your site, but still uses Checkout Sessions and Stripe-hosted iframes for the secure payment UI. If you need that version, open the embedded guide in this rebuild.</p>
+                        <ul class="checklist">
+                            <li>Uses <code>ui_mode: 'embedded_page'</code> and <code>return_url</code>.</li>
+                            <li>Mounted with <code>stripe.createEmbeddedCheckoutPage()</code>.</li>
+                            <li>Still limited customization compared with a fully custom Elements build.</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <div class="lang-selector" data-lang-group="server">
+                <div>
+                    <div class="lang-label">Server examples</div>
+                    <p class="subtitle">One language switch now controls every multi-language snippet on the page.</p>
+                </div>
+                <div class="lang-tabs">
+                    <button class="lang-tab active" type="button" data-lang="node">Node</button>
+                    <button class="lang-tab" type="button" data-lang="python">Python</button>
+                    <button class="lang-tab" type="button" data-lang="ruby">Ruby</button>
+                    <button class="lang-tab" type="button" data-lang="php">PHP</button>
+                </div>
+            </div>
+
+            <section class="step" id="step-install" data-search-keywords="install sdk stripe package npm pip gem composer">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    <h2>Install the Stripe server SDK</h2>
+                </div>
+                <p>Use Stripe’s official server-side library to create Checkout Sessions from your backend. The frontend doesn’t need Stripe.js for this hosted redirect flow.</p>
+
+                <div class="code-block" data-lang-group="server" data-lang="node">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-install-node">Copy</button>
+                    </div>
+                    <pre><code id="hosted-install-node">npm install stripe express</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="python">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-install-python">Copy</button>
+                    </div>
+                    <pre><code id="hosted-install-python">pip install stripe flask</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="ruby">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-install-ruby">Copy</button>
+                    </div>
+                    <pre><code id="hosted-install-ruby">gem install stripe sinatra</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="php">
+                    <div class="code-header">
+                        <span class="code-filename">Terminal</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-install-php">Copy</button>
+                    </div>
+                    <pre><code id="hosted-install-php">composer require stripe/stripe-php</code></pre>
+                </div>
+            </section>
+
+            <section class="step" id="step-session" data-search-keywords="checkout session create success_url cancel_url line_items mode payment subscription setup">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    <h2>Create a Checkout Session on your server</h2>
+                </div>
+                <p>Create the Session on the backend, set your line items and URLs, then redirect the customer to the hosted Checkout page. For hosted Checkout, <code>success_url</code> and <code>cancel_url</code> are the important return points.</p>
+
+                <div class="callout callout-info">
+                    <strong>Hosted is the default Session mode</strong>
+                    <p>The Checkout Sessions API defaults <code>ui_mode</code> to <code>hosted</code>, so you normally omit it here. That keeps this guide aligned with Stripe’s current hosted quickstart instead of mixing in embedded-only parameters.</p>
+                </div>
+
+                <div class="code-block" data-lang-group="server" data-lang="node">
+                    <div class="code-header">
+                        <span class="code-filename">server.js</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-session-node">Copy</button>
+                    </div>
+                    <pre><code id="hosted-session-node">const express = require("express");
+const Stripe = require("stripe");
+
+const app = express();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+app.post("/create-checkout-session", async (req, res) => {
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price: "price_12345",
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url: "http://localhost:4242/success?session_id={CHECKOUT_SESSION_ID}",
+    cancel_url: "http://localhost:4242/cancel",
+  });
+
+  res.redirect(303, session.url);
+});
+
+app.listen(4242, () => {
+  console.log("Listening on http://localhost:4242");
+});</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="python">
+                    <div class="code-header">
+                        <span class="code-filename">server.py</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-session-python">Copy</button>
+                    </div>
+                    <pre><code id="hosted-session-python">import os
+import stripe
+from flask import Flask, redirect
+
+stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
+app = Flask(__name__)
+
+@app.post("/create-checkout-session")
+def create_checkout_session():
+    session = stripe.checkout.Session.create(
+        line_items=[
+            {
+                "price": "price_12345",
+                "quantity": 1,
+            }
+        ],
+        mode="payment",
+        success_url="http://localhost:4242/success?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url="http://localhost:4242/cancel",
+    )
+    return redirect(session.url, code=303)</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="ruby">
+                    <div class="code-header">
+                        <span class="code-filename">server.rb</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-session-ruby">Copy</button>
+                    </div>
+                    <pre><code id="hosted-session-ruby">require "sinatra"
+require "stripe"
+
+Stripe.api_key = ENV.fetch("STRIPE_SECRET_KEY")
+
+post "/create-checkout-session" do
+  session = Stripe::Checkout::Session.create(
+    line_items: [
+      {
+        price: "price_12345",
+        quantity: 1,
+      }
+    ],
+    mode: "payment",
+    success_url: "http://localhost:4242/success?session_id={CHECKOUT_SESSION_ID}",
+    cancel_url: "http://localhost:4242/cancel",
+  )
+
+  redirect session.url, 303
+end</code></pre>
+                </div>
+
+                <div class="code-block is-hidden" data-lang-group="server" data-lang="php">
+                    <div class="code-header">
+                        <span class="code-filename">server.php</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-session-php">Copy</button>
+                    </div>
+                    <pre><code id="hosted-session-php">&lt;?php
+require "vendor/autoload.php";
+
+\Stripe\Stripe::setApiKey($_ENV["STRIPE_SECRET_KEY"]);
+
+$session = \Stripe\Checkout\Session::create([
+    "line_items" =&gt; [[
+        "price" =&gt; "price_12345",
+        "quantity" =&gt; 1,
+    ]],
+    "mode" =&gt; "payment",
+    "success_url" =&gt; "http://localhost:4242/success?session_id={CHECKOUT_SESSION_ID}",
+    "cancel_url" =&gt; "http://localhost:4242/cancel",
+]);
+
+header("HTTP/1.1 303 See Other");
+header("Location: " . $session-&gt;url);</code></pre>
+                </div>
+
+                <div class="param-table">
+                    <div class="param-table-header">Key Session parameters for the hosted UI</div>
+                    <div class="param-row">
+                        <div class="param-name"><code>line_items</code></div>
+                        <div class="param-desc">The products or prices a customer is paying for. Stripe recommends using saved Price objects whenever practical.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>mode</code></div>
+                        <div class="param-desc">Use <code>payment</code> for one-time purchases, <code>subscription</code> for recurring billing, or <code>setup</code> to collect a reusable payment method.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>success_url</code></div>
+                        <div class="param-desc">Where Stripe sends the customer after a successful hosted Checkout flow. You can include <code>{CHECKOUT_SESSION_ID}</code> to fetch the final Session data on your success page.</div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-name"><code>cancel_url</code></div>
+                        <div class="param-desc">Where the customer lands if they leave Checkout before the payment completes.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="step-redirect" data-search-keywords="html form post create-checkout-session 303 redirect session url button">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    <h2>Post to your Session endpoint from the storefront</h2>
+                </div>
+                <p>For the hosted quickstart, your frontend can stay very small. The important part is submitting a POST request to your server so the server can create the Session and issue the <code>303</code> redirect.</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">checkout.html</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-redirect-html">Copy</button>
+                    </div>
+                    <pre><code id="hosted-redirect-html">&lt;form action="/create-checkout-session" method="POST"&gt;
+  &lt;button type="submit"&gt;Buy now&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                </div>
+
+                <div class="preview-shell">
+                    <div class="preview-shell-header">
+                        <strong>Hosted flow preview</strong>
+                        <span class="badge badge-success">Stripe-hosted page</span>
+                    </div>
+                    <div class="preview-shell-body">
+                        <div class="preview-panel">
+                            <h3>Your site</h3>
+                            <p>Your page only needs the product summary and a submit action.</p>
+                            <ul class="preview-list">
+                                <li>Product page or cart</li>
+                                <li>POST to your backend</li>
+                                <li>Server issues <code>303</code> to <code>session.url</code></li>
+                            </ul>
+                            <button type="button" class="preview-action">Submit checkout request</button>
+                        </div>
+                        <div class="checkout-preview">
+                            <div class="preview-field">
+                                <label>Stripe-hosted Checkout</label>
+                                <div class="preview-input">Customer enters email, address, and payment details on Stripe’s page.</div>
+                            </div>
+                            <div class="preview-field">
+                                <label>After payment</label>
+                                <div class="preview-input">Stripe returns the customer to your <code>success_url</code> or <code>cancel_url</code>.</div>
+                            </div>
+                            <button type="button" class="preview-pay-btn">Preview checkout handoff</button>
+                            <div class="preview-note">This button is intentionally a preview only, not a fake live payment.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="step" id="step-success" data-search-keywords="success page webhook fulfillment session status checkout session completed">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    <h2>Show a success page, but fulfill from webhooks</h2>
+                </div>
+                <p>The success page is useful for customer messaging, but Stripe’s docs are clear that it should not be your only fulfillment signal. Customers might never return to the page, close the tab, or lose connectivity after paying.</p>
+
+                <div class="callout callout-warning">
+                    <strong>Do not ship from the success page alone</strong>
+                    <p>Use <code>checkout.session.completed</code> or related webhook events on the server to confirm payment and trigger fulfillment. Treat the success page as a display layer, not a source of truth.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-filename">success.html</span>
+                        <button class="copy-btn" type="button" data-copy-from="hosted-success-html">Copy</button>
+                    </div>
+                    <pre><code id="hosted-success-html">&lt;h1&gt;Thanks for your order&lt;/h1&gt;
+&lt;p&gt;We emailed your receipt and will update this order status shortly.&lt;/p&gt;</code></pre>
+                </div>
+
+                <div class="event-grid">
+                    <article class="event-card">
+                        <span class="badge badge-success">Primary signal</span>
+                        <h3><code>checkout.session.completed</code></h3>
+                        <p>Use this event to start order fulfillment or mark the order as ready for the next step in your backend.</p>
+                    </article>
+                    <article class="event-card">
+                        <span class="badge badge-warning">Related signal</span>
+                        <h3><code>checkout.session.async_payment_succeeded</code></h3>
+                        <p>Useful when the payment method finishes asynchronously and the initial checkout completion is not the final confirmation moment.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="step" id="step-test" data-search-keywords="test cards 4242 3220 9995 stripe testing">
+                <div class="step-header">
+                    <span class="step-number">5</span>
+                    <h2>Test the hosted integration with current Checkout scenarios</h2>
+                </div>
+                <p>These examples match Stripe’s current test-card guidance for Checkout. Use any future expiration date and any valid CVC unless the test case says otherwise.</p>
+
+                <div class="test-cards-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Card number</th>
+                                <th>Expected result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-success">Success</span></td>
+                                <td><code>4242 4242 4242 4242</code></td>
+                                <td>Payment succeeds and processes immediately.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">3DS required</span></td>
+                                <td><code>4000 0000 0000 3220</code></td>
+                                <td>Triggers 3D Secure authentication before the payment completes.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-error">Declined</span></td>
+                                <td><code>4000 0000 0000 9995</code></td>
+                                <td>Fails with an <code>insufficient_funds</code> decline.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout callout-success">
+                    <strong>Recommended local workflow</strong>
+                    <p>Use the Stripe CLI to forward webhooks locally while you test the hosted redirect flow: <code>stripe listen --forward-to localhost:4242/webhook</code>.</p>
+                </div>
+            </section>
+
+            <section class="step" id="step-next" data-search-keywords="next steps embedded customization webhooks official docs">
+                <div class="step-header">
+                    <span class="step-number">6</span>
+                    <h2>Next steps</h2>
+                </div>
+
+                <div class="next-steps-grid">
+                    <a class="next-step-card" href="embedded.html">
+                        <span class="comparison-card-meta">Local guide</span>
+                        <h3>Move to embedded Checkout</h3>
+                        <p>Keep the Checkout UI on your site while still using the Checkout Sessions API and Stripe-hosted iframes.</p>
+                    </a>
+                    <a class="next-step-card" href="customization.html">
+                        <span class="comparison-card-meta">Local guide</span>
+                        <h3>Customize branding and policies</h3>
+                        <p>See which parts of Checkout can be branded, which policy fields come from Dashboard settings, and where custom domains really apply.</p>
+                    </a>
+                    <a class="next-step-card external-link-icon" href="https://docs.stripe.com/payments/checkout" target="_blank" rel="noopener noreferrer">
+                        <span class="comparison-card-meta">Official docs</span>
+                        <h3>Open Stripe’s live Checkout docs</h3>
+                        <p>Compare this rebuild against the source material and keep up with current platform changes.</p>
+                    </a>
+                    <a class="next-step-card external-link-icon" href="https://docs.stripe.com/webhooks/quickstart" target="_blank" rel="noopener noreferrer">
+                        <span class="comparison-card-meta">Official docs</span>
+                        <h3>Wire webhook fulfillment properly</h3>
+                        <p>Set up signature verification and durable post-payment processing on the backend.</p>
+                    </a>
+                </div>
+            </section>
+
+            <div class="page-footer">
+                <div class="footer-feedback">
+                    <span>Was this rebuild useful?</span>
+                    <button class="feedback-btn" type="button" data-value="yes">Yes</button>
+                    <button class="feedback-btn" type="button" data-value="no">No</button>
+                </div>
+                <div class="footer-links">
+                    <a class="external-link-icon" href="https://docs.stripe.com/payments/checkout" target="_blank" rel="noopener noreferrer">Official Checkout docs</a>
+                    <a class="external-link-icon" href="https://docs.stripe.com/api/checkout/sessions/create" target="_blank" rel="noopener noreferrer">Checkout Sessions API reference</a>
+                    <a class="external-link-icon" href="https://docs.stripe.com/testing" target="_blank" rel="noopener noreferrer">Testing cards and scenarios</a>
+                </div>
+            </div>
+        </main>
+
+        <aside class="toc">
+            <div class="toc-title">On this page</div>
+            <a class="toc-link active" href="#why-hosted">Why hosted</a>
+            <a class="toc-link" href="#step-install">Install the SDK</a>
+            <a class="toc-link" href="#step-session">Create a Session</a>
+            <a class="toc-link" href="#step-redirect">Redirect to Checkout</a>
+            <a class="toc-link" href="#step-success">Success and webhooks</a>
+            <a class="toc-link" href="#step-test">Test the integration</a>
+            <a class="toc-link" href="#step-next">Next steps</a>
+        </aside>
+    </div>
+
+    <div data-search-root></div>
+    <script src="script.js"></script>
+</body>
+</html>

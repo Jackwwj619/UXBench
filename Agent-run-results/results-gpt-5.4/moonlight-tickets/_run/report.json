@@ -1,0 +1,625 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/moonlight-tickets/index.html",
+  "site": {
+    "name": "moonlight-tickets",
+    "site_dir": "/Users/timchef/UXBench/websites/moonlight-tickets",
+    "start_page": "index.html",
+    "page_type": "checkout/booking",
+    "html_files": [
+      "checkout.html",
+      "confirmation.html",
+      "event.html",
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/moonlight-tickets/README.md",
+    "summary": "moonlight-tickets-clone Fictional independent live-music ticketing platform \"MoonlightTickets\". Dark after-dark theme. Pages | File | Purpose | | --- | --- | | `index.html` | Discovery page: \"Tonight\" 4 large cards + 4-axis filters (date / genre / venue / price) + \"This week\" 12-event grid of fictional shows | | `event.html` | Event detail: title, time, venue, doors; favorite / share; artist bio + 3 audio clips; 3 tier cards (Early Bird / Standard / VIP with stepper -/+, VIP shows a \"SELLING FAST\" badge); right-side sticky order summary with fee preview; venue GA sketch SVG; accessibility notes; 3 related events | | `checkout.html` | Top 10-minute reservation countdown (<1m red pulse); collapsible cart; one accordion attendee form per ticket (First / Last / Email / e-delivery toggle, VIP adds \"Name for signed poster\", non-first ticket includes Copy buyer info); 3 payment methods + card-number formatting; promo (DOORS5 / TONIGHT10); right-side detailed fee breakdown (subtotal + $3.50 service × n + $2 facility × n + 3% + $0.30 processing + promo discount); Cancel second-confirmation |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full moonlight-tickets system, prioritizing the primary checkout/booking flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "MoonlightTickets presents event details and fee transparency well, and the event-to-checkout handoff is generally clear. The biggest UX risk is at the end of the funnel: the purchase-complete state appears unreachable, and several navigation/filter controls behave in ways that feel inert or ambiguous. Coverage was desktop-only, but repeated layout warnings also suggest meaningful mobile tap-target problems across discovery, event, and checkout.",
+  "exploration_plan": {
+    "goal": "Explore the full MoonlightTickets booking journey end-to-end, starting from discovery on index.html through event selection, ticket configuration, checkout, cancellation/recovery, and confirmation, with added attention to pricing logic, ticket-dependent form behavior, and mobile usability.",
+    "summary": "The run should follow the real primary funnel: discover an event on index.html, open event.html, configure ticket quantities across tiers, continue into checkout.html, complete payment and promo interactions, and verify the resulting confirmation.html state. Adjacent exploration should cover discovery filters, related-event branching from the event page, cart collapse/expand, cancel flow with second confirmation, and ticket-type-specific attendee form behavior. Because this is a ticketing checkout site, deeper validation should focus on fee calculations, countdown and reservation messaging, quantity steppers, promo application, and mobile tap-target/compression risks already hinted at in the prescan.",
+    "assumptions": [
+      "The primary conversion path is index.html -> event.html -> checkout.html -> confirmation.html.",
+      "event.html content may vary by query parameter, but the same page template is reused for multiple events.",
+      "checkout.html likely changes attendee form structure based on selected ticket count and whether VIP tickets are included.",
+      "Top-nav items with href '#' are likely non-navigating placeholders and should be checked for behavior but not treated as distinct pages.",
+      "The site is a static demo with local file URLs, so validation should emphasize visible UX behavior over backend persistence."
+    ],
+    "target_pages": [
+      "index.html",
+      "event.html",
+      "checkout.html",
+      "confirmation.html"
+    ],
+    "risk_hotspots": [
+      "index.html filters (DATE / GENRE / VENUE / PRICE) may not clearly affect both the 'Tonight' cards and 'This week' grid",
+      "index.html small top-nav tap targets on mobile",
+      "event.html quantity steppers across Early Bird / Standard / VIP, especially boundary states and order summary sync",
+      "event.html VIP 'SELLING FAST' badge and low-inventory messaging clarity",
+      "event.html sticky order summary behavior during scroll and after quantity changes",
+      "event.html favorite and share icon buttons due to tiny tap targets and ambiguous feedback",
+      "event.html related-event links as a branch away from the current selection",
+      "checkout.html 10-minute reservation countdown, especially red pulse state under 1 minute if observable",
+      "checkout.html collapsible cart visibility and editability during form completion",
+      "checkout.html accordion attendee forms generated per ticket, especially multi-ticket usability",
+      "checkout.html VIP-only field 'Name for signed poster' appearing only when VIP is in cart",
+      "checkout.html 'Copy buyer info' on non-first ticket and whether it duplicates correctly",
+      "checkout.html e-delivery toggle clarity and state persistence",
+      "checkout.html payment-method switching and card-number formatting",
+      "checkout.html promo codes DOORS5 and TONIGHT10, including discount application and recalculated fee breakdown",
+      "checkout.html fee math: subtotal + $3.50 service x n + $2 facility x n + 3% + $0.30 processing + promo discount",
+      "checkout.html cancel flow second confirmation and safe recovery back to checkout",
+      "confirmation.html presence and coherence of final booked-state messaging after purchase"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Discovery and filter behavior",
+        "objective": "Validate that the homepage supports event discovery clearly and that visible filters and listing links behave predictably.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Review the default state of the 'Tonight' hero cards and the 'This week' event grid.",
+          "Exercise each visible filter at least once: DATE, GENRE, VENUE, PRICE.",
+          "Check whether filter changes visibly alter listings and whether combinations produce sensible narrowing.",
+          "Open at least two event links from different sections ('Tonight' and 'This week') to confirm navigation into event.html.",
+          "Probe top navigation items with href '#' to confirm whether they scroll, do nothing, or create confusing dead interactions.",
+          "On mobile viewport, verify whether header links and filter controls remain tappable and readable."
+        ],
+        "exit_criteria": [
+          "Observed whether filters meaningfully change listing content or state.",
+          "Confirmed navigation from homepage cards into event detail.",
+          "Captured evidence on homepage mobile usability, especially small tap targets and filter layout."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Event detail and ticket selection",
+        "objective": "Validate the event-detail template, ticket-tier interactions, and the handoff into checkout.",
+        "target_pages": [
+          "event.html"
+        ],
+        "key_checks": [
+          "Inspect event metadata, bio, audio clip controls, venue/GA sketch, accessibility notes, and related events for scanability and hierarchy.",
+          "Test favorite and share buttons for visible feedback and usability.",
+          "Use quantity steppers on Early Bird, Standard, and VIP to confirm increment/decrement behavior, zero state, and inventory messaging.",
+          "Include at least one run with mixed ticket types and one run with VIP selected to trigger ticket-dependent checkout behavior.",
+          "Verify that the sticky order summary updates immediately with ticket quantities and pricing preview.",
+          "Check whether 'Continue to checkout' is disabled or enabled appropriately before and after selecting tickets.",
+          "Open at least one related-event link to confirm branching works, then return to the main path."
+        ],
+        "exit_criteria": [
+          "Confirmed order summary sync with ticket selections.",
+          "Observed at least one VIP-inclusive basket and one non-zero basket.",
+          "Successfully transitioned from event detail into checkout."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Checkout form, fees, and promos",
+        "objective": "Exercise the core purchase flow in checkout, with emphasis on attendee forms, payment UX, and pricing correctness.",
+        "target_pages": [
+          "checkout.html"
+        ],
+        "key_checks": [
+          "Inspect reservation countdown visibility and urgency messaging.",
+          "Expand and collapse the cart to confirm the cart remains understandable and editable.",
+          "Verify one attendee accordion exists per ticket in the basket.",
+          "Fill attendee fields for at least two tickets and test 'Copy buyer info' on a non-first ticket if present.",
+          "Confirm VIP-only field 'Name for signed poster' appears only for VIP attendees.",
+          "Toggle e-delivery and observe whether label/state is understandable.",
+          "Switch across the three payment methods and verify any visible state changes.",
+          "Enter card details to validate card-number formatting behavior.",
+          "Apply promo code DOORS5 and separately TONIGHT10, confirming discount feedback and recalculated totals.",
+          "Cross-check visible fee breakdown against expected structure: subtotal + service fee per ticket + facility fee per ticket + percentage + fixed processing - promo discount.",
+          "Attempt form submission with incomplete required fields at least once to observe validation quality, then complete the form successfully."
+        ],
+        "exit_criteria": [
+          "Observed attendee-form behavior for multi-ticket checkout.",
+          "Validated at least one promo application path and fee recalculation.",
+          "Reached a state where checkout can be successfully submitted."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Cancellation, recovery, and completion",
+        "objective": "Validate non-happy-path controls around abandoning or completing checkout, and verify the final confirmation state.",
+        "target_pages": [
+          "checkout.html",
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Trigger the cancel action and inspect the second-confirmation step for clarity and reversibility.",
+          "Choose the safe recovery option to ensure users can back out of cancellation without losing progress unexpectedly.",
+          "Then complete the booking path and land on confirmation.html.",
+          "Verify confirmation content reflects a completed purchase coherently and does not leave residual countdown or checkout-state confusion.",
+          "Use browser back/navigation behavior once after confirmation to see whether the flow becomes confusing or stale."
+        ],
+        "exit_criteria": [
+          "Confirmed both cancel-warning behavior and successful recovery.",
+          "Reached confirmation.html through the intended purchase path.",
+          "Captured whether post-purchase messaging clearly concludes the journey."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile regression on critical path",
+        "objective": "Repeat the most important conversion steps on mobile to catch touch, layout, and sticky-panel issues.",
+        "target_pages": [
+          "index.html",
+          "event.html",
+          "checkout.html",
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Repeat homepage event selection and at least one filter interaction on mobile.",
+          "On event.html mobile, test quantity steppers, favorite/share buttons, and the visibility/placement of the order summary.",
+          "On checkout.html mobile, verify countdown readability, accordion usability, form field spacing, payment-method switching, promo entry, and submit/cancel controls.",
+          "Confirm that small tap target concerns seen in prescan are materially impactful on mobile navigation or icon/button use.",
+          "Complete or revisit confirmation.html on mobile to ensure final-state readability without clipped content."
+        ],
+        "exit_criteria": [
+          "Critical booking path has been exercised on mobile from discovery through checkout or confirmation.",
+          "Documented concrete mobile-specific issues rather than only desktop findings."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 known HTML pages, with repeated passes on event.html and checkout.html for both happy-path and alternate states.",
+      "features": "Exercise most visible controls on key pages: all 4 homepage filters, multiple event links, ticket steppers for all 3 tiers, favorite/share, related events, cart collapse, attendee accordions, copy-buyer-info, e-delivery toggle, all 3 payment methods, card formatting, both promo codes, cancel confirmation, and final confirmation state.",
+      "mobile": "Repeat the full critical path and the highest-risk interactions on a mobile viewport, prioritizing top-nav taps, filters, icon buttons, steppers, sticky summary behavior, accordion forms, payment controls, and submit/cancel actions."
+    },
+    "notes": [
+      "Prioritize evidence-rich flows over opening every event variant; multiple event links should be sampled mainly to confirm template consistency and navigation.",
+      "Use a mixed-ticket basket if possible so checkout exposes more attendee states in one run.",
+      "If countdown cannot realistically be observed below one minute, note the limitation rather than waiting excessively."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "goal completion",
+      "user_goal": "Finish buying tickets and get clear confirmation that the order succeeded.",
+      "problem": "The flow appears to lack a usable confirmation page, so users may never receive a clear purchase-complete state, receipt context, or next steps.",
+      "evidence": "Multiple probes of `confirmation.html` redirected to `index.html` instead of a success screen: in recent step 80, opening confirmation.html from checkout changed the URL to `index.html`, and the visible text was the homepage ('Tonight in your city', event cards, filters) with no success or receipt messaging. Earlier chunks repeat the same behavior and coverage still lists `confirmation.html` as unvisited.",
+      "why_it_matters": "At the end of a ticket purchase, users need explicit reassurance that payment worked, what they bought, and what happens next. Redirecting to normal browse content creates uncertainty, duplicate-purchase risk, and loss of trust.",
+      "suggestion": "Provide a distinct confirmation page/state with success messaging, order summary, event details, ticket delivery info, and next actions like download, add to calendar, or contact support. Avoid dropping users back into generic discovery without acknowledgment.",
+      "source_hint": "confirmation.html / index.html; screenshot agentic-80-open_page-desktop.png"
+    },
+    {
+      "severity": "high",
+      "ux_area": "clarity",
+      "user_goal": "Filter events by genre, venue, date, or price and understand what changed.",
+      "problem": "Homepage filters give weak or confusing feedback; selections do not visibly narrow results or explain why the listings still look mixed.",
+      "evidence": "Session notes show the Genre select reported choosing 'Indie rock' when 'Electronic' was intended, and the page still showed mixed genres afterward. Venue selection similarly reported 'The Foundry' instead of Velvet Pier with no obvious page change. Date and Price filters also produced 'No obvious URL or visible-text change' while the listings remained broad.",
+      "why_it_matters": "When users try to narrow a crowded event list, they need immediate confidence that the system understood their choice. Ambiguous filters increase cognitive load and make discovery feel broken or untrustworthy.",
+      "suggestion": "Make filter state and results relationship obvious: visibly update the list, show an active-chip summary, indicate result counts, and provide empty/loading states or explanatory text when no visible cards change.",
+      "source_hint": "index.html filter row (DATE / GENRE / VENUE / PRICE)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Use header navigation and legal links to move around or learn more before purchasing.",
+      "problem": "Several links behave like dead placeholders, which makes navigation feel unreliable and lowers trust.",
+      "evidence": "Clicking 'Calendar' changed the URL only to `index.html#` with no visible content change. The checkout 'terms' link also changed only from `checkout.html` to `checkout.html#` with no modal, content, or navigation. Final observation shows several top-nav links still point to `#` (Tonight, This Week, Calendar, Venues, Artists, Sell tickets, Sign in).",
+      "why_it_matters": "Users interpret links as promises. When important navigation or policy links do nothing, the interface feels unfinished and people may hesitate to proceed with payment.",
+      "suggestion": "Either connect these links to real destinations/sections or remove/de-emphasize them until available. For legal links specifically, surface actual terms content in a modal or separate page before the final purchase step.",
+      "source_hint": "index.html header nav; checkout.html 'terms' link"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Understand why checkout cannot continue when no tickets are selected.",
+      "problem": "The empty-cart state is technically blocked, but the primary CTA remains prominently visible while disabled and provides no direct interaction feedback.",
+      "evidence": "In recent step 77, clicking 'Continue to checkout' failed because the button was disabled. Reflection notes that the order panel said 'Pick a tier on the left to start,' but the CTA stayed prominent with no click response. The disabled button remained visible on the event page.",
+      "why_it_matters": "A visible but inert primary action can feel broken, especially if users do not immediately notice the helper copy. This creates friction at a key moment in the purchase flow.",
+      "suggestion": "Pair the disabled state with stronger inline explanation near the button, such as 'Select at least 1 ticket to continue,' and visually distinguish the disabled CTA more clearly from its enabled state.",
+      "source_hint": "event.html sticky order summary / checkout CTA; screenshot agentic-77-click-desktop.png"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Move around the site without accidentally abandoning an in-progress checkout.",
+      "problem": "Clicking the MoonlightTickets logo from checkout immediately exits to the homepage with no warning or preservation cue, creating accidental abandonment risk.",
+      "evidence": "Chunk steps 73-78 notes that clicking the checkout logo immediately navigated from `checkout.html` to `index.html` with no confirmation or state-preservation cue. The user lands on the homepage, but checkout continuity is lost.",
+      "why_it_matters": "Brand logos are common navigation targets and easy to click accidentally. In a timed reservation flow, a hard exit without warning can create stress, lost progress, or fear that the reservation/cart was lost.",
+      "suggestion": "Warn users before leaving checkout, preserve cart/reservation state on return, or make the logo less of a destructive escape during payment by pairing it with a subtle 'Leave checkout' confirmation.",
+      "source_hint": "checkout.html header logo"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "Choose a payment method and understand what information is required.",
+      "problem": "Wallet-like payment options are visually selectable, but the full card-entry form remains visible with no explanation, making the payment model unclear.",
+      "evidence": "After selecting 'Google-Pay-like,' the option was highlighted, but the full card form still remained visible: Cardholder name, Card number, Expiry, CVC, and Zip. The notes explicitly call out the lack of explanatory text about why direct card fields are still required.",
+      "why_it_matters": "Users expect wallet payments to reduce effort. If the interface still asks for full card details, they may think the selection failed or that the payment methods are fake/unfinished.",
+      "suggestion": "Either switch the form to the correct wallet-specific flow or explain why card details are still needed. If these are demo options, label them clearly so expectations are set before selection.",
+      "source_hint": "checkout.html payment method section"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "trust",
+      "user_goal": "Review the order and feel confident about what ticket is being purchased.",
+      "problem": "Checkout can lose event-specific context and show only generic ticket labels, reducing confidence that the cart still matches the chosen event.",
+      "evidence": "Chunk steps 43-48 notes a pricing/context issue on checkout: the basket came from 'Telegraph Bay Early Bird,' but visible checkout text showed only generic '1 × Early Bird' plus an applied promo, without reinforcing the event name.",
+      "why_it_matters": "Ticket purchases are time- and event-specific. If the checkout summary does not clearly restate the event, venue, and date, users may hesitate or fear they are buying the wrong ticket.",
+      "suggestion": "Persist event name, venue, and show date/time prominently in checkout and the cart summary, not just the ticket tier label.",
+      "source_hint": "checkout.html cart/order summary"
+    },
+    {
+      "severity": "low",
+      "ux_area": "accessibility",
+      "user_goal": "Use controls comfortably, especially on touch devices or with limited dexterity.",
+      "problem": "Many interactive targets are undersized, including critical controls in discovery, event selection, and checkout.",
+      "evidence": "Repeated layout warnings flagged sub-44px targets: event steppers at 32x32, favorite/share at 38x38, header links around 20px high, payment radios at 13x13, 'Cancel order' around 79x31, 'terms' 32x15, and promo 'Apply' 73x38. These warnings appear across multiple chunks and in the final observation.",
+      "why_it_matters": "Small tap targets increase mis-taps, slow down form completion, and make important actions harder for mobile users and users with motor impairments.",
+      "suggestion": "Increase hit areas for navigation, quantity steppers, radios, links, and small action buttons to meet common 44px touch guidance, while preserving the visual style.",
+      "source_hint": "index.html header, event.html ticket controls, checkout.html payment/actions"
+    }
+  ],
+  "coverage": {
+    "status": "partial",
+    "confidence": "low",
+    "page_coverage_percent": 75,
+    "feature_coverage_percent": 61,
+    "action_success_rate_percent": 92,
+    "unchanged_action_percent": 11,
+    "known_pages": [
+      "checkout.html",
+      "confirmation.html",
+      "event.html",
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "event.html",
+      "checkout.html"
+    ],
+    "unvisited_pages": [
+      "confirmation.html"
+    ],
+    "observed_viewports": [
+      "desktop"
+    ],
+    "viewport_steps": {
+      "desktop": 80
+    },
+    "action_counts": {
+      "check": 1,
+      "click": 46,
+      "open_page": 16,
+      "select_option": 5,
+      "type_text": 12
+    },
+    "total_actions": 80,
+    "successful_actions": 74,
+    "failed_actions": 6,
+    "unchanged_actions": 9,
+    "observed_feature_count": 69,
+    "exercised_feature_count": 42,
+    "unexplored_features": [
+      {
+        "signature": "checkout.html|clickable|button|||place order · $19.34|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $19.34"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $24.34|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $24.34"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $25.52|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $25.52"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $26.55|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $26.55"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $28.39|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $28.39"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $31.70|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $31.70"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $35.82|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $35.82"
+      },
+      {
+        "signature": "checkout.html|clickable|button|||place order · $59.36|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Place order · $59.36"
+      },
+      {
+        "signature": "checkout.html|typeable|input|||name for signed poster|",
+        "page": "checkout.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Name for signed poster"
+      },
+      {
+        "signature": "event.html|clickable|a|||halcyon dial velvet pier · tonight · 11:00 pm|event.html?e=e3",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Halcyon Dial Velvet Pier · Tonight · 11:00 PM"
+      },
+      {
+        "signature": "event.html|clickable|a|||northern brushfires halo room · tonight · 10:00 pm|event.html?e=e2",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Northern Brushfires Halo Room · Tonight · 10:00 PM"
+      },
+      {
+        "signature": "event.html|clickable|a|||telegraph bay coppergate hall · tonight · 8:30 pm|event.html?e=e4",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Telegraph Bay Coppergate Hall · Tonight · 8:30 PM"
+      },
+      {
+        "signature": "event.html|clickable|a|||→|#",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "→"
+      },
+      {
+        "signature": "event.html|clickable|button|||♡|",
+        "page": "event.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "♡"
+      },
+      {
+        "signature": "index.html|clickable|a|||artists|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Artists"
+      },
+      {
+        "signature": "index.html|clickable|a|||experimental foxglove bio (live a/v) the foundry · sat · may 17 from $28|event.html?e=e11",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Experimental Foxglove Bio (live A/V) The Foundry · Sat · May 17 from $28"
+      },
+      {
+        "signature": "index.html|clickable|a|||folk marisol & the verses the foundry · tue · may 13 from $22|event.html?e=e5",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Folk Marisol & the Verses The Foundry · Tue · May 13 from $22"
+      },
+      {
+        "signature": "index.html|clickable|a|||folk quanta gospel choir the foundry · tue · may 20 from $24|event.html?e=e14",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Folk Quanta Gospel Choir The Foundry · Tue · May 20 from $24"
+      },
+      {
+        "signature": "index.html|clickable|a|||hip-hop bracken six coppergate hall · sun · may 18 from $26|event.html?e=e12",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Hip-hop Bracken Six Coppergate Hall · Sun · May 18 from $26"
+      },
+      {
+        "signature": "index.html|clickable|a|||indie rock northbank confederation halo room · mon · may 19 from $20|event.html?e=e13",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Indie rock Northbank Confederation Halo Room · Mon · May 19 from $20"
+      },
+      {
+        "signature": "index.html|clickable|a|||jazz tide engine trio halo room · sat · may 17 from $38|event.html?e=e10",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Jazz Tide Engine Trio Halo Room · Sat · May 17 from $38"
+      },
+      {
+        "signature": "index.html|clickable|a|||moonlighttickets|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "MoonlightTickets"
+      },
+      {
+        "signature": "index.html|clickable|a|||sell tickets|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sell tickets"
+      },
+      {
+        "signature": "index.html|clickable|a|||sign in|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sign in"
+      },
+      {
+        "signature": "index.html|clickable|a|||this week|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "This Week"
+      },
+      {
+        "signature": "index.html|clickable|a|||tonight|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Tonight"
+      },
+      {
+        "signature": "index.html|clickable|a|||venues|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Venues"
+      }
+    ],
+    "gaps": [
+      "Only visited 3 of 4 HTML page(s); unvisited: confirmation.html.",
+      "Mobile viewport was under-exercised: 0/16 required mobile actions.",
+      "Only directly exercised 61% of visible interactive feature signatures.",
+      "6 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-03-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-04-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-11-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-12-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-17-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-22-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-23-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-24-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-29-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-33-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-34-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-38-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-40-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-42-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-45-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-47-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-49-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-50-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-51-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-52-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-53-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-54-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-55-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-56-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-57-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-58-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-59-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-62-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-64-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-65-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-66-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-67-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-68-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-69-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-70-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-71-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-72-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-73-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-74-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-75-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-76-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-77-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-78-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-79-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run/screenshots/agentic-80-open_page-desktop.png"
+  ],
+  "trace_entries": 80,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4/moonlight-tickets/_run",
+  "claude_fix": null
+}

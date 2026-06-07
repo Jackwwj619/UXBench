@@ -1,0 +1,153 @@
+{
+  "plan": {
+    "goal": "Evaluate the UX of the Forge Coder agentic IDE, focusing on the three-pane workflow (File Tree, Agent Chat, Diff Preview), interaction states, and mobile responsiveness.",
+    "summary": "The run will validate the primary 'Agent Run' flow by interacting with the file tree to trigger diff updates, simulating agent control via chat inputs and interrupt buttons, and verifying layout stability. It will then stress-test the UI controls for accessibility and touch targets, specifically addressing the prescan warnings regarding small tap areas. Finally, it will repeat critical path checks on a mobile viewport to assess the viability of the complex three-column layout on smaller screens.",
+    "assumptions": [
+      "The application is a Single Page Application (SPA) where navigation tabs (Agent, Inbox, Runs) update the DOM dynamically rather than loading new HTML files.",
+      "Clicking files in the left pane updates the right-hand diff preview without a full page reload.",
+      "The 'Send' button and textarea allow for simulated user input to test the chat interface state."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Top Navigation Bar: High density of small tap targets (<44px) identified in prescan.",
+      "Three-Pane Layout: Potential horizontal scrolling or content clipping on mobile viewports.",
+      "Diff View: Readability of code changes and toggle functionality (Unified/Split).",
+      "Action Buttons: 'Interrupt' and 'Rerun' placement relative to active chat context."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Primary Workflow & Pane Interaction",
+        "objective": "Validate the core loop: selecting files triggers correct diffs, and the agent chat displays history correctly.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click multiple files in the left tree (e.g., 'stream.ts', 'chunker.ts') and verify the right pane updates with corresponding code/diffs.",
+          "Verify folder collapse/expand functionality in the file tree.",
+          "Check visual feedback (hover/active states) on the 'Unified' vs 'Split' diff toggles.",
+          "Scroll the central agent chat to ensure smooth rendering of long conversation histories."
+        ],
+        "exit_criteria": [
+          "All visible files in the tree have been clicked and rendered in the diff pane.",
+          "Diff view toggles switch the display mode without layout breakage."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Agent Control & Input Simulation",
+        "objective": "Test the interactive elements controlling the agent's execution state.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Type a dummy message into the bottom textarea to check focus states and auto-resize behavior.",
+          "Click 'Send' to observe any immediate UI feedback (even if no backend exists).",
+          "Toggle the 'Auto-apply edits' checkbox and verify its state persistence visually.",
+          "Hover over 'Interrupt' and 'Rerun' buttons to check for tooltips or danger-state styling."
+        ],
+        "exit_criteria": [
+          "Input field accepts text and clears/resets appropriately after 'Send'.",
+          "Control buttons provide clear affordance for their destructive/restart nature."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Navigation & Secondary Views",
+        "objective": "Explore adjacent flows accessible via the top navigation bar.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Inbox', 'Runs', and 'Settings' tabs to verify view switching.",
+          "Check if the 'Connect a repo' and 'Open in VS Code' buttons trigger modals or external links.",
+          "Verify that the active tab is clearly highlighted in the navigation bar."
+        ],
+        "exit_criteria": [
+          "All top-level navigation items have been activated.",
+          "No JavaScript errors occur during view transitions."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Accessibility",
+        "objective": "Assess usability on mobile viewports, specifically targeting the prescan's 'small tap target' warnings.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE or Pixel 5).",
+          "Attempt to tap the 'Agent', 'Inbox', and 'Settings' nav items; note overlap or miss-taps.",
+          "Check if the three-pane layout collapses into a stack, tabs, or drawer menu.",
+          "Verify if the code diff remains readable or requires excessive horizontal scrolling.",
+          "Test the 'Send' button and file tree interactions for touch friendliness."
+        ],
+        "exit_criteria": [
+          "Critical navigation and input controls are usable despite small target sizes.",
+          "Layout adaptation strategy (stacking/hiding panes) is identified and evaluated."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of known HTML files (index.html)",
+      "features": "Exercise all visible buttons, toggles, and the file tree interaction model",
+      "mobile": "Full regression of Phase 1 and 2 on mobile viewport"
+    },
+    "notes": [
+      "Since this is a local fixture, do not expect real backend responses; focus on UI state changes and feedback loops.",
+      "Pay special attention to the 'Unified/Split' toggle as it significantly alters the right-hand pane layout.",
+      "The prescan indicates many elements fail the 44px mobile touch target guideline; document specific instances where this causes usability friction."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Forge Coder — agentic coding",
+      "url": "file:///Users/timchef/UXBench/websites/forge-coder/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Forge / atlas-cli ⌥ feat/streaming-uploads Agent Inbox Runs Settings Connect a repo Open in VS Code RT ATLAS-CLI ⌕ + src upload › stream.ts M › chunker.ts M › retry.ts › index.ts + commands core main.ts test upload.spec.ts M retry.spec.ts auth.spec.ts docs package.json tsconfig.json README.md Modified 3 Added 1 Lines changed +128 / -54 Run #243 · agent is working · 4m 12s elapsed ⏸ Interrupt ↻ Rerun Streaming multipart uploads keep failing on slow connections. Resumes after a network drop just re-upload the whole file. Implement chunked resumable uploads (5 MiB chunks), persist progress to .forge/state.json, and write tests. Don't touch the auth flow. FC I scoped the work to src/upload/ and skimmed the existing stream module. Plan: Split stream.ts: extract a new chunker.ts for chunk-boundary logic (pure functions, easy to test). Add a ChunkedUpload class in index.ts that consults .forge/",
+      "headings": [],
+      "counts": {
+        "buttons": 11,
+        "links": 4,
+        "inputs": 2,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Agent",
+        "clickable:a:Inbox",
+        "clickable:a:Runs",
+        "clickable:a:Settings",
+        "clickable:button:Connect a repo",
+        "clickable:button:Open in VS Code",
+        "clickable:button:⌕",
+        "clickable:button:+",
+        "clickable:button:⏸ Interrupt",
+        "clickable:button:↻ Rerun",
+        "typeable:textarea:Reply, ask for a change, or request another pass…",
+        "clickable:input:Auto-apply edits",
+        "clickable:button:Send",
+        "clickable:button:Open editor",
+        "clickable:button:Accept all changes",
+        "clickable:button:Unified"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

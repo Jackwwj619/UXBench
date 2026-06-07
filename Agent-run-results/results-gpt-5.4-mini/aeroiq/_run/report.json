@@ -1,0 +1,739 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/aeroiq/index.html",
+  "site": {
+    "name": "aeroiq",
+    "site_dir": "/Users/timchef/UXBench/websites/aeroiq",
+    "start_page": "index.html",
+    "page_type": "dashboard",
+    "html_files": [
+      "alerts.html",
+      "endpoint-detail.html",
+      "endpoints.html",
+      "index.html",
+      "services.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/aeroiq/README.md",
+    "summary": "AeroIQ Fictional API monitoring and observability SaaS (Datadog / Vercel Observability-style). Pages - `index.html` — Overview dashboard. Left rail nav; top bar with org switcher, environment tabs (Production / Staging / Dev), time range (5m / 1h / 24h / 7d), search (⌘K), theme toggle, alert bell; four top KPIs (total requests / error rate / p95 / availability) with sparklines and period-over-period deltas; 24-card endpoint health grid (red cards first), each card with HTTP method + path + health dot + RPS / p95 / error rate; right alerts side panel with 8 active alerts and per-row assign / silence actions; bottom global p50 / p95 / p99 trend line chart. - `endpoint-detail.html` — Endpoint detail. Top: method + path + health badge + linked services + owner avatars; 6 KPIs (RPS / error rate / p50 / p95 / p99 / SLO status); three large trend charts (request volume, latency p50/p95/p99 three lines, error rate); error-grouping panel with status-code / client-version / region tabs; recent error sample table (5 rows including 502 Bad Gateway, 500, 429, 503); related traces list. - `alerts.html` — Alerts center. 4 KPIs (active / new today / mean response / MTTR); filter bar; 12-row alert ",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full aeroiq system, prioritizing the primary dashboard flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "AeroIQ gives strong at-a-glance operational context, with clear KPI summaries, triage filters, and cross-page navigation between dashboard, endpoints, alerts, and service map. The biggest UX risks are mobile crampedness and weak feedback for some controls: several controls are too small, the layout overflows on small screens, and a few interactions appear inert or fail to communicate state changes. There are also discoverability gaps in drilldown affordances, especially for endpoint cards and some header controls. Coverage is substantial but not complete, so a few auxiliary destinations remain untested.",
+  "exploration_plan": {
+    "goal": "Explore the AeroIQ monitoring SaaS end-to-end with emphasis on the dashboard-to-detail investigation path, alert triage, endpoint filtering/search, and service topology navigation, while validating responsive/mobile usability on the same critical flows.",
+    "summary": "Start on the dashboard and verify the primary operational flow: understand system health, inspect high-risk endpoint cards, and drill into a detailed endpoint view. Then cover the adjacent operational pages—Endpoints, Alerts, and Service Map—using the visible filters, search, time range, environment, theme, and assignment/silence controls to confirm state changes and cross-page consistency. Repeat the most important navigation and triage checks in a mobile viewport, with special attention to small tap targets and unlabeled controls already flagged by prescan.",
+    "assumptions": [
+      "The main workflow is dashboard-first, then drilldown into endpoint detail and alerts for incident investigation.",
+      "The visible page set in prescan is the full reachable scope for this run; Logs, Integrations, and Settings appear in nav but were not enumerated as separate HTML pages, so they should only be treated as navigation affordances if they resolve in-app.",
+      "The endpoint-detail page likely represents a single representative unhealthy endpoint rather than a list of all details, so coverage should focus on the shown error breakdown, sample table, and trace list rather than expecting editable workflow controls."
+    ],
+    "target_pages": [
+      "index.html",
+      "endpoints.html",
+      "alerts.html",
+      "endpoint-detail.html",
+      "services.html"
+    ],
+    "risk_hotspots": [
+      "index.html: top-right org selector, environment tabs, and time-range buttons are small on mobile and one select lacks an accessible label.",
+      "index.html: Active Alerts side panel actions (Assign, Silence) and the alert bell badge may hide state or be hard to operate on smaller screens.",
+      "endpoints.html: service/health/tag filters and search field are key stateful controls; verify they update the list and do not break row alignment.",
+      "alerts.html: multiple filters plus the alerts table represent the highest triage complexity; watch for missing labels and selected-state clarity.",
+      "endpoint-detail.html: error-breakdown tabs and recent sample rows are likely the most information-dense and should be checked for tab switching, truncation, and readability.",
+      "services.html: the service map depends on node-click interactions; validate whether node selection is discoverable and whether the Production/Staging toggle changes the graph meaningfully.",
+      "mobile viewport across all pages: sidebar/nav links and primary toolbar controls are below recommended tap-target size."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Dashboard orientation and state controls",
+        "objective": "Validate the landing dashboard, global navigation, and top-level state controls that anchor the rest of the exploration.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the dashboard loads with the KPI row, endpoint health grid, active alerts panel, and global latency chart visible and coherent.",
+          "Exercise environment tabs (Production, Staging, Dev) and time ranges (5m, 1h, 24h, 7d) to check for visible state change or selected styling.",
+          "Use org switcher, theme toggle, notification bell, and profile button to confirm they are interactive and do not break layout.",
+          "Open at least one high-risk endpoint card from the health grid to verify drilldown path into endpoint detail."
+        ],
+        "exit_criteria": [
+          "At least one environment/time-range combination has been toggled and the selected state observed.",
+          "One endpoint card or equivalent drill-in path has been followed to the detail page.",
+          "No blocking layout or interaction failures on the dashboard nav or key controls."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Endpoint drilldown and incident evidence",
+        "objective": "Inspect the unhealthy endpoint detail page for depth of troubleshooting information and tabbed breakdown behavior.",
+        "target_pages": [
+          "endpoint-detail.html"
+        ],
+        "key_checks": [
+          "Validate the header context: method, path, health badge, linked services, owner, and SLO breach state.",
+          "Review the KPI strip and the three charts for request volume, latency, and error rate to ensure they read as distinct diagnostics.",
+          "Switch the error breakdown tabs (status code, client version, region) and verify each tab updates the breakdown content.",
+          "Inspect recent error samples for representative error classes (502, 500, 429, 503) and check truncation/row readability.",
+          "Open or inspect related traces to confirm the page supports deeper trace-level follow-up."
+        ],
+        "exit_criteria": [
+          "All visible diagnostic sections have been viewed at least once.",
+          "At least one tab change in error breakdown has been confirmed.",
+          "The error sample table and trace list are readable and actionable."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Endpoint catalog filtering and search",
+        "objective": "Validate the endpoints list as the broader navigation and filtering surface for the fleet.",
+        "target_pages": [
+          "endpoints.html"
+        ],
+        "key_checks": [
+          "Confirm the endpoints table/list renders with service, health, RPS, p95, error %, SLO, deploy age, and owner columns or equivalents.",
+          "Use service, health, tag, and method/path search filters to narrow the list and confirm the results update predictably.",
+          "Check that unhealthy/degraded rows are distinguishable from healthy rows and that breach indicators are legible.",
+          "Select at least one row or endpoint path if linked, to verify a second path into endpoint detail or comparable drilldown."
+        ],
+        "exit_criteria": [
+          "At least two different filter types have been exercised.",
+          "Search or filter results visibly change the list.",
+          "Row status styling and key columns remain understandable after filtering."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Alert triage and resolution affordances",
+        "objective": "Validate the alerts center as the core operational triage flow, including filtering, table readability, and row-level actions.",
+        "target_pages": [
+          "alerts.html"
+        ],
+        "key_checks": [
+          "Check the KPI cards for active alerts, new today, mean response time, and MTTR.",
+          "Use severity, rules, assignee, and status controls to filter the table and confirm the visible alert set updates.",
+          "Inspect the alerts table for time, rule, endpoint, severity, status, and owner coverage, especially critical vs warning distinctions.",
+          "Test row-level or summary actions where present, and confirm Assign/Silence behavior is understandable and does not cause accidental loss of context.",
+          "Verify the visible search input and other controls remain usable and not confusingly labeled."
+        ],
+        "exit_criteria": [
+          "Multiple alert filters have been exercised and reflected in the table.",
+          "At least one alert action or action affordance has been inspected.",
+          "Alert severity and status are clearly distinguishable in the filtered view."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Topology comprehension and service switching",
+        "objective": "Validate the service map as a system-wide navigation aid and inspect whether environment toggles and node interaction are meaningful.",
+        "target_pages": [
+          "services.html"
+        ],
+        "key_checks": [
+          "Confirm the service map loads with node graph labels and the explanatory text about edge width/traffic.",
+          "Toggle Production and Staging and observe whether the graph changes or the selected state is clear.",
+          "Click at least one service node if interactive to verify discoverability of node-based drilldown.",
+          "Check that the map remains interpretable without a legend overload or ambiguous node labeling."
+        ],
+        "exit_criteria": [
+          "At least one environment toggle on the service map has been tested.",
+          "A node interaction has been attempted or confirmed as non-blocking if unavailable.",
+          "The page remains readable at both desktop and mobile sizes."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile recheck of critical flows",
+        "objective": "Repeat the most important dashboard, alerts, and detail interactions in a mobile viewport to validate tap-targets, spacing, and preserved task flow.",
+        "target_pages": [
+          "index.html",
+          "alerts.html",
+          "endpoint-detail.html",
+          "endpoints.html",
+          "services.html"
+        ],
+        "key_checks": [
+          "Revisit dashboard navigation, top controls, and at least one endpoint card on mobile.",
+          "Re-test alerts triage controls and one table row/action on mobile.",
+          "Re-check endpoint detail tab switching and sample readability on mobile.",
+          "Assess whether sidebar nav links, environment/time-range buttons, and org selector are still operable despite small tap targets.",
+          "Confirm whether the missing-label and small-target warnings materially hinder task completion."
+        ],
+        "exit_criteria": [
+          "Critical flows can still be completed on mobile without blockers.",
+          "The most important small-target or unlabeled control issues have been confirmed as either minor or user-blocking.",
+          "Mobile results are captured for dashboard, alerts, and one detail page."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 5 known HTML pages and validate at least one meaningful interaction on each.",
+      "features": "Exercise the dashboard state controls, endpoint health drilldown, endpoint list filters/search, alert filters/actions, and service-map environment/node interactions.",
+      "mobile": "Repeat the highest-value flows on mobile: dashboard controls, one endpoint detail drilldown, alerts filtering/action, and service-map environment toggling."
+    },
+    "notes": [
+      "Prescan already shows low-severity tap-target issues and at least one unlabeled select; prioritize confirming whether these are real mobile usability blockers.",
+      "No console or network errors were reported, so the run should focus on interaction quality, state clarity, and navigation depth rather than stability debugging."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Use the product on a phone without horizontal scrolling or clipped content",
+      "problem": "The mobile layout overflows the viewport, making the app feel cramped and harder to scan or operate.",
+      "evidence": "On alerts.html mobile, the page width is 699px on a 390px viewport; on endpoints.html mobile it was even wider (978px+), with the left rail and content cut off horizontally.",
+      "why_it_matters": "A monitoring dashboard is often used during incidents on the go or in constrained conditions; horizontal overflow makes key triage information and controls harder to reach quickly.",
+      "suggestion": "Redesign the mobile layout to collapse or stack the left rail and header controls, and ensure the main content fits within the viewport without horizontal scrolling.",
+      "source_hint": "alerts.html / endpoints.html"
+    },
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Navigate the dashboard quickly on touch devices",
+      "problem": "Several primary nav and header targets are below mobile tap-target guidance, which makes them hard to tap accurately.",
+      "evidence": "Observed targets include 39x58px sidebar links, a 34x34px profile button, and compact environment/time controls; the layout warnings repeatedly flagged these as below 44px guidance.",
+      "why_it_matters": "During incident response, mis-taps slow users down and increase frustration, especially when moving between dashboard, alerts, endpoints, and service map.",
+      "suggestion": "Increase touch target sizes to at least 44px in both dimensions where possible, and add more spacing between adjacent controls in the rail and top bar.",
+      "source_hint": "index.html / alerts.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "Understand what organization/context is currently selected",
+      "problem": "The org switcher lacks a visible label/aria-label/placeholder, so its purpose and state are unclear, especially on mobile.",
+      "evidence": "Layout warnings repeatedly reported a missing input label for the Acme Cloud Org select on alerts.html and index.html; selecting it also produced no visible state change.",
+      "why_it_matters": "If users cannot tell what context they are in, they may misread metrics or assume the wrong org's data is shown.",
+      "suggestion": "Add a visible label and stronger selected-state feedback for the org selector, and confirm changes with an explicit context update.",
+      "source_hint": "header org select"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Change dashboard scope or context and know it took effect",
+      "problem": "Some top-bar controls appear inert or provide no visible feedback after interaction, notably the org selector and environment toggle in the captured flows.",
+      "evidence": "Clicking the org selector on index.html produced no visible state change; clicking Production on services.html produced no visible state change or content update.",
+      "why_it_matters": "When controls appear to do nothing, users may repeat actions, lose trust, or assume the app is broken during incident work.",
+      "suggestion": "Make control responses explicit with selected-state styling, text updates, or a brief confirmation of the active scope/environment.",
+      "source_hint": "index.html / services.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "affordance",
+      "user_goal": "Drill from the overview into endpoint investigation",
+      "problem": "Endpoint cards read as dense metric tiles, but their tappability is not obvious and direct clicks on a visible card target were not successful.",
+      "evidence": "On the mobile dashboard, endpoint cards showed method, service/path, RPS, p95, and errors, but no clear card-level affordance was visible; an attempted click on a candidate endpoint card target timed out with no visible change.",
+      "why_it_matters": "The dashboard is the primary investigation entry point, so weak drilldown affordance can slow users from moving from overview to root cause analysis.",
+      "suggestion": "Add a clearer card affordance such as hover/tap feedback, chevrons, or a consistent clickable card styling and press state.",
+      "source_hint": "index.html endpoint health grid"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Use filters on alerts and endpoints and immediately see the result change",
+      "problem": "Some filters update clearly, but others do not provide enough visible feedback, making filter state ambiguous.",
+      "evidence": "Alerts severity filtering to Critical visibly changed the table and selected state, but assignee and status changes did not visibly update rows or control text; on endpoints, health and service filters did narrow results visibly, but selected-state emphasis was weak in the compact filter row.",
+      "why_it_matters": "In triage workflows, users need confidence that filtering is active and that they are looking at the intended subset of incidents or endpoints.",
+      "suggestion": "Standardize filter feedback with stronger selected-state styling and immediate result-count or row-update confirmation for every filter change.",
+      "source_hint": "alerts.html / endpoints.html"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Move between operational views without dead ends",
+      "problem": "Several top-level destinations are inert dead ends, which weakens the navigation model.",
+      "evidence": "The alerts page exposes Logs and Integrations as visible nav items, but their hrefs are '#'; the dashboard logo also did not function as a drilldown entry point in the observed flows.",
+      "why_it_matters": "Users may expect these to open meaningful destinations during investigation; dead links can break mental models and reduce trust in the nav.",
+      "suggestion": "Either wire these items to real destinations or visually mark them as unavailable/coming soon so users do not expect functional navigation.",
+      "source_hint": "left rail / logo"
+    },
+    {
+      "severity": "low",
+      "ux_area": "accessibility",
+      "user_goal": "Use the app with assistive tech or keyboard navigation",
+      "problem": "Some controls are unlabeled or minimally labeled in ways that reduce accessibility clarity.",
+      "evidence": "The org select was reported missing a label/aria-label/placeholder, and the profile button is only represented as an icon button with a 34x34px target.",
+      "why_it_matters": "Screen-reader users and keyboard users rely on explicit labels to understand controls, and ambiguous icon-only controls can be harder to interpret.",
+      "suggestion": "Add accessible names and descriptive labels to the org selector and icon-only actions, and verify tab order and focus visibility.",
+      "source_hint": "header controls"
+    },
+    {
+      "severity": "low",
+      "ux_area": "other",
+      "user_goal": "Find additional product areas and understand the system breadth",
+      "problem": "Several auxiliary destinations were visible but not yet meaningfully tested, leaving uncertainty about deeper workflows.",
+      "evidence": "Coverage notes show only 33% of visible interactive feature signatures exercised, with untested items like Settings, Logs, Integrations, and some alert-page controls still remaining.",
+      "why_it_matters": "Unvisited destinations may contain important recovery, configuration, or diagnostics flows that affect the overall product experience.",
+      "suggestion": "Prioritize validation of the remaining auxiliary destinations and any drill-in paths that support incident recovery and configuration workflows.",
+      "source_hint": "coverage gaps / unvisited controls"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 33,
+    "action_success_rate_percent": 94,
+    "unchanged_action_percent": 51,
+    "known_pages": [
+      "alerts.html",
+      "endpoint-detail.html",
+      "endpoints.html",
+      "index.html",
+      "services.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "endpoints.html",
+      "endpoint-detail.html",
+      "alerts.html",
+      "services.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 31,
+      "open_page": 33,
+      "press_key": 1,
+      "scroll": 2,
+      "select_option": 8,
+      "type_text": 4
+    },
+    "total_actions": 79,
+    "successful_actions": 74,
+    "failed_actions": 5,
+    "unchanged_actions": 40,
+    "observed_feature_count": 92,
+    "exercised_feature_count": 30,
+    "unexplored_features": [
+      {
+        "signature": "alerts.html|clickable|a|||aeroiq|index.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "AeroIQ"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||⚙️ settings|#",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||📜 logs|#",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Logs"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||🔌 integrations|#",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔌 Integrations"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||🔗 endpoints|endpoints.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔗 Endpoints"
+      },
+      {
+        "signature": "alerts.html|clickable|a|||🚨 alerts 8|alerts.html",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🚨 Alerts 8"
+      },
+      {
+        "signature": "alerts.html|clickable|button|||👤|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "alerts.html|typeable|input|||⌘k search…|",
+        "page": "alerts.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "⌘K Search…"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||aeroiq|index.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "AeroIQ"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||⚙️ settings|#",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||🌐 service map|services.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🌐 Service Map"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||📊 dashboard|index.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📊 Dashboard"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||📜 logs|#",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Logs"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||🔌 integrations|#",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔌 Integrations"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||🔗 endpoints|endpoints.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔗 Endpoints"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|a|||🚨 alerts 8|alerts.html",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🚨 Alerts 8"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||1h|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "1h"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||24h|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "24h"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||5m|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "5m"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||7d|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "7d"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||by client version|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "By client version"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||by region|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "By region"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||by status code|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "By status code"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||dev|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Dev"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||production|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Production"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||staging|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Staging"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||🌓|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "🌓"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||👤|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "endpoint-detail.html|clickable|button|||🔔 8|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "🔔 8"
+      },
+      {
+        "signature": "endpoint-detail.html|selectable|select|||acme cloud org|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "Acme Cloud Org"
+      },
+      {
+        "signature": "endpoint-detail.html|typeable|input|||⌘k search…|",
+        "page": "endpoint-detail.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "⌘K Search…"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||aeroiq|index.html",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "AeroIQ"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||⚙️ settings|#",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "⚙️ Settings"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||🌐 service map|services.html",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🌐 Service Map"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||📜 logs|#",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "📜 Logs"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||🔌 integrations|#",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔌 Integrations"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||🔗 endpoints|endpoints.html",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🔗 Endpoints"
+      },
+      {
+        "signature": "endpoints.html|clickable|a|||🚨 alerts 8|alerts.html",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "🚨 Alerts 8"
+      },
+      {
+        "signature": "endpoints.html|clickable|button|||👤|",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "👤"
+      },
+      {
+        "signature": "endpoints.html|selectable|select|||acme cloud org|",
+        "page": "endpoints.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "Acme Cloud Org"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 33% of visible interactive feature signatures.",
+      "5 browser action(s) failed and should be retried or analyzed.",
+      "51% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-05-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-06-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-07-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-10-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-12-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-13-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-14-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-15-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-16-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-17-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-18-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-19-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-20-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-22-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-24-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-25-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-26-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-28-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-29-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-32-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-33-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-34-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-35-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-36-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-40-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-41-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-45-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-46-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-47-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-48-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-49-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-51-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-54-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-55-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-56-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-57-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-59-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-60-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-61-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-62-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-63-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-65-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-68-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-69-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-70-press_key-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-74-open_page-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-75-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-76-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run/screenshots/agentic-80-open_page-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-mini/aeroiq/_run",
+  "claude_fix": null
+}

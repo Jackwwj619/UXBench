@@ -1,0 +1,53 @@
+# UX Critique
+
+- **Persona**: A curious first-time visitor assessing whether this site is usable.
+- **Intent**: Autonomously explore and critique the UX of the full larkfit-mobile system, prioritizing the primary docs/tutorial flow plus adjacent pages, states, and recovery paths.
+- **Intent completed**: True
+
+## Summary
+
+The app’s core tab navigation is strong: Today, Workouts, Activity, and You switch cleanly with clear active-state feedback in both desktop and mobile views. However, several important actions feel unreliable because they produce no response, and the Workouts filtering flow can strand users in a blank state with little explanation. Mobile usability is also weakened by multiple undersized controls and hidden/off-canvas filter chips.
+
+## Issues (7)
+
+### [HIGH] several-prominent-actions-appear-tappable-but — feedback
+- **Page**: `index.html; controls '+', 'Start workout', 'Sign out'`
+- **Problem**: Several prominent actions appear tappable but do nothing and provide no feedback, making the app feel broken or untrustworthy.
+- **Evidence**: The '+' button produced no URL, text, or dialog change in both desktop and mobile testing; 'Start workout' on workout detail produced no visible state change; 'Sign out' produced no confirmation, logout, or other observable response while remaining styled as a destructive red action. These behaviors were recorded in chunks steps-07-12, steps-25-30, and steps-37-42.
+- **Suggested fix**: Ensure every major action gives immediate feedback: open the intended flow, disable unavailable controls, or show a clear message/toast explaining why nothing happened. Destructive actions like Sign out should trigger a confirmation sheet or a clear success state.
+
+### [HIGH] combining-search-with-category-filters-can — error recovery
+- **Page**: `index.html Workouts screen; search field and category chips`
+- **Problem**: Combining search with category filters can leave the Workouts screen completely blank, with no empty-state message or obvious way to recover.
+- **Evidence**: On mobile, after selecting the Recovery chip and typing 'run', the workouts area became empty while Recovery stayed active and no empty-state copy, result count, or explanation appeared (recent step agentic-47, screenshot /Users/timchef/UXBench/results-gpt-5.4/larkfit-mobile/_run/screenshots/agentic-47-type_text-mobile.png). Earlier testing also showed that clicking 'All' did not broaden results while a search term remained active, and Escape/Backspace did not provide a clear recovery path (steps-19-24).
+- **Suggested fix**: Show a clear empty state such as 'No workouts match "run" in Recovery' with visible actions to clear search, reset filters, or return to all workouts. Make reset behavior predictable when users tap 'All' or clear the search field.
+
+### [HIGH] the-workouts-screen-preserves-a-hidden — navigation
+- **Page**: `index.html Workouts tab revisit on mobile`
+- **Problem**: The Workouts screen preserves a hidden, empty filtered state when users leave and come back, so the page can reopen looking broken.
+- **Evidence**: After escaping the blank Workouts state by switching to Today, returning to Workouts preserved the prior search 'run' and no workout cards were shown. The final observation shows only the search field and chips, with chips shifted so 'All' is at x=-113 and 'Run' at x=-61, partly off-screen. See recent step agentic-49 and screenshot /Users/timchef/UXBench/results-gpt-5.4/larkfit-mobile/_run/screenshots/agentic-49-click-mobile.png.
+- **Suggested fix**: Either reset Workouts to a sensible default on tab revisit or preserve state in a more transparent way, with visible pills/search text and an obvious 'Clear filters' action. Avoid reopening the page in an empty state unless the UI clearly explains why.
+
+### [MEDIUM] many-mobile-controls-are-below-recommended — mobile usability
+- **Page**: `index.html; Workouts chips/settings, Today '+/play', detail back/share, You actions`
+- **Problem**: Many mobile controls are below recommended touch size, increasing mistaps and making already-complex filtering harder to manage.
+- **Evidence**: Layout warnings repeatedly flagged the Workouts settings button at 38x38px; category chips at 30px height (e.g. Run 55x30, Yoga 61x30, Recovery 89x30); Today play buttons at 36x36; back at 36x36; share at 37x30; '+' at 38x38; Adjust goals at 322x34; Sign out at 354x43. These warnings appear across steps-01-06, 07-12, 25-30, 31-36, 37-42, and the final observation.
+- **Suggested fix**: Increase interactive hit areas to at least 44x44px, especially chips, icon buttons, and key account actions. Consider adding more spacing between compact controls to reduce accidental taps.
+
+### [MEDIUM] the-horizontal-filter-chip-row-can — clarity
+- **Page**: `index.html Workouts chip row on mobile`
+- **Problem**: The horizontal filter chip row can shift off-canvas, hiding options like All and Run and making the available filter set feel unstable.
+- **Evidence**: Recent testing showed the Recovery chip became reachable only after interaction, while other chips moved off-screen; in the final observation, 'All' and 'Run' have negative x positions (-113 and -61), meaning they are partially or fully off-screen by default. The visible chips also changed after search, making the filtering logic feel harder to follow (agentic-46, agentic-47, agentic-49).
+- **Suggested fix**: Keep the active chip visible without pushing core options like 'All' off-screen, or use a wrapping layout/clear horizontal scroll affordance. Preserve a predictable chip order and ensure reset options remain visible.
+
+### [MEDIUM] some-form-controls-are-missing-explicit — accessibility
+- **Page**: `index.html Activity timeframe select; Workouts search input`
+- **Problem**: Some form controls are missing explicit labels, which reduces accessibility and clarity.
+- **Evidence**: The Activity timeframe selector ('Last 30 days / This week / This year') was flagged with a missing input label warning in steps-01-06 and steps-25-30. The Workouts search field relies on placeholder text ('Find a workout, coach, or tag') rather than a visible label, and the final DOM/interactables show an empty label for that input.
+- **Suggested fix**: Add persistent, programmatically associated labels to the Activity range selector and workout search input. If space is tight, use visually subtle labels but keep them available to assistive technologies.
+
+### [MEDIUM] visually-similar-workout-play-buttons-on — affordance
+- **Page**: `index.html Today workout cards`
+- **Problem**: Visually similar workout play buttons on Today behave inconsistently, so users cannot predict which cards are actionable.
+- **Evidence**: One Today card's play button opened a detailed workout view for 'Easy 5K · recovery', but the second Today card's play button ('Hip-mobility flow') produced no URL, visible-text, or screen-state change in steps-31-36. Both controls appear as similar icon-only 36x36px buttons.
+- **Suggested fix**: Make card actions consistent: either all Today cards open detail/start flows, or differentiate unavailable items with disabled styling and explanatory text. Consider adding text labels instead of relying on icon-only play affordances.

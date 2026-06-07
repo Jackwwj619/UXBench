@@ -1,0 +1,51 @@
+{
+  "summary": "CivicPort’s multi-step apply flow provides strong scaffolding via the left step tree, sticky “WHAT YOU’LL NEED” checklist, and a contextual fees card that responds to selections (e.g., Roof/Expedited review). However, multiple critical controls appear difficult to use—especially on mobile—due to very small tap targets and some missing/unclear form labeling, and key upload interactions could not be reliably activated in the observed tests. Autosave feedback (“Auto-saved · just now”) appears consistent, but progression/validation feedback is sometimes unclear (e.g., Save & continue not obviously advancing despite state changes).",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "the-document-upload-controls-e-g",
+      "severity": "high",
+      "area": "affordance",
+      "page_hint": "apply.html|2.2 Ownership proof upload (data-uxagent-id ux-13), apply.html|3.1 Site plan upload, apply.html|3.2 Floor plan upload; failures show in logs with “ux-13” timeouts.",
+      "problem": "The document upload controls (e.g., Ownership proof / Site plan / Floor plan) were not reliably interactable; attempts to click the upload affordances timed out because the targeted upload element was not visible/activatable.",
+      "evidence": "Multiple failed click attempts on apply.html upload controls: “Click failed for ux-13 … element is not visible … Timeout 4000ms exceeded.” The state stayed on steps like “2.2 Ownership proof” and “3.1 Site plan,” with the sticky checklist showing the corresponding item still unchecked (e.g., “Ownership proof” remains empty).",
+      "suggested_fix": "Ensure the upload button is fully visible and consistently interactable (no hidden/overlapping layers). Provide clear feedback when upload UI opens (e.g., highlight the upload region, show selected filename, and show an inline success state that the checklist updates immediately)."
+    },
+    {
+      "id": "multiple-primary-controls-and-key-toggles",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "apply.html mobile screenshots (e.g., agentic-78-click-mobile.png, agentic-80-check-mobile.png); layout_warning_count and small-tap-target warnings list ux-1 (Cancel), ux-2 (Back), ux-3 (Save and continue), ux-4 (Expedited review checkbox).",
+      "problem": "Multiple primary controls and key toggles are below recommended mobile touch target sizes, increasing mis-tap risk—especially during the cancel/continue and expedited options interactions.",
+      "evidence": "Observed layout warnings on mobile: “Cancel (56x17px) below 44px guidance,” “Expedited review checkbox (13x13px) below 44px guidance,” “Save and continue (150x42px) below 44px guidance,” and “Back (71x42px) below 44px guidance.” The visible screenshot shows “Cancel” in the header and small checkbox next to “Expedited review (+50%).”",
+      "suggested_fix": "Increase tap target sizes (minimum 44x44px) for Cancel/Back/Save and the expedited checkbox. Consider enlarging the checkbox hit area by wrapping it in a full-width row/button and adding generous padding around it."
+    },
+    {
+      "id": "the-expedited-review-checkbox-interaction-provides",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "apply.html|mobile expedited review checkbox (ux-4) in agentic-80-check-mobile.png and the check result “True to True.”",
+      "problem": "The expedited review checkbox interaction provides unclear observable change on mobile; automated checks report no visible toggle update even though the fee card appears to already reflect the expedited state.",
+      "evidence": "On mobile, the checkbox is extremely small (13x13px) and the automated check result shows: “Checked state changed from True to True,” with no captured visible toggle change. The fees card shows “Expedited review (+50%) $105” and “Total estimated $315,” consistent with the option being selected already.",
+      "suggested_fix": "Make the expedited selection change visibly unambiguous: animate the checkbox, update the fee card with a short “Updated” cue, and enlarge the hit area. Also ensure the state change is detectable (not just internally) with clear visual feedback."
+    },
+    {
+      "id": "several-form-fields-appear-to-lack",
+      "severity": "medium",
+      "area": "forms",
+      "page_hint": "apply.html|date step (ux-19 / ux-20) warnings; failures include “Typing failed for ux-19 … type='date' … fill('2026/06/01') … enabled and editable”.",
+      "problem": "Several form fields appear to lack explicit labels/ARIA/placeholder, reducing clarity and increasing the chance of incorrect data entry (including date inputs).",
+      "evidence": "Layout/accessibility warnings indicate “input missing label/aria/placeholder for at least two fields,” including date inputs: ux-19 is a type=\"date\" input, and failures show issues filling it (malformed value / not editable). On the date step, placeholders show “yyyy/mm/dd,” but labels/ARIA appear missing per warnings.",
+      "suggested_fix": "Ensure every input (especially date pickers and textareas) has an explicit label and ARIA association. Add inline helper text for required formatting and validation rules, and show clear error messages when the user’s input cannot be parsed."
+    },
+    {
+      "id": "save-continue-sometimes-does-not-visibly",
+      "severity": "low",
+      "area": "navigation",
+      "page_hint": "apply.html mobile agentic-77-click-mobile.png; visible text shows “Documents 0 uploaded” and no validation message after “Save and continue.”",
+      "problem": "Save & continue sometimes does not visibly advance the step in a way that’s clearly explained, creating uncertainty about gating/validation (especially when documents are 0 uploaded).",
+      "evidence": "On mobile (6.1 Summary view), tapping “Save and continue” shows “Auto-saved · just now” and content changes, but the screenshot still indicates “Documents 0 uploaded” and multiple checklist items remain unchecked; no validation dialog/error is shown after the click (agentic-77-click-mobile.png).",
+      "suggested_fix": "When Save & continue is pressed and progression is blocked (or not advanced), show an explicit inline validation summary listing what’s missing (e.g., “Upload Ownership proof to proceed”) near the relevant step header and checklist."
+    }
+  ]
+}

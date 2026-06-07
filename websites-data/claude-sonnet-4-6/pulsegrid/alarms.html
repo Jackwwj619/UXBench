@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alarms — PulseGrid</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="dark">
+
+<aside class="sidebar">
+  <a href="index.html" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M3 12 H 7 L 9 5 L 12 19 L 14 9 L 16 14 H 21" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    <span>PulseGrid</span>
+  </a>
+  <nav class="nav-main">
+    <a href="index.html" class="nav-item"><span>▦</span>Overview</a>
+    <a href="generators.html" class="nav-item"><span>⚡</span>Generators</a>
+    <a href="forecast.html" class="nav-item"><span>📈</span>Forecast</a>
+    <a href="alarms.html" class="nav-item active"><span>⚠</span>Alarms <span class="nav-badge">8</span></a>
+    <a href="#" class="nav-item"><span>🌐</span>Topology</a>
+    <a href="#" class="nav-item"><span>📜</span>Events</a>
+  </nav>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="tb-left">
+      <h2 class="page-title">Alarms</h2>
+      <span class="muted-sm">Last refresh 12:04:18 PT</span>
+    </div>
+    <div class="tb-right">
+      <button class="tb-icon" id="themeToggle" aria-label="Toggle theme">☾</button>
+      <button class="btn-primary" id="ackBtn" disabled aria-disabled="true">Acknowledge selected</button>
+      <span class="ack-hint" id="ackHint">Select alarms to acknowledge</span>
+    </div>
+  </header>
+
+  <section class="kpis kpis-3">
+    <div class="kpi"><div class="kpi-label">Active</div><div class="kpi-val"><span>8</span></div><div class="kpi-meta"><span class="up">+3</span> in last 30 min</div></div>
+    <div class="kpi"><div class="kpi-label">Critical</div><div class="kpi-val"><span class="warn-text">2</span></div><div class="kpi-meta">COL-3 over-temp · WND-12 ride-thru</div></div>
+    <div class="kpi"><div class="kpi-label">Mean handle time</div><div class="kpi-val"><span>06:22</span><span class="unit">min</span></div><div class="kpi-meta">trailing 24h, target ≤ 10:00</div></div>
+    <div class="kpi"><div class="kpi-label">Resolved · 24h</div><div class="kpi-val"><span>34</span></div><div class="kpi-meta">28 by op · 6 auto-cleared</div></div>
+  </section>
+
+  <section class="filter-strip">
+    <label class="sr-only" for="filtSev">Filter by severity</label>
+    <select id="filtSev" aria-label="Filter by severity">
+      <option value="all">Severity: All</option><option value="critical">Critical only</option><option value="major">Major+</option><option value="minor">Minor only</option>
+    </select>
+    <label class="sr-only" for="filtStatus">Filter by status</label>
+    <select id="filtStatus" aria-label="Filter by status">
+      <option value="open">Status: Open</option><option value="acked">Acknowledged</option><option value="resolved">Resolved</option><option value="all">All</option>
+    </select>
+    <label class="sr-only" for="filtTime">Filter by time window</label>
+    <select id="filtTime" aria-label="Filter by time window">
+      <option value="24h">Time: Last 24h</option><option value="1h">Last 1h</option><option value="6h">Last 6h</option><option value="shift">This shift</option>
+    </select>
+    <label class="sr-only" for="filtSearch">Search alarms</label>
+    <input id="filtSearch" type="search" placeholder="Filter by unit, rule, or owner…" class="tb-search" aria-label="Filter alarms by unit, rule, or owner" />
+  </section>
+
+  <section class="alarm-table-wrap">
+    <table class="gen-table alarm-table">
+      <thead>
+        <tr><th><input type="checkbox" id="alarmSelectAll" aria-label="Select all alarms" /></th><th>Sev</th><th>Triggered</th><th>Unit / asset</th><th>Rule</th><th>Value</th><th>Status</th><th>Owner</th><th></th></tr>
+      </thead>
+      <tbody id="alarmsTbody"></tbody>
+    </table>
+    <div class="empty-state" id="alarmsEmpty" hidden>
+      <p>No alarms match the current filters.</p>
+      <button type="button" class="card-btn" id="clearAlarmFilters">Clear filters</button>
+    </div>
+  </section>
+</main>
+
+<!-- Alarm detail modal -->
+<div class="modal-backdrop" id="alarmModal" hidden role="dialog" aria-modal="true" aria-labelledby="alarmModalTitle">
+  <div class="modal">
+    <header class="modal-head">
+      <h3 id="alarmModalTitle">Alarm detail</h3>
+      <button type="button" class="tb-icon modal-close" id="alarmModalClose" aria-label="Close dialog">✕</button>
+    </header>
+    <div class="modal-body" id="alarmModalBody"></div>
+    <footer class="modal-foot">
+      <button type="button" class="card-btn" id="alarmModalCancel">Close</button>
+      <button type="button" class="btn-primary" id="alarmModalAck">Acknowledge</button>
+    </footer>
+  </div>
+</div>
+
+<!-- Confirm acknowledge dialog -->
+<div class="modal-backdrop" id="ackConfirm" hidden role="dialog" aria-modal="true" aria-labelledby="ackConfirmTitle">
+  <div class="modal">
+    <header class="modal-head">
+      <h3 id="ackConfirmTitle">Acknowledge alarms</h3>
+      <button type="button" class="tb-icon modal-close" id="ackConfirmClose" aria-label="Close dialog">✕</button>
+    </header>
+    <div class="modal-body">
+      <p class="muted-sm">You are about to acknowledge the following alarms:</p>
+      <ul id="ackConfirmList" class="ack-list"></ul>
+    </div>
+    <footer class="modal-foot">
+      <button type="button" class="card-btn" id="ackCancel">Cancel</button>
+      <button type="button" class="btn-primary" id="ackConfirmYes">Confirm acknowledgement</button>
+    </footer>
+  </div>
+</div>
+
+<!-- Toast region -->
+<div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

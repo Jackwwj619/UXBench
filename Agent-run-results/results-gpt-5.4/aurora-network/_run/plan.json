@@ -1,0 +1,437 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore Aurora Network’s privacy settings experience, centered on the Privacy & Audience overview and the four linked management surfaces, while validating key state changes, destructive/recovery paths, and responsive usability.",
+    "summary": "Start from the Privacy & Audience overview to confirm the hub, cross-links, and snapshot framing of the privacy system. Then work through each linked page in order of user impact: default audience, tag review, past post visibility, and muted words, exercising visible controls and checking whether feedback, summaries, and navigation stay coherent. Reserve extra attention for bulk/destructive actions and pages with many controls, then repeat critical paths on mobile because the prescan already shows multiple undersized tap targets.",
+    "assumptions": [
+      "The primary product area in scope is the privacy/settings section beginning at index.html, not the placeholder top-nav destinations that use # links.",
+      "All known functional pages are the five HTML files in the prescan: index.html, audience.html, tag-review.html, past-posts.html, and blocked-words.html.",
+      "Because this is a local demo fixture, some actions may update only local page state rather than persist across full-page navigation; persistence should be tested but not assumed.",
+      "The overview snapshot is intended to summarize privacy state and may reflect changes from deeper settings pages, especially the default audience link already pointing to audience.html."
+    ],
+    "target_pages": [
+      "index.html",
+      "audience.html",
+      "tag-review.html",
+      "past-posts.html",
+      "blocked-words.html"
+    ],
+    "risk_hotspots": [
+      "index.html: snapshot panel 'Change' links may be ambiguous because at least one points to # while another goes to audience.html",
+      "index.html: overview cards and left-nav both link to the same privacy pages; check consistency of labels, counts, and destinations",
+      "audience.html: radio-group changes plus 'Save default'/'Discard changes' flow may have unsaved-state or misleading explanation issues",
+      "audience.html: 'Custom list…' option and custom-list manager ('+ New list', inspect/recent-use cues) are stateful and likely complex",
+      "audience.html: 'Who can tag you?' radio block may overlap conceptually with tag-review behavior and create policy confusion",
+      "tag-review.html: bulk actions 'Approve all' and 'Hide all' are high-impact and should be checked for confirmation, reversibility, and count updates",
+      "tag-review.html: per-item actions 'Approve', 'Hide tag', and 'Block user' are repeated controls with risk of accidental action or unclear aftermath",
+      "past-posts.html: 'Apply to visible' is a destructive bulk action tied to filters and selected target audience; validate scope clarity",
+      "past-posts.html: year/audience filters drive which posts are affected; check that visible-result logic matches action wording 'what you see is what gets changed'",
+      "blocked-words.html: add-word input plus Enter-to-save behavior may fail silently or create duplicate/validation edge cases",
+      "blocked-words.html: chip removal via × across 18 entries is repetitive and prone to accidental deletion without recovery",
+      "blocked-words.html: 'Import .txt' and 'Export .txt' are visible but may be stubbed in a local fixture; confirm behavior and error handling if any",
+      "All pages on mobile: many nav items and links were flagged as small tap targets in prescan"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Map the privacy hub and navigation model",
+        "objective": "Validate the overview page as the entry point, including card links, left-side privacy navigation, snapshot summary, and any directly actionable 'Change' links.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open each privacy destination from the overview cards: Default audience, Tag review, Past post visibility, Muted words",
+          "Compare left-nav privacy links against the card links to confirm they reach the same pages and use consistent naming/count cues",
+          "Inspect the 'Snapshot of your current privacy' section and test visible 'Change' links, noting which are actionable versus placeholder # links",
+          "Check whether overview copy correctly distinguishes new-post settings from retroactive controls such as Past post visibility",
+          "Record whether tag-review count ('7 pending') appears consistently in card and left-nav badge"
+        ],
+        "exit_criteria": [
+          "All overview-originating privacy links have been followed at least once",
+          "Any dead, placeholder, or inconsistent 'Change' links are identified with evidence",
+          "The relationship between overview summary content and deeper settings pages is understood before deeper interaction"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Exercise default audience and tagging preferences",
+        "objective": "Test the primary settings flow for choosing who can see new posts, including save/discard behavior, custom-list affordances, and adjacent tag-permission settings.",
+        "target_pages": [
+          "audience.html"
+        ],
+        "key_checks": [
+          "Cycle through the four audience radio options: Public, Friends, Custom list…, Only me, observing helper/explanatory text changes",
+          "Use 'Save default' after changing audience and verify whether the selected state and any explanation remain stable",
+          "Use 'Discard changes' after making a different selection to confirm recovery to the prior state",
+          "Choose the 'Custom list…' path and inspect visible custom-list affordances including '+ New list' and the listed saved lists with recent-use metadata",
+          "Check whether selecting different audience options affects visible explanation text such as search-indexing implications or friend visibility wording",
+          "Exercise the 'Who can tag you?' radio block and note whether labels and resulting state are understandable alongside the separate Tag review page",
+          "Navigate back to the overview after a save, if possible, to see whether snapshot/default audience indicators update"
+        ],
+        "exit_criteria": [
+          "At least one successful save and one discard path have been attempted",
+          "All four audience options have been selected and observed",
+          "Custom-list management affordances and tag-permission controls have been inspected enough to assess discoverability and clarity"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Validate moderation queue actions in tag review",
+        "objective": "Assess single-item and bulk triage flows for pending tags, with emphasis on clarity of consequence, queue updates, and safe handling of higher-risk actions.",
+        "target_pages": [
+          "tag-review.html"
+        ],
+        "key_checks": [
+          "Review the queue header and initial pending count ('7 tags waiting for review') against overview/nav badge counts",
+          "Use per-item actions on a sample of entries: Approve, Hide tag, and Block user, checking resulting item state/removal and any feedback",
+          "Inspect entries with additional context such as 'You don't follow this account' to see whether risk cues are prominent enough",
+          "Test one bulk action path ('Approve all' or 'Hide all') after first understanding whether confirmation or undo exists",
+          "Check whether action labels distinguish profile-linking effects from original-post visibility, matching the explanatory copy",
+          "Confirm whether counts update after individual or bulk actions and whether an empty-state appears when the queue is cleared"
+        ],
+        "exit_criteria": [
+          "All three per-item action types have been exercised on at least one item if enabled",
+          "One bulk action path has been explored with its aftermath documented",
+          "Queue count/update behavior and any confirmation/undo pattern are known"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Probe bulk visibility changes for past posts",
+        "objective": "Test the highest-risk retroactive privacy flow by combining filters with the 'Apply to visible' action and checking whether scope is transparent and recoverable.",
+        "target_pages": [
+          "past-posts.html"
+        ],
+        "key_checks": [
+          "Inspect the timeline/year controls and the year select to understand how narrowing content works",
+          "Change audience filters (Any audience, Public only, Friends only, Only me) and verify that the visible post list matches the selected filter",
+          "Change the target audience select (Friends / Only me / Public) and confirm that it is clearly separated from the filter controls",
+          "Apply changes to a narrowed visible subset using 'Apply to visible' and watch for confirmation, warnings, or post-level updates",
+          "Compare the on-page instruction 'what you see is what gets changed' against actual behavior after filtering",
+          "Test whether individual post 'Edit' links are actionable or placeholders, and whether they support recovery or deeper inspection"
+        ],
+        "exit_criteria": [
+          "At least one filtered bulk-apply scenario has been executed",
+          "The distinction between filters and target audience has been validated",
+          "Any lack of confirmation, undo, or scope clarity for the bulk action is documented"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Stress muted words input and list management",
+        "objective": "Exercise the page with the highest control density by testing add/remove flows, scope messaging, duration/settings controls, and file-related affordances visible on the page.",
+        "target_pages": [
+          "blocked-words.html"
+        ],
+        "key_checks": [
+          "Add a new muted word/phrase using the text input and the visible Enter-to-save pattern, then verify it appears in the list",
+          "Try edge inputs such as duplicate phrase, hashtag phrase, and multi-word phrase if allowed by the UI, observing validation or silent failure",
+          "Remove one or more existing muted-word chips using the × affordance and check for immediate feedback or recovery",
+          "Inspect the 'Where do these apply?' section to verify the included/exempted surfaces are understandable and internally consistent",
+          "Exercise visible duration-related inputs/options on the page and observe whether scope/duration selections are clear",
+          "Test 'Import .txt' and 'Export .txt' controls to determine whether they trigger local demo behavior, no-op behavior, or browser file flows",
+          "Check whether the displayed total entry count changes when words are added or removed"
+        ],
+        "exit_criteria": [
+          "At least one add and one remove flow have been completed",
+          "Import/export affordances have been probed enough to characterize their behavior",
+          "The page’s scope messaging, count behavior, and control clarity have been assessed"
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Repeat critical checks on mobile",
+        "objective": "Re-run the most important navigation and action paths in a mobile viewport, focusing on tap targets, density, wrapping, and whether high-risk controls remain usable.",
+        "target_pages": [
+          "index.html",
+          "audience.html",
+          "tag-review.html",
+          "past-posts.html",
+          "blocked-words.html"
+        ],
+        "key_checks": [
+          "Verify mobile access to each privacy page from the overview and/or side navigation equivalent",
+          "Recheck known small tap-target areas from prescan: top nav items, left-nav privacy links, and overview card links",
+          "On audience.html, confirm radio options, save/discard buttons, and custom-list controls remain easy to tap and read",
+          "On tag-review.html, verify repeated per-item action buttons do not crowd or wrap into ambiguous groupings",
+          "On past-posts.html, confirm filters and the 'Apply to visible' control remain understandable without horizontal overflow or accidental activation",
+          "On blocked-words.html, verify chip list wrapping, delete × affordances, input usability, and import/export controls under smaller width"
+        ],
+        "exit_criteria": [
+          "Critical path pages have each been viewed on mobile",
+          "At least one key action per major page has been attempted on mobile",
+          "Mobile-specific usability findings are collected for navigation and high-risk controls"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 5 known HTML pages, with at least one return to index.html to compare overview state against deeper-page actions.",
+      "features": "Exercise most visible controls on each key page: overview links and snapshot links; all audience radio options plus save/discard and custom-list affordances; tag-review item and bulk actions; past-post filters plus one bulk apply; muted-word add/remove plus import/export and scope/duration controls.",
+      "mobile": "Repeat the overview navigation and at least one representative action on each of the four management pages in a mobile viewport, with special attention to prescan-reported small tap targets."
+    },
+    "notes": [
+      "Do not spend time on top-level nav destinations Home/Discover/Messages/Settings/Profile/Account/Email/Push beyond confirming they appear to be placeholder links if they remain # targets.",
+      "Prefer evidence-driven critique around privacy clarity, destructive-action safeguards, and consistency between overview summaries and page-level settings.",
+      "If actions do not persist across page reloads, still document the local interaction quality, feedback, and mismatch between expected persistence and observed behavior."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Privacy & Audience — Aurora Network",
+      "url": "file:///Users/timchef/UXBench/websites/aurora-network/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Aurora Home Discover Messages Settings @miranda.shu MS SETTINGS Profile Account PRIVACY Overview Default audience Tag review 7 Past post visibility Muted words NOTIFICATIONS Email Push Privacy & Audience Decide who sees what. These settings apply to new posts. To change posts you've already shared, use Past post visibility. Default audience Current: Friends. Lock new posts to a specific list or just yourself. Tag review 7 pending Approve tags before they appear on your profile. We hold tags from people you don't follow. Past post visibility Restrict the audience on everything you've ever posted — a one-click sweep. Muted words Hide posts and comments containing 18 phrases you've added. Edit or import a list. Snapshot of your current privacy Profile visibility Public Change Default post audience Friends Change Story audience Close friends · 28 people Change Search engine indexing Off Chan",
+      "headings": [
+        "SETTINGS",
+        "Privacy & Audience",
+        "Default audience",
+        "Tag review 7 pending",
+        "Past post visibility",
+        "Muted words",
+        "Snapshot of your current privacy"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 26,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Aurora",
+        "clickable:a:Home",
+        "clickable:a:Discover",
+        "clickable:a:Messages",
+        "clickable:a:Settings",
+        "clickable:a:Profile",
+        "clickable:a:Account",
+        "clickable:a:Overview",
+        "clickable:a:Default audience",
+        "clickable:a:Tag review 7",
+        "clickable:a:Past post visibility",
+        "clickable:a:Muted words",
+        "clickable:a:Email",
+        "clickable:a:Push",
+        "clickable:a:Default audience Current: Friends. Lock new posts to a specific list or just yourself."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "audience.html",
+      "title": "Default audience — Aurora Network",
+      "url": "file:///Users/timchef/UXBench/websites/aurora-network/audience.html",
+      "load_error": null,
+      "visible_text_excerpt": "Aurora Home Discover Messages Settings @miranda.shu MS SETTINGS Profile Account PRIVACY Overview Default audience Tag review 7 Past post visibility Muted words Default audience This setting decides who can see new posts and stories by default. You can override per-post from the composer. Public Anyone on the internet. Indexed by search engines. Friends · 312 people Accepted mutuals only. Not friends-of-friends. Custom list… Pick a list per-post. Defaults to your last used list. Only me Drafts, mood boards, journaling. Visible to your 312 accepted friends. Not visible to friends-of-friends. Save default Discard changes Custom lists + New list Lists are private to you. People on the list aren't notified. Close friends 28 people · last used 2 days ago AS BK CY DN +24 Work circle 14 people · last used 3 weeks ago JR PH LK +11 Studio cohort '23 22 people · never used MN OS +20 Family 7 people",
+      "headings": [
+        "SETTINGS",
+        "Default audience",
+        "Custom lists",
+        "Who can tag you?"
+      ],
+      "counts": {
+        "buttons": 3,
+        "links": 12,
+        "inputs": 8,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Aurora",
+        "clickable:a:Home",
+        "clickable:a:Discover",
+        "clickable:a:Messages",
+        "clickable:a:Settings",
+        "clickable:a:Profile",
+        "clickable:a:Account",
+        "clickable:a:Overview",
+        "clickable:a:Default audience",
+        "clickable:a:Tag review 7",
+        "clickable:a:Past post visibility",
+        "clickable:a:Muted words",
+        "clickable:input:Public Anyone on the internet. Indexed by search engines.",
+        "clickable:input:Friends · 312 people Accepted mutuals only. Not friends-of-friends.",
+        "clickable:input:Custom list… Pick a list per-post. Defaults to your last used list.",
+        "clickable:input:Only me Drafts, mood boards, journaling."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "blocked-words.html",
+      "title": "Muted words — Aurora Network",
+      "url": "file:///Users/timchef/UXBench/websites/aurora-network/blocked-words.html",
+      "load_error": null,
+      "visible_text_excerpt": "Aurora Home Discover Messages Settings @miranda.shu MS SETTINGS Profile Account PRIVACY Overview Default audience Tag review 7 Past post visibility Muted words Muted words Hide posts, comments, and notifications containing any of these phrases. Matching is case-insensitive and counts hashtags. You have 18 entries. Mute Tip: muting \"#nft\" hides hashtags. Muting \"free crypto\" only matches the exact phrase. Your muted words Import .txt Export .txt spoiler × election × crypto airdrop × #nft × webinar × growth hack × side hustle × passive income × link in bio × DM me × collab opportunity × ICO × manifest × red pill × divorce × layoff × spotify wrapped × Severance episode × Where do these apply? Some places (like DMs with friends) are exempted automatically. Home feed Comments on your posts Reels and Discover Direct messages from friends Direct messages from non-friends Notifications Duration ",
+      "headings": [
+        "SETTINGS",
+        "Muted words",
+        "Your muted words",
+        "Where do these apply?"
+      ],
+      "counts": {
+        "buttons": 21,
+        "links": 12,
+        "inputs": 8,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Aurora",
+        "clickable:a:Home",
+        "clickable:a:Discover",
+        "clickable:a:Messages",
+        "clickable:a:Settings",
+        "clickable:a:Profile",
+        "clickable:a:Account",
+        "clickable:a:Overview",
+        "clickable:a:Default audience",
+        "clickable:a:Tag review 7",
+        "clickable:a:Past post visibility",
+        "clickable:a:Muted words",
+        "typeable:input:Add a word or phrase. Press Enter to save.",
+        "clickable:button:Mute",
+        "clickable:button:Import .txt",
+        "clickable:button:Export .txt"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "past-posts.html",
+      "title": "Past post visibility — Aurora Network",
+      "url": "file:///Users/timchef/UXBench/websites/aurora-network/past-posts.html",
+      "load_error": null,
+      "visible_text_excerpt": "Aurora Home Discover Messages Settings @miranda.shu MS SETTINGS Profile Account PRIVACY Overview Default audience Tag review 7 Past post visibility Muted words Past post visibility Sweep through everything you've posted and restrict it in bulk. Use the timeline and filters below; what you see is what gets changed. 2019 2020 2021 2022 2023 2024 2025 2026 All years 2019 2020 2021 2022 2023 2024 2025 2026 Any audience Public only Friends only Only me 8 visible posts Friends Only me Public Apply to visible \"First time at Pier 9 — the new milling machines hum like cellos.\" Apr 14, 2019 · 4 photos · 86 likes Public Edit \"Sourdough starter day 22 update — Henrietta is finally cooperating.\" May 30, 2020 · 1 photo · 211 likes · 47 comments Public Edit \"Quitting day-job thoughts in note form. tldr: the studio is real now.\" Sep 03, 2021 · Friends-only · 38 likes Friends Edit \"On disagreeing well wi",
+      "headings": [
+        "SETTINGS",
+        "Past post visibility"
+      ],
+      "counts": {
+        "buttons": 1,
+        "links": 20,
+        "inputs": 11,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Aurora",
+        "clickable:a:Home",
+        "clickable:a:Discover",
+        "clickable:a:Messages",
+        "clickable:a:Settings",
+        "clickable:a:Profile",
+        "clickable:a:Account",
+        "clickable:a:Overview",
+        "clickable:a:Default audience",
+        "clickable:a:Tag review 7",
+        "clickable:a:Past post visibility",
+        "clickable:a:Muted words",
+        "selectable:select:All years 2019 2020 2021 2022 2023 2024 2025 2026",
+        "selectable:select:Any audience Public only Friends only Only me",
+        "selectable:select:Friends Only me Public",
+        "clickable:button:Apply to visible"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "tag-review.html",
+      "title": "Tag review — Aurora Network",
+      "url": "file:///Users/timchef/UXBench/websites/aurora-network/tag-review.html",
+      "load_error": null,
+      "visible_text_excerpt": "Aurora Home Discover Messages Settings @miranda.shu MS SETTINGS Profile Account PRIVACY Overview Default audience Tag review 7 Past post visibility Muted words Tag review Approve tags before they appear on your profile. Pending tags are still visible in the original post — review only controls whether the tag links to you. 7 tags waiting for review Approve all Hide all 📸 Theo Baranov tagged you in \"Lakeshore sunrise run — couldn't have done it without you\" @theo.b · 2 hours ago · 14 likes · Public post Approve Hide tag Block user 🎥 Mariam Olu tagged you in a Reel — \"POV: design crit goes left\" @m.olu · yesterday · 2.1k views · Friends Approve Hide tag Block user 📍 Ren Saito tagged you at \"Studio 6, Pier 9 Workshop\" @ren.s · 3 days ago · Public · You don't follow this account Approve Hide tag Block user 📸 Dylan Cooper tagged you in a group photo with 4 others @coopd · 4 days ago · Friends",
+      "headings": [
+        "SETTINGS",
+        "Tag review"
+      ],
+      "counts": {
+        "buttons": 23,
+        "links": 12,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Aurora",
+        "clickable:a:Home",
+        "clickable:a:Discover",
+        "clickable:a:Messages",
+        "clickable:a:Settings",
+        "clickable:a:Profile",
+        "clickable:a:Account",
+        "clickable:a:Overview",
+        "clickable:a:Default audience",
+        "clickable:a:Tag review 7",
+        "clickable:a:Past post visibility",
+        "clickable:a:Muted words",
+        "clickable:button:Approve all",
+        "clickable:button:Hide all",
+        "clickable:button:Approve",
+        "clickable:button:Hide tag"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "plan": {
+    "goal": "Validate the core data visualization flow of the Migration Atlas, specifically focusing on the interaction between filters, the timeline player, and the map rendering, while assessing mobile usability given identified layout risks.",
+    "summary": "The exploration will proceed by first establishing a baseline view with default filters, then systematically manipulating the timeline (scrubbing and playing) to verify SVG trail updates. Subsequently, it will test filter logic (species toggles, year selection) and display options. Finally, it will validate the 'Individual' inspector panel interactions and repeat critical checks on a mobile viewport to address known tap-target issues.",
+    "assumptions": [
+      "The application is a Single Page Application (SPA) or local fixture where navigation links ('Studies', 'About') may trigger modals or scroll-to-sections rather than full page reloads.",
+      "SVG map elements (trails, dots) are interactive and linked to the 'Individual' inspector panel on the right.",
+      "The 'Play' button initiates an automatic interval that advances the month slider."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Mobile Viewport: High density of small tap targets (checkboxes, nav links) flagged in prescan.",
+      "Timeline Player: Synchronization between the slider position, the 'Current Month' header, and the visible SVG trails.",
+      "Filter Logic: Ensuring unchecking a species immediately removes its corresponding trails from the map without breaking the renderer.",
+      "Inspector Panel: Verifying that clicking a specific trail updates the right-hand panel with correct individual stats."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline & Timeline Mechanics",
+        "objective": "Verify the default state renders correctly and the primary time-navigation controls function as expected.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm initial load shows '2025 season' and 'May' as current month.",
+          "Scrub the month slider manually from Jan to Dec and observe trail extension/retraction.",
+          "Click 'Play' and verify the slider advances automatically; click 'Pause' to stop.",
+          "Change playback speed (0.5x, 2x, 4x) and observe cadence change."
+        ],
+        "exit_criteria": [
+          "Slider moves smoothly across all months.",
+          "Map trails visually update in sync with the selected month.",
+          "Play/Pause/Speed controls respond without console errors."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Filtering & Display Logic",
+        "objective": "Validate that left-rail filters correctly isolate data subsets and toggle visual layers.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Toggle 'Western osprey' off; verify its trails disappear from the map and count drops.",
+          "Use 'Filter species...' input to search for 'turtle'; verify only Leatherback remains.",
+          "Switch 'Study Year' to '2024' and '2026'; verify map data resets/updates accordingly.",
+          "Toggle 'Show trail', 'Show monthly positions', and 'Show stop-over polygons' individually to verify layer visibility."
+        ],
+        "exit_criteria": [
+          "Map reflects active filters accurately.",
+          "Species counts in the legend update dynamically.",
+          "Display toggles show/hide specific SVG elements without layout shift."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Inspector & Interaction Flow",
+        "objective": "Test the drill-down capability from the global map to individual animal details.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click on a visible trail or dot on the map.",
+          "Verify the 'Individual' panel on the right populates with specific data (ID, stats).",
+          "Check if the selected individual is highlighted on the map while others dim (if applicable).",
+          "Attempt to 'Save view' and 'Cite this view' to check for modal dialogs or copy-to-clipboard actions."
+        ],
+        "exit_criteria": [
+          "Inspector panel updates contextually based on map selection.",
+          "Action buttons ('Save', 'Cite') provide user feedback (toast/modal)."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Usability & Navigation",
+        "objective": "Assess the interface on a mobile viewport, focusing on the high-risk small tap targets identified in the prescan.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE or Pixel 5).",
+          "Attempt to toggle a species checkbox (verify if hit-area is sufficient despite small visual size).",
+          "Test the month slider scrubbing on touch.",
+          "Check if the three-column layout collapses into a stacked or tabbed view.",
+          "Verify top navigation links are clickable."
+        ],
+        "exit_criteria": [
+          "Core functionality (filtering, playing timeline) is accessible on mobile.",
+          "Identify any completely unusable controls due to overlap or size."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of html_files (index.html)",
+      "features": "All inputs (checkboxes, sliders, selects), buttons (play, save, cite), and map interactions.",
+      "mobile": "Repeat Phase 1 and Phase 2 key checks on mobile viewport."
+    },
+    "notes": [
+      "Since this is a local fixture, network error checking is low priority unless external assets (fonts/images) fail to load.",
+      "Pay close attention to the 'Monarch butterfly' entry which notes 'swarm aggregate'—this may render differently than individual tracks.",
+      "If 'Studies' or 'About' links do not navigate, check if they open hidden sections or modals within the DOM."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Migration Atlas — global animal tracking",
+      "url": "file:///Users/timchef/UXBench/websites/migration-atlas/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Migration Atlas Explore Studies Submit a track Methods About Cite this view Save view Filters SPECIES Western osprey (n=12) Boreal caribou (n=18) Leatherback sea turtle (n=9) Monarch butterfly (n=24, swarm aggregate) Bar-tailed godwit (n=7) Humpback whale (n=11) Wandering albatross (n=4) STUDY YEAR 2024 season 2025 season 2026 season (in progress) DISPLAY Show trail Show monthly positions Show stop-over polygons NOTES All individuals carry solar GPS loggers (model \"PicaTag-12\"). Fixes are taken every 4 hours and downsampled to monthly mean position. Migration Atlas — 2025 season Use the month slider to play through the year. Click any trail or pin to inspect the individual. 3 SPECIES SHOWN 54 INDIVIDUALS May CURRENT MONTH CAR-48 ▶ Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec 0.5× 1× 2× 4× Individual Click a trail, dot, or tag in the map to inspect that individual. Aggregate stats Acti",
+      "headings": [
+        "Filters",
+        "SPECIES",
+        "STUDY YEAR",
+        "DISPLAY",
+        "NOTES",
+        "Migration Atlas — 2025 season",
+        "Individual",
+        "Aggregate stats"
+      ],
+      "counts": {
+        "buttons": 3,
+        "links": 5,
+        "inputs": 14,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Explore",
+        "clickable:a:Studies",
+        "clickable:a:Submit a track",
+        "clickable:a:Methods",
+        "clickable:a:About",
+        "clickable:button:Cite this view",
+        "clickable:button:Save view",
+        "typeable:input:Filter species…",
+        "clickable:input:Western osprey (n=12)",
+        "clickable:input:Boreal caribou (n=18)",
+        "clickable:input:Leatherback sea turtle (n=9)",
+        "clickable:input:Monarch butterfly (n=24, swarm aggregate)",
+        "clickable:input:Bar-tailed godwit (n=7)",
+        "clickable:input:Humpback whale (n=11)",
+        "clickable:input:Wandering albatross (n=4)",
+        "selectable:select:2024 season 2025 season 2026 season (in progress)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

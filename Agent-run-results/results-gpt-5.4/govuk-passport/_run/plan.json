@@ -1,0 +1,194 @@
+{
+  "plan": {
+    "goal": "Explore the full single-page GOV.UK passport application prototype from landing content into the multi-step form, validating the main completion path plus validation, navigation, persistence, and mobile responsiveness.",
+    "summary": "This run should start by checking the public-facing landing experience on index.html, including cookie controls, start entry points, and anchor-style navigation that appears to jump within the same file. It should then move through the multi-step passport form end to end using the visible primary CTA, while deliberately testing inline errors, error summary focus behavior, back/forward movement, cancel/recovery paths, and localStorage persistence noted in the prescan. Because the site is a one-file prototype, coverage should focus on distinct in-page states/steps rather than hunting for separate HTML pages. Mobile checks should repeat the most critical entry, form progression, and error interactions, especially where small tap targets were already flagged.",
+    "assumptions": [
+      "The full service flow is contained within index.html and switches sections/steps dynamically rather than navigating to separate HTML files.",
+      "The 'Start now', top nav links, related-content links, and 'Demo result' likely route to in-page anchors/states within the same document.",
+      "script.js implements step progression, validation, error-summary focus, back navigation, and localStorage persistence as described in the README summary.",
+      "The flow stops before payment and any payment step or external submission should not be expected."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "index.html landing section: cookie banner buttons and 'View cookies' behavior may alter only local state and should not block starting the service",
+      "index.html entry links: 'Start now', related-content links, and top nav anchors may jump to unexpected sections or skip required context",
+      "Multi-step form validation: inline errors and error summary focus are explicitly implemented and need close validation",
+      "Step indicator placement/behavior: described as left/top and may behave differently across desktop and mobile",
+      "Save and continue / Cancel controls: primary flow and recovery path controls that can cause data loss or confusing exits",
+      "Photo upload step: file input and validation are commonly fragile and should be exercised carefully",
+      "Review step before payment stop-point: confirm completeness, editability if present, and clear expectation that no payment occurs",
+      "localStorage persistence: saved state may restore stale, partial, or invalid data after refresh/reopen",
+      "Mobile navigation and link/button tapability: multiple controls were already flagged as small tap targets in prescan"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing and entry-point validation",
+        "objective": "Validate the initial public GOV.UK-style page, confirm the main entry route into the service, and map the in-page navigation destinations available before the form starts.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Load index.html from a clean state and record the initial landing content and visible calls to action",
+          "Test cookie banner actions: Accept analytics cookies, Reject analytics cookies, and View cookies; observe whether banner state changes and whether the page remains usable",
+          "Use 'Start now' as the primary entry path and confirm it moves into the service start/form area within the same page",
+          "Check top navigation links 'Home', 'Service', and 'Demo result' to verify anchor destinations and whether they expose meaningful sections or create confusing jumps",
+          "Sample related-content links such as 'Renew an adult passport' and 'Report a lost or stolen passport' to confirm whether they intentionally route to the same service start state"
+        ],
+        "exit_criteria": [
+          "Primary service entry path from landing page is confirmed",
+          "Cookie controls have been exercised at least once with resulting state noted",
+          "Anchor-style navigation behavior is understood well enough to avoid redundant exploration later"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Happy-path step progression",
+        "objective": "Traverse the full passport application flow from start through review, documenting the sequence of steps and validating the baseline end-to-end experience.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Progress through the described steps in order: start/eligibility, application type, personal info, address, previous passport info, photo upload, review, and stop before payment",
+          "Choose one realistic primary path first, likely an adult new/renew/replace route based on available options shown during the flow",
+          "Use 'Save and continue' on each step and verify step transitions, progress indicator updates, and retention of entered values",
+          "Observe hint text, field grouping, mandatory fields, and whether the amount of information per step feels manageable",
+          "At the review stage, confirm the flow clearly stops before payment and that the prototype communicates the next step appropriately"
+        ],
+        "exit_criteria": [
+          "A complete end-to-end pass reaches the review/confirmation stop-point without blockers",
+          "Actual step sequence and major branch choices are documented",
+          "Any broken transitions, hidden sections, or mismatches between landing claims and form behavior are captured"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Validation and recovery states",
+        "objective": "Stress the form's error handling and user recovery mechanisms, especially the explicitly mentioned inline errors and error-summary focus behavior.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "On several key steps, attempt 'Save and continue' with required fields blank to trigger inline errors and the error summary",
+          "Verify focus moves to the error summary when validation fails and that summary links, if present, move focus to the right fields",
+          "Enter malformed or edge-case values where supported by visible fields, especially in personal info, address, and previous passport sections",
+          "Exercise back navigation between steps and confirm previously entered data persists correctly and does not duplicate errors",
+          "Test the 'Cancel' control from at least one mid-flow step to understand whether it exits, resets, or navigates elsewhere, and whether recovery back into the flow is possible"
+        ],
+        "exit_criteria": [
+          "Validation has been triggered on multiple step types, not just one",
+          "Error summary behavior and inline messaging quality are confirmed",
+          "At least one recovery path using back and one using cancel/re-entry has been tested"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Branching, file upload, and persistence",
+        "objective": "Check higher-risk branches and stateful behaviors that are likely to break or create UX confusion in a single-page form.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Revisit the application-type step and switch to at least one alternate branch option if available, such as new vs renew vs replace, to see whether downstream questions adapt",
+          "Exercise the photo upload step with an appropriate test file and observe validation, preview/filename display, and progression behavior",
+          "Refresh the page during mid-flow and reopen the file if needed to verify localStorage state persistence and restoration into the correct step",
+          "Check whether stored state can be cleared naturally through cancel/reset behavior or whether stale data keeps resurfacing",
+          "Use the top 'Demo result' anchor if relevant near the end state to see whether it aligns with the review/confirmation portion of the flow"
+        ],
+        "exit_criteria": [
+          "At least one alternate branch beyond the primary happy path has been sampled",
+          "Photo upload has been exercised successfully or a blocker has been documented",
+          "Persistence after refresh/reload has been verified with both preserved and potentially reset scenarios"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile-focused regression sweep",
+        "objective": "Repeat the most important interactions on a mobile viewport, concentrating on responsiveness, step indicator changes, and tap-target usability.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "On mobile viewport, confirm landing content remains readable and the cookie banner does not crowd out the start action",
+          "Retest top navigation and key links/buttons previously flagged as small tap targets, including Home, Service, Demo result, cookie controls, Start now, and related-content links",
+          "Enter the service on mobile and progress through several representative steps including one validation failure and one successful continuation",
+          "Check whether the step indicator moves from side to top as expected and remains understandable on smaller screens",
+          "Verify that long labels, hint text, error summaries, and form controls do not overflow or create horizontal scrolling"
+        ],
+        "exit_criteria": [
+          "Critical entry and progression flow has been repeated on mobile",
+          "At least one mobile validation/error scenario has been captured",
+          "Any mobile-specific layout or tapability issues are documented with priority relative to desktop findings"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit the only known HTML file (index.html) and cover all major in-page sections and form steps exposed through anchors or dynamic section switching.",
+      "features": "Exercise most visible controls on the landing page plus the core form features: start entry, application type choice, required field validation, error summary focus, back/continue, cancel, photo upload, review, and localStorage-based persistence.",
+      "mobile": "Repeat critical landing, navigation, and form checks on mobile viewport, with special attention to the previously flagged small tap targets and the step indicator/error presentation."
+    },
+    "notes": [
+      "Do not spend time searching for external pages or payment flows; prescan indicates a one-file local prototype that stops before payment.",
+      "Prefer depth within distinct steps/states over exhaustive clicking of footer utility links that appear to point back to '#start'.",
+      "Because many links likely resolve to anchors in the same document, note whether they are informative shortcuts versus misleading dead-end navigation."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Apply for or renew a passport - GOV.UK local demo",
+      "url": "file:///Users/timchef/UXBench/websites/govuk-passport/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "GOV.UK Home Service Demo result Local demo only. This is not an official GOV.UK or HM Passport Office service. Do not enter real passport, payment or personal information. Cookies on GOV.UK We use some essential cookies to make this website work. We'd also like to use analytics cookies so we can understand how you use the service and make improvements. Accept analytics cookies Reject analytics cookies View cookies Home Citizenship and living in the UK Passports, travel and living abroad Passports Apply for or renew a passport Apply online for a UK passport. You can also renew, replace, change details on, or apply for a child passport. This local version recreates the public GOV.UK page and a complete interactive form flow for demonstration and design review. You must use the official GOV.UK service for a real passport application. This page is an offline prototype. Start now › Before you",
+      "headings": [
+        "Cookies on GOV.UK",
+        "Apply for or renew a passport",
+        "Before you start",
+        "Related content",
+        "Services and information",
+        "Government activity",
+        "Support links"
+      ],
+      "counts": {
+        "buttons": 2,
+        "links": 24,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:GOV.UK local demo home",
+        "clickable:a:Home",
+        "clickable:a:Service",
+        "clickable:a:Demo result",
+        "clickable:button:Accept analytics cookies",
+        "clickable:button:Reject analytics cookies",
+        "clickable:a:View cookies",
+        "clickable:a:Citizenship and living in the UK",
+        "clickable:a:Passports, travel and living abroad",
+        "clickable:a:Start now ›",
+        "clickable:a:Renew an adult passport",
+        "clickable:a:Apply for a child passport",
+        "clickable:a:Report a lost or stolen passport",
+        "clickable:a:Passport fees",
+        "clickable:a:Yes"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

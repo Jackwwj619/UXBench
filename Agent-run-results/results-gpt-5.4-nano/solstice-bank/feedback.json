@@ -1,0 +1,42 @@
+{
+  "summary": "The Solstice Bank onboarding flow generally communicates step progress clearly and provides contextual Help that updates by step. Validation and error summaries are present and often actionable, but state synchronization appears unreliable (users can type/select yet still see persistent “required” errors), which can feel like the form is ignoring input. On mobile, multiple key controls and the help close button are below recommended tap-target sizing, increasing the chance of mis-taps and interaction failures (notably the desktop “Close help” timed out due to pointer interception).",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "required-field-validation-appears-to-persist",
+      "severity": "high",
+      "area": "error recovery",
+      "page_hint": "apply.html (Step 3: Street address/State/City/Zip/Residence type; desktop screenshots referenced across steps-25-36, plus mobile consent persistence in steps-67-72)",
+      "problem": "Required-field validation appears to persist even after the user enters/selects the seemingly required value, suggesting validation state is not reliably synced to inputs.",
+      "evidence": "In Step 3 (Contact & address), after entering a street address, the UI still showed “Street address is required,” and after selecting State (dropdown shows “AL”), “State is required” persisted. In Step 4 gating attempts, progress behavior also showed inconsistency (e.g., selecting “Own” did not resolve the page-level validation gate and State selection didn’t clear “State is required”). On mobile, after clicking Continue from the consent anchor, the flow advanced, but earlier the ToS consent error banner remained unchanged after tapping the consent checkbox (banner still said “This must be checked”).",
+      "suggested_fix": "Ensure validation is driven by actual field state changes (e.g., run validation recalculation on change/blur consistently). When a user corrects an input, clear the corresponding summary bullet and field-level message immediately; also consider adding a brief “updated” confirmation near the field (e.g., “Looks good”) to reinforce that input was received."
+    },
+    {
+      "id": "multiple-critical-tap-targets-are-below",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "apply.html mobile state (screenshot/observations with layout_warning_count=7 and interactables ux-1/ux-2/ux-7/ux-18/ux-11), plus desktop “Close help” failure in session_memory notable_failures",
+      "problem": "Multiple critical tap targets are below recommended mobile sizing, increasing mis-taps and failed interactions.",
+      "evidence": "Layout warnings repeatedly flag controls below 44px guidance: “Solstice” 103x27, “Save & continue later” 154x18, “Continue” 97x37, “Back” 71x39, and the Help “× Close help” 25x28. During the session, the “Close help” action failed on desktop due to a header intercepting pointer events, indicating interaction layers may also be problematic.",
+      "suggested_fix": "Increase minimum hit areas for all primary actions (Continue, Back, Save & continue later) and the Help close icon; add extra padding around icons and links so the tap target meets at least 44x44 CSS pixels without visually shrinking the content."
+    },
+    {
+      "id": "the-help-drawer-close-control-can",
+      "severity": "medium",
+      "area": "affordance",
+      "page_hint": "apply.html Help drawer Close help × (notable_failures; locator id helpClose / data-uxagent-id ux-13)",
+      "problem": "The Help drawer close control can be unreliable because it may be obstructed by a persistent header layer intercepting pointer events.",
+      "evidence": "The session recorded a failure: “Click failed for Close help × … intercepts pointer events” with retries repeatedly blocked by “<header class=\"apply-bar\">…</header> intercepts pointer events.” The same interaction was later not observed failing on mobile (Help close worked there), but desktop clearly shows an interaction-layer problem.",
+      "suggested_fix": "Fix z-index/pointer-event conflicts so the close button is always clickable above sticky headers. As a safeguard, ensure ESC key and an overlay click-to-dismiss behave consistently."
+    },
+    {
+      "id": "after-some-input-actions-typing-selecting",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "apply.html across steps-13-30, and mobile zip typing in steps-78-79 (screenshots show unchanged ‘Please fix the following’ context)",
+      "problem": "After some input actions (typing/selecting) the UI often does not provide obvious visible change, even though underlying validation may still block progression.",
+      "evidence": "Examples include: on Step 2, after typing First name, the tool noted the error summary still listed multiple missing items; clicking the error-summary link anchored correctly. On Step 3, after selecting State, the screenshot still showed the validation issue. On mobile, typing Zip produced no obvious visible change in the screenshot. Also, Step 4 dropdown selections showed state updated (e.g., Industry set) but the tool reported “no obvious URL or visible-text change was detected,” implying feedback may be subtle or not prominent.",
+      "suggested_fix": "Add immediate, field-level confirmation for accepted inputs (clear checkmark/icon or “saved” indicator next to the field) and ensure the error summary updates in lockstep with those changes. If validation remains blocked, briefly indicate which specific item is still failing and why."
+    }
+  ]
+}

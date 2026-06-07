@@ -1,0 +1,178 @@
+{
+  "plan": {
+    "goal": "Critique and validate the end-to-end UX of the Lumen Research research-assistant chat interface, including citation-source navigation, thread management, export/share, mode controls, and mobile usability.",
+    "summary": "Start by exercising the primary chat thread flow on index.html: interact with existing thread topics, use the follow-up input, and validate citation-chip behavior with the Sources rail (hover highlight + click jump). Then test adjacent controls in the header/footer—mode selector, sort, filter tabs, share thread, export as PDF, and the attachment icon—followed by stress tests using the three 'button prompts' shown in the message (find papers/power analysis/negative results). Finish by repeating critical actions on a mobile viewport and verifying tap target and label/aria issues.",
+    "assumptions": [
+      "The only known HTML page is index.html; all interactions occur within this single-page UI (no other pages are discoverable from the prescan).",
+      "Citation chips in assistant messages should map to items in the right Sources panel, with hover highlighting/scrolling and click navigation/jump behavior.",
+      "Header controls (Mode select, Share thread, Export as PDF, + New thread, 📎) operate in-place without full page navigation."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "index.html: citation-chip hover vs click synchronization with the Sources rail (risk of wrong mapping, lack of scroll, or missing highlight)",
+      "index.html: Mode selector (Balanced/Quick scan/Deep dive/Compare arguments) and whether it changes output + affects source handling",
+      "index.html: Sort selector in Sources (Relevance/Date/Cited in this answer) and Sources tab set (All/Papers/Books/Web/Preprints) possibly not updating content reliably",
+      "index.html: Export as PDF and Share thread flows (risk of blocked downloads, missing permissions, or silent failures)",
+      "index.html: attachment/📎 button behavior (risk of missing file-picker, wrong affordance, or errors)",
+      "index.html: follow-up textarea labeled via placeholder only (risk of missing accessible label/keyboard focus issues)",
+      "index.html: mobile tap targets flagged as small (e.g., + New thread 215x42; many topic links 215x38; mode control and source tabs), plus missing input label on Mode select noted by prescan"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline walkthrough of the primary chat experience",
+        "objective": "Validate that the existing conversation renders correctly and that core interactions (topic selection + follow-up) produce coherent updates.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click one topic link in the left thread history (e.g., 'Deep work scheduling literature') and confirm the center conversation updates or scrolls to the associated thread content.",
+          "Use the follow-up textarea: type a short question referencing the current answer (e.g., ask for study design notes or effect-size interpretation) and press Ask.",
+          "Observe whether the assistant response includes inline citation chips and whether any new Sources items appear/expand in the right rail."
+        ],
+        "exit_criteria": [
+          "At least one left-rail topic click demonstrably changes the displayed conversation state (scroll or content update).",
+          "A follow-up submission produces a new assistant turn with citation chips present in the conversation.",
+          "Sources rail updates to include/reflect the citations used in the new assistant turn."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Citation-to-source navigation (hover + click) validation",
+        "objective": "Ensure citations in the chat map accurately to entries in Sources and that the interaction model is consistent and discoverable.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over multiple citation chips in the assistant message and verify the corresponding source item highlights and scrolls into view in the Sources rail.",
+          "Click a citation chip and confirm it jumps to the matching source entry (and that the page focus/scroll position updates appropriately).",
+          "Change Sources sort and repeat one citation interaction to confirm mapping remains correct regardless of ordering.",
+          "If possible, test a citation chip when the source is not currently visible without scrolling (confirm the UI still navigates correctly)."
+        ],
+        "exit_criteria": [
+          "Hover and click both reliably identify the correct source item for at least 3 different citations.",
+          "Citation navigation continues to work after changing Sources sort (Relevance/Date/Cited in this answer)."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Mode control + compare/assist actions",
+        "objective": "Validate that the Mode selector meaningfully changes agent behavior and that downstream UI elements (sources, sorting, citations) remain functional.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the Mode select (Balanced, Quick scan, Deep dive, Compare arguments) to trigger a mode change and then ask a short follow-up question.",
+          "Specifically choose 'Quick scan' and re-ask the same or similar question to check output verbosity/format changes (e.g., shorter bullets vs detailed response).",
+          "Choose 'Compare arguments' and ask a comparison-focused question; verify response includes appropriate structure and citations.",
+          "Use the existing message buttons (if they are actionable prompts): 'Find papers since 2020 directly comparing the two schedules', 'Power analysis for 24 engineers × 2 weeks', and 'Surface negative results: where mornings didn't help'—execute at least 2 and confirm assistant responses reflect the intent."
+        ],
+        "exit_criteria": [
+          "At least 3 mode selections produce meaningfully different assistant output characteristics.",
+          "At least 2 of the visible prompt buttons generate agent responses that align with their described tasks."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Share/export/attachment + accessibility risk checks",
+        "objective": "Validate non-chat utility controls (share/export/attachment) and verify critical accessibility concerns (labels, focus, keyboard behavior).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Share thread' and confirm expected share behavior (e.g., dialog/link generation) or graceful failure messaging.",
+          "Click 'Export as PDF' and verify a PDF download/render occurs without blank/partial content.",
+          "Click the 📎 attachment button to confirm whether a file picker/open action appears; attempt cancelling if no file is selected.",
+          "Verify keyboard navigation: Tab to the follow-up textarea and Ask button; submit with Enter (if supported).",
+          "Check select control accessibility: ensure Mode select has an accessible name/label (prescan flagged missing input label for select)."
+        ],
+        "exit_criteria": [
+          "Share thread either produces a usable share link/dialog or shows clear error/disabled state (no silent no-op).",
+          "Export as PDF completes with a plausible, content-inclusive PDF (or provides clear error).",
+          "Attachment control responds with a visible UI for file selection or a clear explanation."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile viewport repeat of critical flows",
+        "objective": "Re-validate primary interactions under mobile constraints and address tap-target and layout risks flagged by prescan.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Repeat: topic link click (1), follow-up Ask (1), citation hover/click navigation (2 citations).",
+          "Repeat mode change + one assistant question.",
+          "Attempt Source rail interactions: change Sort selector once and click a Sources tab (All/Papers/Books/Web/Preprints) if available on mobile layout.",
+          "Observe tap target effectiveness for + New thread and left topic links (many flagged as <44px height/width)."
+        ],
+        "exit_criteria": [
+          "All critical actions succeed on mobile: selecting a topic, submitting a follow-up, and navigating citations to sources.",
+          "No critical controls become unreachable/overlaid; any interaction failures are clearly explained to the user."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (index.html only).",
+      "features": "Exercise most visible controls per key page: + New thread, left topic links, follow-up textarea + Ask, Mode selector, Share thread, Export as PDF, 📎 attachment, Sources sort and tabs, and at least 2 of the three assistant prompt buttons shown.",
+      "mobile": "Repeat critical checks on mobile viewport: topic selection, follow-up submission, citation navigation, mode switch, and one Sources interaction (sort or tab)."
+    },
+    "notes": [
+      "No navigation to other HTML pages is expected; treat this run as a single-page interaction audit focused on state transitions within index.html.",
+      "Prioritize evidence quality for citation mapping and export/share outcomes; these are high-risk for UX regressions and user trust."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Lumen Research — research assistant",
+      "url": "file:///Users/timchef/UXBench/websites/lumen-research/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Lumen + New thread TODAY Deep work scheduling literature EV battery recycling policy in Norway Trace prevalence of seal influenza H10N7 LAST 7 DAYS Comparative grad-school stipends in CS Microclimate effects of urban rooftop gardens Late-Holocene shoreline shifts, NW Europe Why does ringing happen in step responses EARLIER Survey: open-source funding models 2024 Caffeine half-life in slow metabolizers Building codes vs wildfire defensible space PA Priya Anand Researcher · Pro Deep work scheduling literature Share thread Export as PDF Mode: Balanced Mode: Quick scan Mode: Deep dive Mode: Compare arguments Hi — I'm planning a 6-week study on whether \"two 90-minute deep-work blocks before noon\" actually outperform afternoon-heavy schedules for software engineers. What does the existing literature say about this? L Short version: there's strong general support for protected morning blocks in",
+      "headings": [
+        "Deep work scheduling literature",
+        "Sources 8"
+      ],
+      "counts": {
+        "buttons": 14,
+        "links": 10,
+        "inputs": 4,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:+ New thread",
+        "clickable:a:Deep work scheduling literature",
+        "clickable:a:EV battery recycling policy in Norway",
+        "clickable:a:Trace prevalence of seal influenza H10N7",
+        "clickable:a:Comparative grad-school stipends in CS",
+        "clickable:a:Microclimate effects of urban rooftop gardens",
+        "clickable:a:Late-Holocene shoreline shifts, NW Europe",
+        "clickable:a:Why does ringing happen in step responses",
+        "clickable:a:Survey: open-source funding models 2024",
+        "clickable:a:Caffeine half-life in slow metabolizers",
+        "clickable:a:Building codes vs wildfire defensible space",
+        "clickable:button:Share thread",
+        "clickable:button:Export as PDF",
+        "selectable:select:Mode: Balanced Mode: Quick scan Mode: Deep dive Mode: Compare arguments",
+        "clickable:button:📎",
+        "typeable:textarea:Ask a follow-up, or paste a paper to summarize…"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

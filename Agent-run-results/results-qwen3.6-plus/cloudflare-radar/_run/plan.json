@@ -1,0 +1,190 @@
+{
+  "plan": {
+    "goal": "Autonomously explore and critique the UX of the Cloudflare Radar single-page dashboard, focusing on navigation flow, data visualization interactivity, filter coordination, and mobile responsiveness.",
+    "summary": "The run will proceed by first validating the global navigation and sidebar structure, then systematically exercising the primary dashboard cards (Traffic, Security) including their internal tabs and tooltips. It will subsequently test the global filtering system (Location, Date Range) to ensure state persistence across widgets, and conclude with a mobile viewport check to address known tap-target risks.",
+    "assumptions": [
+      "The application is a Single Page Application (SPA) where navigation links update the view via hash changes or JS state rather than full page reloads.",
+      "Charts are interactive SVG/Canvas elements that support hover states for tooltips.",
+      "Global filters (Location, Date Range) apply contextually to all visible data cards."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Top navigation bar tap targets (identified as <44px in prescan)",
+      "Chart tooltip rendering and readability on hover",
+      "Global filter state synchronization across different dashboard cards",
+      "Sidebar accordion behavior on mobile viewports"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Navigation & Layout Structure",
+        "objective": "Validate the primary navigation hierarchy and sidebar accessibility.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click each top-nav item (Overview, Traffic, Security, etc.) to verify view switching/hash updates.",
+          "Expand/Collapse sidebar sections (Overview, Traffic, Bots, Security) to test accordion logic.",
+          "Verify 'Search Radar' input focus and placeholder visibility.",
+          "Check 'Toggle theme' button functionality (light/dark mode switch)."
+        ],
+        "exit_criteria": [
+          "All top-nav links respond to clicks.",
+          "Sidebar sections expand and collapse without layout breakage.",
+          "Theme toggle visually updates the interface."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Dashboard Card Interactivity (Traffic & Overview)",
+        "objective": "Exercise the core data visualization components and their internal controls.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over 'Internet traffic' chart to trigger and validate tooltip content.",
+          "Switch tabs within 'Internet traffic' card (HTTP requests, Bytes, Latency, Anomalies).",
+          "Change time granularity (Hourly, Daily, Weekly) in the traffic card.",
+          "Click 'Details' on summary stats (e.g., HTTP requests 42.8M) to check for modal or drill-down behavior.",
+          "Interact with 'Traffic by type' donut/bar charts (Desktop vs Mobile)."
+        ],
+        "exit_criteria": [
+          "Tooltips appear with relevant data on hover.",
+          "Tab switching within cards updates the chart correctly.",
+          "Time granularity controls update the visual data representation."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Security & Ranking Components",
+        "objective": "Validate secondary dashboard sections and list-based data presentations.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Inspect 'Attacks and mitigations' card interactions.",
+          "Scroll through 'Domain popularity' list and click specific domains (e.g., google.com) to test selection state.",
+          "Verify 'Copy link', 'Learn more', and 'Share' buttons on cards for functional feedback (toast/modal).",
+          "Check 'Export' button behavior in the header."
+        ],
+        "exit_criteria": [
+          "Domain selection highlights the chosen item.",
+          "Action buttons provide visual feedback or open expected dialogs.",
+          "Security charts render correctly."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Global Filtering & State Management",
+        "objective": "Test the coordination between global filters and dashboard data.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Change 'Location' dropdown from 'Worldwide' to a specific region (if available) or verify dropdown options.",
+          "Modify 'Date Range' (e.g., Last 24 hours -> Last 7 days) and observe if charts refresh.",
+          "Use 'Add filter' button to test advanced filtering UI.",
+          "Click 'Reset' to ensure all filters return to default state.",
+          "Verify 'Data updated' timestamp reflects current state."
+        ],
+        "exit_criteria": [
+          "Changing global filters triggers visual loading states or data updates in charts.",
+          "Reset button successfully clears applied filters.",
+          "Filter inputs maintain state during interaction."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Responsiveness & Accessibility",
+        "objective": "Address identified layout warnings and validate mobile UX.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (e.g., iPhone SE or Pixel 5).",
+          "Verify hamburger menu or sidebar collapse behavior.",
+          "Attempt to tap top-nav items (noting difficulty due to <44px targets).",
+          "Check chart readability and tooltip interaction on touch devices.",
+          "Verify text legibility and card stacking order."
+        ],
+        "exit_criteria": [
+          "Layout adapts to narrow width without horizontal scroll.",
+          "Critical navigation remains accessible despite small tap targets.",
+          "Charts remain interpretable on small screens."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit index.html and exercise all hash-based views (Overview, Traffic, Security, Connectivity, Routing, DNS, Reports).",
+      "features": "Interact with at least 3 chart types, 2 global filters, sidebar accordions, and theme toggle.",
+      "mobile": "Repeat navigation and critical chart interactions on mobile viewport to confirm usability issues."
+    },
+    "notes": [
+      "Prescan indicates significant 'small_tap_target' warnings in the header; prioritize noting these in the mobile phase.",
+      "Since this is a local file setup, network errors are not expected, but JS console errors should be monitored during chart rendering.",
+      "Focus on the 'coordination' of filters: does changing the date range actually update the 'Internet traffic' chart?"
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Cloudflare Radar",
+      "url": "file:///Users/timchef/UXBench/websites/cloudflare-radar/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Radar Overview Traffic Security Connectivity Routing DNS Reports Search Radar / API EN GLOBAL VIEW Worldwide All locations and networks OVERVIEW Global Internet trends Latest reports TRAFFIC HTTP requests Traffic by type Domain rankings Internet outages BOTS Bot traffic AI crawlers SECURITY HTTP DDoS attacks Layer 3/4 attacks Attack map Email security CONNECTIVITY Quality Outages Speed 1.1.1.1 resolver ROUTING DNS TOOLS CLOUDFLARE RADAR Internet insights for every network Near real-time traffic, security, routing, DNS, connectivity, and adoption signals observed across Cloudflare's global network. Share Export LOCATION Worldwide LOOKUP DATE RANGE Last 24 hours Add filter Reset Data updated 2 minutes ago Scope Worldwide, all networks Comparison Previous period HTTP requests Details 42.8M +3.4% Mitigated attacks Details 8.7M +12.1% Median latency Details 37 ms -1.8% IPv6 traffic Details 36",
+      "headings": [
+        "Internet insights for every network",
+        "Internet traffic",
+        "Traffic by type",
+        "Protocol usage",
+        "Attacks and mitigations",
+        "Domain popularity",
+        "1.1.1.1 resolver",
+        "Quality and outages",
+        "BGP and AS Rank",
+        "Data Explorer"
+      ],
+      "counts": {
+        "buttons": 135,
+        "links": 39,
+        "inputs": 19,
+        "forms": 1,
+        "dialogs": 6
+      },
+      "top_interactables": [
+        "clickable:a:Cloudflare Radar home",
+        "clickable:a:Overview",
+        "clickable:a:Traffic",
+        "clickable:a:Security",
+        "clickable:a:Connectivity",
+        "clickable:a:Routing",
+        "clickable:a:DNS",
+        "clickable:a:Reports",
+        "clickable:button:Search Radar",
+        "clickable:button:API",
+        "clickable:button:EN",
+        "clickable:button:Toggle theme",
+        "clickable:button:Worldwide All locations and networks",
+        "typeable:input:Filter navigation",
+        "clickable:button:OVERVIEW",
+        "clickable:a:Global Internet trends"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

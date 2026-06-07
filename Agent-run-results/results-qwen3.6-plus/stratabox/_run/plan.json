@@ -1,0 +1,166 @@
+{
+  "plan": {
+    "goal": "Evaluate the UX of the Stratabox single-page marketing site, focusing on the interactive 'Live Block Builder' demo, SDK documentation usability, and mobile responsiveness of complex UI elements.",
+    "summary": "The run will treat index.html as a multi-section application. It begins with global navigation and hero validation, moves to deep interaction testing of the drag-and-drop content builder, verifies the developer-facing SDK tabs and search filters, and concludes with a rigorous mobile viewport check to address known tap-target risks.",
+    "assumptions": [
+      "The site is a Single Page Application (SPA) style landing page where 'Pricing', 'Product', etc., are scroll anchors rather than separate HTML files.",
+      "The 'Start free' and 'Sign in' buttons likely trigger modals or external redirects not fully captured in the static prescan.",
+      "The 'Live Block Builder' relies on client-side JS for state management (drag-and-drop, auto-save simulation)."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Builder Drag-and-Drop: HTML5 DnD often fails on touch devices or has poor accessibility.",
+      "SDK Copy Buttons: Clipboard API permissions can fail silently in local file contexts.",
+      "Mobile Navigation: Prescan indicates numerous small tap targets (<44px) in the header and builder controls.",
+      "Integrations Search: Live filtering logic may have edge cases with special characters or empty states."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global Nav & Hero Validation",
+        "objective": "Verify sticky header behavior, smooth scrolling to anchors, and initial hero state.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click each nav link (Product, Builder, SDKs, Pricing) to verify scroll-to-anchor behavior.",
+          "Validate 'Start free' and 'Book a demo' CTA visibility and hover states.",
+          "Observe the hero 'editor-vs-live-preview' split panel for the periodic block-swap animation."
+        ],
+        "exit_criteria": [
+          "All nav links scroll to correct sections.",
+          "Hero animation cycles at least once."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Interactive Builder Stress Test",
+        "objective": "Deeply exercise the 'Live Block Builder' demo to validate drag-and-drop, editing, and state feedback.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Drag a block (e.g., 'Callout') to reorder it; verify visual drop indicator and final position.",
+          "Type into the 'New section heading' input; verify real-time update in the Live Preview pane.",
+          "Click '+ Paragraph' or '+ Image' to add a new block; verify it appears in both panes.",
+          "Wait for the 'debounced auto-save' status indicator to update (e.g., 'saved' vs 'saving')."
+        ],
+        "exit_criteria": [
+          "Successful reordering of at least 2 blocks.",
+          "Real-time text reflection confirmed.",
+          "Auto-save status change observed."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Developer Experience (SDKs & Integrations)",
+        "objective": "Validate the usability of code snippets and the integrations discovery flow.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch between SDK tabs (JS, Python, Ruby, curl); verify syntax highlighting updates.",
+          "Click the 'Copy' button on a snippet; check for toast notification or visual feedback.",
+          "Type a query in the 'Search 24 visible integrations' input; verify grid filtering and count update.",
+          "Clear the search input; verify all integrations return."
+        ],
+        "exit_criteria": [
+          "All 4 SDK tabs viewed.",
+          "Copy button interaction triggered feedback.",
+          "Search filter successfully hid non-matching items."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Responsiveness & Accessibility",
+        "objective": "Repeat critical checks on mobile viewport to address prescan warnings about small tap targets.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport (<720px).",
+          "Attempt to use the Builder drag-and-drop on touch/mobile emulation (high risk of failure).",
+          "Check if the sticky nav collapses into a hamburger menu or remains usable.",
+          "Verify text readability in the split-pane editor on narrow screens."
+        ],
+        "exit_criteria": [
+          "Layout does not break horizontally.",
+          "Critical CTAs remain clickable.",
+          "Builder usability assessment completed (even if unusable, that is a finding)."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "100% of index.html sections (Hero, Builder, SDKs, Integrations, Footer)",
+      "features": "Exercise all builder controls (add, delete, reorder, edit) and all SDK tabs",
+      "mobile": "Full pass on mobile viewport for layout integrity and touch targets"
+    },
+    "notes": [
+      "Prescan identified ~10 small tap targets in the header and builder controls; prioritize checking these in Phase 4.",
+      "Since this is a local file system run, clipboard permissions for the 'Copy' button might be restricted by the browser; note if this prevents testing.",
+      "The 'Pricing' section is described as a 'teaser' in the summary; verify if it links out or expands."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Stratabox — the structured content platform",
+      "url": "file:///Users/timchef/UXBench/websites/stratabox/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Stratabox Product Builder SDKs Integrations Customers Pricing Sign in Start free v8 · Stratabox Studio Structured content for every surface. A headless content platform where editors author with composable blocks, developers query a typed GraphQL+REST API, and your team ships content to web, mobile, kiosks, and email — from a single source of truth. Start free → Book a demo ✔ 50 GB asset CDN free ✔ SOC 2 Type II ✔ EU + US regions studio.stratabox.dev / articles / coastal-bloom EDITOR ● saved H1 Coastal Bloom Returns ¶ After a two-year hiatus the festival returns to the Pier 22 boardwalk… ▣ hero-coast-2026.jpg · 4096×2304 ★ Callout · Tickets on sale May 22 ¶ Organizers expect twelve thousand visitors over the weekend… ▦ Gallery · 8 images LIVE PREVIEW web · mobile · email Coastal Bloom Returns After a two-year hiatus the festival returns to the Pier 22 boardwalk… hero-coast-2026.jpg ★ Tic",
+      "headings": [
+        "Structured content\nfor every surface.",
+        "Coastal Bloom Returns",
+        "Built around composable blocks.",
+        "Composable schema",
+        "Real-time collaboration",
+        "Edge content API",
+        "Drag, drop, ship.",
+        "A field guide to coastal birds",
+        "One schema. Every SDK.",
+        "Plays well with your stack."
+      ],
+      "counts": {
+        "buttons": 15,
+        "links": 29,
+        "inputs": 11,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Stratabox",
+        "clickable:a:Product",
+        "clickable:a:Builder",
+        "clickable:a:SDKs",
+        "clickable:a:Integrations",
+        "clickable:a:Customers",
+        "clickable:a:Pricing",
+        "clickable:a:Sign in",
+        "clickable:a:Start free",
+        "clickable:a:Start free →",
+        "clickable:a:Book a demo",
+        "clickable:button:+ Paragraph",
+        "clickable:button:+ Heading",
+        "clickable:button:+ Image",
+        "clickable:button:+ Callout",
+        "clickable:button:+ Quote"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

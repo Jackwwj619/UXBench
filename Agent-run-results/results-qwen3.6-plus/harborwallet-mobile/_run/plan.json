@@ -1,0 +1,162 @@
+{
+  "plan": {
+    "goal": "Autonomously explore the Harbor Wallet mobile fixture, focusing on the Account/Settings flow (specifically Privacy), validating core transactional paths (Send/Receive), and critiquing UX accessibility issues identified in the prescan.",
+    "summary": "The run will begin by establishing the baseline Home state, then navigate to the 'Account' tab to locate and exercise the Settings/Privacy controls. It will subsequently validate the primary 'Send' and 'Receive' flows to ensure functional consistency. Finally, it will switch to a mobile viewport to re-evaluate tap targets and layout constraints flagged as risks.",
+    "assumptions": [
+      "The application is a Single Page Application (SPA) where navigation updates the DOM dynamically rather than loading new HTML files.",
+      "The 'Account' tab contains the entry point for 'Settings' and 'Privacy' configurations.",
+      "The '3 🔔' notification badge implies an interactive notification center or message list."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Notification Bell (ux-1): 38x38px tap target is below the 44px mobile accessibility standard.",
+      "'See all' link (ux-6): 42x16px text link is difficult to tap accurately on mobile.",
+      "Privacy Controls: Potential lack of clear feedback when toggling sensitive privacy settings.",
+      "Transaction Inputs: Validation logic for 'Send' amounts and addresses."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Home & Navigation Baseline",
+        "objective": "Validate the initial state, status bar simulation, and global navigation integrity.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify Status Bar elements (time, battery, wifi) are visible and static/simulated correctly.",
+          "Click each Tab Bar item (Home, Send, Receive, Activity, Account) to ensure screen transitions occur without error.",
+          "Inspect the 'Total Balance' card for visual hierarchy and clarity."
+        ],
+        "exit_criteria": [
+          "All 5 tabs have been visited and returned to Home.",
+          "No console errors triggered during navigation."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Account & Privacy Flow (Primary Goal)",
+        "objective": "Deep dive into the Account section to find and test Privacy/Settings controls.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Navigate to 'Account' tab.",
+          "Locate 'Settings' or 'Privacy' menu items.",
+          "Toggle any available privacy switches (e.g., 'Hide Balance', 'Biometric Login').",
+          "Validate that state changes persist visually or provide immediate feedback.",
+          "Check for 'Log Out' or 'Support' adjacent links."
+        ],
+        "exit_criteria": [
+          "Privacy settings located and interacted with.",
+          "User understands how to modify privacy preferences."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Core Transactional Paths",
+        "objective": "Exercise the 'Send' and 'Receive' features to check input validation and flow logic.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'Send': Verify recipient input field and amount entry UI.",
+          "Attempt to submit empty or invalid data to check for error handling.",
+          "Click 'Receive': Verify QR code generation or address display.",
+          "Check for 'Copy Address' functionality."
+        ],
+        "exit_criteria": [
+          "Send and Receive screens rendered successfully.",
+          "Input fields respond to interaction (focus states, keyboard appearance simulation)."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Activity & Notifications",
+        "objective": "Review transaction history details and notification interactions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click 'See all' in Recent Activity (noting the small tap target risk).",
+          "Verify the full Activity list loads.",
+          "Click the Notification Bell (ux-1) to view the 3 pending notifications.",
+          "Dismiss or interact with a notification item."
+        ],
+        "exit_criteria": [
+          "Full activity log viewed.",
+          "Notification center accessed and cleared/viewed."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Viewport & Accessibility Audit",
+        "objective": "Repeat critical checks on a mobile viewport (e.g., iPhone SE/12 dimensions) to validate prescan warnings.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Resize viewport to ~390x844.",
+          "Re-test tapping the Notification Bell (ux-1) and 'See all' (ux-6) to confirm difficulty/usability issues.",
+          "Check for horizontal scrolling or layout breakage in the 'Your Assets' list.",
+          "Verify bottom tab bar does not obscure content near the home indicator area."
+        ],
+        "exit_criteria": [
+          "Layout remains intact on mobile width.",
+          "Usability issues with small tap targets confirmed via manual interaction attempt."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "index.html (all dynamic states/screens)",
+      "features": "Tab navigation, Privacy toggles, Send/Receive inputs, Notification drawer, Activity list",
+      "mobile": "Full regression of Phases 1-4 on mobile viewport, specifically targeting touch precision"
+    },
+    "notes": [
+      "Since this is a single HTML file, 'page loads' are actually DOM manipulations. Wait for animations/transitions to complete before interacting.",
+      "Pay close attention to the 'small_tap_target' warnings in the prescan; these are high-priority UX critiques for the final report.",
+      "If 'Privacy' is nested deeply within 'Settings', document the click depth required to reach it."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Harbor Wallet — mobile fixture",
+      "url": "file:///Users/timchef/UXBench/websites/harborwallet-mobile/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "7:10 MH Hi, Milena Welcome back 3 🔔 TOTAL BALANCE $ 8,420 .16 ▲ $124.80 (1.5%) today ↑ Send ↓ Receive ⇄ Swap + Top up YOUR ASSETS $ USD Cash $5,820.16 — ₿ Bitcoin 0.039 BTC $2,140.00 +2.1% Ξ Ethereum 0.18 ETH $460.00 −0.4% RECENT ACTIVITY See all ↑ Sent · @theo.nakamura Yesterday · 7:14 pm −$48.00 ↓ Received · Halcyon Travel Yesterday · 11:02 am +$1,240.00 💳 Card · Bella Suora May 12 · 8:42 pm −$76.50 💳 Card · Pearl Coffee Roasters May 12 · 8:08 am −$5.40 ⌂ Home ↑ Send ↓ Receive 📊 Activity ◉ Account",
+      "headings": [
+        "YOUR ASSETS",
+        "RECENT ACTIVITY",
+        "Send money",
+        "Receive money",
+        "Account"
+      ],
+      "counts": {
+        "buttons": 39,
+        "links": 1,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:3 🔔",
+        "clickable:button:↑ Send",
+        "clickable:button:↓ Receive",
+        "clickable:button:⇄ Swap",
+        "clickable:button:+ Top up",
+        "clickable:a:See all",
+        "clickable:button:⌂ Home",
+        "clickable:button:📊 Activity",
+        "clickable:button:◉ Account"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

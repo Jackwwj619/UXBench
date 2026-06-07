@@ -1,0 +1,692 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/privacy-dashboard/index.html",
+  "site": {
+    "name": "privacy-dashboard",
+    "site_dir": "/Users/timchef/UXBench/websites/privacy-dashboard",
+    "start_page": "index.html",
+    "page_type": "settings/privacy",
+    "html_files": [
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/privacy-dashboard/README.md",
+    "summary": "privacy-dashboard-clone Generic / abstract privacy management panel (not tied to any specific brand). Pages | File | Purpose | | --- | --- | | `index.html` | Single-page panel: top account banner, section cards (activity data / personalized ads / location / search / devices), each card with a toggle + \"Details\" link + \"Delete my X data\" button; prominent danger zones for Download my data and Delete account; privacy-policy links in the footer | | `styles.css` | Cards, toggle switches, warning colors (yellow / red), confirmation modal styles | | `script.js` | Toggle coordination, delete second-confirmation modal, form mock submission, status indicators |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full privacy-dashboard system, prioritizing the primary settings/privacy flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The dashboard’s main privacy branches are generally discoverable and provide clear in-place state changes, especially for Data controls, Ad personalization, and the mobile Privacy checkup modal. However, the mobile experience is held back by many small tap targets and some branch links that sit outside the viewport, which makes several controls hard to reach or reliably use. I also found a few feedback gaps where interactions appear to do something but don’t clearly confirm it, and some destructive/overlay states still block recovery testing. Coverage is substantial but not complete, so untested actions like removal controls and some export/data paths may still reveal additional friction.",
+  "exploration_plan": {
+    "goal": "Explore the privacy-dashboard single-page settings experience end-to-end, validating the main privacy management flow, the supporting privacy checkup and data export/deletion actions, and the recovery/status behavior across desktop and mobile viewports.",
+    "summary": "Start on the Overview dashboard and confirm the main information architecture: left-nav sections, top account controls, privacy score, checkup cards, activity summary, and retention/status indicators. Then systematically open the adjacent flows that are visible in the prescan—activity history, data controls, ad personalization, app access, devices & locations, export data, settings, search, help, and account menu—while watching for modal, form, and status updates. Because this is a single HTML page with many controls, focus on validating a representative set of interactions per section and repeat the critical checks on mobile, especially the small tap targets already flagged by prescan.",
+    "assumptions": [
+      "The site is effectively a single-page app contained in index.html, so exploration should emphasize states, panels, modals, and toggle behavior rather than page-to-page navigation.",
+      "The visible section cards and sidebar items represent distinct in-page flows or content states even though they do not lead to separate HTML files.",
+      "The prescan’s three dialogs and the script.js behavior imply confirmation and status feedback for destructive actions, so deletion and export paths should be validated carefully.",
+      "No additional hidden HTML pages are known from prescan, so coverage should stay within the single page plus responsive/mobile variants."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Export data action: likely form/mock submission and status messaging; verify success/failure state changes and whether it blocks or resets properly.",
+      "Delete account / delete my data flows: destructive second-confirmation modal and recovery/cancel behavior.",
+      "Privacy checkup recommendations: state transitions as items are completed or inspected, especially if progress/score changes.",
+      "Toggle coordination in Data controls / activity-saving settings: verify enabling/disabling one control affects related controls correctly.",
+      "Connected apps and App access: prescan indicates apps can read profile/files, so permission disclosure and warning clarity are high-risk.",
+      "Small tap targets in top nav and sidebar on mobile: multiple controls are below 44px guidance and may be hard to activate."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline overview and information architecture",
+        "objective": "Validate the default dashboard state, major summary metrics, and the primary navigation structure before drilling into actions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the Overview panel shows privacy score, recommendations count, saved items, controls active, auto-delete retention, and connected apps summary.",
+          "Verify the left navigation and top tabs/controls are all reachable and visually distinct.",
+          "Check that the privacy checkup card and activity-by-category chart expose the expected timeframe toggles and summary content.",
+          "Note whether the informational banner about sample activity is persistent and readable."
+        ],
+        "exit_criteria": [
+          "Default desktop state has been inspected end-to-end with no broken layout or missing primary content.",
+          "All top-level navigation groups are identified and at least one representative control in each group is visible and actionable."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Privacy checkup and activity review flow",
+        "objective": "Exercise the primary guided privacy workflow and confirm recommendations can be opened, started, and progressed.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open Privacy checkup and Start to confirm the checkup entry point behaves as the main guided flow.",
+          "Inspect each recommendation card: review activity saving, adjust ad personalization, inspect connected apps, and create a data export.",
+          "Validate that the recommendation states/progress indicators reflect the current profile and are not visually ambiguous.",
+          "Check any scroll/expand behavior for recommendation details or associated action buttons."
+        ],
+        "exit_criteria": [
+          "Each visible recommendation card has been opened or activated at least once.",
+          "The checkup flow’s entry, state, and action affordances are understood and no dead controls are encountered."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Data controls, history, and personalization settings",
+        "objective": "Verify the core privacy-management controls: activity retention, history review, ad personalization, and related summaries.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open Data controls and confirm the activity-saving settings and auto-delete behavior are presented clearly.",
+          "Toggle representative controls and verify any coordination between related settings, especially on/off changes affecting categories.",
+          "Open Activity history and inspect the sample saved items list for filtering, detail visibility, or category grouping.",
+          "Open Ad personalization and verify interests/sensitive-category controls or explanations are understandable.",
+          "Use the 30d/90d/1y timeframe controls in Activity by category and confirm the chart updates without layout breakage."
+        ],
+        "exit_criteria": [
+          "At least one toggle or setting change has been exercised and its visible feedback observed.",
+          "History/personalization views have been opened and the dashboard remains coherent after state changes."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Apps, devices, export, and account admin actions",
+        "objective": "Probe adjacent account-risk areas where permissions, portability, and account-level actions can fail or confuse users.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open App access and inspect whether connected-app permissions and warning language match the summary that 2 apps have broad permissions.",
+          "Open Devices & locations and confirm the device/location controls or history are intelligible.",
+          "Activate Export data and validate the mock submission/status indicator path.",
+          "Open Settings and account menu to confirm account-level entry points are present and do not conflict with the privacy workflow.",
+          "Check Help and Search Ctrl K for discoverability and whether they expose a useful overlay or input state."
+        ],
+        "exit_criteria": [
+          "Each adjacent account-management area has been entered at least once.",
+          "Export/account actions show clear feedback and do not leave the page in an inconsistent state."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Destructive actions and recovery paths",
+        "objective": "Validate the highest-risk destructive flows and confirm confirmation, cancellation, and second-step safeguards are usable.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Trigger any visible delete-my-data controls from the section cards and confirm the first-step affordance is clearly labeled as destructive.",
+          "Open the delete account path and verify the second-confirmation modal appears with clear consequences.",
+          "Test cancel/close and confirm it restores the prior state without side effects.",
+          "If the script exposes status indicators after destructive or export actions, verify they reset appropriately after dismissal."
+        ],
+        "exit_criteria": [
+          "At least one destructive path has been taken through confirmation and safely canceled or completed in a controlled way.",
+          "Recovery from modal/dialog states is verified and leaves the interface usable."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Responsive and mobile validation",
+        "objective": "Repeat the most important interactions at a mobile viewport, with attention to the small tap-target issues flagged in prescan.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the sidebar/top navigation reflows acceptably and remains usable on a narrow viewport.",
+          "Repeat the overview, privacy checkup, export data, and one destructive-confirmation path on mobile.",
+          "Test the smallest tap targets flagged by prescan, especially the top nav items, search/help/account controls, and sidebar items.",
+          "Check whether charts, cards, and dialogs remain readable without overlap or clipped controls."
+        ],
+        "exit_criteria": [
+          "Critical flows have been re-run on mobile without layout-breaking defects.",
+          "Any mobile-specific usability issues are documented, especially around small tap targets and dialog reachability."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages; prescan shows only index.html, so cover all major in-page sections and states.",
+      "features": "exercise most visible controls per key section, including nav items, privacy checkup actions, timeframe toggles, app/device settings, export, help/search, and destructive confirmations.",
+      "mobile": "repeat the primary overview, checkup, export, and delete-confirmation checks in a mobile viewport, with extra attention to small tap targets."
+    },
+    "notes": [
+      "Prescan reports 125 buttons, 5 links, 34 inputs, 1 form, and 3 dialogs, so the run should prioritize representative coverage rather than every micro-control unless they reveal distinct state changes.",
+      "No console or network errors were observed in prescan, so the exploration should mainly look for UX/state issues rather than broken load behavior.",
+      "The page contains several low-severity mobile tap-target warnings; these should be explicitly verified during the mobile phase."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Switch between privacy sections on a phone",
+      "problem": "Several sidebar navigation links are positioned outside the mobile viewport or below tap-size guidance, so users may be unable to reach key privacy sections from the drawer without extra scrolling or precision.",
+      "evidence": "On mobile, clicking Ad personalization failed because the target remained outside the viewport. The final mobile observation shows multiple nav items at 263x42px and the test logs flag small tap targets such as Open navigation 38x38px and Account privacy home 22x22px.",
+      "why_it_matters": "If users cannot reliably reach major sections like Ad personalization or Settings, they cannot review or change privacy controls on mobile at all.",
+      "suggestion": "Reflow the mobile drawer so all section links are fully visible within the viewport, and increase touch target size to at least 44x44px for every nav item.",
+      "source_hint": "index.html mobile drawer / side-link buttons"
+    },
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Use the dashboard comfortably on a small screen",
+      "problem": "The mobile layout still contains many controls below recommended touch-target size, including top-bar buttons and several navigation items, making common actions hard to tap accurately.",
+      "evidence": "Layout warnings repeatedly flagged small targets such as Open navigation 38x38, Search 42x38, Help 38x38, Account menu 67x38, and multiple 263x42 section links. The recent mobile observations also note repeated low-confidence tap-target warnings.",
+      "why_it_matters": "Small targets increase mis-taps, slow task completion, and disproportionately hurt users on touch devices or with motor accessibility needs.",
+      "suggestion": "Increase hit areas for header, drawer, and modal controls; preserve visual size if needed but expand the clickable/tappable region.",
+      "source_hint": "index.html header and side nav"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Know whether a privacy control has changed after tapping it",
+      "problem": "Some settings appear to change state without giving a strong visible confirmation, which makes the result hard to trust.",
+      "evidence": "Clicking Finance and Alcohol in sensitive categories produced no visible state change or inline feedback. In contrast, other controls like retention chips and Add interest did show confirmation toasts, which highlights the inconsistency.",
+      "why_it_matters": "When privacy controls change silently, users may retry the action, assume it failed, or lose confidence in whether their data preferences were applied.",
+      "suggestion": "Add a consistent toast, inline message, or clear toggle state animation for every privacy-setting change, especially sensitive-category checkboxes.",
+      "source_hint": "Data controls / sensitive categories section"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "navigation",
+      "user_goal": "Return to the underlying app-access list after inspecting details",
+      "problem": "The connected-app details panel did not clearly dismiss in one test, so users may feel trapped in the overlay or unsure whether their close action worked.",
+      "evidence": "Clicking Close details did not visibly change the page in one step; the app-access list remained visible behind/after the interaction, and a later close state was only inferred from the screenshot rather than an obvious page transition.",
+      "why_it_matters": "If dismissal is ambiguous, users may hesitate to inspect permissions or may think the interface is frozen after opening a detail view.",
+      "suggestion": "Make panel dismissal more explicit with a visible state transition, stronger close feedback, and perhaps a brief animation or toast confirming return to the list.",
+      "source_hint": "App access detail panel / Close details"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Advance through the Privacy checkup flow",
+      "problem": "The Next control in the mobile Privacy checkup did not visibly advance the step or confirm progress, so the flow’s progression is unclear.",
+      "evidence": "In mobile steps 73-78, clicking Next produced no visible text or URL change and the modal remained on the same step with the same controls. The final observation still shows the modal open with Back and Next present.",
+      "why_it_matters": "A stepper-like flow needs clear progression feedback; otherwise users may assume the button is broken or that their privacy status has not changed.",
+      "suggestion": "Confirm the current step change with an updated heading, progress indicator movement, or a brief loading/state transition when Next is tapped.",
+      "source_hint": "Privacy checkup modal / Next button"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "forms",
+      "user_goal": "Change a retention preference efficiently",
+      "problem": "The retention presets are understandable and responsive, but the workflow mixes immediate state changes with a separate Save retention action, which can be confusing about what is already applied.",
+      "evidence": "The 3 months chip produced immediate highlight and a toast saying the auto-delete preference changed, while the screen also exposes a Save retention button nearby. The interface therefore shows both instant feedback and a manual save affordance in the same control group.",
+      "why_it_matters": "Mixed commit models can make users wonder whether they must click Save, whether a change has already taken effect, or whether multiple controls are required.",
+      "suggestion": "Use one consistent pattern: either apply preset changes immediately with a clear status message, or keep all retention changes pending until a single Save action confirms them.",
+      "source_hint": "Data controls / Auto-delete saved activity"
+    },
+    {
+      "severity": "low",
+      "ux_area": "clarity",
+      "user_goal": "Understand what each privacy branch controls",
+      "problem": "Some branch labels are strong, but the page still relies heavily on compact controls and terse labels, which can make the scope of each section harder to parse at a glance on mobile.",
+      "evidence": "The mobile observation shows dense visible text with many branches in the top-level layout, while the drawer and header controls remain compact. Several sections like Data controls and Privacy checkup are understandable once opened, but the overall navigation surface is crowded.",
+      "why_it_matters": "Dense labels and crowded controls increase scanning effort and make it harder for users to choose the right privacy task quickly.",
+      "suggestion": "Improve hierarchy with clearer grouping, spacing, and perhaps short helper text under the most important branches in the drawer.",
+      "source_hint": "index.html top navigation and drawer"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 28,
+    "action_success_rate_percent": 90,
+    "unchanged_action_percent": 44,
+    "known_pages": [
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 58,
+      "open_page": 17,
+      "select_option": 1,
+      "type_text": 2,
+      "wait": 1
+    },
+    "total_actions": 79,
+    "successful_actions": 71,
+    "failed_actions": 8,
+    "unchanged_actions": 35,
+    "observed_feature_count": 116,
+    "exercised_feature_count": 33,
+    "unexplored_features": [
+      {
+        "signature": "index.html|clickable|a|||data controls|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Data controls"
+      },
+      {
+        "signature": "index.html|clickable|button||button|remove artificial intelligence|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Remove artificial intelligence"
+      },
+      {
+        "signature": "index.html|clickable|button||button|remove cloud storage|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Remove Cloud storage"
+      },
+      {
+        "signature": "index.html|clickable|button||button|remove productivity|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Remove Productivity"
+      },
+      {
+        "signature": "index.html|clickable|button||button|remove project management|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Remove Project management"
+      },
+      {
+        "signature": "index.html|clickable|button||button|remove security|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Remove Security"
+      },
+      {
+        "signature": "index.html|clickable|button||button|remove travel|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Remove Travel"
+      },
+      {
+        "signature": "index.html|clickable|button|||18 months|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "18 months"
+      },
+      {
+        "signature": "index.html|clickable|button|||1y|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "1y"
+      },
+      {
+        "signature": "index.html|clickable|button|||30d|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "30d"
+      },
+      {
+        "signature": "index.html|clickable|button|||36 months|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "36 months"
+      },
+      {
+        "signature": "index.html|clickable|button|||90d|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "90d"
+      },
+      {
+        "signature": "index.html|clickable|button|||account menu|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Account menu"
+      },
+      {
+        "signature": "index.html|clickable|button|||adjust ad personalization interests and sensitive categories|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Adjust ad personalization Interests and sensitive categories"
+      },
+      {
+        "signature": "index.html|clickable|button|||all time|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "All time"
+      },
+      {
+        "signature": "index.html|clickable|button|||back|",
+        "page": "index.html",
+        "viewport": "mobile",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Back"
+      },
+      {
+        "signature": "index.html|clickable|button|||check an inactive device a windows laptop has not synced in 42 days.|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Check an inactive device A Windows laptop has not synced in 42 days."
+      },
+      {
+        "signature": "index.html|clickable|button|||close confirmation|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Close confirmation"
+      },
+      {
+        "signature": "index.html|clickable|button|||create a data export prepare a portable account archive|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Create a data export Prepare a portable account archive"
+      },
+      {
+        "signature": "index.html|clickable|button|||create your first export keep a portable copy before clearing old history.|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Create your first export Keep a portable copy before clearing old history."
+      },
+      {
+        "signature": "index.html|clickable|button|||delete approximate location updated|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Approximate location updated"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete connected designboard|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Connected DesignBoard"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete dictation transcript saved|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Dictation transcript saved"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete granted calendar permission to taskflow|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Granted calendar permission to TaskFlow"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete maps route preview|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Maps route preview"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete played focus playlist|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Played focus playlist"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete read account recovery article|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Read account recovery article"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete sample data|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete sample data"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete searched for password manager comparison|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Searched for password manager comparison"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete searched for privacy dashboard settings|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Searched for privacy dashboard settings"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete visited cloud storage sharing guide|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Visited cloud storage sharing guide"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete voice assistant command transcript|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Voice assistant command transcript"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete watched productivity tutorial|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete Watched productivity tutorial"
+      },
+      {
+        "signature": "index.html|clickable|button|||delete|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Delete"
+      },
+      {
+        "signature": "index.html|clickable|button|||download archive|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Download archive"
+      },
+      {
+        "signature": "index.html|clickable|button|||find|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Find"
+      },
+      {
+        "signature": "index.html|clickable|button|||inspect connected apps 2 apps can read profile and files|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Inspect connected apps 2 apps can read profile and files"
+      },
+      {
+        "signature": "index.html|clickable|button|||last 30 days|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Last 30 days"
+      },
+      {
+        "signature": "index.html|clickable|button|||last 7 days|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Last 7 days"
+      },
+      {
+        "signature": "index.html|clickable|button|||manage|",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Manage"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 28% of visible interactive feature signatures.",
+      "8 browser action(s) failed and should be retried or analyzed.",
+      "44% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-01-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-02-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-05-wait-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-06-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-07-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-08-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-14-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-16-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-23-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-24-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-26-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-29-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-35-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-37-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-38-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-39-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-40-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-44-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-46-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-53-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-57-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-58-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-59-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-62-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-mini/privacy-dashboard/_run",
+  "claude_fix": null
+}

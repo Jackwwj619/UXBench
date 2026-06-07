@@ -1,0 +1,145 @@
+{
+  "plan": {
+    "goal": "Critique the full larkfit-mobile UX by exercising the primary Today → Workout entry path and validating adjacent bottom-tab flows (Workouts, Activity, You), including key states like starting a workout and recovering back to home.",
+    "summary": "Start on index.html and explore the primary Today plan interactions: the quick-launch play buttons and the “All workouts” entry. Then validate the adjacent bottom-tab destinations by switching tabs and checking whether content/state is preserved or reset. Throughout, pay attention to small-tap target issues flagged by the prescan and verify behavior on both desktop-sized and mobile-sized viewports (≤460px).",
+    "assumptions": [
+      "The fixture is single-page (only index.html is present), with in-app navigation driven by buttons rather than separate HTML pages.",
+      "The bottom navigation buttons labeled ⌂ Today, ▶ Workouts, 📊 Activity, and ◉ You change views/sections within index.html.",
+      "The “Easy 5K — recovery” and “Hip-mobility flow” cards each have a play (▶) control intended to launch a workout-related flow/state.",
+      "The top-right “+” button likely adds/saves/checks something (e.g., quick action) and is worth validating even though it has a small tap target."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "index.html: small tap target “+” (38x38) at ux-1; verify accuracy, accessibility, and touch friendliness on mobile viewport",
+      "index.html: small tap target “▶” controls for workout cards (36x36) at ux-2/ux-3; verify tap behavior (no mis-taps) and correct launch of intended workout",
+      "index.html: bottom tab buttons (⌂ Today / ▶ Workouts / 📊 Activity / ◉ You) at ux-4..ux-7; validate correct selected state, focus management, and return/navigation behavior",
+      "index.html: “All workouts →” / “All workouts” link-like CTA present in TODAY'S PLAN area; validate discoverability and whether it leads to the Workouts view/section"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline capture + primary Today plan entry",
+        "objective": "Validate the default landing experience and the core Today plan interactions from the initial state shown in the prescan.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm visible header/date/user context and that the UI matches the prescan layout",
+          "Tap the “Easy 5K — recovery” play control (▶) and confirm the workout/session screen state changes as expected",
+          "Return from the workout/session back to Today (validate back affordance and whether the scroll position/selection is preserved)",
+          "Tap “Hip-mobility flow” play control (▶) and confirm it launches the correct second workout type/metadata"
+        ],
+        "exit_criteria": [
+          "Both workout play actions successfully transition to their respective workout-related states and can be exited back to the Today view",
+          "No console/network errors are triggered during these transitions"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Adjacent entry: All workouts + quick action (+)",
+        "objective": "Test alternative/adjacent navigation mechanisms that lead into the Workouts area and validate the top “+” quick action.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Tap the “All workouts →” CTA in TODAY'S PLAN and verify it routes into the Workouts view/section (or expands a list) correctly",
+          "On mobile viewport, repeatedly tap the top-right “+” control (ux-1) to verify reliable activation despite the small tap target warning",
+          "If “+” opens an overlay/picker, validate that it can be dismissed (tap outside / close button) and that focus returns appropriately"
+        ],
+        "exit_criteria": [
+          "All workouts CTA leads to the intended destination and the user can return to Today cleanly",
+          "+ quick action is reliably tappable on mobile and its resulting UI (if any) is dismissible without getting stuck"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Bottom tab navigation consistency (Today/Workouts/Activity/You)",
+        "objective": "Validate the four-tab navigation model, including selected-state UI, content switching, and state persistence.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch tabs in this order: Today → Workouts → Activity → You → back to Today; confirm active tab highlight/indicator is accurate",
+          "From Workouts, verify returning to Today shows either the same plan section or an intentional reset (record actual behavior)",
+          "Check whether workout launch state persists after switching tabs (e.g., if you start a workout then go to Activity/You, does it pause/exit?)",
+          "Verify there are no dead-ends: each tab must be reachable and must allow return"
+        ],
+        "exit_criteria": [
+          "All four bottom tabs switch correctly with consistent selected states",
+          "Navigation away from and back to Today is possible and behavior is coherent (no trapped overlay or broken transitions)"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile-specific validation (≤460px) + tap target risk review",
+        "objective": "Re-run the most interaction-heavy checks on a mobile viewport and validate the prescan-flagged tap target risks.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Repeat: tap “+”, tap both workout ▶ controls, and switch through all four bottom tabs",
+          "Specifically evaluate whether the 36x36–38x38 controls are still comfortable and do not trigger wrong targets",
+          "Check for layout shifts/clipping around the bottom tab bar and the workout cards when in the narrower viewport"
+        ],
+        "exit_criteria": [
+          "Critical interactions work as expected on mobile-sized viewport without mis-taps or clipped controls",
+          "Bottom tab bar remains visible and usable across transitions"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (index.html only).",
+      "features": "Exercise most visible controls per key page: + action, both workout play buttons, the All workouts CTA, and all bottom tab buttons (4).",
+      "mobile": "Repeat critical checks from phases 1–3 on a mobile viewport (≤460px), with extra focus on the prescan small tap target warnings."
+    },
+    "notes": [
+      "Although the prescan reports only index.html, treat each distinct in-app view/section (Today/Workouts/Activity/You and workout session states) as separate exploration targets within the single page.",
+      "Keep step count efficient: prioritize transitions and back navigation over exhaustive clicking of non-primary metrics, since the fixture appears to be primarily a single-screen mobile UI with in-app state changes."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Lark — mobile fixture",
+      "url": "file:///Users/timchef/UXBench/websites/larkfit-mobile/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "6:40 Wednesday, May 13 Morning, Sumi + MOVE 820/600 cal EXERCISE 34/30 min STAND 9/12 hrs 👟 8,432 steps 🚴 5.2 mi distance ❤ 62 bpm resting 😴 7h 14m slept TODAY'S PLAN All workouts → 🏃 Easy 5K — recovery pace 28 min · zone 2 · scheduled 5:30 pm ▶ 🧘 Hip-mobility flow 12 min · low-intensity · post-run ▶ 14 days Move-goal streak · personal best 22 🔥 S M T W T F S ⌂ Today ▶ Workouts 📊 Activity ◉ You",
+      "headings": [
+        "TODAY'S PLAN",
+        "Workouts",
+        "Easy 5K · recovery",
+        "Easy 5K — recovery pace",
+        "Plan",
+        "You'll need",
+        "Activity",
+        "30-day intensity",
+        "Recent",
+        "You"
+      ],
+      "counts": {
+        "buttons": 21,
+        "links": 0,
+        "inputs": 2,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:+",
+        "clickable:button:▶",
+        "clickable:button:⌂ Today",
+        "clickable:button:▶ Workouts",
+        "clickable:button:📊 Activity",
+        "clickable:button:◉ You"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "summary": "The multi-step GOV.UK-style passport form generally progresses reliably on both desktop and mobile via URL hash changes and an “Application progress” sidebar. However, several UX/quality issues appear around validation recovery (especially photo upload) where errors persist even after user interaction, and some in-page recovery links jump to the wrong content/section. On mobile, multiple primary controls and navigation elements are flagged as small tap targets, increasing the chance of mis-taps and interaction failures.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "when-the-user-is-blocked-by",
+      "severity": "high",
+      "area": "error recovery",
+      "page_hint": "index.html photo-option / photo-upload: steps-37-42, steps-43-54, steps-55-60",
+      "problem": "When the user is blocked by photo-step validation, the UI error state persists even after selecting an option or attempting to interact with the file upload control; the error appears stale and does not clear.",
+      "evidence": "On the photo step, after showing “There is a problem” with bullet “Select how you want to provide a photo,” the user selected the “Upload a digital photo” option, but “the page still shows an error banner… 'Error: Select how you want to provide a photo'” (steps-37-42). On the upload branch, multiple attempts to trigger file selection (“Choose a demo photo file”, clicking the file input, and pressing Enter) produced no visible change; the page continued to show “Error: Choose a demo photo file” and “Nothing is uploaded” (steps-43-54, steps-49-54). Clicking Continue on the photo upload step did not clear the error or advance (steps-55-60).",
+      "suggested_fix": "Ensure validation state is re-evaluated immediately after user actions (radio selection, file picker open/selection, checkbox toggles). Add clear, immediate feedback when the file selection registers (e.g., filename/preview, “file added” confirmation) and only keep the error banner until the requirement is satisfied. If a recovery link is clicked, also scroll/focus to the exact control that is missing/invalid."
+    },
+    {
+      "id": "the-error-summary-link-attempts-to",
+      "severity": "high",
+      "area": "clarity",
+      "page_hint": "index.html old passport expiry step error summary link: steps-19-24",
+      "problem": "The error summary link attempts to jump to the expiry date input, but after navigation the viewport shows the start content instead of the targeted “Expiry date” inputs—implying the anchor/scroll target is wrong or focus handling is broken.",
+      "evidence": "On the old passport expiry step, clicking the error-summary link labeled “Enter the old passport expiry date” changed the URL fragment to `#old_passport_expiry-input` (steps-19-24). However, after that click and the subsequent scroll, the visible content appears to be the “Before you start / Start now ›” landing area, and the “Expiry date” Day/Month/Year inputs were not surfaced; the page still showed only start/home/support links (steps-19-24).",
+      "suggested_fix": "Verify that `#old_passport_expiry-input` maps to the actual expiry fieldset and that the targeted element becomes visible in the viewport. Also move focus to the first relevant input (Day/Month/Year) and ensure the step section doesn’t collapse into an unrelated screen when the hash changes."
+    },
+    {
+      "id": "multiple-interactive-elements-are-below-recommended",
+      "severity": "medium",
+      "area": "mobile usability",
+      "page_hint": "mobile viewport warnings + recent trace: agentic-77-click, steps-73-78; layout warning counts across recent chunks",
+      "problem": "Multiple interactive elements are below recommended mobile tap target sizes, increasing mis-taps and causing “click” actions to fail or feel unreliable.",
+      "evidence": "Throughout the form, tooling flags small tap targets on mobile/headers (e.g., “Back” 49x20px, radio inputs at 40x40px, “Continue” 88x40px flagged as below 44px guidance in the warnings). In the recent mobile trace, a “click” on a radio caused no visible change with a persisted hash (`#applicant-type`) after tapping “An adult” (agentic-77-click). There was also a click timeout failure when attempting to press “Continue” on “Who is the passport for?” (steps-73-78 failure: Locator.click timeout).",
+      "suggested_fix": "Increase tap target size to meet/ exceed 44x44px where possible (especially primary CTAs and navigation links). Add generous padding around radio controls and ensure adequate spacing to avoid mis-taps. Consider thicker hit areas for the “Back” and header/service links on mobile layouts."
+    },
+    {
+      "id": "in-some-steps-the-visual-selection",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "index.html applicant-type error persistence: steps-07-12; photo method error persistence: steps-37-42",
+      "problem": "In some steps, the visual selection may not reliably clear the validation error state, suggesting stale validation/UI synchronization issues that users perceive as the form ignoring their input.",
+      "evidence": "On the “Who is the passport for?” step, the error summary and inline error persisted even after the user selected “An adult” (steps-07-12): screenshot/observations indicate the radio looks selected, yet “There is a problem” remained with “Error: Select who the passport is for,” and progression attempts still produced the error. Similarly, on the photo method selection step, selecting “Upload a digital photo” did not clear the error banner for missing photo method (steps-37-42).",
+      "suggested_fix": "Re-run validation on change for the specific fieldset and remove/clear both the error summary bullet and inline error immediately when the requirement is satisfied. Add subtle success feedback (error highlight removal, aria-live announcement, or focus shift to the next logical control)."
+    },
+    {
+      "id": "on-mobile-clicking-the-accessibility-statement",
+      "severity": "low",
+      "area": "navigation",
+      "page_hint": "index.html mobile informational link: steps-67-72",
+      "problem": "On mobile, clicking the “Accessibility statement” link interrupts the current multi-step context and resets the flow to the start instead of preserving/restoring state.",
+      "evidence": "From the mobile “previous-passport” step, clicking “Accessibility statement” changed the URL hash from `#previous-passport` to `#start`, and the visible content became the top-level “Apply for or renew a passport” start page rather than returning to the previous step (steps-67-72).",
+      "suggested_fix": "Open informational content in a way that preserves state (e.g., modal, separate page with a clear “Back to your application” returning to the same hash/step). Ensure the Back button returns to the exact prior step reliably."
+    }
+  ]
+}

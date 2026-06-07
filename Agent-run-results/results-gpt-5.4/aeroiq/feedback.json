@@ -1,0 +1,87 @@
+{
+  "summary": "AeroIQ’s strongest UX is its investigation depth once a user reaches an endpoint detail or full alerts view: the app surfaces meaningful metrics, error breakdowns, and consistent page identity. However, several high-visibility controls on the dashboard and shell feel untrustworthy because they appear interactive but do not change state or give feedback. Mobile usability is the biggest cross-page weakness, with horizontal overflow, very narrow sidebar tap targets, and unlabeled form controls making triage harder on small screens. Coverage is substantial across all pages and both desktop/mobile, but some navigation affordances—especially direct clickability of dashboard endpoint cards—were only partially validated.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "several-prominent-global-controls-appear-to",
+      "severity": "high",
+      "area": "trust",
+      "page_hint": "index.html and endpoint-detail.html top-bar time/environment controls",
+      "problem": "Several prominent global controls appear to switch context but do not update the dashboard or detail context coherently, making users question whether they are looking at the right data.",
+      "evidence": "On index.html, clicking 7d and 5m changed the selected-looking control state, but visible labels still read \"Total Requests · 1h\" and \"Global latency (p50 / p95 / p99) · 1h\". Clicking Dev also produced no detectable state change and KPIs stayed the same. On endpoint-detail.html, clicking 24h left chart axes and values in the same 1h context.",
+      "suggested_fix": "Ensure each scope control triggers an obvious and synchronized update across headers, charts, KPI labels, and selected-state styling. If a control is not functional yet, disable it or label it as unavailable rather than making it appear live."
+    },
+    {
+      "id": "inline-alert-actions-open-modal-flows",
+      "severity": "high",
+      "area": "feedback",
+      "page_hint": "index.html Active Alerts panel and modal dialogs",
+      "problem": "Inline alert actions open modal flows that do not provide clear success or cancellation feedback, and the user can get stuck in a blocked state.",
+      "evidence": "On index.html, clicking Assign opened an \"Assign alert\" modal. Clicking Confirm produced no visible success message, no owner update, and the same row actions remained visible. Escape did not dismiss the modal. Clicking Silence while a modal was open did not recover the state. Clicking Cancel also showed no visible change in multiple checks, and the dashboard sometimes required a full reload to recover.",
+      "suggested_fix": "Add explicit success feedback after confirm, visibly update the affected alert row, and guarantee reliable dismissal via Cancel, close icon, and Escape. Prevent overlapping modal/action states and return focus to the originating alert row after dismissal."
+    },
+    {
+      "id": "core-mobile-pages-overflow-horizontally-and",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "alerts.html and endpoints.html mobile screenshots/viewport warnings",
+      "problem": "Core mobile pages overflow horizontally and rely on extremely narrow sidebar targets, so scanning tables and navigating between sections feels cramped and error-prone.",
+      "evidence": "Mobile layout warnings reported page widths of 680px on alerts.html and 971–978px on endpoints.html against a 390px viewport. The visible endpoint table only exposed early columns while later triage fields were off-screen. Sidebar nav targets on mobile were repeatedly only 39px wide (for Dashboard, Endpoints, Alerts, Service Map, Logs, Integrations, Settings), and the avatar button was 34x34px.",
+      "suggested_fix": "Replace wide tables with mobile-optimized stacked cards or progressive disclosure, and widen or collapse the left rail into a proper mobile navigation pattern. Prioritize key triage fields in the first visible viewport and keep tap targets at or above mobile guidance."
+    },
+    {
+      "id": "the-sidebar-mixes-real-destinations-with",
+      "severity": "medium",
+      "area": "navigation",
+      "page_hint": "sidebar links on index.html, alerts.html, endpoints.html",
+      "problem": "The sidebar mixes real destinations with placeholder links that behave like silent no-ops, so users cannot tell which navigation items are actionable.",
+      "evidence": "Clicking Logs and Integrations on alerts.html left the user on the same page, with URLs only changing to alerts.html# or not changing visibly at all. Clicking Settings on index.html and mobile endpoints.html also produced only a # URL state with no new page or panel. These items are presented in the same primary sidebar as working links like Endpoints and Alerts.",
+      "suggested_fix": "Remove unfinished destinations from primary nav, disable them with explanatory messaging, or route them to clear placeholder pages that state availability. Differentiate unavailable items visually instead of styling them like active app sections."
+    },
+    {
+      "id": "several-important-selects-rely-on-visible",
+      "severity": "medium",
+      "area": "forms",
+      "page_hint": "alerts.html and endpoints.html filter bar/select controls",
+      "problem": "Several important selects rely on visible value text without proper labels, which weakens clarity and accessibility—especially when multiple filters appear together.",
+      "evidence": "Repeated missing_input_label warnings were recorded for the org switcher across pages and for filters such as severity on alerts.html. The final mobile alerts observation shows unlabeled selects for org, severity, rules, assignees, and status; the mobile endpoints/org switcher was also flagged with no label.",
+      "suggested_fix": "Add persistent visible labels or accessible names for all selects and search fields, and make active filter context more explicit with chips or a summary row."
+    },
+    {
+      "id": "the-global-search-field-often-accepts",
+      "severity": "medium",
+      "area": "feedback",
+      "page_hint": "global ⌘K search on index.html, services.html, alerts.html",
+      "problem": "The global search field often accepts typing but gives no suggestions, results, or visible effect, making it feel like a dead end.",
+      "evidence": "Typing \"payments\" into the top-bar search on services.html, index.html, and mobile alerts.html produced no visible suggestion panel, no navigation, and no content change beyond the text remaining in the input. The tool repeatedly reported no obvious URL or visible-text change.",
+      "suggested_fix": "Provide immediate search feedback such as suggestions, recent items, result counts, or a clear empty state. If it is meant to open a command palette, trigger a modal/panel on focus and communicate supported query types."
+    },
+    {
+      "id": "some-filters-do-not-give-trustworthy",
+      "severity": "medium",
+      "area": "clarity",
+      "page_hint": "alerts.html filter bar; endpoints.html list summary",
+      "problem": "Some filters do not give trustworthy or explicit feedback, so users cannot tell whether the list changed because of their input or because it already matched.",
+      "evidence": "On desktop alerts.html, selecting All rules after attempting \"Error rate > 5%\" stayed at \"All rules\" with no list change. Assignee filtering also failed to apply visibly. On mobile alerts.html, changing status to Open updated the control value, but visible rows still included mixed OPEN and ASSIGNED states. On endpoints.html, the service filter successfully reduced rows to 3 checkout-api results, but the summary still said \"32 monitored endpoints across all environments.\"",
+      "suggested_fix": "Show active filter chips and a live result count, and update summary text to match the narrowed dataset. When a filter cannot be applied, provide an inline error or reset confirmation instead of silently keeping the old value."
+    },
+    {
+      "id": "the-service-map-page-promises-node",
+      "severity": "low",
+      "area": "affordance",
+      "page_hint": "services.html service map area",
+      "problem": "The Service Map page promises node interaction through instructional text, but the interface does not provide supporting hover or clickable affordances in the tested state.",
+      "evidence": "On services.html, hover over Production produced no visible contextual feedback, and the page relied on static text reading \"Click a service node to view details.\" The interactables list exposed nav, search, org select, avatar, and environment buttons, but no service-node targets were available during testing.",
+      "suggested_fix": "Add visible hover states, cursor changes, node highlights, and contextual previews/tooltips so the map signals interactivity directly. Provide a selected-state side panel when a node is chosen."
+    },
+    {
+      "id": "the-deeper-investigation-pages-are-strong",
+      "severity": "low",
+      "area": "goal completion",
+      "page_hint": "index.html endpoint health grid; endpoint-detail.html header",
+      "problem": "The deeper investigation pages are strong once reached, but the dashboard-to-detail affordance itself remains somewhat unproven and the detail page lacks an obvious local back-to-results pattern.",
+      "evidence": "Endpoint-detail.html loaded with strong hierarchy and diagnostic context for POST /v1/payments, and returning via the left rail worked. However, the detail page was opened directly rather than by clicking a dashboard health card, and session notes explicitly state that click affordance of unhealthy cards was not fully validated; no breadcrumb or clear back-to-results control was observed.",
+      "suggested_fix": "Make endpoint cards visibly clickable with stronger hover/focus affordance and add a local breadcrumb or \"Back to endpoints/dashboard\" link on the detail page."
+    }
+  ]
+}

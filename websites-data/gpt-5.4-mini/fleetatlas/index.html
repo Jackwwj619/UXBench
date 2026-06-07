@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FleetAtlas — See every vehicle, in real time.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="theme-dark dashboard-page">
+<aside class="sidebar">
+  <a href="index.html" class="brand">
+    <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#0F766E" stroke-width="2.5"/><circle cx="16" cy="16" r="5" fill="#0F766E"/><line x1="16" y1="1" x2="16" y2="31" stroke="#0F766E" stroke-width="1"/></svg>
+    <span>FleetAtlas</span>
+  </a>
+  <nav class="sidenav" aria-label="Primary">
+    <a href="index.html" class="active">📊 Dashboard</a>
+    <a href="vehicles.html">🚛 Vehicles</a>
+    <a href="#" class="nav-soon" aria-disabled="true" title="Coming soon">👤 Drivers <span class="badge-soon">Soon</span></a>
+    <a href="#" class="nav-soon" aria-disabled="true" title="Coming soon">🛣️ Routes <span class="badge-soon">Soon</span></a>
+    <a href="#" class="nav-soon" aria-disabled="true" title="Coming soon">🔧 Maintenance <span class="badge-soon">Soon</span></a>
+    <a href="analytics.html">📈 Analytics</a>
+    <a href="alerts.html">⚠️ Alerts <span class="badge-red">12</span></a>
+    <a href="#" class="nav-soon" aria-disabled="true" title="Coming soon">⚙️ Settings <span class="badge-soon">Soon</span></a>
+  </nav>
+</aside>
+
+<main class="dashboard-main">
+  <header class="dashboard-header">
+    <div class="dh-left">
+      <label class="org-label" for="orgSelect">Organization</label>
+      <select class="org-select" id="orgSelect" aria-label="Organization">
+        <option>Aurora Logistics Group</option>
+        <option>TransOcean Express (Subsidiary)</option>
+        <option>Northern Cold Chain Division</option>
+      </select>
+      <div class="view-tabs" role="tablist" aria-label="View mode">
+        <button class="active" role="tab" aria-selected="true">Map view</button>
+        <button role="tab" onclick="location.href='vehicles.html'">List view</button>
+        <button role="tab" onclick="location.href='analytics.html'">Analytics view</button>
+      </div>
+    </div>
+    <div class="dh-right">
+      <label class="visually-hidden" for="dashSearch">Search vehicles</label>
+      <input class="dh-search" id="dashSearch" type="text" placeholder="Search by plate / driver / route…" aria-label="Search by plate, driver, or route" />
+      <button class="icon-btn" id="alertBtn" title="Alerts" aria-label="Alerts">🔔<span class="badge-red small">12</span></button>
+      <button class="icon-btn" title="User profile" aria-label="User profile">👤</button>
+    </div>
+  </header>
+
+  <section class="filter-bar" role="toolbar" aria-label="Status filter">
+    <span class="scope-label" id="scopeLabel">Scope: Aurora Logistics Group</span>
+    <button class="filter-pill active" data-status="all" aria-pressed="true">All <span id="cnt-all">25</span></button>
+    <button class="filter-pill" data-status="running" aria-pressed="false">Running <span id="cnt-running">0</span></button>
+    <button class="filter-pill" data-status="idle" aria-pressed="false">Idle <span id="cnt-idle">0</span></button>
+    <button class="filter-pill" data-status="maintenance" aria-pressed="false">Maintenance <span id="cnt-maintenance">0</span></button>
+    <button class="filter-pill" data-status="offline" aria-pressed="false">Offline <span id="cnt-offline">0</span></button>
+    <button class="filter-pill" data-status="alert" aria-pressed="false">Alert <span id="cnt-alert">0</span></button>
+    <span class="filter-state" id="filterState" aria-live="polite"></span>
+  </section>
+
+  <section class="map-area">
+    <svg id="cityMap" viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="map-legend">
+      <div class="legend-item"><span class="dot running"></span>Running</div>
+      <div class="legend-item"><span class="dot idle"></span>Idle</div>
+      <div class="legend-item"><span class="dot maintenance"></span>Maintenance</div>
+      <div class="legend-item"><span class="dot offline"></span>Offline</div>
+      <div class="legend-item"><span class="dot alert"></span>Alert</div>
+    </div>
+  </section>
+
+  <section id="drawer" class="drawer">
+    <div class="drawer-handle" id="drawerHandle"><span class="handle-bar"></span><h4>Vehicle list (<span id="vehCount">25</span>)</h4><span class="drawer-state">▲</span></div>
+    <div class="drawer-body">
+      <table class="vehicle-table">
+        <thead><tr><th>Plate</th><th>Driver</th><th>Status</th><th>Speed</th><th>Fuel / Battery</th><th>Last update</th><th>Current task</th></tr></thead>
+        <tbody id="vehicleTbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <aside id="detailPanel" class="detail-panel hidden">
+    <div class="dp-head">
+      <h3 id="dpTitle">Vehicle details</h3>
+      <button id="dpClose" class="icon-btn">×</button>
+    </div>
+    <div id="dpBody"></div>
+  </aside>
+
+  <div id="alertPopover" class="alert-popover hidden">
+    <h4>Recent alerts (5)</h4>
+    <div id="alertPopoverList"></div>
+    <a href="alerts.html" class="see-all">View all →</a>
+  </div>
+</main>
+
+<div id="confirmModal" class="modal hidden"><div class="modal-box"><h3 id="modalTitle"></h3><p id="modalBody"></p><div class="modal-actions"><button class="btn-secondary" id="modalCancel">Cancel</button><button class="btn-primary" id="modalConfirm">Confirm</button></div></div></div>
+
+<footer class="dash-footer">© 2026 FleetAtlas · Local demo for UXBench. Fictional product, not a real company.</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

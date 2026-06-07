@@ -1,0 +1,188 @@
+{
+  "plan": {
+    "goal": "Explore the Harbor Wallet mobile fixture end-to-end, with emphasis on the home dashboard, primary money actions, the activity feed, and account/settings/privacy behavior, while validating responsive/mobile presentation and recovery states where available.",
+    "summary": "Start from the home dashboard and systematically exercise the visible primary actions: Send, Receive, Swap, Top up, notifications, See all, Activity, and Account. Because the prescan shows a single-page app with multiple in-app screens rather than separate HTML pages, the run should focus on tab/state changes, any overlays or detail views, and whether navigation returns cleanly to home. Repeat the most important checks at mobile viewport size to verify the iOS-style phone fixture, bottom tab bar, and touch targets.",
+    "assumptions": [
+      "The site is a single-page app contained in index.html; other screens are likely rendered via data-screen state changes rather than separate HTML files.",
+      "The Account tab contains the primary settings/privacy flow referenced by the user goal, even though it was not expanded in the prescan.",
+      "Some controls may be placeholders or inert in the fixture, so the run should distinguish between visual state changes and fully interactive flows.",
+      "The only visible accessibility/layout concerns from prescan are the small notification and 'See all' tap targets, which should be checked more carefully on mobile."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Notification button '3 🔔' — small 38x38 tap target and likely to open an overlay or inbox state",
+      "'See all' link in Recent Activity — small 42x16 tap target and likely to expose the full activity list or history screen",
+      "Bottom tab bar Account — likely entry to settings/privacy and any account management states",
+      "Primary money actions: Send, Receive, Swap, Top up — high-risk for incomplete flows, modal behavior, or state resets",
+      "Mobile viewport phone frame/status bar/tab bar — verify that the simulated device chrome and content remain usable at ≤460 px viewport"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline home dashboard",
+        "objective": "Validate the default landing state, layout, and key affordances on the home screen before branching into secondary flows.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Confirm the home dashboard loads with balance card, assets list, recent activity, and bottom tab bar visible.",
+          "Check the status bar, notch, and home indicator rendering in the mobile fixture.",
+          "Inspect whether any content is clipped or overlaps in desktop and mobile viewport modes.",
+          "Record the visible action set and whether the notification badge count is presented consistently."
+        ],
+        "exit_criteria": [
+          "Home state is stable with no console/network errors.",
+          "Primary dashboard sections are visible and readable in both viewport modes.",
+          "No unexpected layout breakage is observed in the phone frame."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Primary money actions",
+        "objective": "Exercise the four prominent transaction shortcuts from the dashboard and confirm their resulting states or recoveries.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click Send and determine whether it opens a send screen, modal, or no-op state.",
+          "Click Receive and verify the receive experience or QR/instructions state if present.",
+          "Click Swap and check whether a swap flow appears and whether it is dismissible.",
+          "Click Top up and verify the top-up entry point or any funding guidance state.",
+          "After each action, confirm there is a clear way back to the dashboard."
+        ],
+        "exit_criteria": [
+          "All four primary action controls have been activated at least once.",
+          "Any opened flow can be exited without losing the home state.",
+          "No blocking interaction failures are encountered."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Activity overview and detail drill-in",
+        "objective": "Validate the recent activity preview and the route to fuller transaction history.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Activate See all and see whether it expands to a full activity view or another state.",
+          "Open individual recent activity rows if they are clickable, especially sent and received items.",
+          "Check whether amounts, merchant/contact labels, and timestamps remain legible in the expanded state.",
+          "Verify back navigation or dismissal returns to the home dashboard without stale state."
+        ],
+        "exit_criteria": [
+          "The activity preview and any expanded history view have been explored.",
+          "At least one transaction detail path has been tested if available.",
+          "Return path to the home screen is confirmed."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Notifications and recovery",
+        "objective": "Probe the notification entry point and any transient UI states that may interfere with the main dashboard.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Tap the notifications badge/button and inspect the resulting panel or screen.",
+          "Check whether unread count, notification content, or empty states are shown.",
+          "Test dismissal behavior and whether focus/state returns correctly to the dashboard.",
+          "Note any issues caused by the small tap target size on mobile."
+        ],
+        "exit_criteria": [
+          "Notification behavior is understood, including open and close paths.",
+          "Any overlay or panel can be dismissed cleanly.",
+          "Mobile usability of the small target has been assessed."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Account and settings/privacy path",
+        "objective": "Prioritize the user's requested settings/privacy exploration by entering the Account area and checking for related management screens.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open the Account tab and inspect the available account/settings/privacy options.",
+          "Look for privacy controls, security/account management entries, and any profile-related state.",
+          "Validate navigation depth if the account area contains subpages or panels.",
+          "Check that returning to Home preserves expected state and does not reset unrelated selections."
+        ],
+        "exit_criteria": [
+          "Account area has been entered and its visible controls have been exercised.",
+          "Any settings/privacy-related entries found have been validated at least once.",
+          "The app returns reliably to the dashboard."
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Mobile viewport verification",
+        "objective": "Repeat the most important paths under the mobile viewport to validate touch usability and fixture framing.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Re-run the home dashboard sanity check at mobile viewport size.",
+          "Repeat at least one primary action and the Account path on mobile.",
+          "Re-check the small-tap targets ('3 🔔' and 'See all') for usability issues.",
+          "Confirm the bottom tab bar remains reachable and the phone chrome does not obscure content."
+        ],
+        "exit_criteria": [
+          "Critical flows have been confirmed on mobile viewport.",
+          "Any size-related issues are documented.",
+          "No additional viewport-specific blockers are found."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages; in this fixture, fully explore all reachable in-app screens/state variants from index.html",
+      "features": "exercise most visible controls on the home dashboard, including the four transaction shortcuts, notifications, See all, and bottom tabs with emphasis on Account",
+      "mobile": "repeat the home check, one primary action, the activity path, and the Account/privacy path on mobile viewport; specifically verify small-tap targets and the bottom tab bar"
+    },
+    "notes": [
+      "Prescan reports no console or network errors, so the run can focus on interaction coverage and UI/state quality rather than error recovery.",
+      "The fixture appears visually rich but page-limited; depth should come from state transitions and detail views rather than page enumeration."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Harbor Wallet — mobile fixture",
+      "url": "file:///Users/timchef/UXBench/websites/harborwallet-mobile/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "7:10 MH Hi, Milena Welcome back 3 🔔 TOTAL BALANCE $ 8,420 .16 ▲ $124.80 (1.5%) today ↑ Send ↓ Receive ⇄ Swap + Top up YOUR ASSETS $ USD Cash $5,820.16 — ₿ Bitcoin 0.039 BTC $2,140.00 +2.1% Ξ Ethereum 0.18 ETH $460.00 −0.4% RECENT ACTIVITY See all ↑ Sent · @theo.nakamura Yesterday · 7:14 pm −$48.00 ↓ Received · Halcyon Travel Yesterday · 11:02 am +$1,240.00 💳 Card · Bella Suora May 12 · 8:42 pm −$76.50 💳 Card · Pearl Coffee Roasters May 12 · 8:08 am −$5.40 ⌂ Home ↑ Send ↓ Receive 📊 Activity ◉ Account",
+      "headings": [
+        "YOUR ASSETS",
+        "RECENT ACTIVITY",
+        "Send money",
+        "Receive money",
+        "Account"
+      ],
+      "counts": {
+        "buttons": 39,
+        "links": 1,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:3 🔔",
+        "clickable:button:↑ Send",
+        "clickable:button:↓ Receive",
+        "clickable:button:⇄ Swap",
+        "clickable:button:+ Top up",
+        "clickable:a:See all",
+        "clickable:button:⌂ Home",
+        "clickable:button:📊 Activity",
+        "clickable:button:◉ Account"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

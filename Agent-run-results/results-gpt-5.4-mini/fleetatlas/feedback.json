@@ -1,0 +1,69 @@
+{
+  "summary": "FleetAtlas’s core dashboard, alerts, and analytics flows are generally functional, but several interactions feel inert because they provide little or no visible state feedback. The biggest UX risks are in mobile: horizontal overflow, clipped tables, and undersized/unnamed controls make the app harder to use on touch screens. There are also a few placeholder-style branches in the shared shell (e.g., Drivers/Routes/Settings) that don’t clearly confirm where they go, which can undermine trust in navigation.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "several-primary-controls-change-state-without",
+      "severity": "high",
+      "area": "feedback",
+      "page_hint": "index.html / analytics.html search, status filters, org select",
+      "problem": "Several primary controls change state without any obvious visible confirmation, making the interface feel unresponsive even when the control is technically working.",
+      "evidence": "On index.html, typing into the search box showed no visible filtering/highlighting after Enter; clicking the \"All 25\" status filter produced no visible change; selecting the org switcher retained the value but did not change the page content. On mobile analytics, typing \"Hill\" and \"Chen\" into Search… produced no obvious visible filtering or echoed value change.",
+      "suggested_fix": "Show explicit result-count changes, loading/filtered-state chips, row highlighting, or an empty-state message after search/filter actions. For org switching, update a visible scope label or dashboard content so the change is unmistakable."
+    },
+    {
+      "id": "the-mobile-analytics-layout-exceeds-the",
+      "severity": "high",
+      "area": "mobile usability",
+      "page_hint": "analytics.html mobile screenshot / layout warnings",
+      "problem": "The mobile analytics layout exceeds the viewport width and clips content, so important data is partially off-screen and the bottom navigation/header crowd the view.",
+      "evidence": "The mobile observation reports page width 527px vs 390px viewport, horizontal overflow warnings, and a lower Driver Performance table clipped on the right. The screenshot path for the mobile analytics scroll state shows the bottom nav still visible while content is cut off.",
+      "suggested_fix": "Rework the mobile analytics layout into stacked cards or collapsible rows, and ensure tables degrade gracefully with fewer visible columns. Avoid fixed-width containers that overflow the viewport."
+    },
+    {
+      "id": "some-shared-shell-navigation-items-behave",
+      "severity": "high",
+      "area": "goal completion",
+      "page_hint": "analytics.html / alerts.html nav items",
+      "problem": "Some shared-shell navigation items behave like dead ends or hash-only placeholders instead of clear destinations.",
+      "evidence": "Clicking Drivers on analytics.html only changed the URL to analytics.html# with no visible view change. On alerts.html, clicking Routes similarly only changed the URL hash and kept the Alerts section selected. Settings also changed URLs to a hash state rather than opening a distinct settings view.",
+      "suggested_fix": "Either route these items to dedicated pages/views or visually mark them as disabled/coming soon. If they are intentional placeholders, label them clearly so users know they are not actionable."
+    },
+    {
+      "id": "a-core-organization-account-switcher-is",
+      "severity": "medium",
+      "area": "accessibility",
+      "page_hint": "global shell / org selector / 👤 button",
+      "problem": "A core organization/account switcher is unlabeled, and the avatar/profile button is below the recommended mobile tap target size.",
+      "evidence": "Across pages, the org selector is reported as a form field with no label/aria-label/placeholder. On mobile analytics, the profile button is 36x36px, and the mobile observations repeatedly flag small tap targets in the nav.",
+      "suggested_fix": "Add visible labels or accessible names to the org switcher, and increase the profile button and compact nav targets to at least 44x44px on mobile."
+    },
+    {
+      "id": "the-alerts-and-vehicles-experiences-can",
+      "severity": "medium",
+      "area": "visual hierarchy",
+      "page_hint": "vehicles.html / alerts.html",
+      "problem": "The alerts and vehicles experiences can appear visually broken or empty in some states, which makes it hard to tell whether content is missing or just hidden offscreen.",
+      "evidence": "The vehicles page initially rendered as a blank main content area even though the DOM still exposed search/filter controls; scrolling later revealed the hidden table. Alerts repeatedly appeared with an empty or collapsed main content area in some desktop/mobile observations, even when navigation remained visible.",
+      "suggested_fix": "Give these pages stronger above-the-fold content cues, such as visible section headers, counts, or a preview of the table/filter strip. If content is below the fold, make that more obvious with layout spacing or a “scroll for table” affordance."
+    },
+    {
+      "id": "multiple-select-controls-are-missing-accessible",
+      "severity": "medium",
+      "area": "forms",
+      "page_hint": "shared select controls on index.html / vehicles.html / alerts.html / analytics.html",
+      "problem": "Multiple select controls are missing accessible labels, which makes the filter set harder to interpret and use consistently.",
+      "evidence": "The session repeatedly reports missing-label warnings for the org switcher select on index.html, vehicles.html, alerts.html, and analytics.html. Vehicles also has an unlabeled fleet/status-related select, and Alerts/Analytics mobile views show the same issue in the compact shell.",
+      "suggested_fix": "Add clear visible labels or aria-labels for each select, especially org scope, fleet scope, and any status filters. Keep labels visible in the mobile layout so the purpose of each control remains obvious."
+    },
+    {
+      "id": "several-sidebar-nav-targets-are-smaller",
+      "severity": "low",
+      "area": "navigation",
+      "page_hint": "global sidebar / bottom nav",
+      "problem": "Several sidebar/nav targets are smaller than mobile guidance, making the shell harder to tap accurately.",
+      "evidence": "Layout warnings repeatedly flagged 41px-tall nav items and a 36x36px user button, including in the mobile analytics observation and broader desktop/mobile coverage notes.",
+      "suggested_fix": "Increase tap target height/spacing for sidebar and bottom-nav items on compact screens and ensure rows have generous hit areas."
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Errors — WeaveAPI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="errors">
+<aside class="left-nav" id="leftNav"></aside>
+<main class="docs-center">
+<header class="doc-top">
+  <button id="menuToggle" class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+  <div class="search-wrap"><input class="search" placeholder="Search docs… (ctrl+K)" id="docSearch" aria-label="Search documentation" autocomplete="off"></div>
+  <button id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode">🌙</button>
+</header>
+<article class="content">
+<h1>Error codes</h1>
+<p class="lede">All WeaveAPI errors are returned as a structured object. Use <code>code</code> for programmatic handling and <code>message</code> for display.</p>
+<table class="err-tbl">
+<thead><tr><th>Code</th><th>HTTP</th><th>Message</th><th>How to handle</th></tr></thead><tbody>
+<tr><td><code>card_declined</code></td><td>402</td><td>The card was declined</td><td>Surface a retry; offer alternate payment method</td></tr>
+<tr><td><code>insufficient_funds</code></td><td>402</td><td>Insufficient funds on the card</td><td>Retry with a different method</td></tr>
+<tr><td><code>expired_card</code></td><td>402</td><td>The card has expired</td><td>Prompt user to update the card</td></tr>
+<tr><td><code>incorrect_cvc</code></td><td>402</td><td>CVC check failed</td><td>Re-ask for the CVC</td></tr>
+<tr><td><code>processing_error</code></td><td>502</td><td>Issuer was unreachable</td><td>Safe to retry with idempotency key</td></tr>
+<tr><td><code>fraud_blocked</code></td><td>402</td><td>Blocked by our risk system</td><td>Do not retry; escalate via dashboard</td></tr>
+<tr><td><code>three_d_secure_required</code></td><td>402</td><td>3DS authentication required</td><td>Redirect to <code>three_d_secure.url</code></td></tr>
+<tr><td><code>currency_not_supported</code></td><td>400</td><td>Currency not enabled on account</td><td>Enable currency in dashboard</td></tr>
+<tr><td><code>amount_too_small</code></td><td>400</td><td>Below minimum charge amount</td><td>Increase amount (min $0.50 USD)</td></tr>
+<tr><td><code>amount_too_large</code></td><td>400</td><td>Above per-transaction maximum</td><td>Split the charge</td></tr>
+<tr><td><code>missing_required_param</code></td><td>400</td><td>Required parameter omitted</td><td>Check the error <code>param</code></td></tr>
+<tr><td><code>invalid_param</code></td><td>400</td><td>Parameter value was invalid</td><td>See <code>param</code> and <code>message</code></td></tr>
+<tr><td><code>resource_missing</code></td><td>404</td><td>No such resource</td><td>Check the ID</td></tr>
+<tr><td><code>resource_already_exists</code></td><td>409</td><td>Duplicate idempotency key with different params</td><td>Use a new idempotency key</td></tr>
+<tr><td><code>authentication_required</code></td><td>401</td><td>Missing or invalid API key</td><td>Send <code>Authorization: Bearer sk_…</code></td></tr>
+<tr><td><code>permission_denied</code></td><td>403</td><td>API key lacks scope</td><td>Grant scope in dashboard</td></tr>
+<tr><td><code>rate_limited</code></td><td>429</td><td>Too many requests</td><td>Back off; respect <code>Retry-After</code></td></tr>
+<tr><td><code>account_inactive</code></td><td>403</td><td>Account is closed or suspended</td><td>Contact support</td></tr>
+<tr><td><code>refund_too_large</code></td><td>400</td><td>Refund exceeds refundable amount</td><td>Check <code>amount_refunded</code></td></tr>
+<tr><td><code>charge_already_captured</code></td><td>400</td><td>Charge was already captured</td><td>No action needed</td></tr>
+<tr><td><code>charge_already_refunded</code></td><td>400</td><td>Charge fully refunded</td><td>No action needed</td></tr>
+<tr><td><code>customer_max_payment_methods</code></td><td>400</td><td>Cannot attach more methods (limit 25)</td><td>Detach unused methods</td></tr>
+<tr><td><code>idempotency_key_in_use</code></td><td>409</td><td>Key in use for in-flight request</td><td>Wait and retry the same key</td></tr>
+<tr><td><code>invalid_webhook_signature</code></td><td>400</td><td>Webhook HMAC didn't match</td><td>Check signing secret</td></tr>
+<tr><td><code>service_unavailable</code></td><td>503</td><td>Temporary outage</td><td>Retry with backoff; check status page</td></tr>
+</tbody></table>
+</article>
+</main>
+<script src="script.js"></script>
+<script>setupDocs("errors");</script>
+</body>
+</html>

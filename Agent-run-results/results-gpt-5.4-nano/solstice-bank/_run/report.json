@@ -1,0 +1,663 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/solstice-bank/index.html",
+  "site": {
+    "name": "solstice-bank",
+    "site_dir": "/Users/timchef/UXBench/websites/solstice-bank",
+    "start_page": "index.html",
+    "page_type": "form/onboarding",
+    "html_files": [
+      "apply.html",
+      "confirmation.html",
+      "index.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/solstice-bank/README.md",
+    "summary": "solstice-bank-clone Fictional digital bank \"Solstice Bank\" account-opening flow, aimed at the freelancer segment. Pages | File | Purpose | | --- | --- | | `index.html` | Landing: hero (with two decorative credit cards) + three value props + \"Materials to prepare\" checklist + top CTA to apply | | `apply.html` | Single-page 8-step linear account-opening flow with section switching: 1 eligibility + ToS / 2 personal info (name, DOB, masked SSN) / 3 contact and US address / 4 employment and income (incl. freelance / self-employed) / 5 ID verification (front/back photo upload mock + modal liveness 3-2-1 countdown) / 6 risk questionnaire (5 questions, with soft warning when compared against income) / 7 funding choice (link external bank mock OAuth, mailed check, fund later) + 4 fictional banks / 8 review (each section has Edit to jump back). Top progress bar + step dots (completed steps clickable to go back, unfinished locked). Save & continue later, Cancel application second-confirmation. Bottom-right floating Help drawer with copy that changes per step. | | `confirmation.html` | Application submission success: animated checkmark + random application number `SOL-2026-XXXX-XX` + next-step",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full solstice-bank system, prioritizing the primary form/onboarding flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The Solstice Bank onboarding flow generally communicates step progress clearly and provides contextual Help that updates by step. Validation and error summaries are present and often actionable, but state synchronization appears unreliable (users can type/select yet still see persistent “required” errors), which can feel like the form is ignoring input. On mobile, multiple key controls and the help close button are below recommended tap-target sizing, increasing the chance of mis-taps and interaction failures (notably the desktop “Close help” timed out due to pointer interception).",
+  "exploration_plan": {
+    "goal": "Critique and validate the end-to-end Solstice Bank account-opening UX, focusing on the multi-step apply flow (validation, navigation, recovery), and then confirming the post-submission experience.",
+    "summary": "Start from the landing page and enter the apply flow via the primary CTA. Perform deep, step-by-step traversal of the 8-step linear onboarding in apply.html, including validation errors, help drawer behavior, the ID/liveness modal, step-dots navigation (completed vs locked), save/cancel recovery, and funding/review edits. Finish by completing submission to reach confirmation.html, then verify reference number display and exit navigation.",
+    "assumptions": [
+      "Only three HTML pages exist for this run: index.html, apply.html, confirmation.html.",
+      "The apply flow is a single-page app with section switching (no separate URLs per step), so coverage must rely on in-page state changes and modals.",
+      "Help content and certain button labels/text change per step as described in the prescan for apply.html.",
+      "Step dots in the progress UI allow returning to completed steps while preventing navigation to unfinished steps."
+    ],
+    "target_pages": [
+      "index.html",
+      "apply.html",
+      "confirmation.html"
+    ],
+    "risk_hotspots": [
+      "apply.html: progress bar/step dots — verify completed steps clickable, unfinished locked, and section switching preserves/does not lose data",
+      "apply.html: Save & continue later — confirm it preserves state and the user can resume without corrupting inputs",
+      "apply.html: Cancel application second-confirmation — confirm correct guardrails and that data handling matches intent",
+      "apply.html: ID verification (front/back upload) + liveness 3-2-1 countdown modal — verify upload controls, modal timing, ability to retry/close, and graceful failure states",
+      "apply.html: risk questionnaire — verify 5-question flow and the “soft warning when compared against income” behavior",
+      "apply.html: funding choice — verify the external bank OAuth mock flow is handled safely and other funding options (mailed check, fund later) behave consistently",
+      "apply.html: Review section — verify each section’s “Edit” control jumps to correct step and returns to review with expected state",
+      "mobile layout — prescan indicates multiple small tap targets on both index and apply; validate that key CTAs and toggles remain usable on small screens"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing entry + header navigation sanity",
+        "objective": "Confirm the landing page exposes clear entry points and that navigation controls behave reasonably before starting the onboarding flow.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use the primary CTA 'Start application' to reach apply.html",
+          "Verify 'Open an account' in the header routes to apply.html and does not scroll/redirect unexpectedly",
+          "Open header 'Help' and 'Sign in' to check whether they anchor, open modals, or navigate (validate no dead-ends from prescan)",
+          "On mobile viewport, test tap targets for 'Open an account' and 'Start application' remain clickable and do not mis-tap decorative elements"
+        ],
+        "exit_criteria": [
+          "apply.html loads successfully from both landing CTAs",
+          "Any Help/Sign in behavior is observed and is not broken (e.g., no blank page or console/runtime error)",
+          "On mobile, CTA tap interactions consistently work"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Apply flow: step structure, validation gates, and navigation rules",
+        "objective": "Validate the 8-step linear flow UX: eligibility consent, required fields, validation messaging, and progress-based navigation (dots/bar).",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Verify step progression UI: top progress bar + step dots; attempt to click completed vs unfinished steps",
+          "Step 1 Eligibility: validate required checkboxes (US resident, 18+), USA PATRIOT Act consent, and ToS/Deposit Account Agreement agreement; trigger 'Please fix the following' by continuing with missing items",
+          "Step 2 About you: enter name and DOB and ensure masked SSN behaves as expected (e.g., formatting/masking); trigger validation by leaving required fields empty",
+          "Use 'Edit' or section navigation (if present outside review) to confirm data retention",
+          "On mobile, ensure toggles/checkboxes/continue buttons remain usable and errors are readable"
+        ],
+        "exit_criteria": [
+          "Validation errors are shown when required fields are missing and disappear after correction",
+          "Step dots enforce expected locking behavior and section switching updates the visible step",
+          "Data entered in earlier steps persists when navigating back/forward"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Help drawer + save/cancel recovery behaviors",
+        "objective": "Deeply validate recovery paths and contextual assistance across multiple steps.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Open the bottom-right floating Help drawer during at least two different steps and confirm copy changes per step",
+          "Use 'Save & continue later' and verify a safe recovery path (e.g., confirmation message or persistent state) without breaking the flow",
+          "Use 'Cancel application' and confirm the second-confirmation prompt; verify cancel does not happen accidentally and that flow state handling is consistent",
+          "If save produces a resumable state, resume and verify earlier inputs are intact (no resets to defaults)"
+        ],
+        "exit_criteria": [
+          "Help drawer opens/closes reliably and updates content appropriately by step",
+          "Save and cancel both present appropriate confirmations and do not corrupt entered data",
+          "If resuming is supported, the resumed state matches what was saved"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Identity verification + liveness modal interaction",
+        "objective": "Validate the most complex verification interactions: photo upload inputs, liveness modal countdown, retry behavior, and error handling.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Step 5 Verify ID: attempt to proceed without uploading to trigger required-field errors",
+          "Simulate uploading front and back photo controls (use available file input behavior in the demo; if uploads are mock, verify the UI state changes accordingly)",
+          "Trigger the liveness check and observe the 3-2-1 countdown modal timing",
+          "Test closing/canceling the liveness modal (if allowed) and then restarting to ensure the flow doesn’t get stuck",
+          "On mobile, confirm modal controls are tappable and countdown does not cause layout/scroll issues"
+        ],
+        "exit_criteria": [
+          "Uploads (or mock upload state) and validation gates function correctly",
+          "Liveness countdown runs and required completion conditions are enforced",
+          "User can recover from interruptions (close/retry) without the step becoming inconsistent"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Risk questionnaire + funding choice + review/edit loop",
+        "objective": "Validate conditional messaging, external integration mock, and the review-to-edit navigation loop for all sections.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Step 6 Risk: answer all 5 questions; test a scenario that should trigger the soft warning when compared against income",
+          "Verify that warning is presented without hard-blocking (unless intentionally designed otherwise) and that user can continue",
+          "Step 7 Funding: exercise each funding option at least once (connect bank mock OAuth, mailed check, fund later) and ensure each updates the UI state",
+          "In the OAuth mock, verify you can return to apply.html and that the connection state is reflected in the step",
+          "Step 8 Review: use each section’s 'Edit' to jump back; modify a value and return to review to confirm changes reflect correctly",
+          "Verify the final 'submit' (or equivalent) pathway is available only when required steps are complete"
+        ],
+        "exit_criteria": [
+          "Soft warning behavior appears under the intended conditions and user can proceed",
+          "Funding options switch correctly and persist selection/connection state",
+          "Review edit loop correctly navigates and reflects changes when returning"
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Submit success + confirmation content validation",
+        "objective": "Verify confirmation page correctness and the primary exit navigation after successful application submission.",
+        "target_pages": [
+          "confirmation.html"
+        ],
+        "key_checks": [
+          "Complete submission from apply.html to reach confirmation.html",
+          "Verify animated checkmark (or success animation) runs and reference number format matches SOL-2026-XXXX-XX style",
+          "Confirm the confirmation copy includes decision timeline (1–3 business days) and app-tracking guidance",
+          "Use 'Back to home' link and ensure it routes to index.html without breaking the browser state",
+          "On mobile viewport, ensure confirmation content is readable and the back link is tappable"
+        ],
+        "exit_criteria": [
+          "Confirmation page loads with a valid-looking reference number",
+          "Back to home returns to index.html successfully on desktop and mobile"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages: index.html, apply.html, confirmation.html.",
+      "features": "Exercise all visible controls per apply.html step: checkboxes/consents, text inputs (including masked SSN), continue navigation, progress dots, Help drawer, Save & continue later, Cancel second confirmation, photo upload mock, liveness modal countdown, risk questionnaire answers + conditional warning, funding option switching including OAuth mock, Review section Edit buttons, and final submission.",
+      "mobile": "Repeat the critical path checks (CTA -> apply, step progression/validation, Help drawer, liveness modal, funding option switching, review edit loop, confirmation back-to-home) on mobile viewport, prioritizing tap-target usability."
+    },
+    "notes": [
+      "Prescan suggests multiple small tap-target warnings on index header links and landing CTAs; mobile passes should specifically verify the tapability of 'Open an account' and 'Start application'.",
+      "Prescan indicates 3 dialogs on apply.html; ensure at least one dialog/modals path is observed during liveness and at least one confirmation dialog path is observed during cancel."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Fix validation errors and proceed to the next step.",
+      "problem": "Required-field validation appears to persist even after the user enters/selects the seemingly required value, suggesting validation state is not reliably synced to inputs.",
+      "evidence": "In Step 3 (Contact & address), after entering a street address, the UI still showed “Street address is required,” and after selecting State (dropdown shows “AL”), “State is required” persisted. In Step 4 gating attempts, progress behavior also showed inconsistency (e.g., selecting “Own” did not resolve the page-level validation gate and State selection didn’t clear “State is required”). On mobile, after clicking Continue from the consent anchor, the flow advanced, but earlier the ToS consent error banner remained unchanged after tapping the consent checkbox (banner still said “This must be checked”).",
+      "why_it_matters": "When users see validation errors that don’t clear after correcting inputs, they lose trust, spend extra time troubleshooting, and may abandon the application.",
+      "suggestion": "Ensure validation is driven by actual field state changes (e.g., run validation recalculation on change/blur consistently). When a user corrects an input, clear the corresponding summary bullet and field-level message immediately; also consider adding a brief “updated” confirmation near the field (e.g., “Looks good”) to reinforce that input was received.",
+      "source_hint": "apply.html (Step 3: Street address/State/City/Zip/Residence type; desktop screenshots referenced across steps-25-36, plus mobile consent persistence in steps-67-72)"
+    },
+    {
+      "severity": "high",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap controls reliably on mobile to continue the application.",
+      "problem": "Multiple critical tap targets are below recommended mobile sizing, increasing mis-taps and failed interactions.",
+      "evidence": "Layout warnings repeatedly flag controls below 44px guidance: “Solstice” 103x27, “Save & continue later” 154x18, “Continue” 97x37, “Back” 71x39, and the Help “× Close help” 25x28. During the session, the “Close help” action failed on desktop due to a header intercepting pointer events, indicating interaction layers may also be problematic.",
+      "why_it_matters": "Small targets are a common cause of accidental taps and user frustration—especially during a high-stakes form collecting sensitive information.",
+      "suggestion": "Increase minimum hit areas for all primary actions (Continue, Back, Save & continue later) and the Help close icon; add extra padding around icons and links so the tap target meets at least 44x44 CSS pixels without visually shrinking the content.",
+      "source_hint": "apply.html mobile state (screenshot/observations with layout_warning_count=7 and interactables ux-1/ux-2/ux-7/ux-18/ux-11), plus desktop “Close help” failure in session_memory notable_failures"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "affordance",
+      "user_goal": "Open/close contextual Help without losing control of the form.",
+      "problem": "The Help drawer close control can be unreliable because it may be obstructed by a persistent header layer intercepting pointer events.",
+      "evidence": "The session recorded a failure: “Click failed for Close help × … intercepts pointer events” with retries repeatedly blocked by “<header class=\"apply-bar\">…</header> intercepts pointer events.” The same interaction was later not observed failing on mobile (Help close worked there), but desktop clearly shows an interaction-layer problem.",
+      "why_it_matters": "If the user can’t dismiss Help, they may be forced to keep an overlay open, potentially blocking the next action and increasing friction—especially when error resolution requires immediate form interaction.",
+      "suggestion": "Fix z-index/pointer-event conflicts so the close button is always clickable above sticky headers. As a safeguard, ensure ESC key and an overlay click-to-dismiss behave consistently.",
+      "source_hint": "apply.html Help drawer Close help × (notable_failures; locator id helpClose / data-uxagent-id ux-13)"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Understand whether input was accepted and why progression is blocked.",
+      "problem": "After some input actions (typing/selecting) the UI often does not provide obvious visible change, even though underlying validation may still block progression.",
+      "evidence": "Examples include: on Step 2, after typing First name, the tool noted the error summary still listed multiple missing items; clicking the error-summary link anchored correctly. On Step 3, after selecting State, the screenshot still showed the validation issue. On mobile, typing Zip produced no obvious visible change in the screenshot. Also, Step 4 dropdown selections showed state updated (e.g., Industry set) but the tool reported “no obvious URL or visible-text change was detected,” implying feedback may be subtle or not prominent.",
+      "why_it_matters": "When the only feedback is an error banner that doesn’t change quickly (or changes only partially), users may doubt whether their inputs are registered.",
+      "suggestion": "Add immediate, field-level confirmation for accepted inputs (clear checkmark/icon or “saved” indicator next to the field) and ensure the error summary updates in lockstep with those changes. If validation remains blocked, briefly indicate which specific item is still failing and why.",
+      "source_hint": "apply.html across steps-13-30, and mobile zip typing in steps-78-79 (screenshots show unchanged ‘Please fix the following’ context)"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 49,
+    "action_success_rate_percent": 99,
+    "unchanged_action_percent": 20,
+    "known_pages": [
+      "apply.html",
+      "confirmation.html",
+      "index.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "apply.html",
+      "confirmation.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "check": 6,
+      "click": 49,
+      "open_page": 1,
+      "select_option": 9,
+      "type_text": 11,
+      "wait": 3
+    },
+    "total_actions": 79,
+    "successful_actions": 78,
+    "failed_actions": 1,
+    "unchanged_actions": 16,
+    "observed_feature_count": 75,
+    "exercised_feature_count": 37,
+    "unexplored_features": [
+      {
+        "signature": "apply.html|clickable|a|||citizenship is required|#err-anchor-4",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Citizenship is required"
+      },
+      {
+        "signature": "apply.html|clickable|a|||city is required|#err-anchor-3",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "City is required"
+      },
+      {
+        "signature": "apply.html|clickable|a|||date of birth is required|#err-anchor-2",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Date of birth is required"
+      },
+      {
+        "signature": "apply.html|clickable|a|||email is required|#err-anchor-1",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Email is required"
+      },
+      {
+        "signature": "apply.html|clickable|a|||last name is required|#err-anchor-1",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Last name is required"
+      },
+      {
+        "signature": "apply.html|clickable|a|||phone is required|#err-anchor-0",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Phone is required"
+      },
+      {
+        "signature": "apply.html|clickable|a|||select one|#err-anchor-6",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Select one"
+      },
+      {
+        "signature": "apply.html|clickable|a|||social security number is required|#err-anchor-3",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Social Security Number is required"
+      },
+      {
+        "signature": "apply.html|clickable|a|||solstice|index.html",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Solstice"
+      },
+      {
+        "signature": "apply.html|clickable|a|||street address is required|#err-anchor-2",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Street address is required"
+      },
+      {
+        "signature": "apply.html|clickable|a|||this must be checked|#err-anchor-1",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "This must be checked"
+      },
+      {
+        "signature": "apply.html|clickable|a|||this must be checked|#err-anchor-2",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "This must be checked"
+      },
+      {
+        "signature": "apply.html|clickable|a|||this must be checked|#err-anchor-3",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "This must be checked"
+      },
+      {
+        "signature": "apply.html|clickable|a|||zip is required|#err-anchor-5",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Zip is required"
+      },
+      {
+        "signature": "apply.html|clickable|button||button|back|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Back"
+      },
+      {
+        "signature": "apply.html|clickable|input||checkbox|i am 18 years or older|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "I am 18 years or older"
+      },
+      {
+        "signature": "apply.html|clickable|input||checkbox|i am a us resident|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "I am a US resident"
+      },
+      {
+        "signature": "apply.html|clickable|input||checkbox|i consent to usa patriot act identity verification|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "I consent to USA PATRIOT Act identity verification"
+      },
+      {
+        "signature": "apply.html|clickable|input||file|front of id|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Front of ID"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|other|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Other"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|residence type rent own other rent|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Residence type Rent Own Other Rent"
+      },
+      {
+        "signature": "apply.html|clickable|input||radio|residence type rent select one own other rent select one|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Residence type Rent Select one Own Other Rent Select one"
+      },
+      {
+        "signature": "apply.html|selectable|select|||citizenship select… us citizen us permanent resident resident alien (with ssn)|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "selectable",
+        "tag": "select",
+        "label": "Citizenship Select… US citizen US permanent resident Resident alien (with SSN)"
+      },
+      {
+        "signature": "apply.html|typeable|input||email|email|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Email"
+      },
+      {
+        "signature": "apply.html|typeable|input|||apt / unit|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Apt / Unit"
+      },
+      {
+        "signature": "apply.html|typeable|input|||city|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "City"
+      },
+      {
+        "signature": "apply.html|typeable|input|||date of birth|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Date of birth"
+      },
+      {
+        "signature": "apply.html|typeable|input|||first name|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "First name"
+      },
+      {
+        "signature": "apply.html|typeable|input|||last name|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Last name"
+      },
+      {
+        "signature": "apply.html|typeable|input|||middle name (optional)|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Middle name (optional)"
+      },
+      {
+        "signature": "apply.html|typeable|input|||phone|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Phone"
+      },
+      {
+        "signature": "apply.html|typeable|input|||social security number|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Social Security Number"
+      },
+      {
+        "signature": "apply.html|typeable|input|||street address|",
+        "page": "apply.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "Street address"
+      },
+      {
+        "signature": "index.html|clickable|a|||help|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Help"
+      },
+      {
+        "signature": "index.html|clickable|a|||pricing|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pricing"
+      },
+      {
+        "signature": "index.html|clickable|a|||sign in|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Sign in"
+      },
+      {
+        "signature": "index.html|clickable|a|||solstice bank|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Solstice Bank"
+      },
+      {
+        "signature": "index.html|clickable|a|||why solstice|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Why Solstice"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 49% of visible interactive feature signatures.",
+      "1 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-03-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-05-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-06-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-07-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-10-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-13-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-15-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-16-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-18-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-19-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-22-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-23-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-25-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-26-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-28-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-29-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-30-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-33-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-34-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-36-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-37-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-38-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-39-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-40-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-41-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-44-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-45-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-50-wait-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-55-wait-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-56-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-57-wait-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-58-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-60-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-62-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-70-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-73-check-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-78-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run/screenshots/agentic-80-click-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-nano/solstice-bank/_run",
+  "claude_fix": null
+}

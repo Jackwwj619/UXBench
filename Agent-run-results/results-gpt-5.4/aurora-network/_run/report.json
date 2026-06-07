@@ -1,0 +1,755 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/aurora-network/index.html",
+  "site": {
+    "name": "aurora-network",
+    "site_dir": "/Users/timchef/UXBench/websites/aurora-network",
+    "start_page": "index.html",
+    "page_type": "settings/privacy",
+    "html_files": [
+      "audience.html",
+      "blocked-words.html",
+      "index.html",
+      "past-posts.html",
+      "tag-review.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/aurora-network/README.md",
+    "summary": "Aurora Network — Privacy & Audience (local demo) Fictional social network. Local fixture for UXBench. Open `index.html` directly in a browser. Pages `index.html` — Privacy overview Entry hub. Four cards (Default audience, Tag review, Past post visibility, Muted words) link to each privacy-management surface. Below the cards, a \"Snapshot\" panel summarizes the user's current privacy state as a key/value list. `audience.html` — Default audience Radio-group selector with four options (Public, Friends, Custom list, Only me). Below the selector: dynamic explanation of who can see new posts, custom-list manager (create / inspect / view recent use), and a \"Who can tag you?\" radio block. `tag-review.html` — Pending tag queue",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full aurora-network system, prioritizing the primary settings/privacy flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "Aurora’s privacy settings have a strong overall information architecture: the overview cards are understandable, detail pages generally match their labels, and some high-risk flows like past post filtering clearly show scope before action. However, several interactions feel unreliable or unfinished once users try to change settings: confirmation modals can trap users, counts and states drift out of sync, and multiple controls provide no feedback about whether changes saved. Coverage is substantial across all five pages and both desktop/mobile, but only about 39% of visible features were directly exercised, so the critique focuses on the tested privacy-management paths rather than every global nav item.",
+  "exploration_plan": {
+    "goal": "Exhaustively explore Aurora Network’s privacy settings experience, centered on the Privacy & Audience overview and the four linked management surfaces, while validating key state changes, destructive/recovery paths, and responsive usability.",
+    "summary": "Start from the Privacy & Audience overview to confirm the hub, cross-links, and snapshot framing of the privacy system. Then work through each linked page in order of user impact: default audience, tag review, past post visibility, and muted words, exercising visible controls and checking whether feedback, summaries, and navigation stay coherent. Reserve extra attention for bulk/destructive actions and pages with many controls, then repeat critical paths on mobile because the prescan already shows multiple undersized tap targets.",
+    "assumptions": [
+      "The primary product area in scope is the privacy/settings section beginning at index.html, not the placeholder top-nav destinations that use # links.",
+      "All known functional pages are the five HTML files in the prescan: index.html, audience.html, tag-review.html, past-posts.html, and blocked-words.html.",
+      "Because this is a local demo fixture, some actions may update only local page state rather than persist across full-page navigation; persistence should be tested but not assumed.",
+      "The overview snapshot is intended to summarize privacy state and may reflect changes from deeper settings pages, especially the default audience link already pointing to audience.html."
+    ],
+    "target_pages": [
+      "index.html",
+      "audience.html",
+      "tag-review.html",
+      "past-posts.html",
+      "blocked-words.html"
+    ],
+    "risk_hotspots": [
+      "index.html: snapshot panel 'Change' links may be ambiguous because at least one points to # while another goes to audience.html",
+      "index.html: overview cards and left-nav both link to the same privacy pages; check consistency of labels, counts, and destinations",
+      "audience.html: radio-group changes plus 'Save default'/'Discard changes' flow may have unsaved-state or misleading explanation issues",
+      "audience.html: 'Custom list…' option and custom-list manager ('+ New list', inspect/recent-use cues) are stateful and likely complex",
+      "audience.html: 'Who can tag you?' radio block may overlap conceptually with tag-review behavior and create policy confusion",
+      "tag-review.html: bulk actions 'Approve all' and 'Hide all' are high-impact and should be checked for confirmation, reversibility, and count updates",
+      "tag-review.html: per-item actions 'Approve', 'Hide tag', and 'Block user' are repeated controls with risk of accidental action or unclear aftermath",
+      "past-posts.html: 'Apply to visible' is a destructive bulk action tied to filters and selected target audience; validate scope clarity",
+      "past-posts.html: year/audience filters drive which posts are affected; check that visible-result logic matches action wording 'what you see is what gets changed'",
+      "blocked-words.html: add-word input plus Enter-to-save behavior may fail silently or create duplicate/validation edge cases",
+      "blocked-words.html: chip removal via × across 18 entries is repetitive and prone to accidental deletion without recovery",
+      "blocked-words.html: 'Import .txt' and 'Export .txt' are visible but may be stubbed in a local fixture; confirm behavior and error handling if any",
+      "All pages on mobile: many nav items and links were flagged as small tap targets in prescan"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Map the privacy hub and navigation model",
+        "objective": "Validate the overview page as the entry point, including card links, left-side privacy navigation, snapshot summary, and any directly actionable 'Change' links.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Open each privacy destination from the overview cards: Default audience, Tag review, Past post visibility, Muted words",
+          "Compare left-nav privacy links against the card links to confirm they reach the same pages and use consistent naming/count cues",
+          "Inspect the 'Snapshot of your current privacy' section and test visible 'Change' links, noting which are actionable versus placeholder # links",
+          "Check whether overview copy correctly distinguishes new-post settings from retroactive controls such as Past post visibility",
+          "Record whether tag-review count ('7 pending') appears consistently in card and left-nav badge"
+        ],
+        "exit_criteria": [
+          "All overview-originating privacy links have been followed at least once",
+          "Any dead, placeholder, or inconsistent 'Change' links are identified with evidence",
+          "The relationship between overview summary content and deeper settings pages is understood before deeper interaction"
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Exercise default audience and tagging preferences",
+        "objective": "Test the primary settings flow for choosing who can see new posts, including save/discard behavior, custom-list affordances, and adjacent tag-permission settings.",
+        "target_pages": [
+          "audience.html"
+        ],
+        "key_checks": [
+          "Cycle through the four audience radio options: Public, Friends, Custom list…, Only me, observing helper/explanatory text changes",
+          "Use 'Save default' after changing audience and verify whether the selected state and any explanation remain stable",
+          "Use 'Discard changes' after making a different selection to confirm recovery to the prior state",
+          "Choose the 'Custom list…' path and inspect visible custom-list affordances including '+ New list' and the listed saved lists with recent-use metadata",
+          "Check whether selecting different audience options affects visible explanation text such as search-indexing implications or friend visibility wording",
+          "Exercise the 'Who can tag you?' radio block and note whether labels and resulting state are understandable alongside the separate Tag review page",
+          "Navigate back to the overview after a save, if possible, to see whether snapshot/default audience indicators update"
+        ],
+        "exit_criteria": [
+          "At least one successful save and one discard path have been attempted",
+          "All four audience options have been selected and observed",
+          "Custom-list management affordances and tag-permission controls have been inspected enough to assess discoverability and clarity"
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Validate moderation queue actions in tag review",
+        "objective": "Assess single-item and bulk triage flows for pending tags, with emphasis on clarity of consequence, queue updates, and safe handling of higher-risk actions.",
+        "target_pages": [
+          "tag-review.html"
+        ],
+        "key_checks": [
+          "Review the queue header and initial pending count ('7 tags waiting for review') against overview/nav badge counts",
+          "Use per-item actions on a sample of entries: Approve, Hide tag, and Block user, checking resulting item state/removal and any feedback",
+          "Inspect entries with additional context such as 'You don't follow this account' to see whether risk cues are prominent enough",
+          "Test one bulk action path ('Approve all' or 'Hide all') after first understanding whether confirmation or undo exists",
+          "Check whether action labels distinguish profile-linking effects from original-post visibility, matching the explanatory copy",
+          "Confirm whether counts update after individual or bulk actions and whether an empty-state appears when the queue is cleared"
+        ],
+        "exit_criteria": [
+          "All three per-item action types have been exercised on at least one item if enabled",
+          "One bulk action path has been explored with its aftermath documented",
+          "Queue count/update behavior and any confirmation/undo pattern are known"
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Probe bulk visibility changes for past posts",
+        "objective": "Test the highest-risk retroactive privacy flow by combining filters with the 'Apply to visible' action and checking whether scope is transparent and recoverable.",
+        "target_pages": [
+          "past-posts.html"
+        ],
+        "key_checks": [
+          "Inspect the timeline/year controls and the year select to understand how narrowing content works",
+          "Change audience filters (Any audience, Public only, Friends only, Only me) and verify that the visible post list matches the selected filter",
+          "Change the target audience select (Friends / Only me / Public) and confirm that it is clearly separated from the filter controls",
+          "Apply changes to a narrowed visible subset using 'Apply to visible' and watch for confirmation, warnings, or post-level updates",
+          "Compare the on-page instruction 'what you see is what gets changed' against actual behavior after filtering",
+          "Test whether individual post 'Edit' links are actionable or placeholders, and whether they support recovery or deeper inspection"
+        ],
+        "exit_criteria": [
+          "At least one filtered bulk-apply scenario has been executed",
+          "The distinction between filters and target audience has been validated",
+          "Any lack of confirmation, undo, or scope clarity for the bulk action is documented"
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Stress muted words input and list management",
+        "objective": "Exercise the page with the highest control density by testing add/remove flows, scope messaging, duration/settings controls, and file-related affordances visible on the page.",
+        "target_pages": [
+          "blocked-words.html"
+        ],
+        "key_checks": [
+          "Add a new muted word/phrase using the text input and the visible Enter-to-save pattern, then verify it appears in the list",
+          "Try edge inputs such as duplicate phrase, hashtag phrase, and multi-word phrase if allowed by the UI, observing validation or silent failure",
+          "Remove one or more existing muted-word chips using the × affordance and check for immediate feedback or recovery",
+          "Inspect the 'Where do these apply?' section to verify the included/exempted surfaces are understandable and internally consistent",
+          "Exercise visible duration-related inputs/options on the page and observe whether scope/duration selections are clear",
+          "Test 'Import .txt' and 'Export .txt' controls to determine whether they trigger local demo behavior, no-op behavior, or browser file flows",
+          "Check whether the displayed total entry count changes when words are added or removed"
+        ],
+        "exit_criteria": [
+          "At least one add and one remove flow have been completed",
+          "Import/export affordances have been probed enough to characterize their behavior",
+          "The page’s scope messaging, count behavior, and control clarity have been assessed"
+        ]
+      },
+      {
+        "id": "phase-6",
+        "title": "Repeat critical checks on mobile",
+        "objective": "Re-run the most important navigation and action paths in a mobile viewport, focusing on tap targets, density, wrapping, and whether high-risk controls remain usable.",
+        "target_pages": [
+          "index.html",
+          "audience.html",
+          "tag-review.html",
+          "past-posts.html",
+          "blocked-words.html"
+        ],
+        "key_checks": [
+          "Verify mobile access to each privacy page from the overview and/or side navigation equivalent",
+          "Recheck known small tap-target areas from prescan: top nav items, left-nav privacy links, and overview card links",
+          "On audience.html, confirm radio options, save/discard buttons, and custom-list controls remain easy to tap and read",
+          "On tag-review.html, verify repeated per-item action buttons do not crowd or wrap into ambiguous groupings",
+          "On past-posts.html, confirm filters and the 'Apply to visible' control remain understandable without horizontal overflow or accidental activation",
+          "On blocked-words.html, verify chip list wrapping, delete × affordances, input usability, and import/export controls under smaller width"
+        ],
+        "exit_criteria": [
+          "Critical path pages have each been viewed on mobile",
+          "At least one key action per major page has been attempted on mobile",
+          "Mobile-specific usability findings are collected for navigation and high-risk controls"
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 5 known HTML pages, with at least one return to index.html to compare overview state against deeper-page actions.",
+      "features": "Exercise most visible controls on each key page: overview links and snapshot links; all audience radio options plus save/discard and custom-list affordances; tag-review item and bulk actions; past-post filters plus one bulk apply; muted-word add/remove plus import/export and scope/duration controls.",
+      "mobile": "Repeat the overview navigation and at least one representative action on each of the four management pages in a mobile viewport, with special attention to prescan-reported small tap targets."
+    },
+    "notes": [
+      "Do not spend time on top-level nav destinations Home/Discover/Messages/Settings/Profile/Account/Email/Push beyond confirming they appear to be placeholder links if they remain # targets.",
+      "Prefer evidence-driven critique around privacy clarity, destructive-action safeguards, and consistency between overview summaries and page-level settings.",
+      "If actions do not persist across page reloads, still document the local interaction quality, feedback, and mismatch between expected persistence and observed behavior."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "goal completion",
+      "user_goal": "Approve all pending tags from the Tag review page",
+      "problem": "The bulk approval flow can leave users stuck in a confirmation state where they cannot complete or cancel the action reliably.",
+      "evidence": "On mobile tag-review.html, tapping \"Approve all\" opened a modal titled \"Approve all 7 pending tags?\", but the follow-up click on the modal's \"Approve all\" failed because the modal backdrop `#aurora-modal-back.show` intercepted pointer events. A later tap on \"Cancel\" also did not dismiss the dialog; the page still reported 1 dialog in DOM and continued showing the mixed overlay/list state in screenshot `agentic-77-click-mobile.png`.",
+      "why_it_matters": "This is a high-impact moderation action. If users cannot either confirm or back out cleanly, they lose trust in the safety of the tool and may feel trapped in a risky decision point.",
+      "suggestion": "Fix the modal interaction model so confirm and cancel are always actionable, dismiss the overlay cleanly, and ensure the rest of the page is either clearly blocked or clearly returned to normal after cancellation.",
+      "source_hint": "tag-review.html modal / #aurora-modal-back / mobile"
+    },
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Moderate individual pending tags confidently",
+      "problem": "Tag review actions produce inconsistent or misleading state updates, so users cannot tell whether moderation actually worked.",
+      "evidence": "Desktop testing showed after clicking a tag's \"Approve\", the same item still appeared, the header still read \"7 tags waiting for review,\" while the sidebar badge changed to \"Tag review 6.\" After clicking \"Hide tag,\" the same item and actions remained visible while the sidebar dropped again to \"5.\" On mobile, clicking a per-item \"Approve\" led to the bulk-approval modal instead, while visible text still showed \"7 tags waiting for review\" and the sidebar badge read \"Tag review 6\" (`agentic-78-click-mobile.png`).",
+      "why_it_matters": "Moderation requires confidence. If counts, items, and action results disagree, users may repeat actions, assume tags are hidden when they are not, or stop trusting the queue altogether.",
+      "suggestion": "After each moderation action, immediately remove or visibly update the affected row, keep header/sidebar counts synchronized, and show a clear confirmation state tied to the specific action taken.",
+      "source_hint": "tag-review.html queue header, sidebar badge, per-item actions"
+    },
+    {
+      "severity": "high",
+      "ux_area": "error recovery",
+      "user_goal": "Back out of a change before saving or after opening a risky flow",
+      "problem": "Discard/cancel controls behave like no-ops in key places, weakening recovery paths.",
+      "evidence": "On audience.html, clicking \"Discard changes\" after selecting \"Custom list…\" produced no visible revert: the page still showed Custom list selected and the helper copy unchanged. Later, after saving Public, clicking \"Discard changes\" again produced no URL or text change while a confirmation dialog title ('Set default to Public?') remained in the DOM. In tag review, clicking modal \"Cancel\" did not dismiss the approval dialog.",
+      "why_it_matters": "Users rely on discard/cancel to feel safe exploring privacy settings. When those controls do nothing visible, people become hesitant to make changes and may fear accidental exposure.",
+      "suggestion": "Make cancel/discard reliably restore the prior state, close active dialogs, and show an explicit status message such as \"Changes discarded\" so recovery is unmistakable.",
+      "source_hint": "audience.html Discard changes button; tag-review.html Cancel button"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "clarity",
+      "user_goal": "Understand whether privacy-setting changes save automatically or need confirmation",
+      "problem": "Several settings change state with little or no indication of whether they autosave, require Save, or are still pending.",
+      "evidence": "On audience.html, changing \"Who can tag you?\" to \"Nobody\" changed the selected radio but showed no confirmation, status, or nearby save control; the section sits below the visible Save/Discard buttons. On blocked-words.html, unchecking \"Home feed,\" checking \"Notifications,\" and changing mute duration to \"30 days\" all changed control state without any toast, save button, or persistence cue. Testing notes repeatedly describe the save model as ambiguous.",
+      "why_it_matters": "Privacy settings are sensitive. Ambiguity about whether a change has taken effect can cause accidental oversharing or unnecessary repeated actions.",
+      "suggestion": "Use a consistent save model across pages: either autosave with immediate inline confirmation, or keep changes pending and show a clear sticky save bar near the modified controls.",
+      "source_hint": "audience.html lower tag-permission radios; blocked-words.html scope checkboxes and duration select"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "trust",
+      "user_goal": "Use the overview snapshot as a reliable shortcut hub",
+      "problem": "The overview mixes working and non-working \"Change\" links with identical labeling, making shortcuts feel untrustworthy.",
+      "evidence": "On index.html, one visible Snapshot \"Change\" link only changed the URL to `index.html#` and left the same content visible, confirming it was a no-op placeholder. Another identically labeled \"Change\" link correctly navigated to audience.html. Session notes explicitly call out that only one visible Change affordance was wired while another used `href=\"#\"`.",
+      "why_it_matters": "Users expect repeated controls with the same label to behave the same way. Inconsistent shortcut behavior makes the privacy dashboard feel unreliable and unfinished.",
+      "suggestion": "Either wire every snapshot \"Change\" link to its destination or visually distinguish unavailable rows from active shortcuts so users are not set up to fail.",
+      "source_hint": "index.html Snapshot panel \"Change\" links"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Manage muted words confidently",
+      "problem": "Muted-word list changes provide weak confirmation and can leave summary information inconsistent.",
+      "evidence": "Early desktop removal of a muted chip made one entry disappear, but the summary still said \"You have 18 entries\" while only 17 were shown. Duplicate submission of \"#nft\" added another chip without any validation message, and notes indicate count handling felt unclear. On mobile, deletion succeeded but there was still no toast, confirmation, or undo—users had to infer success from the chip list/count changing.",
+      "why_it_matters": "Dense list management is error-prone. Without strong feedback and consistent counts, users may not know what is muted, whether a duplicate was added, or how to recover from accidental removal.",
+      "suggestion": "Keep entry counts synchronized instantly, prevent or clearly explain duplicates, and add lightweight feedback with undo for destructive chip removal.",
+      "source_hint": "blocked-words.html chips list, count text, Mute action"
+    },
+    {
+      "severity": "medium",
+      "ux_area": "accessibility",
+      "user_goal": "Use privacy controls on mobile or with assistive technology",
+      "problem": "Important form controls and action targets are undersized or unlabeled, especially on mobile.",
+      "evidence": "Mobile observations flagged many nav rows at 37px tall, top nav links around 39px, the Aurora brand link at 28px tall, muted-word delete buttons at 21x21px, and per-item tag moderation buttons at 87x41 / 88x41. On past-posts.html mobile, the year filter, audience filter, and destination-audience select were all flagged as missing labels/aria-labels (`ux-9`, `ux-10`, `ux-11`). Audience radios also exposed tiny 13px-wide tap areas in earlier mobile observations.",
+      "why_it_matters": "Small targets increase mistaps in privacy settings, and unlabeled fields make bulk actions harder to understand for screen-reader users. Both issues are especially risky when settings affect who can see content.",
+      "suggestion": "Increase touch targets to at least recommended mobile sizes, make the full control row tappable where possible, and add explicit labels/accessible names to all selects and inputs.",
+      "source_hint": "past-posts.html mobile selects ux-9/ux-10/ux-11; tag-review.html mobile buttons; blocked-words.html chip delete buttons"
+    },
+    {
+      "severity": "low",
+      "ux_area": "visual hierarchy",
+      "user_goal": "Find related privacy settings without extra scrolling",
+      "problem": "Secondary but related controls are pushed far below the main audience controls, reducing discoverability.",
+      "evidence": "On audience.html, the \"Who can tag you?\" section was only found much lower on the page (noted around y≈1067) and required scrolling before its radios became visible. The page already contains top nav, a left sidebar, audience cards, action buttons, and custom-list content before reaching this section.",
+      "why_it_matters": "Users may not realize tagging permissions are adjustable from the same page, especially if they stop after setting the default audience at the top.",
+      "suggestion": "Bring related privacy controls closer together, add in-page section navigation, or summarize lower settings near the top so users know more options exist below the fold.",
+      "source_hint": "audience.html lower-page \"Who can tag you?\" section"
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 39,
+    "action_success_rate_percent": 99,
+    "unchanged_action_percent": 23,
+    "known_pages": [
+      "audience.html",
+      "blocked-words.html",
+      "index.html",
+      "past-posts.html",
+      "tag-review.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "audience.html",
+      "tag-review.html",
+      "past-posts.html",
+      "blocked-words.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "check": 3,
+      "click": 52,
+      "open_page": 2,
+      "press_key": 2,
+      "screenshot_pair": 6,
+      "scroll": 2,
+      "select_option": 7,
+      "type_text": 3,
+      "uncheck": 2
+    },
+    "total_actions": 79,
+    "successful_actions": 78,
+    "failed_actions": 1,
+    "unchanged_actions": 18,
+    "observed_feature_count": 112,
+    "exercised_feature_count": 44,
+    "unexplored_features": [
+      {
+        "signature": "audience.html|clickable|a|||account|#",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Account"
+      },
+      {
+        "signature": "audience.html|clickable|a|||aurora|index.html",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Aurora"
+      },
+      {
+        "signature": "audience.html|clickable|a|||default audience|audience.html",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Default audience"
+      },
+      {
+        "signature": "audience.html|clickable|a|||discover|#",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Discover"
+      },
+      {
+        "signature": "audience.html|clickable|a|||home|#",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Home"
+      },
+      {
+        "signature": "audience.html|clickable|a|||messages|#",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Messages"
+      },
+      {
+        "signature": "audience.html|clickable|a|||profile|#",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Profile"
+      },
+      {
+        "signature": "audience.html|clickable|a|||settings|#",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Settings"
+      },
+      {
+        "signature": "audience.html|clickable|button|||cancel|",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Cancel"
+      },
+      {
+        "signature": "audience.html|clickable|input||radio|anyone|",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Anyone"
+      },
+      {
+        "signature": "audience.html|clickable|input||radio|friends · 312 people accepted mutuals only. not friends-of-friends.|",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Friends · 312 people Accepted mutuals only. Not friends-of-friends."
+      },
+      {
+        "signature": "audience.html|clickable|input||radio|only me drafts, mood boards, journaling.|",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Only me Drafts, mood boards, journaling."
+      },
+      {
+        "signature": "audience.html|clickable|input||radio|only your friends|",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Only your friends"
+      },
+      {
+        "signature": "audience.html|clickable|input||radio|people you follow|",
+        "page": "audience.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "People you follow"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||account|#",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Account"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||aurora|index.html",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Aurora"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||default audience|audience.html",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Default audience"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||discover|#",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Discover"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||home|#",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Home"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||messages|#",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Messages"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||muted words|blocked-words.html",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Muted words"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||past post visibility|past-posts.html",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Past post visibility"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||profile|#",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Profile"
+      },
+      {
+        "signature": "blocked-words.html|clickable|a|||settings|#",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Settings"
+      },
+      {
+        "signature": "blocked-words.html|clickable|input||checkbox|comments on your posts|",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Comments on your posts"
+      },
+      {
+        "signature": "blocked-words.html|clickable|input||checkbox|reels and discover|",
+        "page": "blocked-words.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "input",
+        "label": "Reels and Discover"
+      },
+      {
+        "signature": "index.html|clickable|a|||account|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Account"
+      },
+      {
+        "signature": "index.html|clickable|a|||aurora|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Aurora"
+      },
+      {
+        "signature": "index.html|clickable|a|||discover|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Discover"
+      },
+      {
+        "signature": "index.html|clickable|a|||email|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Email"
+      },
+      {
+        "signature": "index.html|clickable|a|||home|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Home"
+      },
+      {
+        "signature": "index.html|clickable|a|||messages|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Messages"
+      },
+      {
+        "signature": "index.html|clickable|a|||muted words hide posts and comments containing 18 phrases you've added. edit or |blocked-words.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Muted words Hide posts and comments containing 18 phrases you've added. Edit or import a list."
+      },
+      {
+        "signature": "index.html|clickable|a|||muted words|blocked-words.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Muted words"
+      },
+      {
+        "signature": "index.html|clickable|a|||overview|index.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Overview"
+      },
+      {
+        "signature": "index.html|clickable|a|||past post visibility restrict the audience on everything you've ever posted — a |past-posts.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Past post visibility Restrict the audience on everything you've ever posted — a one-click sweep."
+      },
+      {
+        "signature": "index.html|clickable|a|||past post visibility|past-posts.html",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Past post visibility"
+      },
+      {
+        "signature": "index.html|clickable|a|||profile|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Profile"
+      },
+      {
+        "signature": "index.html|clickable|a|||push|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Push"
+      },
+      {
+        "signature": "index.html|clickable|a|||settings|#",
+        "page": "index.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Settings"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 39% of visible interactive feature signatures.",
+      "1 browser action(s) failed and should be retried or analyzed."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-01-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-03-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-04-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-06-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-07-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-09-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-10-uncheck-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-14-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-15-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-17-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-20-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-21-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-26-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-29-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-31-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-32-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-33-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-35-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-35-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-36-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-37-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-37-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-38-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-39-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-40-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-41-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-44-select_option-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-45-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-46-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-47-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-47-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-48-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-49-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-50-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-52-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-53-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-54-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-56-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-56-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-57-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-58-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-60-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-60-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-61-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-62-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-62-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-66-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-67-select_option-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-69-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-70-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-72-check-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-73-uncheck-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-75-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-79-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run/screenshots/agentic-80-select_option-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4/aurora-network/_run",
+  "claude_fix": null
+}

@@ -1,0 +1,163 @@
+{
+  "plan": {
+    "goal": "Validate the UX of the GitHub-style 404 error page, with emphasis on the main recovery path (search and follow-up navigation) and the adjacent support/status paths, including responsive behavior on mobile.",
+    "summary": "Start by confirming the primary error-state content and the visible recovery actions on the single known page. Then exercise the search input, search button, category chips, top nav, and support/status links to see how the page responds and whether any interactions are misleading or dead ends. Finish by repeating the critical checks in a mobile viewport, with special attention to tap-target sizing and layout stability already flagged in the prescan.",
+    "assumptions": [
+      "This site contains only one HTML page, so coverage will focus on states and interactions within index.html rather than page-to-page traversal.",
+      "The links and buttons shown in the prescan may be decorative or use in-page placeholder behavior (e.g., href=\"#\"), so the run should verify actual outcomes rather than assume navigation.",
+      "The app.js file may add hover/parallax or optional search-suggestion behavior, but that should only be validated if it is visibly exposed during interaction."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Top-left GitHub logo link with no accessible label and a 32x32 tap target",
+      "Primary search input and Search button as the main recovery flow",
+      "Category buttons: Code, Repositories, People",
+      "Support and Status links in both the top nav and body copy",
+      "Mobile tap-target sizing and spacing for all header/body actions"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Baseline 404-state review",
+        "objective": "Confirm the visible error message, overall page structure, and whether the primary recovery actions are discoverable without interaction.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Verify the 404 headline, quoted message, Octocat illustration, and supporting copy are all present and visually coherent.",
+          "Check that the search field, Search button, category buttons, and support/status links are all visible in the intended hierarchy.",
+          "Note any mismatch between visual affordance and likely behavior for the logo, header links, and body links."
+        ],
+        "exit_criteria": [
+          "All visible error-state elements on index.html have been inspected.",
+          "The main recovery actions and adjacent help/status paths have been identified for interaction testing."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Primary recovery flow",
+        "objective": "Validate the search-based recovery path as the main action on the page.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Type a representative query into the Search GitHub input and observe any live suggestions, validation, or visual changes.",
+          "Trigger the Search button and record whether it submits, navigates, or stays on-page.",
+          "Clear the field and repeat with a short/empty input if the control allows it to confirm error handling or inert behavior."
+        ],
+        "exit_criteria": [
+          "Search input behavior and Search button outcome are both observed.",
+          "Any suggestion or feedback behavior from app.js is either confirmed or ruled out."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Adjacent navigation and recovery links",
+        "objective": "Exercise secondary controls that appear to offer alternate recovery routes or help resources.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click the Code, Repositories, and People buttons and verify whether they change state, navigate, or function as placeholders.",
+          "Click top navigation items Search, Support, and Status and compare their behavior with the body copy links.",
+          "Test contact support and GitHub Status links to confirm whether they are actionable, duplicate the top nav, or are dead ends."
+        ],
+        "exit_criteria": [
+          "Each visible non-search recovery/help control has been exercised at least once.",
+          "Any duplicate controls are compared for consistent behavior."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Hover, focus, and microinteraction check",
+        "objective": "Check for visual or motion feedback from the page's scripted illustration and interactive controls.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Hover over the Octocat/illustration region and confirm any parallax or hover response from app.js.",
+          "Tab through the search field, buttons, and links to ensure focus is visible and logical.",
+          "Look for any odd motion, clipping, or overlap during interaction with the centered layout."
+        ],
+        "exit_criteria": [
+          "Any scripted hover/focus behavior is observed or noted as absent.",
+          "The page remains stable during basic interaction."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile viewport validation",
+        "objective": "Repeat the critical error-page checks on mobile and assess touch usability.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Recheck the core reading order and whether the 404 message, search area, and help links remain usable on a narrow viewport.",
+          "Tap the logo, Search/Support/Status nav items, Search button, and category buttons to confirm targetability and behavior.",
+          "Validate whether the already flagged small tap targets remain problematic or cause mis-taps/overlap."
+        ],
+        "exit_criteria": [
+          "Primary content and all critical actions have been reviewed on mobile viewport.",
+          "Touch-target risks are confirmed or disproven with direct interaction evidence."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "visit all known HTML pages; this site appears to have a single page, so fully exercise all visible states on index.html",
+      "features": "exercise the search input, Search button, category buttons, top navigation, body help/status links, and any visible hover/focus behavior",
+      "mobile": "repeat the search flow and all critical links/buttons on mobile viewport, with explicit attention to the small tap targets flagged in the prescan"
+    },
+    "notes": [
+      "Because the prescan shows only placeholder-like href=\"#\" controls and no errors, the run should emphasize behavior confirmation over page discovery.",
+      "The logo control is especially worth checking for accessibility and accidental dead-end behavior because it has no visible label and is undersized on mobile."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Page not found · GitHub",
+      "url": "file:///Users/timchef/UXBench/websites/github-404/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Search Support Status 404 \"This is not the web page you are looking for\" Search Code Repositories People If you think something is broken, contact support. Check GitHub Status for known issues.",
+      "headings": [
+        "404"
+      ],
+      "counts": {
+        "buttons": 4,
+        "links": 6,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:#",
+        "clickable:a:Search",
+        "clickable:a:Support",
+        "clickable:a:Status",
+        "typeable:input:Search GitHub",
+        "clickable:button:Search",
+        "clickable:button:Code",
+        "clickable:button:Repositories",
+        "clickable:button:People",
+        "clickable:a:contact support",
+        "clickable:a:GitHub Status"
+      ],
+      "layout_warning_kinds": [
+        "empty_interactive_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

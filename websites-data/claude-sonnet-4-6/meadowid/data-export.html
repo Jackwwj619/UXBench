@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Export your data — MeadowID</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="mobile-topbar">
+  <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="#3f8a4a" d="M12 2c-3 5-8 6-8 12a8 8 0 0016 0c0-6-5-7-8-12z"/></svg><span>MeadowID</span></div>
+  <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-nav">☰ Menu</button>
+</header>
+<div class="sidebar-backdrop" aria-hidden="true"></div>
+<aside class="sidebar" id="primary-nav">
+  <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#3f8a4a" d="M12 2c-3 5-8 6-8 12a8 8 0 0016 0c0-6-5-7-8-12z"/></svg><span>MeadowID</span></div>
+  <nav>
+    <a href="index.html"><span class="ico">◐</span> Overview</a>
+    <a href="connected-apps.html"><span class="ico">⇄</span> Connected apps</a>
+    <a href="devices.html"><span class="ico">▢</span> Active sessions</a>
+    <a href="passkeys.html"><span class="ico">⌘</span> Passkeys & 2FA</a>
+    <a href="data-export.html" class="active"><span class="ico">↓</span> Export your data</a>
+    <a href="freeze.html"><span class="ico">❄</span> Freeze account</a>
+  </nav>
+  <div class="who"><div class="who-avatar">JT</div><div><div class="who-name">Jamal Tarrant</div><div class="who-email">jamal@thirdpond.dev</div></div></div>
+</aside>
+
+<main class="main">
+  <header class="page-head">
+    <div>
+      <h1>Export your data</h1>
+      <p class="muted">Build a downloadable archive of everything tied to your MeadowID. We email you a link when it's ready. Links expire after 48 hours.</p>
+    </div>
+  </header>
+
+  <div class="wizard">
+    <ol class="steps">
+      <li data-step="1" class="current"><span class="step-num">1</span> Pick categories</li>
+      <li data-step="2"><span class="step-num">2</span> Format & filters</li>
+      <li data-step="3"><span class="step-num">3</span> Schedule</li>
+      <li data-step="4"><span class="step-num">4</span> Review & request</li>
+    </ol>
+
+    <div class="wizard-panel" id="wizard-card">
+      <div class="wizard-step" data-step="1">
+        <h2>What should we include?</h2>
+        <p class="helper">Estimated size shown next to each item. Big categories (like uploaded media) can take a while.</p>
+        <div class="checkbox-list" id="wiz-categories">
+          <label><input type="checkbox" value="profile" checked /> <div><strong>Account profile</strong><div class="app-meta">Name, email, recovery contacts. ~4 KB</div></div></label>
+          <label><input type="checkbox" value="connected" checked /> <div><strong>Connected apps & tokens</strong><div class="app-meta">10 apps · ~12 KB</div></div></label>
+          <label><input type="checkbox" value="sessions" /> <div><strong>Sign-in history</strong><div class="app-meta">Last 18 months · ~280 KB</div></div></label>
+          <label><input type="checkbox" value="passkeys" /> <div><strong>Passkey & 2FA metadata</strong><div class="app-meta">Public keys only — private keys never leave devices. ~6 KB</div></div></label>
+          <label><input type="checkbox" value="audit" /> <div><strong>Security audit log</strong><div class="app-meta">All security-impacting events · ~1.4 MB</div></div></label>
+          <label><input type="checkbox" value="billing" /> <div><strong>Billing & receipts</strong><div class="app-meta">Receipts, invoices, payment-method labels. ~84 KB</div></div></label>
+          <label><input type="checkbox" value="apps-data" /> <div><strong>Data held on your behalf by connected apps</strong><div class="app-meta">Where the app supports it. Some apps may take up to 7 days. ~unknown</div></div></label>
+        </div>
+      </div>
+
+      <div class="wizard-step" data-step="2" style="display:none;">
+        <h2>Format and filters</h2>
+        <p class="helper">JSON is structured for re-import; CSV is easier to open in spreadsheets.</p>
+        <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap;">
+          <label class="radio-row"><input type="radio" name="fmt" value="json" checked /> <span>JSON</span></label>
+          <label class="radio-row"><input type="radio" name="fmt" value="csv" /> <span>CSV (zipped, one file per category)</span></label>
+          <label class="radio-row"><input type="radio" name="fmt" value="html" /> <span>HTML (browsable)</span></label>
+        </div>
+        <div style="margin-top:18px;">
+          <label for="date-range" class="muted" style="font-size:13px; display:block; margin-bottom:6px;">Time range</label>
+          <select id="date-range" aria-label="Time range">
+            <option>All time</option>
+            <option>Last 12 months</option>
+            <option>Last 6 months</option>
+            <option>Custom…</option>
+          </select>
+        </div>
+        <div style="margin-top: 14px;">
+          <label class="option-row"><input type="checkbox" /> <span>Encrypt archive with a password (recommended)</span></label>
+        </div>
+      </div>
+
+      <div class="wizard-step" data-step="3" style="display:none;">
+        <h2>How often?</h2>
+        <p class="helper">Recurring exports help if you keep an off-platform backup. You can cancel any time.</p>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
+          <label class="option-row"><input type="radio" name="sched" value="once" checked /> <span>Just this once</span></label>
+          <label class="option-row"><input type="radio" name="sched" value="month" /> <span>Every month</span></label>
+          <label class="option-row"><input type="radio" name="sched" value="quarter" /> <span>Every quarter</span></label>
+        </div>
+        <div style="margin-top:18px;">
+          <label for="delivery-email" class="muted" style="font-size:13px; display:block; margin-bottom:6px;">Send link to</label>
+          <input id="delivery-email" type="email" value="jamal@thirdpond.dev" />
+        </div>
+      </div>
+
+      <div class="wizard-step" data-step="4" style="display:none;">
+        <h2>Review</h2>
+        <p class="helper">Last chance to change anything. We'll email a download link to your verified address.</p>
+        <div style="margin-top:14px;">
+          <div class="muted" style="font-size:13px; text-transform:uppercase; letter-spacing:.05em;">Categories</div>
+          <ul id="review-categories" style="list-style:none; padding:0; margin:6px 0 14px;"></ul>
+          <div class="muted" style="font-size:13px; text-transform:uppercase; letter-spacing:.05em;">Format</div>
+          <p style="margin:4px 0 14px;"><strong id="review-format">JSON</strong></p>
+          <div class="muted" style="font-size:13px; text-transform:uppercase; letter-spacing:.05em;">Frequency</div>
+          <p style="margin:4px 0 14px;"><strong id="review-schedule">Just this once</strong></p>
+          <div class="muted" style="font-size:13px; text-transform:uppercase; letter-spacing:.05em;">Delivery</div>
+          <p style="margin:4px 0 14px;"><strong>jamal@thirdpond.dev</strong></p>
+        </div>
+        <p class="helper" style="margin-top:14px;">Once requested, you cannot pause the build. You can revoke the download link at any time before it expires.</p>
+      </div>
+
+      <div class="wizard-actions">
+        <button id="wiz-back">Back</button>
+        <div class="spacer"></div>
+        <button>Save as draft</button>
+        <button id="wiz-next" class="primary">Continue</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer"><p>Local demo for UXBench. Fictional product, not a real company.</p></footer>
+<script src="script.js"></script>
+</body>
+</html>

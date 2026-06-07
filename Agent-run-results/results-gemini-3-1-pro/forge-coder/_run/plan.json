@@ -1,0 +1,144 @@
+{
+  "plan": {
+    "goal": "Thoroughly validate the agentic IDE interface, focusing on the three-pane interaction model (file tree, agent chat, live diff), chat functionality, and responsive behavior on mobile.",
+    "summary": "The exploration will systematically test the three main panes of the IDE layout. It will verify that file selection correctly loads diffs, agent chat messages can be submitted, and diff views can be toggled. Finally, it will run a mobile pass to assess how the dense three-pane layout adapts to smaller screens, paying special attention to the reported small tap targets.",
+    "assumptions": [
+      "As a local fixture demo, top navigation links (Inbox, Runs, Settings) and external actions (Connect repo, VS Code) might be static stubs.",
+      "Clicking files in the left tree view dynamically updates the right diff view without full page reloads."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Mobile responsiveness and usability of the dense 3-pane layout",
+      "Small tap targets on navigation and toolbar buttons",
+      "State synchronization between file tree selection and diff preview pane",
+      "Handling of long chat histories and scrolling in the center pane"
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global Navigation and Toolbar",
+        "objective": "Verify global navigation links and primary actions.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click Inbox, Runs, Settings to check for navigation or modal popups.",
+          "Click 'Connect a repo' and 'Open in VS Code' to observe behavior (expecting alerts or stubs)."
+        ],
+        "exit_criteria": [
+          "All top-level navigation and utility buttons have been clicked and their responses recorded."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "File Tree and Diff Preview Integration",
+        "objective": "Test the interaction between the file tree (left) and the live diff preview (right).",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click on a modified (M) or added (+) file in the tree (e.g., 'stream.ts' or 'chunker.ts').",
+          "Verify the diff pane on the right updates to show the selected file's contents.",
+          "Toggle between 'Unified' and 'Split' diff views.",
+          "Click 'Open editor' and 'Accept all changes' in the diff pane."
+        ],
+        "exit_criteria": [
+          "Confirmed that clicking files updates the diff view and that diff viewing controls function."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Agent Chat Interaction",
+        "objective": "Validate the central agent chat interface and input controls.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Click '⏸ Interrupt' and '↻ Rerun' to check state changes in the run status.",
+          "Enter text into the 'Reply...' textarea.",
+          "Toggle the 'Auto-apply edits' checkbox.",
+          "Submit the form using the 'Send' button and observe the chat history update."
+        ],
+        "exit_criteria": [
+          "Chat input form has been submitted and run control buttons have been interacted with."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Mobile Viewport Stress Test",
+        "objective": "Evaluate the complex IDE layout on a constrained mobile viewport.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Switch to mobile viewport.",
+          "Observe how the three panes (tree, chat, diff) are handled (e.g., stacked, tabbed, hidden).",
+          "Attempt to use the small tap target controls identified in the prescan (e.g., nav links, toggle buttons).",
+          "Submit a chat message on mobile."
+        ],
+        "exit_criteria": [
+          "Mobile layout strategy is documented and critical interactions have been verified on the small screen."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Fully explore index.html (the only known page).",
+      "features": "Exercise file selection, diff toggling, chat submission, and run controls.",
+      "mobile": "Validate the layout transformation of the 3-pane IDE and assess tap target usability."
+    },
+    "notes": [
+      "Since elements like specific files in the tree weren't explicitly listed as individual interactables in the prescan summary (likely due to structural grouping), the agent will need to discover them during execution based on visual cues."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "Forge Coder — agentic coding",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/forge-coder/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "Forge / atlas-cli ⌥ feat/streaming-uploads Agent Inbox Runs Settings Connect a repo Open in VS Code RT ATLAS-CLI ⌕ + src upload › stream.ts M › chunker.ts M › retry.ts › index.ts + commands core main.ts test upload.spec.ts M retry.spec.ts auth.spec.ts docs package.json tsconfig.json README.md Modified 3 Added 1 Lines changed +128 / -54 Run #243 · agent is working · 4m 12s elapsed ⏸ Interrupt ↻ Rerun Streaming multipart uploads keep failing on slow connections. Resumes after a network drop just re-upload the whole file. Implement chunked resumable uploads (5 MiB chunks), persist progress to .forge/state.json, and write tests. Don't touch the auth flow. FC I scoped the work to src/upload/ and skimmed the existing stream module. Plan: Split stream.ts: extract a new chunker.ts for chunk-boundary logic (pure functions, easy to test). Add a ChunkedUpload class in index.ts that consults .forge/",
+      "headings": [],
+      "counts": {
+        "buttons": 11,
+        "links": 4,
+        "inputs": 2,
+        "forms": 1,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Agent",
+        "clickable:a:Inbox",
+        "clickable:a:Runs",
+        "clickable:a:Settings",
+        "clickable:button:Connect a repo",
+        "clickable:button:Open in VS Code",
+        "clickable:button:⌕",
+        "clickable:button:+",
+        "clickable:button:⏸ Interrupt",
+        "clickable:button:↻ Rerun",
+        "typeable:textarea:Reply, ask for a change, or request another pass…",
+        "clickable:input:Auto-apply edits",
+        "clickable:button:Send",
+        "clickable:button:Open editor",
+        "clickable:button:Accept all changes",
+        "clickable:button:Unified"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

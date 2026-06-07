@@ -1,0 +1,696 @@
+{
+  "target": "file:///Users/timchef/UXBench/websites/weaveapi/index.html",
+  "site": {
+    "name": "weaveapi",
+    "site_dir": "/Users/timchef/UXBench/websites/weaveapi",
+    "start_page": "index.html",
+    "page_type": "docs/tutorial",
+    "html_files": [
+      "charges.html",
+      "customers.html",
+      "errors.html",
+      "index.html",
+      "quickstart.html",
+      "webhooks.html"
+    ],
+    "css_files": [
+      "styles.css"
+    ],
+    "js_files": [
+      "script.js"
+    ],
+    "readme_path": "/Users/timchef/UXBench/websites/weaveapi/README.md",
+    "summary": "weaveapi-clone Fictional payments API platform \"WeaveAPI\" developer docs (Stripe-style). Pages (shared docs three-column layout: left nav / center body / right try-it or anchors) | File | Purpose | | --- | --- | | `index.html` | Docs home: Quickstart, Authentication, Idempotency, Pagination, Errors sections + Popular guides 4 cards | | `quickstart.html` | Install + first-charge two-step example | | `charges.html` | Charges API: Charge object 18-field table + 5 endpoint sections (POST create / GET single / capture / refund / list), each section with parameter table + multi-lang code block + JSON response example; right-column try-it panel syncs with the current endpoint as you scroll, fill params + Send returns a mock response (`currency=usd/eur/gbp/jpy` returns a charge object, anything else returns `currency_not_supported`) |",
+    "skipped": false,
+    "skip_reason": null
+  },
+  "explored_user_goal": "Autonomously explore and critique the UX of the full weaveapi system, prioritizing the primary docs/tutorial flow plus adjacent pages, states, and recovery paths.",
+  "exploration_summary": "The WeaveAPI docs generally present a structured, Stripe-like learning flow with clear section headings, a left navigation, and reusable code-copy controls. However, the “Search docs…” behavior appears unreliable or non-obvious: multiple searches on Errors and Webhooks do not produce visible filtering or navigation/scroll-to feedback, and mobile table tapping for an error row failed. The interactive Try-it panels also sometimes provide no detectable feedback on “Send →,” which can undermine user confidence and recovery.",
+  "exploration_plan": {
+    "goal": "Critique the UX of the full WeaveAPI developer docs by validating the primary learning flow (Quickstart → Charges → Customers → Webhooks → Errors) and adjacent recovery/edge paths (search, anchors/scroll syncing, Try-it parameterization, error handling, and mobile usability).",
+    "summary": "Start at index.html to verify global navigation, search, and the anchor-based “On this page” jump behavior. Then exercise the three-column doc experience across quickstart.html, charges.html, customers.html, webhooks.html, and errors.html—especially the “Try-it” style panel behavior on the Charges page. Finish by validating error reference clarity and repeat the most critical checks on a mobile viewport, focusing on small tap targets and any horizontal overflow.",
+    "assumptions": [
+      "All listed HTML files are reachable locally via file:// and have consistent left-nav/global controls (Search docs ctrl+K, theme toggle, section anchors).",
+      "The Charges page includes a right-column interactive “Try-it panel” that syncs to the current endpoint section while scrolling and returns mock JSON responses based on entered parameters (e.g., currency).",
+      "No cross-origin network calls are required for the exploration; any interactive examples use local mock behavior rather than real API traffic."
+    ],
+    "target_pages": [
+      "index.html",
+      "quickstart.html",
+      "charges.html",
+      "customers.html",
+      "webhooks.html",
+      "errors.html"
+    ],
+    "risk_hotspots": [
+      "index.html: Search docs… (ctrl+K) input usability and result navigation; also anchor links under “On this page” (Quickstart/Authentication/Idempotency/Pagination/Errors) to ensure correct scroll-to and state.",
+      "index.html: left nav items (e.g., Quickstart/Authentication/Charges/Customers/Webhooks/Errors) show mobile tap-target size warnings (223x31px) and may be hard to hit on mobile.",
+      "charges.html: right-column Try-it panel synchronization with the currently visible endpoint section (Create/Retrieve/Capture/Refund/List), plus parameter entry and Send response branching (supported currencies vs currency_not_supported).",
+      "charges.html, customers.html, webhooks.html: horizontal overflow warnings—validate that code blocks/tables are viewable and controls remain accessible without broken layout.",
+      "errors.html: error code table/entries clarity (type/code/message expectations) and ability to find specific codes via in-page navigation or search.",
+      "webhooks.html: signature verification and retries sections—validate that described flows are understandable and any linked references or anchors behave correctly."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Global navigation & docs entry points (Index)",
+        "objective": "Validate that the entry page provides clear pathways into the docs, including search, anchors, and global navigation to adjacent flows.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Use Search docs… (ctrl+K): type a query like “idempotency” or “pagination”, then select a result to confirm correct navigation/scroll.",
+          "Click primary section links (Quickstart, Authentication, Idempotency, Pagination, Errors) and verify the page scrolls to the correct section headings.",
+          "Click left-nav items to jump to other major pages (Charges, Customers, Error codes) and confirm full page navigation works.",
+          "Toggle the theme control (🌙) to ensure it doesn’t break readability or interactive controls."
+        ],
+        "exit_criteria": [
+          "Search successfully navigates to relevant content on index.html.",
+          "At least 3 anchor clicks (e.g., Quickstart, Idempotency, Errors) land on the intended sections.",
+          "At least 2 left-nav page navigations (to charges.html/customers.html or errors.html) load correctly without layout breakage."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Quickstart comprehension & copy-to-snippet UX",
+        "objective": "Check that the quickest path to value is understandable, with correct code snippets, language tabs, and copy controls.",
+        "target_pages": [
+          "quickstart.html"
+        ],
+        "key_checks": [
+          "Verify step order: “1. Install the SDK” followed by “2. Make your first charge” is visually and semantically clear.",
+          "Use the code-language selectors (CURL/PYTHON/NODE/GO) and confirm displayed snippet updates appropriately.",
+          "Use the Copy button on the Quickstart snippets and verify it provides feedback (e.g., toast/state change).",
+          "Navigate back to the other major flows from visible links (e.g., Charges reference) and confirm continuity."
+        ],
+        "exit_criteria": [
+          "Language switching changes the code block content without breaking layout.",
+          "Copy action works at least once and provides visible confirmation.",
+          "User can reach the Charges reference from Quickstart via link."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Charges API: Try-it sync + endpoint parameterization",
+        "objective": "Exercise the Charges doc’s right-column Try-it panel behavior across multiple endpoints and validate edge-case responses.",
+        "target_pages": [
+          "charges.html"
+        ],
+        "key_checks": [
+          "Scroll through endpoint sections in order: Create a charge, Retrieve a charge, Capture a charge, Refund a charge, List charges; verify the right Try-it panel updates to match the current endpoint.",
+          "For Create: enter currency values shown as supported (usd/eur/gbp/jpy) and confirm Send returns a charge-like JSON object.",
+          "For Create: enter an unsupported currency and confirm Send returns currency_not_supported (as described in the prescan summary).",
+          "For List charges: set cursor/pagination-related parameters (as visible in the panel) and verify response includes paging fields like has_more/next_cursor (as described).",
+          "Validate at least one Copy action for code blocks in the Charges page."
+        ],
+        "exit_criteria": [
+          "Try-it panel clearly tracks the active endpoint section while scrolling.",
+          "Send produces correct mock responses for both supported and unsupported currency cases.",
+          "At least one pagination/list interaction results in a response containing pagination indicators."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Customers & Webhooks: object understanding, anchors, and overflow resilience",
+        "objective": "Validate adjacent resource docs and ensure the 3-column layout remains usable with tables/code blocks and interactive controls.",
+        "target_pages": [
+          "customers.html",
+          "webhooks.html"
+        ],
+        "key_checks": [
+          "Customers: verify the Charge/Customer object framing is clear (“The Customer object” section) and navigate through Create/Retrieve/Update/Delete/List sections via scroll/anchors.",
+          "Customers: exercise Copy and any language tabs if present, ensuring code blocks remain readable.",
+          "Webhooks: confirm the presence and comprehension of event types list (e.g., charge.succeeded/charge.failed) and anchors for “Verifying signatures” and “Retries”.",
+          "Webhooks: validate any signature verification instructions are readable without horizontal scrolling breaking layout; address any horizontal_overflow warnings by checking code/table legibility and button accessibility."
+        ],
+        "exit_criteria": [
+          "Users can successfully locate and read key sections (object description + CRUD/list on customers; event types + verifying/retries on webhooks).",
+          "No unusable horizontal overflow: code/tables and controls remain accessible without clipping."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Errors reference clarity & mobile regression pass",
+        "objective": "Confirm errors are easy to interpret programmatically and display-wise, then repeat critical UX checks on mobile viewport.",
+        "target_pages": [
+          "errors.html",
+          "index.html",
+          "charges.html"
+        ],
+        "key_checks": [
+          "Errors: locate at least 3 specific error codes listed in the prescan (e.g., card_declined, insufficient_funds, expired_card, fraud_blocked) and verify the mapping includes CODE, HTTP status, and how-to-handle guidance.",
+          "Errors: use Search docs on this page (if available globally) to jump directly to an error code by name.",
+          "Mobile viewport: repeat index anchor navigation (Quickstart/Idempotency/Errors) and verify tap targets are usable despite small tap target warnings.",
+          "Mobile viewport: on charges.html, verify Try-it panel is still usable for at least one endpoint and that Send/currency edge-case behavior still works."
+        ],
+        "exit_criteria": [
+          "Error codes table provides clear code + HTTP status + actionable handling for at least 3 codes.",
+          "Mobile: critical navigation (search/anchors) works without mis-taps or clipped controls.",
+          "Mobile: Charges Try-it remains functional for at least one endpoint (supported vs unsupported currency)."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages: index.html, quickstart.html, charges.html, customers.html, webhooks.html, errors.html.",
+      "features": "Exercise most visible controls per key page: Search docs (ctrl+K), theme toggle (🌙), language tabs (CURL/PYTHON/NODE/GO) where present, Copy buttons on code blocks, anchor navigation, and the Charges Try-it panel Send behavior across multiple endpoints.",
+      "mobile": "Repeat critical checks on mobile viewport: index anchor navigation + search, plus Charges Try-it panel Send with at least one supported and one unsupported currency case. Also verify resilience against small tap targets and horizontal_overflow."
+    },
+    "notes": [
+      "Keep exploration within the prescan-visible surfaces: three-column layout (left nav/center content/right panel) and the Charges page’s scrolling-synced Try-it behavior.",
+      "Prioritize validations that can fail silently: anchor targeting, Try-it endpoint sync, Copy feedback, and responsiveness issues (small tap targets and horizontal_overflow warnings)."
+    ]
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "ux_area": "clarity",
+      "user_goal": "Use docs search to quickly find a specific error (e.g., expired_card) and jump to the matching guidance.",
+      "problem": "The docs search input updates text but does not provide visible results, filtering, highlighting, or navigation to the matching row/section.",
+      "evidence": "On errors.html, after typing queries like 'insufficient_funds' there was 'no obvious actionable feedback' and pressing Enter produced no URL/hash or visible highlight change (tool_result: changed=false; tool feedback: no obvious URL or visible-text change). On mobile errors.html, typing and pressing Enter similarly showed no observable search results or scrolling to 'expired_card'.",
+      "why_it_matters": "When search appears to do nothing, users may assume it is broken and waste time manually scanning long error tables—especially critical for error recovery tasks.",
+      "suggestion": "Provide explicit search feedback: show a dropdown of matching codes/sections, highlight matches in the table, and/or auto-scroll to the best match with a visible 'Jumped to expired_card' confirmation. Ensure Enter and any mobile submit affordance produce the same observable outcome (scroll/highlight + focus).",
+      "source_hint": "errors.html / Search docs… input; actions: typing 'insufficient_funds' and Enter (steps ~13-18, 55-60, and mobile steps 67-78)."
+    },
+    {
+      "severity": "high",
+      "ux_area": "navigation",
+      "user_goal": "Recover on mobile by tapping an error row (e.g., expired_card) to select/jump to that specific guidance.",
+      "problem": "Tap/click affordances for error-table rows appear unreliable on mobile; the intended row selection/jump likely isn’t discoverable or interactive.",
+      "evidence": "On mobile errors.html, clicking the error row target '[data-uxagent-id=\"expired_card\"]' timed out: 'Click failed for expired_card: Locator.click: Timeout 4000ms exceeded' (step 67-78). Also, clicking the search/tables control near the input produced 'no obvious URL or visible-text change' and did not trigger an interactive effect.",
+      "why_it_matters": "If table rows aren’t reliably tappable, users lose a primary recovery path. Combined with non-functional search feedback, this traps users in slow manual scanning.",
+      "suggestion": "Make error rows explicitly interactive (clear affordance like chevron, row hover/pressed state, selected styling) and ensure taps reliably focus/scroll to that row or open a detail panel. Add accessibility roles (button/link) so both touch and assistive tech can detect interactivity.",
+      "source_hint": "errors.html (mobile) error row selection attempt: locator '[data-uxagent-id=\"expired_card\"]' timed out (steps 67-78)."
+    },
+    {
+      "severity": "high",
+      "ux_area": "feedback",
+      "user_goal": "Use the Try-it panel to submit a request and see the resulting response/error for confirmation.",
+      "problem": "Clicking “Send →” does not provide detectable visible feedback on charges.html for some endpoints, making it unclear whether the request ran.",
+      "evidence": "On charges.html, clicking “Send →” resulted in no detectable visible change: tool_result changed=false with feedback 'No obvious URL or visible-text change was detected'. This happened while the Try-it panel was active (Create and later Retrieve).",
+      "why_it_matters": "Try-it is a high-stakes trust feature in developer docs; lack of immediate response feedback increases uncertainty and can cause repeated submissions.",
+      "suggestion": "Ensure the Response panel updates synchronously or clearly signals async progress (spinner/disabled button) and then shows success/error states. Add explicit status text (e.g., 'Response updated') and ensure the mock response area always changes on Send, even for unsupported inputs.",
+      "source_hint": "charges.html / Try-it panel 'Send →' (steps ~25-36 and ~37-42)."
+    },
+    {
+      "severity": "medium",
+      "ux_area": "feedback",
+      "user_goal": "Use docs search on the Webhooks and find a specific event type (e.g., charge.succeeded).",
+      "problem": "Search submission shows no visible navigation/highlighting/URL change even when the query exists on the page.",
+      "evidence": "On webhooks.html, typing 'charge.succeeded' into Search docs… produced no clear feedback such as results dropdown, highlighting, or URL/hash change. Enter-based submission also resulted in 'after_url unchanged' and no visible change.",
+      "why_it_matters": "Users expect search to confirm relevance and guide them to the correct section; non-feedback leads to 'search anxiety' and undermines confidence in docs usability.",
+      "suggestion": "Implement visible search results UI and selection behavior (dropdown + keyboard navigation), and highlight the matched event type within the event list. At minimum, scroll-to-match with a distinct visual highlight.",
+      "source_hint": "webhooks.html / Search docs… (steps ~13-18 and ~55-60)."
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Tap controls in the left navigation reliably on mobile.",
+      "problem": "Left navigation tap targets are smaller than the recommended mobile size, increasing mis-taps and navigation failures.",
+      "evidence": "Layout warnings repeatedly report left-nav links around 223x31px (below the 44px mobile guidance). This occurs across pages (Quickstart/Authentication/etc.), and mobile recovery relies heavily on navigation.",
+      "why_it_matters": "Docs navigation is core to task completion; small targets are a common source of user frustration and drop-off on touch devices.",
+      "suggestion": "Increase left-nav link height/padding to meet mobile guidance (≥44px). Add sufficient spacing between items and ensure active state is obvious.",
+      "source_hint": "Multiple pages: mobile tap target warnings for left-nav links (~223x31px), including steps ~61-66 and earlier mobile regression notes."
+    },
+    {
+      "severity": "medium",
+      "ux_area": "mobile usability",
+      "user_goal": "Interact with table/controls without them being clipped or hard to reach on small screens.",
+      "problem": "Horizontal overflow suggests content/layout may not fit mobile widths cleanly, risking clipped columns and off-screen controls.",
+      "evidence": "Multiple pages show medium horizontal overflow: e.g., errors.html on mobile reports page width 651px vs viewport 390px; other pages show similar overflow (scroll_width > viewport).",
+      "why_it_matters": "Overflow can make it hard to read guidance fields and tap/copy code accurately, especially in dense tables like error codes.",
+      "suggestion": "Fix responsive layout to eliminate horizontal overflow at common mobile widths; prefer wrapping/stacking for tables or enabling proper responsive table layouts with visible overflow handling.",
+      "source_hint": "errors.html mobile: horizontal_overflow warning (page width 651px > viewport 390px), and cross-page overflow notes (e.g., charges/customers/webhooks)."
+    }
+  ],
+  "coverage": {
+    "status": "substantial",
+    "confidence": "medium",
+    "page_coverage_percent": 100,
+    "feature_coverage_percent": 22,
+    "action_success_rate_percent": 95,
+    "unchanged_action_percent": 41,
+    "known_pages": [
+      "charges.html",
+      "customers.html",
+      "errors.html",
+      "index.html",
+      "quickstart.html",
+      "webhooks.html"
+    ],
+    "visited_pages": [
+      "index.html",
+      "quickstart.html",
+      "charges.html",
+      "errors.html",
+      "customers.html",
+      "webhooks.html"
+    ],
+    "unvisited_pages": [],
+    "observed_viewports": [
+      "desktop",
+      "mobile"
+    ],
+    "viewport_steps": {
+      "desktop": 63,
+      "mobile": 16
+    },
+    "action_counts": {
+      "click": 44,
+      "open_page": 3,
+      "press_key": 8,
+      "screenshot_pair": 7,
+      "scroll": 4,
+      "type_text": 13
+    },
+    "total_actions": 79,
+    "successful_actions": 75,
+    "failed_actions": 4,
+    "unchanged_actions": 32,
+    "observed_feature_count": 144,
+    "exercised_feature_count": 32,
+    "unexplored_features": [
+      {
+        "signature": "charges.html|clickable|a|||bank|charges.html#charge-object",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Bank"
+      },
+      {
+        "signature": "charges.html|clickable|a|||charges|charges.html",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Charges"
+      },
+      {
+        "signature": "charges.html|clickable|a|||events|webhooks.html#events",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Events"
+      },
+      {
+        "signature": "charges.html|clickable|a|||idempotency|index.html#idempotency",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Idempotency"
+      },
+      {
+        "signature": "charges.html|clickable|a|||pagination|index.html#pagination",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pagination"
+      },
+      {
+        "signature": "charges.html|clickable|a|||quickstart|quickstart.html",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Quickstart"
+      },
+      {
+        "signature": "charges.html|clickable|a|||retries|webhooks.html#retries",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Retries"
+      },
+      {
+        "signature": "charges.html|clickable|a|||verifying|webhooks.html#signing",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Verifying"
+      },
+      {
+        "signature": "charges.html|clickable|a|||wallets|charges.html#charge-object",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Wallets"
+      },
+      {
+        "signature": "charges.html|clickable|button|||copied!|",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Copied!"
+      },
+      {
+        "signature": "charges.html|clickable|button|||go|",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "GO"
+      },
+      {
+        "signature": "charges.html|clickable|button|||node|",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "NODE"
+      },
+      {
+        "signature": "charges.html|clickable|button|||python|",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "PYTHON"
+      },
+      {
+        "signature": "charges.html|clickable|button|||🌙|",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "🌙"
+      },
+      {
+        "signature": "charges.html|typeable|input|||amount|",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "AMOUNT"
+      },
+      {
+        "signature": "charges.html|typeable|input|||id|",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "ID"
+      },
+      {
+        "signature": "charges.html|typeable|input|||payment_method|",
+        "page": "charges.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "PAYMENT_METHOD"
+      },
+      {
+        "signature": "customers.html|clickable|a|||authentication|index.html#authentication",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Authentication"
+      },
+      {
+        "signature": "customers.html|clickable|a|||bank|charges.html#charge-object",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Bank"
+      },
+      {
+        "signature": "customers.html|clickable|a|||cards|charges.html#charge-object",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Cards"
+      },
+      {
+        "signature": "customers.html|clickable|a|||charges|charges.html",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Charges"
+      },
+      {
+        "signature": "customers.html|clickable|a|||customers|customers.html",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Customers"
+      },
+      {
+        "signature": "customers.html|clickable|a|||idempotency|index.html#idempotency",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Idempotency"
+      },
+      {
+        "signature": "customers.html|clickable|a|||pagination|index.html#pagination",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Pagination"
+      },
+      {
+        "signature": "customers.html|clickable|a|||quickstart|quickstart.html",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Quickstart"
+      },
+      {
+        "signature": "customers.html|clickable|a|||retries|webhooks.html#retries",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Retries"
+      },
+      {
+        "signature": "customers.html|clickable|a|||verifying|webhooks.html#signing",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Verifying"
+      },
+      {
+        "signature": "customers.html|clickable|a|||wallets|charges.html#charge-object",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Wallets"
+      },
+      {
+        "signature": "customers.html|clickable|button|||copied!|",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "Copied!"
+      },
+      {
+        "signature": "customers.html|clickable|button|||curl|",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "CURL"
+      },
+      {
+        "signature": "customers.html|clickable|button|||go|",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "GO"
+      },
+      {
+        "signature": "customers.html|clickable|button|||node|",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "NODE"
+      },
+      {
+        "signature": "customers.html|clickable|button|||🌙|",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "button",
+        "label": "🌙"
+      },
+      {
+        "signature": "customers.html|typeable|input|||email|",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "EMAIL"
+      },
+      {
+        "signature": "customers.html|typeable|input|||name|",
+        "page": "customers.html",
+        "viewport": "desktop",
+        "kind": "typeable",
+        "tag": "input",
+        "label": "NAME"
+      },
+      {
+        "signature": "errors.html|clickable|a|||bank|charges.html#charge-object",
+        "page": "errors.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Bank"
+      },
+      {
+        "signature": "errors.html|clickable|a|||cards|charges.html#charge-object",
+        "page": "errors.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Cards"
+      },
+      {
+        "signature": "errors.html|clickable|a|||charges|charges.html",
+        "page": "errors.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Charges"
+      },
+      {
+        "signature": "errors.html|clickable|a|||events|webhooks.html#events",
+        "page": "errors.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Events"
+      },
+      {
+        "signature": "errors.html|clickable|a|||idempotency|index.html#idempotency",
+        "page": "errors.html",
+        "viewport": "desktop",
+        "kind": "clickable",
+        "tag": "a",
+        "label": "Idempotency"
+      }
+    ],
+    "gaps": [
+      "Only directly exercised 22% of visible interactive feature signatures.",
+      "4 browser action(s) failed and should be retried or analyzed.",
+      "41% of actions produced no visible URL/text change; this may indicate dead controls or repeated probes."
+    ]
+  },
+  "screenshots": [
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/initial-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/initial-responsive-screenshots-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/initial-responsive-screenshots-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/initial-after-responsive-check-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/post-plan-reset-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-01-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-02-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-03-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-04-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-05-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-06-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-07-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-08-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-09-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-10-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-11-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-12-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-13-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-14-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-15-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-16-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-17-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-18-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-19-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-20-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-21-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-22-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-23-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-24-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-25-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-26-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-27-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-28-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-29-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-30-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-31-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-32-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-33-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-34-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-35-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-36-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-37-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-37-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-38-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-39-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-40-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-41-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-42-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-43-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-44-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-44-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-45-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-46-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-47-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-48-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-49-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-49-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-50-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-50-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-51-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-52-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-52-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-53-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-53-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-54-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-55-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-56-type_text-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-57-press_key-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-58-scroll-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-59-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-60-screenshot_pair-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-60-screenshot_pair-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-61-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-62-open_page-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-63-click-desktop.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/mobile-phase-64-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-65-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-66-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-67-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-68-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-69-type_text-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-70-press_key-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-71-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-72-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-73-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-74-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-75-press_key-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-76-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-77-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-78-click-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-79-scroll-mobile.png",
+    "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run/screenshots/agentic-80-scroll-mobile.png"
+  ],
+  "trace_entries": 79,
+  "run_dir": "/Users/timchef/UXBench/results-gpt-5.4-nano/weaveapi/_run",
+  "claude_fix": null
+}

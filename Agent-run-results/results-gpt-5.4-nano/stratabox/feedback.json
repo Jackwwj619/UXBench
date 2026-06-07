@@ -1,0 +1,51 @@
+{
+  "summary": "The pricing and marketing navigation appears to be an in-page single-scroll experience, but multiple CTAs and anchor links behave like silent no-ops (hash changes without visible section changes). The core editor/preview concept is visible and generally synchronized for some text edits, yet several high-value interactions (delete/add, SDK copy, and some builder controls) are unreliable or not observable via visible feedback. On mobile, many tap targets are below recommended sizes, increasing the likelihood of mis-taps and making the already-fussy builder controls harder to use.",
+  "intent_completed": false,
+  "issues": [
+    {
+      "id": "several-primary-ctas-links-appear-non",
+      "severity": "high",
+      "area": "navigation",
+      "page_hint": "index.html: “See full plans →” (steps-13-18, ux-40), “Book a demo” (steps-13-18), “Read the API reference →” (steps-13-18, ux-37), top-nav “Pricing” (#pricing) (steps-01-06)",
+      "problem": "Several primary CTAs/links appear non-functional or only update the URL hash without moving/expanding the expected content, creating dead-end navigation and user confusion.",
+      "evidence": "Clicking “See full plans →” did not produce pricing-plan navigation; the URL only changed to a hash fragment and the visible content remained on the main marketing/editor view (steps-13-18, ux-40). Clicking “Book a demo” produced no visible or URL change detectable by the harness (steps-13-18). Clicking “Read the API reference →” also produced no detectable feedback/section change (steps-13-18 and steps-37-42 and steps-49-54). Clicking top-nav “Pricing” (href #pricing) scrolled but evidence suggests the anchor mapping may be wrong since Integrations content was shown instead (steps-01-06).",
+      "suggested_fix": "Ensure all CTA links either (a) navigate to distinct routes/pages or (b) visibly expand/scroll to the exact intended section with a clear UI state (e.g., accordion expansion, modal, or smooth scroll with an in-view highlight). Provide active-state feedback for hash/anchor navigation (scroll indicator, temporary highlight on target section)."
+    },
+    {
+      "id": "saving-edit-feedback-is-not-reliably",
+      "severity": "high",
+      "area": "feedback",
+      "page_hint": "index.html: editor typing + LIVE PREVIEW mismatch (steps-01-06), mobile add failure where no new block added (agentic-77-click / agentic-80-click / screenshot evidence)",
+      "problem": "Saving/edit feedback is not reliably observable; some edits appear not to update visible output or the auto-save state in a way users can confirm.",
+      "evidence": "After typing into the editor heading, the screenshot visible text still shows the original heading (“Coastal Bloom Returns”) while the DOM label indicates “(Edited)”, implying preview synchronization/display mismatch (session_memory important_ux_signals; steps-01-06). Multiple actions (e.g., typing and clicking builder controls) reported no obvious visible-text/URL change (numerous steps with changed=false), including mobile add attempts for blocks where no new block appeared (agentic-77-click observation).",
+      "suggested_fix": "Add high-salience, localized feedback: show “Saving…” immediately on change and “Saved” only after confirmation; in the preview, display a visible “updated” state (e.g., underline/highlight the changed block for a few seconds). Consider disabling the “auto-swap block” animation during active editing to prevent confusing mismatches."
+    },
+    {
+      "id": "the-copy-to-clipboard-control-is",
+      "severity": "high",
+      "area": "affordance",
+      "page_hint": "index.html: SDK code section “Copy” button (steps-37-42, ux-59/ux-60 timeouts)",
+      "problem": "The Copy-to-clipboard control is not reliably reachable/clickable and does not provide observable success/failure feedback.",
+      "evidence": "Clicks on SDK copy controls timed out because the automation could not locate the targeted elements ([data-uxagent-id=\"ux-59\"] and [data-uxagent-id=\"ux-60\"]) and no copy toast/“Copied” confirmation was observed (steps-37-42; failures list). The screenshot shows a Copy button is visible, yet the harness could not interact with it, suggesting either poor hit-targeting/overlay issues or missing/unstable DOM wiring for the Copy element.",
+      "suggested_fix": "Ensure the Copy button has an unambiguous, stable DOM target and is not covered by overlays; add an immediate toast (“Copied”) anchored near the button and ensure it triggers for the active tab only. Add keyboard-accessible focus states and verify the button is within the viewport for both desktop and mobile."
+    },
+    {
+      "id": "mobile-block-add-controls-are-small",
+      "severity": "medium",
+      "area": "forms",
+      "page_hint": "index.html: mobile builder add buttons (“+ Callout”, “+ Paragraph”) and small tap target warnings (layout_warning_count; agentic-77-click, agentic-80-click)",
+      "problem": "Mobile block-add controls are small and some add actions appear unreliable/no-op, increasing mis-taps and uncertainty about whether a block was added.",
+      "evidence": "Mobile tap targets are repeatedly below guidance (e.g., “+ Paragraph” 95x26; “+ Heading” 82x26; “+ Image” 69x26; “+ Callout” 75x26; “+ Quote” 69x26) (layout_warnings). A specific tap on “+ Callout” showed changed=false with no new block evidence in LIVE PREVIEW/editor after the action (agentic-77-click screenshot/visible text still shows existing callout). Similar “+ Paragraph” taps later also produced changed=false (agentic-80-click).",
+      "suggested_fix": "Increase mobile tap target sizes to at least 44px height/width and add immediate confirmation when a block is added (e.g., auto-scroll to new block row, flash highlight on the newly inserted block, and clear autosave transition). Also ensure the add controls are not overlapping with other touch elements (like the sticky header)."
+    },
+    {
+      "id": "some-controls-appear-to-lack-accessible",
+      "severity": "medium",
+      "area": "accessibility",
+      "page_hint": "index.html: missing_input_label targets near builder row controls (ux-254/ux-256/ux-257) and checked-state warning (session_memory notable_failures)",
+      "problem": "Some controls appear to lack accessible labels, and some non-native controls may not expose appropriate checked/ARIA state.",
+      "evidence": "Tool warning indicates missing input labeling for select elements (ux-254, ux-256, ux-257) (layout_warnings: missing_input_label). The session memory also flags “Target does not expose checked state through native input or aria-checked.”",
+      "suggested_fix": "Add proper labels/aria-label for all select/buttons used in builder rows, ensure toggle/checkbox-like controls provide aria-checked, and verify focus order and visible focus indicators in the sticky-header and editor panels."
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore and critique the RideNow mobile fixture’s full ride/checkout flow and adjacent screens, focusing on booking success paths, activity/receipt visibility, payment/account navigation, and key recovery/edge states.",
+    "summary": "Start on index.html and validate the initial “Choose your ride” screen: input behavior, recent/saved place selection, and navigation using the bottom tab bar. Then progress through the ride flow until the “Trip complete” → “Rate your driver” → “Receipt” sequence is reachable (including Activity tab entry to receipt). Finally, verify Payment and Account tabs (even if they are mostly placeholders) and repeat critical interactions on mobile viewport to confirm layout/tap-target issues.",
+    "assumptions": [
+      "All key screens (Choose your ride, Trip complete, Rate your driver, Receipt) are implemented within index.html as state transitions via UI controls (e.g., bottom tabs and arrow buttons).",
+      "The primary way to progress from the initial screen into the ride flow is by interacting with the destination input and/or tapping one of the saved/recent place items and then the forward arrow (→).",
+      "Activity tab (📋 Activity) likely routes to the receipt screen as hinted by prescan summary, and should be validated as an alternate entry to receipt."
+    ],
+    "target_pages": [
+      "index.html"
+    ],
+    "risk_hotspots": [
+      "Small tap targets: ☰ (42x42), 🔔 (42x42), and → (32x28) may reduce usability; validate on both desktop and mobile viewports.",
+      "Progression controls: the forward arrow (→) appears multiple times (ux-7 and warnings for ux-8/ux-9); ensure the correct arrow advances the intended stage.",
+      "Bottom tab bar navigation: 🏁 Ride / 📋 Activity / 💳 Payment / ◉ Account must switch states without losing required booking context (or should clearly reset).",
+      "State reachability: ensure “Trip complete” → “Rate your driver” → “Receipt” can be reached from the primary path and that Activity tab reliably lands on receipt."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Landing & destination selection",
+        "objective": "Validate the initial booking-entry screen usability: input focus, recent/saved place selection behavior, and the forward progression affordance.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Tap ☰ and confirm a menu opens/closes appropriately (or clearly does nothing); verify it doesn’t break underlying page state.",
+          "Tap 🔔 and verify notification UI behavior (open/close/clear indication).",
+          "Focus the “Where to?” input (ux-2): verify caret behavior, placeholder visibility, and that typing is accepted (even if autocomplete is fictional).",
+          "Tap at least one RECENT PLACE row (e.g., Bella Suora / Powell's Books / Mt. Tabor Park) and confirm it populates the route/destination summary.",
+          "Tap SAVED places (Home / Halcyon Studio) and confirm selection is reflected in the destination area.",
+          "Tap + Add place Up to 8 saved and verify the expected interaction (either opens add UI or shows a clear limitation message).",
+          "Use the forward arrow(s) (→) to proceed; confirm the correct stage transition happens and there isn’t a dead-end."
+        ],
+        "exit_criteria": [
+          "A destination selection is reflected in the UI and a forward transition occurs beyond the initial “Choose your ride” screen."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Ride setup → Trip complete",
+        "objective": "Exercise the ride setup stages until the UI reaches “Trip complete,” validating that booking context is preserved and progressed correctly.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "On each intermediate state, identify the main primary action (likely a continue/confirm button) and verify it advances to the next stage.",
+          "Verify that tapping bottom tab icons while mid-flow either is blocked with a clear message or transitions safely without corrupting the trip.",
+          "Trigger “Trip complete” state and confirm it displays the expected title/section (“Trip complete”).",
+          "If the UI offers “cancel/back,” attempt it once to confirm recovery behavior (no broken flow)."
+        ],
+        "exit_criteria": [
+          "The exploration reaches the “Trip complete” screen state."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Rate driver → Receipt",
+        "objective": "Validate post-trip sequence: rate driver interaction and final receipt presentation, including Activity-tab access.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "From “Trip complete,” proceed to “Rate your driver” and confirm the screen label/heading is present.",
+          "Interact with rating controls (e.g., star/like/dislike if available) and confirm the UI accepts input and updates state (confirmation/thank-you text if present).",
+          "Proceed to “Receipt” and verify receipt content is visible and not blank.",
+          "Switch to 📋 Activity via the bottom tab bar and confirm it routes to the same or an equivalent receipt screen (as prescan summary claims)."
+        ],
+        "exit_criteria": [
+          "Receipt is displayed via the primary post-trip flow and also via the Activity tab path."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Payment & Account navigation sanity checks",
+        "objective": "Ensure the non-primary tabs (Payment, Account) behave consistently from both landing and post-trip contexts.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "From landing, tap 💳 Payment and verify any available UI/inputs render without error and provide an understandable state.",
+          "From landing, tap ◉ Account and verify navigation renders expected content.",
+          "From Receipt state, tap 💳 Payment then ◉ Account and confirm transitions do not strand the user (no broken/empty screen).",
+          "Return to 🏁 Ride and verify whether it returns to the correct ride-related state or restarts the flow; document behavior."
+        ],
+        "exit_criteria": [
+          "Payment and Account screens render and switching between tabs does not cause blank states or irreversible failure."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile viewport re-validation",
+        "objective": "Repeat critical interactions on a mobile-sized viewport to confirm tap-target, layout, and state transitions match expectations.",
+        "target_pages": [
+          "index.html"
+        ],
+        "key_checks": [
+          "Repeat Phase 1 destination selection and forward progression once on the mobile viewport.",
+          "Check tap target usability for ☰, 🔔, and → (ensure taps register reliably; note any mis-taps).",
+          "Repeat Phase 3 receipt navigation using Activity tab on mobile viewport.",
+          "Verify bottom tab bar remains visible and usable at smaller widths without overlap with content."
+        ],
+        "exit_criteria": [
+          "Critical booking and receipt flows work on mobile viewport with no major interaction failures."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all known HTML pages (only index.html in prescan).",
+      "features": "Exercise most visible controls per key page/state: ☰, 🔍 (if present as part of header), 🔔, Where to? input, recent/saved place selection, + Add place, forward arrow(s), bottom tab bar (Ride/Activity/Payment/Account), and post-trip rating/receipt actions.",
+      "mobile": "Repeat critical checks on mobile viewport: destination selection, forward progression, and Activity → Receipt routing; validate bottom tab bar and key tap-target reliability."
+    },
+    "notes": [
+      "Prescan indicates headings for “Choose your ride,” “Trip complete,” “Rate your driver,” and “Receipt” exist within this fixture; prioritize reaching each heading via the most direct primary controls before testing alternate entry points (Activity tab).",
+      "No other HTML files were discovered in prescan; do not claim coverage of additional pages beyond index.html."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "RideNow — mobile fixture",
+      "url": "file:///Users/timchef/UXBench/websites/ridenow-mobile/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "6:40 ☰ 🔍 🔔 ⌂ Home 💼 Work ✈ PDX Airport RECENT PLACES 📍 Bella Suora 1142 NW Marshall · Pearl District · 2.4 mi → 📍 Powell's Books 1005 W Burnside · Downtown · 2.8 mi → 📍 Mt. Tabor Park SE 60th & Salmon · 4.6 mi → SAVED ⌂ Home 3617 NE Going St 💼 Halcyon Studio 2200 NW Pettygrove + Add place Up to 8 saved 🏁 Ride 📋 Activity 💳 Payment ◉ Account",
+      "headings": [
+        "RECENT PLACES",
+        "SAVED",
+        "Choose your ride",
+        "Trip complete",
+        "Rate your driver",
+        "Receipt"
+      ],
+      "counts": {
+        "buttons": 42,
+        "links": 0,
+        "inputs": 1,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:button:☰",
+        "typeable:input:Where to?",
+        "clickable:button:🔔",
+        "clickable:button:⌂ Home",
+        "clickable:button:💼 Work",
+        "clickable:button:✈ PDX Airport",
+        "clickable:button:→",
+        "clickable:button:⌂ Home 3617 NE Going St",
+        "clickable:button:💼 Halcyon Studio 2200 NW Pettygrove",
+        "clickable:button:+ Add place Up to 8 saved",
+        "clickable:button:🏁 Ride",
+        "clickable:button:📋 Activity",
+        "clickable:button:💳 Payment",
+        "clickable:button:◉ Account"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}

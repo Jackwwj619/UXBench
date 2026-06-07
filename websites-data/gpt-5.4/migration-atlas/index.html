@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Migration Atlas — global animal tracking</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7a5320" d="M3 12c3-6 7-7 9-4 1 2 4 2 5 0 3 4 2 9-3 11s-12-2-11-7z"/></svg>
+    Migration Atlas
+  </div>
+  <nav aria-label="Primary">
+    <a href="index.html" class="active" aria-current="page">Explore</a>
+    <span class="nav-placeholder" role="link" aria-disabled="true" tabindex="-1" title="Demo placeholder — not wired up">Studies</span>
+    <span class="nav-placeholder" role="link" aria-disabled="true" tabindex="-1" title="Demo placeholder — not wired up">Submit a track</span>
+    <span class="nav-placeholder" role="link" aria-disabled="true" tabindex="-1" title="Demo placeholder — not wired up">Methods</span>
+    <span class="nav-placeholder" role="link" aria-disabled="true" tabindex="-1" title="Demo placeholder — not wired up">About</span>
+  </nav>
+  <div class="topbar-actions">
+    <button id="cite-btn" type="button" aria-haspopup="dialog">Cite this view</button>
+    <button id="save-btn" type="button" class="primary">Save view</button>
+  </div>
+</header>
+
+<main class="page">
+  <aside class="left">
+    <h2>Filters</h2>
+    <div class="block">
+      <h3 id="species-h">Species</h3>
+      <label class="visually-hidden" for="species-search">Search species</label>
+      <input type="search" id="species-search" placeholder="Filter species…" aria-describedby="species-search-hint" />
+      <p id="species-search-hint" class="search-hint" aria-live="polite"></p>
+      <ul class="species" id="species-list" aria-labelledby="species-h">
+        <li class="sp" data-key="osprey" data-color="#c75a3c"><label><input type="checkbox" checked /> <span class="sw" style="background:#c75a3c"></span> Western osprey (n=12)</label></li>
+        <li class="sp" data-key="caribou" data-color="#5b7a32"><label><input type="checkbox" checked /> <span class="sw" style="background:#5b7a32"></span> Boreal caribou (n=18)</label></li>
+        <li class="sp" data-key="turtle" data-color="#0a8ab3"><label><input type="checkbox" /> <span class="sw" style="background:#0a8ab3"></span> Leatherback sea turtle (n=9)</label></li>
+        <li class="sp" data-key="monarch" data-color="#d8861a"><label><input type="checkbox" checked /> <span class="sw" style="background:#d8861a"></span> Monarch butterfly (n=24, swarm aggregate)</label></li>
+        <li class="sp" data-key="bartailed" data-color="#5e3aa6"><label><input type="checkbox" /> <span class="sw" style="background:#5e3aa6"></span> Bar-tailed godwit (n=7)</label></li>
+        <li class="sp" data-key="whale" data-color="#1a5e8b"><label><input type="checkbox" /> <span class="sw" style="background:#1a5e8b"></span> Humpback whale (n=11)</label></li>
+        <li class="sp" data-key="albatross" data-color="#7d5c1c"><label><input type="checkbox" /> <span class="sw" style="background:#7d5c1c"></span> Wandering albatross (n=4)</label></li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>Study year</h3>
+      <label class="visually-hidden" for="year-sel">Study year</label>
+      <select id="year-sel" aria-label="Study year">
+        <option value="2024">2024 season</option>
+        <option value="2025" selected>2025 season</option>
+        <option value="2026" disabled>2026 season (in progress — not yet available)</option>
+      </select>
+      <p id="year-status" class="search-hint" aria-live="polite"></p>
+    </div>
+
+    <div class="block">
+      <h3>Display</h3>
+      <label class="row"><input type="checkbox" id="show-trail" checked /> <span>Show trail</span></label>
+      <label class="row"><input type="checkbox" id="show-dots" checked /> <span>Show monthly positions</span></label>
+      <label class="row"><input type="checkbox" id="show-stop" /> <span>Show stop-over polygons</span></label>
+    </div>
+
+    <div class="block">
+      <h3>Notes</h3>
+      <p class="hint">All individuals carry solar GPS loggers (model "PicaTag-12"). Fixes are taken every 4 hours and downsampled to monthly mean position.</p>
+    </div>
+  </aside>
+
+  <section class="atlas">
+    <div class="atlas-head">
+      <div>
+        <h1 id="page-title">Migration Atlas — 2025 season</h1>
+        <p class="hint">Use the month slider to play through the year. Click any trail or pin to inspect the individual.</p>
+      </div>
+      <div class="head-stats" aria-live="polite">
+        <div><span class="n" id="n-species">3</span><div class="lbl" id="n-species-lbl">species selected</div></div>
+        <div><span class="n" id="n-individuals">54</span><div class="lbl">individuals</div></div>
+        <div><span class="n" id="month-label">May</span><div class="lbl">current month</div></div>
+      </div>
+    </div>
+
+    <div class="map-wrap">
+      <svg id="map" viewBox="0 0 1000 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="World map showing animal migration tracks"></svg>
+    </div>
+
+    <div class="player" role="group" aria-label="Playback controls">
+      <button id="play-btn" class="primary" type="button" aria-label="Play"><span class="play-icon" aria-hidden="true">▶</span><span class="play-text">Play</span></button>
+      <div class="slider-wrap">
+        <div class="slider-head">
+          <label for="month-slider" class="slider-label">Month</label>
+          <span class="current-month" id="current-month-display" aria-live="polite">May</span>
+        </div>
+        <input id="month-slider" type="range" min="1" max="12" value="5" aria-label="Month of year" aria-valuetext="May" />
+        <div class="ticks" aria-hidden="true">
+          <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+          <span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+        </div>
+      </div>
+      <div class="speed-wrap">
+        <label for="speed" class="speed-label">Speed</label>
+        <select id="speed" aria-label="Playback speed">
+          <option value="0.5">0.5×</option>
+          <option value="1" selected>1×</option>
+          <option value="2">2×</option>
+          <option value="4">4×</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <aside class="right">
+    <h2 id="right-title">Individual</h2>
+    <div id="individual-card" class="hint">Click a trail, dot, or tag in the map to inspect that individual.</div>
+
+    <h2 style="margin-top: 22px;">Aggregate stats</h2>
+    <ul class="stats" id="agg-stats">
+      <li><span class="lbl">Active individuals</span><span class="val" id="agg-active">54</span></li>
+      <li><span class="lbl">Max range this month</span><span class="val" id="agg-range">2,140 km</span></li>
+      <li><span class="lbl">Fastest individual</span><span class="val" id="agg-fast">Godwit #G-44</span></li>
+      <li><span class="lbl">Stop-overs detected</span><span class="val" id="agg-stop">11</span></li>
+    </ul>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>Local demo for UXBench. Fictional product, not a real company. Tracks are synthetic and not derived from any real telemetry program.</p>
+</footer>
+
+<!-- Toast region for action feedback -->
+<div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Citation dialog -->
+<div id="cite-dialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="cite-title" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card">
+    <header class="modal-head">
+      <h2 id="cite-title">Cite this view</h2>
+      <button type="button" class="modal-close" data-close aria-label="Close">×</button>
+    </header>
+    <div class="modal-body">
+      <p class="hint">Suggested citation for the currently displayed view:</p>
+      <textarea id="cite-text" rows="4" readonly aria-label="Citation text"></textarea>
+      <div class="modal-actions">
+        <button type="button" id="cite-copy" class="primary">Copy citation</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

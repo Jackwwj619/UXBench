@@ -1,0 +1,256 @@
+{
+  "plan": {
+    "goal": "Exhaustively explore the CivicPort permit application portal, focusing heavily on the dynamic multi-step application form, its conditional logic, and recovery states.",
+    "summary": "The run will first map the static pages (Home, Fees, My Applications) to establish baseline navigation. The bulk of the exploration will focus on the `apply.html` form, executing multiple passes to validate the linear 'happy path', trigger conditional steps (like historic district or exterior changes), and test interruption flows like cancellation and backward navigation. Finally, critical interactions will be re-tested in a mobile viewport.",
+    "assumptions": [
+      "The multi-step form in apply.html is entirely client-side rendered via JavaScript based on user input.",
+      "The 'What you'll need' checklist and fee estimator update dynamically as form fields are filled.",
+      "The application process can be canceled or navigated backward without breaking state."
+    ],
+    "target_pages": [
+      "index.html",
+      "apply.html",
+      "fees.html",
+      "my-applications.html"
+    ],
+    "risk_hotspots": [
+      "Conditional step rendering in apply.html (ensure steps are correctly added/removed based on specific inputs).",
+      "State management of the Cancel dialog in the application flow.",
+      "Missing input labels on the first step of apply.html.",
+      "Synchronization of the sticky sidebar checklist and fee estimator with form inputs.",
+      "Small tap targets across the global navigation."
+    ],
+    "phases": [
+      {
+        "id": "phase-1",
+        "title": "Basic Navigation and Static Content",
+        "objective": "Verify the global navigation and the content of static auxiliary pages.",
+        "target_pages": [
+          "index.html",
+          "fees.html",
+          "my-applications.html"
+        ],
+        "key_checks": [
+          "Click through the top navigation links.",
+          "Verify the large icon-action buttons on the homepage work correctly.",
+          "Ensure content is fully visible on the Fees and My Applications pages."
+        ],
+        "exit_criteria": [
+          "All static pages have been visited and their primary content/links verified."
+        ]
+      },
+      {
+        "id": "phase-2",
+        "title": "Permit Application - Standard Flow",
+        "objective": "Execute a standard, non-conditional path through the permit application.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Fill out initial steps (address, basic project type).",
+          "Verify clicking 'Save and continue' progresses the form and updates the step tree.",
+          "Check that the 'What you'll need' checklist updates as steps are completed.",
+          "Test clicking the 'Back' button or clicking on completed steps in the tree to navigate backward."
+        ],
+        "exit_criteria": [
+          "Successfully navigated through several steps of a basic application and confirmed backward navigation."
+        ]
+      },
+      {
+        "id": "phase-3",
+        "title": "Permit Application - Conditional Branches",
+        "objective": "Trigger and validate the conditional logic within the application form.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Select inputs known to trigger conditional steps (e.g., exterior changes, historic parcel, Addition/Structural).",
+          "Verify new steps appear in the left-hand step tree.",
+          "Navigate to these newly revealed steps to ensure they render correctly."
+        ],
+        "exit_criteria": [
+          "At least two different conditional form states have been triggered and visualized."
+        ]
+      },
+      {
+        "id": "phase-4",
+        "title": "Application Form - Interruptions & Edge Cases",
+        "objective": "Test the robustness of the form against interruptions and check dynamic calculations.",
+        "target_pages": [
+          "apply.html"
+        ],
+        "key_checks": [
+          "Click the 'Cancel' button and interact with the resulting dialog.",
+          "Toggle the 'Expedited review' checkbox and verify the 'Estimated Fees' total updates correctly.",
+          "Attempt to proceed without filling required fields to check for validation messaging."
+        ],
+        "exit_criteria": [
+          "Cancel dialog verified, fee calculator validated, and validation errors (if any) observed."
+        ]
+      },
+      {
+        "id": "phase-5",
+        "title": "Mobile Responsiveness",
+        "objective": "Ensure the complex application form and small tap targets are usable on mobile.",
+        "target_pages": [
+          "index.html",
+          "apply.html"
+        ],
+        "key_checks": [
+          "Verify global navigation menus are accessible on a small viewport.",
+          "Check how the three-column layout in apply.html collapses (step tree, form, checklist).",
+          "Verify tap targets (buttons, links) are easily clickable without zooming."
+        ],
+        "exit_criteria": [
+          "Mobile layout observed for the home page and the first step of the application process."
+        ]
+      }
+    ],
+    "coverage_targets": {
+      "pages": "Visit all 4 known HTML pages.",
+      "features": "Exercise the standard flow, conditional logic, fee calculator, and cancellation within the application form.",
+      "mobile": "Test global navigation and the initial steps of the application form in a mobile viewport to assess layout collapse."
+    },
+    "notes": [
+      "Pay special attention to the missing input labels reported in the prescan on apply.html, as this could impact accessibility and autonomous navigation."
+    ]
+  },
+  "prescan_summary": [
+    {
+      "page": "index.html",
+      "title": "CivicPort — City of Avalon Bay",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/civicport/index.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort City of Avalon Bay Apply My applications Fees Help Welcome to CivicPort. Apply for a renovation, building, electrical, or roof permit. Track everything from one place. Apply for a permit Residential, electrical, plumbing, roof. ~25 min. Track an application See status, inspector notes, next steps. Pay fees Open invoices, history, refunds. Service alerts Mon, May 11 — Online plan-check intake is operating normally. Average decision time: 6 business days. Thu, May 7 — Historical-district overlay updated for the Foundry District. New parcels may require additional review. Apr 24 — Counter service at Civic Plaza is by appointment only on Mondays. Avalon Bay Permits Office · 123 Civic Plaza · Mon–Fri 8am–4pm · 555-242-PERM Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Welcome to CivicPort.",
+        "Apply for a permit",
+        "Track an application",
+        "Pay fees",
+        "Service alerts"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 7,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees",
+        "clickable:a:Help",
+        "clickable:a:Apply for a permit Residential, electrical, plumbing, roof. ~25 min.",
+        "clickable:a:Track an application See status, inspector notes, next steps.",
+        "clickable:a:Pay fees Open invoices, history, refunds."
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "apply.html",
+      "title": "Apply for a permit — CivicPort",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/civicport/apply.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Application AB-2026-PERM-7311 Auto-saved · just now Cancel APPLICATION 1. Project info Property address Project type Project scope Start / end dates 2. Property & ownership Parcel lookup Ownership proof Contractor license 3. Plans & documents Site plan Floor plan 5. Affidavits Lead paint (pre-1978) Environmental 6. Review & submit Summary Fees Submit 1.1 Property address Where is the work happening? You can also start with the parcel number on step 2.1. Street address City State / Zip Back Save and continue WHAT YOU'LL NEED Property address Project type selected Scope described Parcel verified Ownership proof Site plan Floor plan ESTIMATED FEES Pick a project type first Total estimated $0 Expedited review (+50%, decision in 3 days) Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "APPLICATION",
+        "1.1 Property address",
+        "WHAT YOU'LL NEED",
+        "ESTIMATED FEES",
+        "Cancel this application?"
+      ],
+      "counts": {
+        "buttons": 5,
+        "links": 0,
+        "inputs": 4,
+        "forms": 0,
+        "dialogs": 1
+      },
+      "top_interactables": [
+        "clickable:button:Cancel",
+        "typeable:input:unlabeled control",
+        "typeable:input:Avalon Bay",
+        "typeable:input:Zip",
+        "clickable:button:Back",
+        "clickable:button:Save and continue",
+        "clickable:input:Expedited review (+50%, decision in 3 days)"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "missing_input_label",
+        "missing_input_label",
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "fees.html",
+      "title": "Fees — CivicPort",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/civicport/fees.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Apply My applications Fees Permit fee schedule Project type Base fee Per sq ft (over 200) Expedited review Kitchen $320 $1.80 +50% Bathroom $240 $1.60 +50% Addition $680 $2.40 +50% Roof $210 $0.90 +50% Structural $540 $2.10 +50% Electrical $160 — +50% Plumbing $160 — +50% Neighbor mail request: $18 each. Historical-district review: $120 surcharge. Fees are non-refundable once a plan reviewer is assigned. Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "Permit fee schedule"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    },
+    {
+      "page": "my-applications.html",
+      "title": "My applications — CivicPort",
+      "url": "file:///proj/long-multi/hhua/brandonhuang/websites/civicport/my-applications.html",
+      "load_error": null,
+      "visible_text_excerpt": "CivicPort Apply My applications Fees My applications App ID Type Address Submitted Status AB-2026-PERM-7042 Kitchen renovation 148 Coppergate St. Apr 12, 2026 Approved AB-2025-PERM-9981 Roof replacement 148 Coppergate St. Nov 3, 2025 Approved AB-2025-PERM-6601 Bathroom remodel 22 Foundry Lane Aug 19, 2025 Inspector follow-up Local demo for UXBench. Fictional product, not a real company.",
+      "headings": [
+        "My applications"
+      ],
+      "counts": {
+        "buttons": 0,
+        "links": 3,
+        "inputs": 0,
+        "forms": 0,
+        "dialogs": 0
+      },
+      "top_interactables": [
+        "clickable:a:Apply",
+        "clickable:a:My applications",
+        "clickable:a:Fees"
+      ],
+      "layout_warning_kinds": [
+        "small_tap_target",
+        "small_tap_target",
+        "small_tap_target"
+      ],
+      "console_errors": [],
+      "network_errors": []
+    }
+  ]
+}
