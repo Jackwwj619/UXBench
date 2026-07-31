@@ -1,51 +1,28 @@
-<p align="center">
-  <img src="logo.png" width="156" alt="UXBench logo">
-</p>
-
 <h1 align="center">UXBench</h1>
-
-<h3 align="center">
-  Measuring the <strong>Actionability</strong> of LLM-Generated UX Critiques
-</h3>
+<h3 align="center">Measuring the Actionability of LLM-Generated UX Critiques</h3>
 
 <p align="center">
-  <a href="https://www.python.org/">
-    <img src="https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
-  </a>
-  <a href="https://github.com/astral-sh/uv">
-    <img src="https://img.shields.io/badge/Packaged%20with-uv-DE5FE9?logo=astral&logoColor=white" alt="Packaged with uv">
-  </a>
-  <a href="https://playwright.dev/">
-    <img src="https://img.shields.io/badge/Browser-Playwright-2EAD33?logo=playwright&logoColor=white" alt="Playwright">
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-22863a.svg" alt="License: MIT">
-  </a>
-  <a href="#-the-eight-judges">
-    <img src="https://img.shields.io/badge/Judge%20Models-8-6f42c1.svg" alt="Judge Models: 8">
-  </a>
-  <a href="#-fixture-families">
-    <img src="https://img.shields.io/badge/Fixtures-41-fd7e14.svg" alt="Fixtures: 41">
-  </a>
-  <a href="#-human-validation">
-    <img src="https://img.shields.io/badge/Human-validated-2b405c.svg" alt="Human validated">
-  </a>
+  <a href="https://arxiv.org/abs/2606.16262"><img src="https://img.shields.io/badge/arXiv-2606.16262-B31B1B.svg?logo=arxiv&logoColor=white" alt="arXiv"></a>
+  <a href="https://jackwwj619.github.io/projects/UXBench/"><img src="https://img.shields.io/badge/Project%20Page-Homepage-2ea44f.svg" alt="Project Page"></a>
+  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB.svg?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Runtime-Playwright-2EAD33.svg?logo=playwright&logoColor=white" alt="Runtime">
+  <!-- <img src="https://img.shields.io/badge/Judge%20Models-8-6f42c1.svg" alt="Judge Models: 8"> -->
+  <!-- <img src="https://img.shields.io/badge/Fixtures-41-fd7e14.svg" alt="Fixtures: 41"> -->
+  <!-- <img src="https://img.shields.io/badge/Human-validated-2b405c.svg" alt="Human validated"> -->
 </p>
 
-> **A model that _answers_ a UX question is not the same as a model that _fixes_ the interface.**  
-> UXBench scores LLM UX judges by whether a **fixed** downstream repair agent can act on their critique — not by how convincing the critique sounds.
-
 <p align="center">
-  <a href="#-overview">Overview</a> ·
-  <a href="#-results-at-a-glance">Results</a> ·
-  <a href="#-leaderboard">Leaderboard</a> ·
-  <a href="#-how-uxbench-works">Method</a> ·
-  <a href="#-fixture-families">Fixtures</a> ·
-  <a href="#-human-validation">Human Validation</a> ·
-  <a href="#-quick-start">Quick Start</a> ·
-  <a href="#-cli-reference">CLI</a> ·
-  <a href="#-repository-layout">Repo Layout</a> ·
-  <a href="#-citation">Citation</a>
+  <a href="#news">News</a> |
+  <a href="#overview">Overview</a> |  
+  <a href="#results-at-a-glance">Results</a> |
+  <a href="#leaderboard">Leaderboard</a> |
+  <a href="#how-uxbench-works">Method</a> |
+  <a href="#fixture-families">Fixtures</a> |
+  <a href="#human-validation">Human Validation</a> |
+  <a href="#quick-start">Quick Start</a> |
+  <a href="#cli-reference">CLI</a> |
+  <a href="#repository-layout">Repo Layout</a> |
+  <a href="#citation">Citation</a>
 </p>
 
 ---
@@ -302,7 +279,7 @@ uv run uxagent --help
 --judge-rubric default|controls
 ```
 
-### Applying fixes
+<!-- ### Applying fixes
 
 `audit` can ask Claude Code to apply fixes after the report. In URL mode, `--source-dir` is required.
 
@@ -334,26 +311,53 @@ Fix-related options:
 --claude-permission-mode
 --claude-allowed-tools
 --fail-on-claude-fix-failure
+``` -->
+
+<!-- ---
+
+## TokenRouter Evaluator Sensitivity Experiment
+
+The supplementary evaluator experiment runs Kimi-K2.5 and Qwen-3.6-Plus through
+TokenRouter over 15 fixtures and 3 anonymous variants per fixture
+(`gpt-5.4`, `kimi-k2.5`, `qwen3.6-plus`; 90 jobs total).
+The runner uses four concurrent workers by default, validates text/vision Responses API support
+before starting, retries transient failures, checkpoints every finished job, and
+resumes without repeating valid results.
+
+Set the TokenRouter key outside the repository:
+
+```powershell
+$env:TOKENROUTER_API_KEY = "your-tokenrouter-key"
 ```
 
----
+Inspect the campaign without making API calls:
 
-## 📁 Repository Layout
-
-```text
-UXBench/
-├── uxagent/             # Python CLI package: explore · report · repair · score
-├── websites-data/       # Benchmark fixtures: <model-or-baseline>/<site>/
-│   ├── base/            # Shared unrepaired baselines
-│   ├── gpt-5.4/         # Per-judge repaired variants
-│   └── …
-├── Agent-run-results/   # Saved agent run artifacts: reports, feedback, traces
-├── results/             # Curated figures, tables, statistical tests, source data
-├── paper-site/          # Project website; figures rendered from results/
-├── paper/               # Paper source
-├── viewer/              # Browser-based result and dataset viewer
-└── tools/               # Maintenance scripts
+```bash
+uv run python experiments/run_evaluator_sensitivity.py --dry-run
 ```
+
+Run only the provider/model/vision compatibility checks:
+
+```bash
+uv run python experiments/run_evaluator_sensitivity.py --smoke-test
+```
+
+Start or resume the complete unattended campaign:
+
+```bash
+uv run python experiments/run_evaluator_sensitivity.py --yes --resume
+```
+
+Override concurrency for one run when needed:
+
+```powershell
+uv run python experiments/run_evaluator_sensitivity.py --yes --resume --workers 6
+```
+
+Outputs and checkpoints are written below `evaluator-runs/`, which is intentionally
+ignored by Git. A fatal provider/configuration incompatibility stops new scheduling;
+transient per-job failures are retried and exhausted jobs are recorded while the
+remaining campaign continues. -->
 
 ---
 
@@ -365,4 +369,16 @@ This project is released under the [MIT License](LICENSE).
 
 ## 📚 Citation
 
-Citation information will be added with the paper release.
+If you find UXBench helpful, please consider citing it:
+
+```bibtex
+@misc{wang2026uxbench,
+      title={UXBench: Measuring the Actionability of LLM-Generated UX Critiques},
+      author={Wenjie Wang and Yue Huang and Zipeng Ling and Han Bao and Hang Hua and Xiaonan Luo and Yu Jiang and Shiyi Du and Yuexing Hao and Xiaomin Li and Yuchen Ma and Dianzhuo Wang and Yanfang Ye and Xiangliang Zhang},
+      year={2026},
+      eprint={2606.16262},
+      archivePrefix={arXiv},
+      primaryClass={cs.SE},
+      url={https://arxiv.org/abs/2606.16262},
+}
+```
