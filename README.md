@@ -21,7 +21,7 @@
   <a href="#human-validation">Human Validation</a> |
   <a href="#quick-start">Quick Start</a> |
   <a href="#cli-reference">CLI</a> |
-  <a href="#repository-layout">Repo Layout</a> |
+  <!-- <a href="#repository-layout">Repo Layout</a> | -->
   <a href="#citation">Citation</a>
 </p>
 
