@@ -11,7 +11,7 @@
   <!-- <img src="https://img.shields.io/badge/Human-validated-2b405c.svg" alt="Human validated"> -->
 </p>
 
-<p align="center">
+<!-- <p align="center">
   <a href="#news">News</a> |
   <a href="#overview">Overview</a> |  
   <a href="#results-at-a-glance">Results</a> |
@@ -23,7 +23,7 @@
   <a href="#cli-reference">CLI</a> |
   <!-- <a href="#repository-layout">Repo Layout</a> | -->
   <a href="#citation">Citation</a>
-</p>
+</p> -->
 
 ---
 
